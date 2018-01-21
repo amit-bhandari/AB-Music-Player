@@ -17,22 +17,13 @@ package com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo;
  * along with QuickLyric.  If not, see <http://www.gnu.org/licenses/>.
  */
 public class Keys {
-    //public static final String GENIUS = "5eDKEfmGtQulq_eFxVB2v-bhf_hIgb9fT14IY_LYUsgHx9KjN_H6Tid7yO6jc_Xa";
 
     //please use your own keys while forking
+    //if you forked this from git hub, this keys are wrong (intentionally)
+    //get your own keys from respective websites and use them here
+    public static final String GENIUS = "6wPhYenV4K78zZ4ndmuP1iiPTRUGJWG5_X17LvpoCx4XHc1236IIHDUv2rVZh";
 
-    public static final String GENIUS = "6wPhYenV4K78zZ4ndmuP1iiPTRUGJWG5_X17LvpoCx4XHc1236IIHDUv2rVZhUUN";
-    private static final String SECRET_KEY_GENIUS
-            = "oFbATos_o4RSrHdyG_0mM-eca_lRPmeU8XlBuljY0BNHxiuSvTLYxAQd2SLedm5bkS4ITq2gIIpZlyQY-uliYg";
-    private static final String CLIENT_ACCESS_TOKEN_GENIUS =
-            "pLm7oeTkSYKw-oAc3hrJRAoXiOUml-Q13U8GfRkJtyECOd1d85li4_2ZNs3voW-_";
-
-    // Put your Spotify Key here
-    public static final String SPOTIFY_PUBLIC = "0abc29261dc74426b72c3c44bde9a4d5";
-    // Put your Spotify Secret here
-    public static String SPOTIFY_SECRET = "";
-
-    public static String LASTFM = "4e464c9ca4e6763aca6d5a7a04728c77";
+    public static String LASTFM = "4e464c9ca4e6763aca6d5a7a04728";
     //shared secret for lastfm = d82a87b03faa65d001bd48713c60d645
 
 }
