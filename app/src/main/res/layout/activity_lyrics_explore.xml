@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view_lyrics_explore"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto">
+
+    <!-- toolbar -->
+    <android.support.v7.widget.Toolbar
+        android:fitsSystemWindows="true"
+        android:minHeight="@dimen/action_bar_size"
+        app:contentInsetStartWithNavigation="0dp"
+        android:id="@+id/toolbar_"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/toolbar_"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/recycler_view_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_above="@+id/adView">
+
+        <TextView
+            android:id="@+id/trending_now_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:padding="5dp"
+            android:text="@string/trending_now_in"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:visibility="visible"
+        android:id="@+id/statusTextView"
+        android:textSize="18sp"
+        android:textColor="@color/colorwhite"
+        android:layout_margin="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/progressBar"
+        android:layout_alignStart="@+id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+         />
+
+    <LinearLayout
+        android:id="@+id/ad_view_wrapper"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_above="@+id/fab_right_side"
+        android:paddingBottom="5dp"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/ad_close"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/close"
+            android:textColor="@color/colorwhite"
+            android:paddingEnd="15dp"
+            android:gravity="end"
+            android:textSize="15sp"
+            android:visibility="gone"
+            android:paddingRight="15dp" />
+
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_lyrics_explore">
+        </com.google.android.gms.ads.AdView>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_right_side"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_search_white_48dp"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_alignParentRight="true"
+        tools:ignore="RelativeOverlap" />
+
+</RelativeLayout>

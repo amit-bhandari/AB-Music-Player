@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view_track_item_drag"
+    android:layout_below="@+id/toolbar_"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    card_view:cardBackgroundColor="@color/colorTransparent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="@dimen/dta_margin"
+    android:layout_marginLeft="@dimen/dta_margin"
+    android:layout_marginRight="@dimen/dta_margin"
+    android:elevation="3dp"
+    card_view:cardCornerRadius="10dp">
+
+    <RelativeLayout
+        android:id="@+id/trackItemDraggable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/handleForDrag"
+            android:layout_width="@dimen/action_bar_size_large"
+            android:layout_height="@dimen/action_bar_size_large"
+            android:src="@drawable/ic_reorder_black_24dp"
+            android:tint="@color/colorwhite"
+            android:scaleType="center"
+            />
+
+        <LinearLayout
+            android:id="@+id/artAndTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/dta_song_wraper_padd"
+            android:gravity="center_vertical"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/play_button_item_drag"
+            android:layout_toRightOf="@+id/handleForDrag"
+            android:layout_toEndOf="@+id/handleForDrag"
+            android:layout_toStartOf="@+id/play_button_item_drag">
+            <!-- Title Of Song-->
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_track"
+                android:textColor="@color/colorwhite"
+                android:typeface="sans"
+                android:textSize="@dimen/dta_song_text"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                android:maxLines="1"
+                android:paddingRight="@dimen/dta_song_padd"
+                android:paddingLeft="@dimen/dta_song_padd" />
+
+            <!-- Artist Name -->
+            <TextView
+                android:id="@+id/secondaryHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/dta_artist_text"
+                android:layout_marginTop="1dip"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dta_song_padd"
+                android:textColor="@color/colorwhite" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/play_button_item_drag"
+            android:layout_width="@dimen/action_bar_size"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/more"
+            android:layout_gravity="center"
+            android:foregroundGravity="center"
+            android:scaleType="center"
+            android:src="@drawable/ic_play_arrow_black_24dp"
+            android:layout_toStartOf="@+id/more" />
+
+        <ImageView
+            android:id="@+id/more"
+            android:layout_width="@dimen/action_bar_size"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_more_white"
+            android:scaleType="center"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

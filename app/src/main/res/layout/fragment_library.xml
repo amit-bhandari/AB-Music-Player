@@ -1,0 +1,50 @@
+<LinearLayout android:id="@+id/fragment_library_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <ViewStub
+        android:id="@+id/stub_in_fragment_library"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_size"
+        android:layout="@layout/image_view_for_add_playlist"
+        android:layout_margin="@dimen/fl_stub_margin" />
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relativeLayoutForRecyclerView"
+        android:background="@color/colorTransparent">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+                android:id="@+id/recyclerviewList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:fastScrollPopupBgColor="@color/colorAccent"
+                app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+                app:fastScrollThumbColor="@color/colorAccent" />
+
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

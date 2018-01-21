@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/title_theme_category"
+        android:key="pref_key_theme_cat">
+
+        <Preference
+            android:title="@string/title_theme"
+            android:summary="Light"
+            android:key="@string/pref_theme">
+        </Preference>
+
+        <Preference
+            android:title="@string/title_theme_color"
+            android:key="@string/pref_theme_color">
+        </Preference>
+
+        <Preference
+            android:title="@string/title_now_playing_back"
+            android:key="@string/pref_now_playing_back">
+        </Preference>
+
+        <Preference
+            android:title="@string/title_main_library_back"
+            android:key="@string/pref_main_library_back">
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/title_ui"
+        android:key="pref_key_ui_settings">
+
+        <CheckBoxPreference
+            android:title="@string/title_rotatingdisk"
+            android:key="@string/pref_rotatingdisk"
+            android:defaultValue="true">
+        </CheckBoxPreference>
+
+
+        <Preference
+            android:title="@string/title_text_font"
+            android:key="@string/pref_text_font">
+        </Preference>
+
+        <Preference
+            android:title="@string/title_opening_tab"
+            android:key="@string/pref_opening_tab">
+        </Preference>
+
+         <CheckBoxPreference
+             android:title="@string/title_lock_screen_album_Art"
+             android:defaultValue="true"
+             android:key="@string/pref_lock_screen_album_Art">
+         </CheckBoxPreference>
+
+         <CheckBoxPreference
+             android:title="@string/title_hide_lock_button"
+             android:key="@string/pref_hide_lock_button"
+             android:defaultValue="false">
+         </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:title="@string/title_notification"
+            android:key="@string/pref_notifications"
+            android:defaultValue="true">
+        </CheckBoxPreference>
+
+     </PreferenceCategory>
+
+    <PreferenceCategory
+         android:title="@string/title_shake_main"
+         android:key="pref_key_lib_settings">
+
+         <CheckBoxPreference
+             android:title="@string/title_shake"
+             android:defaultValue="false"
+             android:key="@string/pref_shake">
+         </CheckBoxPreference>
+
+         <Preference
+             android:title="@string/title_shake_action"
+             android:key="@string/pref_shake_action"
+             android:dependency="@string/pref_shake">
+         </Preference>
+
+     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/title_misc"
+        android:key="pref_key_about_setting">
+
+        <CheckBoxPreference
+            android:title="@string/title_instant_lyric"
+            android:defaultValue="false"
+            android:key="@string/pref_instant_lyric">
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:title="@string/title_equalizer"
+            android:key="@string/pref_prefer_system_equ">
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:title="@string/title_continous_playback"
+            android:defaultValue="false"
+            android:key="@string/pref_continuous_playback">
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:title="@string/title_data_Saver"
+            android:defaultValue="false"
+            android:key="@string/pref_data_saver">
+        </CheckBoxPreference>
+
+        <Preference
+            android:title="@string/title_batch_download"
+            android:key="@string/pref_batch_download">
+        </Preference>
+
+        <Preference
+            android:title="@string/title_cache_artist_data"
+            android:key="@string/pref_cache_artist_data"
+            android:enabled="false">
+        </Preference>
+
+    </PreferenceCategory>
+
+     <PreferenceCategory
+         android:title="@string/title_library"
+         android:key="pref_key_lib_settings">
+
+         <Preference
+             android:title="@string/title_hide_short_clips"
+             android:summary="10 seconds"
+             android:key="@string/pref_hide_short_clips">
+
+         </Preference>
+
+         <Preference
+             android:title="@string/title_hide_tracks_starting_with"
+             android:summary=""
+             android:key="@string/pref_hide_tracks_starting_with">
+
+         </Preference>
+
+         <Preference
+             android:title="@string/title_excluded_folders"
+             android:summary=""
+             android:key="@string/pref_excluded_folders">
+
+         </Preference>
+
+         <!--
+         <Preference
+             android:title="@string/title_rescan_lib"
+             android:key="@string/pref_rescan_lib">
+
+         </Preference>-->
+
+     </PreferenceCategory>
+
+     <PreferenceCategory
+         android:title="@string/title_about"
+         android:key="pref_key_about_setting">
+
+         <Preference
+             android:title="@string/title_about_us"
+             android:key="@string/pref_about_us">
+
+         </Preference>
+
+         <!--
+         <Preference
+             android:title="@string/title_licenses"
+             android:key="@string/pref_about_licenses">
+
+         </Preference>
+
+         <Preference
+             android:title="@string/title_terms_of_use"
+             android:key="@string/pref_terms_of_use">
+
+         </Preference>
+
+         <Preference
+             android:title="@string/title_feedback"
+             android:key="@string/pref_feedback">
+         </Preference>
+
+         <Preference
+             android:title="@string/title_support_dev"
+             android:key="@string/pref_support_dev">
+         </Preference>
+-->
+
+         <Preference
+             android:title="@string/title_remove_ads"
+             android:key="@string/pref_remove_ads_after_payment">
+         </Preference>
+
+         <!--
+         <Preference
+             android:title="@string/title_reward_points"
+             android:key="@string/pref_reward_points">
+         </Preference> -->
+
+
+     </PreferenceCategory>
+
+     <PreferenceCategory
+         android:title="@string/title_reset"
+         android:key="pref_key_about_setting">
+
+         <Preference
+             android:title="@string/title_reset_pref"
+             android:key="@string/pref_reset_pref">
+         </Preference>
+
+     </PreferenceCategory>
+
+ </PreferenceScreen>

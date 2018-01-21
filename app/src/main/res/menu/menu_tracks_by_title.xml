@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_play"
+        android:title="@string/action_play"/>
+
+
+    <item
+        android:id="@+id/action_play_next"
+        android:title="@string/action_play_next"
+        />
+    <item
+        android:id="@+id/action_add_to_q"
+        android:title="@string/action_add_to_q"
+        />
+
+
+    <item
+        android:id="@+id/action_add_to_playlist"
+        android:title="@string/action_add_to_playlist"
+        />
+
+    <item
+        android:id="@+id/action_search_youtube"
+        android:title="@string/title_search_youtube" />
+
+    <item
+        android:id="@+id/action_track_info"
+        android:title="@string/action_track_info"
+        />
+
+    <item
+        android:id="@+id/action_edit_track_info"
+        android:title="@string/action_edit_track_info"
+        />
+
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/action_share_file"/>
+
+    <item
+        android:id="@+id/action_exclude_folder"
+        android:title="@string/action_exclude_from_library"
+        />
+
+    <item
+        android:id="@+id/action_set_as_ringtone"
+        android:title="@string/action_set_as_ringtone"
+        />
+
+    <item
+        android:id="@+id/action_delete"
+        android:title="@string/action_delete"
+        />
+
+
+
+
+</menu>

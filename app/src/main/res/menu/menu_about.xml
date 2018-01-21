@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_licenses"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_favorite_border_black_24dp"
+        app:showAsAction="never"
+        android:title="@string/action_licenses" />
+
+    <item
+        android:id="@+id/action_tou"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        app:showAsAction="never"
+        android:title="@string/action_terms_of_use" />
+
+
+    <item
+        android:id="@+id/action_feedback"
+        android:orderInCategory="100"
+        android:title="@string/action_feedback"
+        android:icon="@drawable/ic_share_black_24dp"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/nav_website"
+        android:orderInCategory="100"
+        android:title="@string/nav_website"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/nav_call_for_help"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_call_for_help" />
+
+    <item
+        android:id="@+id/action_support_dev"
+        android:orderInCategory="100"
+        android:title="@string/action_support_dev"
+        app:showAsAction="never" />
+
+
+</menu>

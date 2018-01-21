@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="playerview">
+        <attr name="cover" format="integer" />
+        <attr name="buttonColor" format="color"/>
+        <attr name="progressEmptyColor" format="color"/>
+        <attr name="progressLoadedColor" format="color"/>
+        <attr name="textColor" format="color"/>
+        <attr name="textSize" format="dimension"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="RecyclerFastScroller">
+        <attr name="rfs_barColor" format="color"/>
+        <attr name="rfs_handleNormalColor" format="color"/>
+        <attr name="rfs_handlePressedColor" format="color"/>
+        <attr name="rfs_touchTargetWidth" format="dimension"/>
+        <attr name="rfs_hideDelay" format="integer"/>
+        <attr name="rfs_hidingEnabled" format="boolean"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="Lrc">
+        <attr name="textSizeLyric" format="dimension"/>
+        <attr name="normalTextColor" format="reference|color"/>
+        <attr name="currentTextColor" format="reference|color"/>
+        <attr name="dividerHeight" format="dimension"/>
+        <attr name="rows" format="integer"/>
+    </declare-styleable>
+
+
+</resources>

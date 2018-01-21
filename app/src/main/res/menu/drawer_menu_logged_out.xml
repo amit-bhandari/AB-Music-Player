@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/grp2"
+        android:checkableBehavior="none">
+
+        <!--
+        <item
+            android:id="@+id/nav_call_for_help"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="@string/action_call_for_help" /> -->
+
+        <item
+            android:id="@+id/nav_rewards"
+            android:icon="@drawable/ic_reward"
+            android:title="@string/nav_rewards" />
+
+        <item
+            android:id="@+id/nav_remove_ads"
+            android:icon="@drawable/ic_remove_circle_outline_black_24dp"
+            android:title="@string/nav_remove_ads" />
+
+        <item
+            android:id="@+id/nav_explore_lyrics"
+            android:icon="@drawable/ic_explore_black_24dp"
+            android:title="@string/nav_explore_lyrics" />
+
+        <!--
+        <item
+            android:id="@+id/nav_sleep_timer"
+            android:icon="@drawable/ic_query_builder_black_24dp"
+            android:title="@string/nav_sleep_timer" /> -->
+
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_share_black_24dp"
+            android:title="@string/nav_share" />
+
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_feedback_black_24dp"
+            android:title="@string/nav_feature_request" />
+
+        <item
+            android:id="@+id/nav_dev_message"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="@string/nav_developers_message" />
+
+        <!--
+        <item
+            android:id="@+id/nav_social"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="@string/nav_social" />
+
+        <item
+            android:id="@+id/nav_website"
+            android:icon="@drawable/ic_public_black_24dp"
+            android:title="@string/nav_website" /> -->
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/nav_settings" />
+
+        <item
+            android:id="@+id/nav_rate"
+            android:icon="@drawable/ic_star_black_24dp"
+            android:title="@string/nav_rate" />
+
+        <item
+            android:id="@+id/nav_login"
+            android:icon="@drawable/ic_people_black_24dp"
+            android:title="@string/nav_login" />
+
+    </group>
+</menu>

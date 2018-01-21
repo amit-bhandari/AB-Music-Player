@@ -1,0 +1,1451 @@
+package com.music.player.bhandari.m.activity;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.media.AudioManager;
+import android.media.audiofx.AudioEffect;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.FileProvider;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.InputType;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
+import com.music.player.bhandari.m.adapter.CurrentTracklistAdapter;
+import com.music.player.bhandari.m.model.Constants;
+import com.music.player.bhandari.m.model.MusicLibrary;
+import com.music.player.bhandari.m.model.TrackItem;
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics;
+import com.music.player.bhandari.m.utils.AppLaunchCountManager;
+import com.music.player.bhandari.m.customViews.CustomViewPager;
+import com.music.player.bhandari.m.utils.SignUpAdRemove;
+import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener;
+import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback;
+import com.music.player.bhandari.m.service.PlayerService;
+import com.music.player.bhandari.m.DBHelper.DbHelperUserMusicData;
+import com.music.player.bhandari.m.MyApp;
+import com.music.player.bhandari.m.model.PlaylistManager;
+import com.music.player.bhandari.m.utils.UtilityFun;
+import com.sackcentury.shinebuttonlib.ShineButton;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import jp.wasabeef.blurry.Blurry;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
+/**
+ * Created by amit on 11/12/16.
+ */
+
+public class ActivityNowPlaying extends AppCompatActivity implements
+        View.OnClickListener, OnStartDragListener {
+
+    private Toolbar toolbar;
+    int screenWidth, screenHeight;
+    private ShineButton shineButton;
+    private AdView mAdView;
+    private InterstitialAd mInterstitialAd;
+    private static final int LAUNCH_COUNT_BEFORE_POPUP=10;
+
+    private PowerManager.WakeLock mWakeLock;
+    private View rootView;
+
+
+    //is artist thumb loaded in blurry background
+    private boolean isArtistLoadedInBackground = false;
+
+    private CustomViewPager viewPager;
+    private ActivityNowPlaying.ViewPagerAdapter viewPagerAdapter;
+
+    AudioManager audioManager ;
+
+    private boolean isInvokedFromFileExplorer=false;
+
+    private  SlidingUpPanelLayout slidingUpPanelLayout;
+
+    //bind player service
+    private  PlayerService playerService;
+    private BroadcastReceiver mUIUpdateReceiver;
+
+    private RecyclerView mRecyclerView;
+    private  CurrentTracklistAdapter mAdapter;
+    ActivityNowPlaying.WrapContentLinearLayoutManager mLayoutManager=
+            new ActivityNowPlaying.WrapContentLinearLayoutManager(this);
+    private ItemTouchHelper mItemTouchHelper;
+
+    private  Handler mHandler = new Handler();
+
+    private GoogleApiClient mGoogleApiClient;
+    private static final int RC_SIGN_IN = 007;
+
+    //now playing background bitmap
+    Bitmap nowPlayingCustomBackBitmap;
+
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //if player service not running, kill the app
+        if(MyApp.getService()==null){
+            Intent intent = new Intent(this, ActivityPermissionSeek.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        }
+
+        int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
+        switch (themeSelector){
+            case Constants.PRIMARY_COLOR.DARK:
+                setTheme(R.style.AppThemeDark);
+                break;
+
+            case Constants.PRIMARY_COLOR.GLOSSY:
+                setTheme(R.style.AppThemeDark);
+                break;
+
+            case Constants.PRIMARY_COLOR.LIGHT:
+                setTheme(R.style.AppThemeLight);
+                break;
+        }
+        setContentView(R.layout.activity_now_playing);
+
+        rootView = findViewById(R.id.root_view_now_playing);
+
+        if(!MyApp.getPref().getBoolean("never_show_button_again", false)){
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                        @Override
+                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                            Log.d(Constants.TAG, "onConnectionFailed:" + connectionResult);
+                        }
+                    })
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+        }
+
+
+        //noinspection PointlessBooleanExpression
+        if( false && /*AppLaunchCountManager.isEligibleForInterstialAd() && */ !UtilityFun.isAdsRemoved()) {
+
+            MobileAds.initialize(getApplicationContext(), getString(R.string.banner_play_queue));
+
+            if((AppLaunchCountManager.isEligibleForInterstialAd() &&
+                    AppLaunchCountManager.getNowPlayingLaunchCount()%LAUNCH_COUNT_BEFORE_POPUP==0)) {
+                mInterstitialAd = new InterstitialAd(this);
+                mInterstitialAd.setAdUnitId(getString(R.string.inter_settings_activity));
+
+                mInterstitialAd.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdClosed() {
+                    }
+
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        mInterstitialAd.show();
+                    }
+                });
+
+                requestNewInterstitial();
+            }
+
+            mAdView = findViewById(R.id.adView);
+            if (UtilityFun.isConnectedToInternet()) {
+                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
+                        .build();
+                if (mAdView != null) {
+                    mAdView.loadAd(adRequest);
+                    mAdView.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (mAdView != null) {
+                    mAdView.setVisibility(View.GONE);
+                }
+            }
+        }
+
+        if(getIntent().getAction()!=null) {
+            if (getIntent().getAction().equals(Constants.ACTION.OPEN_FROM_FILE_EXPLORER)) {
+                isInvokedFromFileExplorer = true;
+            }
+        }else {
+            isInvokedFromFileExplorer = false;
+        }
+
+       playerService = MyApp.getService();
+
+        toolbar = findViewById(R.id.toolbar_);
+
+        if(playerService!=null && playerService.getCurrentTrack()!=null) {
+            toolbar.setTitle(playerService.getCurrentTrack().getTitle());
+            toolbar.setSubtitle(playerService.getCurrentTrack().getArtist());
+        }
+        setSupportActionBar(toolbar);
+
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        screenWidth = displayMetrics.widthPixels;
+        screenHeight = displayMetrics.heightPixels;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+
+        audioManager =
+                (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
+        // add back arrow to toolbar
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        slidingUpPanelLayout = findViewById(R.id.sliding_layout);
+
+        final View playQueueHandle = findViewById(R.id.handle_current_queue);
+        playQueueHandle.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    playQueueHandle.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    playQueueHandle.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                ; //height is ready
+
+                slidingUpPanelLayout.setPanelHeight(playQueueHandle.getHeight());
+                slidingUpPanelLayout.setScrollableView(mRecyclerView);
+            }
+        });
+
+        slidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                if(slideOffset>0.99){
+                    playQueueHandle.setVisibility(View.INVISIBLE);
+                }else {
+                    playQueueHandle.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+
+                if(previousState==SlidingUpPanelLayout.PanelState.COLLAPSED && newState==SlidingUpPanelLayout.PanelState.DRAGGING){
+                    try {
+                        int position = playerService.getCurrentTrackPosition();
+                        mRecyclerView.scrollToPosition(position);
+                    }catch (Exception ignored){}
+                    //Log.v(Constants.TAG,"DRAGGING");
+                }
+
+                if(newState== SlidingUpPanelLayout.PanelState.EXPANDED){
+                    if(mAdView!=null){
+                        mAdView.resume();
+                    }
+                }else {
+                    if(mAdView!=null){
+                        mAdView.pause();
+                    }
+                }
+            }
+
+        });
+        //set gradient as background
+
+        GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.BR_TL,
+                new int[] {ColorHelper.getColor(R.color.colorBlackThemeBack),0xFF131313});
+        gd.setCornerRadius(0f);
+        slidingUpPanelLayout.setBackgroundColor(ColorHelper.getColor(R.color.blackTransparent));
+        slidingUpPanelLayout.setDragView(R.id.play_queue_title);
+
+        shineButton = findViewById(R.id.shineButton);
+        shineButton.init(this);
+
+        Button saveQueueButton = findViewById(R.id.save_queue_button);
+        saveQueueButton.setOnClickListener(this);
+
+        Log.v(Constants.TAG,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)+"VOLUME");
+
+        mUIUpdateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.v(Constants.TAG, "update UI__ please Jarvis");
+                UpdateUI();
+            }
+        };
+
+
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (pm != null) {
+            this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        }
+
+        //current tracklist
+        InitializeCurrentTracklistAdapter();
+
+        viewPager = findViewById(R.id.view_pager_now_playing);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.v(Constants.L_TAG+"wow","selected "+position );
+
+                //display disclaimer if not accepted already
+                if(position==2 && !MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted),false)){
+                    showDisclaimerDialog();
+                }
+
+                //2 lyrics fragment
+                if(position==2 && playerService.getStatus() == PlayerService.PLAYING){
+                    acquireWindowPowerLock(true);
+                }else {
+                    acquireWindowPowerLock(false);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        viewPager.setOffscreenPageLimit(2);
+        setupViewPager(viewPager);
+        //set cuurent item to disc
+        viewPager.setCurrentItem(MyApp.getPref()
+                .getInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.DISC_FRAG), true);
+
+        //display current play queue header
+        if(MyApp.getService()!=null && MyApp.getService().getTrackList()!=null) {
+            if (!MyApp.getService().getTrackList().isEmpty()) {
+                String title = "Save Playlist";
+                ((TextView) findViewById(R.id.save_queue_button)).setText(title);
+            }
+        }
+
+        if(!MyApp.getPref().getBoolean(getString(R.string.pref_swipe_right_shown),false)) {
+            showInfoDialog();
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    private void acquireWindowPowerLock(boolean acquire){
+        if(acquire) {
+            if (mWakeLock != null && !mWakeLock.isHeld()) {
+                this.mWakeLock.acquire(10*60*1000L /*10 minutes*/);
+            }
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }else {
+            if(mWakeLock!=null && mWakeLock.isHeld()) {
+                this.mWakeLock.release();
+            }
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
+    private void showDisclaimerDialog(){
+        new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title(getString(R.string.lyrics_disclaimer_title))
+                .content(getString(R.string.lyrics_disclaimer_content))
+                .positiveText(getString(R.string.lyrics_disclaimer_title_pos))
+                .negativeText(getString(R.string.lyrics_disclaimer_title_neg))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_disclaimer_accepted),true).apply();
+                        ((FragmentLyrics)viewPagerAdapter.getItem(2)).disclaimerAccepted();
+                    }
+                })
+                .show();
+    }
+
+    private void showInfoDialog(){
+        new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title(getString(R.string.lyric_art_info_title))
+                .content(getString(R.string.lyric_art_info_content))
+                .positiveText(getString(R.string.lyric_art_info_title_button_neg))
+                .negativeText(getString(R.string.lyric_art_info_button_p))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_swipe_right_shown),true).apply();
+                    }
+                })
+                .show();
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+
+        viewPagerAdapter = new ActivityNowPlaying.ViewPagerAdapter(getSupportFragmentManager());
+
+        FragmentArtistInfo artistInfo = new FragmentArtistInfo();
+        viewPagerAdapter.addFragment(artistInfo,"Artist Bio");
+
+        if(MyApp.getPref().getBoolean(getString(R.string.pref_rotatingdisk), true)){
+            FragmentDisc fragmentDisc=new FragmentDisc();
+            viewPagerAdapter.addFragment(fragmentDisc, "Disc");
+        }else {
+            FragmentDiscSkipped fragmentDiscSkipped=new FragmentDiscSkipped();
+            viewPagerAdapter.addFragment(fragmentDiscSkipped, "Disc");
+        }
+
+        FragmentLyrics fragmentLyric=new FragmentLyrics();
+        viewPagerAdapter.addFragment(fragmentLyric, "Lyrics");
+
+        viewPager.setAdapter(viewPagerAdapter);
+    }
+
+    public void InitializeCurrentTracklistAdapter(){
+        mRecyclerView= findViewById(R.id.recyclerViewForCurrentTracklist);
+        mAdapter= new CurrentTracklistAdapter(this,this);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+    }
+
+    public void UpdateCurrentTracklistAdapter(){
+        if(mRecyclerView==null || mAdapter == null){
+            return;
+        }
+
+        mAdapter.updateDataset();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.v(Constants.TAG, "DESTORY NOW PLAYING");
+        //this removes any memory leak caused by handler
+        mHandler.removeCallbacksAndMessages(null);
+
+        //save exit status so than we can open corresponding frag next time
+        switch (viewPager.getCurrentItem()){
+            case 2:
+                MyApp.getPref().edit()
+                        .putInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.LYRICS_FRAG).apply();
+                break;
+
+            case 0:
+                MyApp.getPref().edit()
+                        .putInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.ARTIST_FRAG).apply();
+                break;
+
+            case 1:
+            default:
+                MyApp.getPref().edit()
+                        .putInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.DISC_FRAG).apply();
+                break;
+        }
+
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+
+        if(mWakeLock!=null && mWakeLock.isHeld()){
+            mWakeLock.release();
+        }
+
+        super.onDestroy();
+    }
+
+    private void UpdateUI() {
+        if(playerService!=null) {
+            TrackItem item = playerService.getCurrentTrack();
+            mAdapter.notifyDataSetChanged();
+            invalidateOptionsMenu();
+
+            if (item != null) {
+                //update lyrics and info
+                //Log.d(MyApp.getService().getCurrentTrack().getId()+"", Log.getStackTraceString(new Exception()));
+
+                Intent intent = new Intent().setAction(Constants.ACTION.UPDATE_LYRIC_AND_INFO);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                Log.v(Constants.TAG,"Intent sent! "+intent.getAction());
+
+                //update disc
+                updateDisc();
+
+                //check current now playing background setting
+                ///get current setting
+                // 0 - System default   1 - artist image 2 - album art 3 - custom
+                int currentNowPlayingBackPref = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back),1);
+
+                Bitmap b=null ;// = playerService.getAlbumArt();
+                try {
+                    switch (currentNowPlayingBackPref){
+                        case 0:
+                            //by default, default image will be used
+                            break;
+
+                        case 1:
+                            //look in cache for artist image
+                            String CACHE_ART_THUMBS = this.getCacheDir()+"/art_thumbs/";
+                            String actual_file_path = CACHE_ART_THUMBS+playerService.getCurrentTrack().getArtist();
+                            b= BitmapFactory.decodeFile(actual_file_path);
+                            isArtistLoadedInBackground = b != null;
+                            Log.d(Constants.TAG, "UpdateUI: settingArtistImageBackground");
+                            break;
+
+                        case 2:
+                            b = MusicLibrary.getInstance().getAlbumArtFromId(item.getId());
+                            break;
+
+                        case 3:
+                            b = getNowPlayingBackBitmap();
+                            break;
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(b!=null) {
+                    int width = b.getWidth();
+                    int height = b.getHeight();
+                    int maxWidth = screenWidth;
+                    int maxHeight = screenHeight;
+                    if (width > height) {
+                        // landscape
+                        float ratio = (float) width / maxWidth;
+                        width = maxWidth;
+                        height = (int)(height / ratio);
+                    } else if (height > width) {
+                        // portrait
+                        float ratio = (float) height / maxHeight;
+                        height = maxHeight;
+                        width = (int)(width / ratio);
+                    } else {
+                        // square
+                        if(maxHeight<height) {
+                            height = maxHeight;
+                            width = maxWidth;
+                        }
+                    }
+
+                    b = Bitmap.createScaledBitmap(b, width, height, false);
+                    setBlurryBackground(b);
+                }else {
+                    b = BitmapFactory.decodeResource(getResources(),R.drawable.now_playing_back);
+                    setBlurryBackground(b);
+                }
+
+                toolbar.setTitle(playerService.getCurrentTrack().getTitle());
+                toolbar.setSubtitle(playerService.getCurrentTrack().getArtist());
+            }
+        }
+        else {
+                //this should not happen
+                //restart app
+                Intent mStartActivity = new Intent(this, ActivityMain.class);
+                int mPendingIntentId = 123456;
+                PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+            if (mgr != null) {
+                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+            }
+            System.exit(0);
+        }
+
+    }
+
+    private Bitmap getNowPlayingBackBitmap(){
+        if(nowPlayingCustomBackBitmap!=null){
+            return nowPlayingCustomBackBitmap;
+        }
+
+        String  picPath = MyApp.getContext().getFilesDir() + getString(R.string.now_playing_back_custom_image);
+        Log.d(Constants.TAG, "UpdateUI: setBlurryBackgroundCustomImage: " + picPath);
+        /*BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        nowPlayingCustomBackBitmap = BitmapFactory.decodeFile(picPath, options);
+*/
+        try {
+            nowPlayingCustomBackBitmap = UtilityFun.decodeUri(this, Uri.fromFile(new File(picPath)), 500);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return nowPlayingCustomBackBitmap;
+    }
+
+
+
+    public void setBlurryBackground(Bitmap b){
+        Animation fadeIn = AnimationUtils.loadAnimation(ActivityNowPlaying.this, R.anim.fade_in);
+        fadeIn.setDuration(2000);
+        findViewById(R.id.full_screen_iv).startAnimation(fadeIn);
+
+        Blurry.with(this).radius(1).color(Color.argb(100
+                , 50, 0, 0)).from(b)
+                .into(((ImageView) findViewById(R.id.full_screen_iv)));
+    }
+
+    @Override
+    protected void onPause() {
+        MyApp.isAppVisible = false;
+        Log.v(Constants.TAG,"PAUSE NOW PLAYING");
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mUIUpdateReceiver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        MyApp.isAppVisible = true;
+        super.onResume();
+        if(playerService!=null)
+            UpdateUI();
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mUIUpdateReceiver
+                ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
+        AppLaunchCountManager.nowPlayingLaunched();
+        UpdateCurrentTracklistAdapter();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_now_plying, menu);
+        for(int i = 0; i < menu.size(); i++){
+            if(menu.getItem(i).getItemId()==R.id.action_fav) {
+                Drawable drawable = menu.getItem(i).getIcon();
+                if (drawable != null) {
+                    TrackItem item=playerService.getCurrentTrack();
+
+                    if(item!=null && PlaylistManager.getInstance(getApplicationContext()).isFavNew(item.getId())) {
+                        drawable.mutate();
+                        drawable.setColorFilter(ColorHelper.getNowPlayingControlsColor(), PorterDuff.Mode.SRC_ATOP);
+                    }else {
+                        drawable.mutate();
+                        drawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite), PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        //
+        if(slidingUpPanelLayout.getPanelState()== SlidingUpPanelLayout.PanelState.EXPANDED){
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            return;
+        }
+
+        if(isInvokedFromFileExplorer){
+            finish();
+            return;
+        }
+
+        if(isTaskRoot()){
+            startActivity(new Intent(this,ActivityMain.class));
+            overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        boolean b = intent.getBooleanExtra("refresh",false);
+        if(b){
+            int position = intent.getIntExtra("position", -1);
+            String title = intent.getStringExtra("title");
+            String artist = intent.getStringExtra("artist");
+            String album = intent.getStringExtra("album");
+
+            if(playerService!=null) {
+                playerService.updateTrackItem(position, playerService.getCurrentTrack().getId(), title, artist, album);
+                playerService.PostNotification();
+
+                //update currenttracklistadapteritem
+                mAdapter.updateItem(position, title, artist, album);
+            }
+        }
+
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        TrackItem trackItem = playerService.getCurrentTrack();
+        switch (item.getItemId()){
+            case R.id.action_fav:
+                if(playerService.getCurrentTrack()==null) {
+                    Snackbar.make(rootView, getString(R.string.error_nothing_to_fav), Snackbar.LENGTH_LONG).show();
+                    return true;
+                }
+                if(PlaylistManager.getInstance(getApplicationContext()).isFavNew(playerService.getCurrentTrack().getId())){
+                    PlaylistManager.getInstance(getApplicationContext()).RemoveFromFavNew(playerService.getCurrentTrack().getId());
+                }else {
+                    int []ids = new int[]{playerService.getCurrentTrack().getId()};
+                    PlaylistManager.getInstance(getApplicationContext())
+                            .AddSongToPlaylistNew(DbHelperUserMusicData.KEY_FAV,ids);
+                    shineButton.setVisibility(View.VISIBLE);
+                    shineButton.showAnim();
+                    shineButton.clearAnimation();
+                }
+                invalidateOptionsMenu();
+                break;
+
+            case R.id.action_equ:
+                Intent intent = new Intent(AudioEffect
+                        .ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+
+                if(MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
+                        && (intent.resolveActivity(getPackageManager()) != null)){
+                    try {
+                        //show system equalizer
+                        startActivityForResult(intent, 0);
+                    }catch (Exception ignored){}
+                }else {
+                    //show app equalizer
+                    if(playerService.getEqualizerHelper().isEqualizerSupported()) {
+                        startActivity(new Intent(this, ActivityEqualizer.class));
+                    }else {
+                        Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_LONG).show();
+                    }
+                }
+                break;
+
+            case android.R.id.home:
+                startActivity(new Intent(this,ActivityMain.class));
+                overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                //finish();
+                break;
+
+            case R.id.action_settings:
+                finish();
+                startActivity(new Intent(this,ActivitySettings.class)
+                        .putExtra("launchedFrom",Constants.PREF_LAUNCHED_FROM.NOW_PLAYING)
+                        .putExtra("ad",true));
+                break;
+
+            case R.id.action_go_to_artist:
+                if(trackItem!=null) {
+                    Intent art_intent = new Intent(this, ActivitySecondaryLibrary.class);
+                    art_intent.putExtra("status", Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT);
+                    art_intent.putExtra("key",trackItem.getArtist_id());
+                    art_intent.putExtra("title", trackItem.getArtist().trim());
+                    startActivity(art_intent);
+                } else {
+                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_LONG).show();
+                }
+                break;
+
+            case R.id.action_go_to_album:
+                if(trackItem!=null) {
+                    Intent alb_intent = new Intent(this, ActivitySecondaryLibrary.class);
+                    alb_intent.putExtra("status", Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT);
+                    alb_intent.putExtra("key", trackItem.getAlbumId());
+                    alb_intent.putExtra("title", trackItem.getAlbum().trim());
+                    startActivity(alb_intent);
+                }else {
+                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_LONG).show();
+                }
+                break;
+
+            case R.id.action_share:
+                if(trackItem!=null) {
+                    File fileToBeShared = new File(trackItem.getFilePath());
+                    ArrayList<Uri> files = new ArrayList<>();
+                    files.add(FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
+                    UtilityFun.Share(this, files, trackItem.getTitle() );
+                }else {
+                    //Toast.makeText(this,"Nothing to share!",Toast.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.error_nothing_to_share), Snackbar.LENGTH_LONG).show();
+                }
+                break;
+
+            case R.id.action_add_to_playlist:
+                //Toast.makeText(context,"Playlists coming soon" ,Toast.LENGTH_SHORT).show();
+                if(trackItem!=null) {
+                    AddToPlaylist();
+                }else {
+                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_LONG).show();
+                }
+                break;
+
+            case R.id.action_sleep_timer:
+                    setSleepTimerDialog(this);
+                break;
+
+            case R.id.action_edit_track_info:
+                if(trackItem!=null) {
+                    startActivity(new Intent(this, ActivityTagEditor.class)
+                            .putExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING)
+                            .putExtra("file_path", trackItem.getFilePath())
+                            .putExtra("track_title", trackItem.getTitle())
+                            .putExtra("position", MyApp.getService().getCurrentTrackPosition())
+                            .putExtra("id",trackItem.getId()));
+                }else {
+                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_LONG).show();
+                }
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
+
+
+            case R.id.action_clear_lyrics_offline:
+                if(trackItem!=null){
+                    if(OfflineStorageLyrics.clearLyricsFromDB(trackItem)){
+                        ((FragmentLyrics)viewPagerAdapter.getItem(2)).clearLyrics();
+                    }else {
+                        //Toast.makeText(this, "Unable to delete lyrics!", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_LONG).show();
+                    }
+                }else {
+                    Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_LONG).show();
+                }
+                break;
+
+            case R.id.action_share_lyrics_offline:
+                if(trackItem!=null){
+                   ((FragmentLyrics)viewPagerAdapter.getItem(2)).shareLyrics();
+                }else {
+                    Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_LONG).show();
+                }
+                break;
+
+                //when clicked on this, lyrics are searched again from viewlyrics
+                //but this time option is given to select lyrics
+            case R.id.action_wrong_lyrics:
+                if(trackItem!=null){
+                    ((FragmentLyrics)viewPagerAdapter.getItem(2)).wrongLyrics();
+                }else {
+                    Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_LONG).show();
+                }
+                break;
+
+            case R.id.action_search_youtube:
+                if(playerService.getCurrentTrack()!=null) {
+                    UtilityFun.LaunchYoutube(this, trackItem.getArtist() + " - " + trackItem.getTitle());
+                }
+                break;
+
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void AddToPlaylist(){
+        int[] ids;
+        TrackItem trackItem = playerService.getCurrentTrack();
+        ids=new int[]{trackItem.getId()};
+        UtilityFun.AddToPlaylist(this, ids);
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+            case R.id.save_queue_button:
+
+                if(mAdapter.getItemCount()==0){
+                    return;
+                }
+
+                final EditText input = new EditText(this);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                new MaterialDialog.Builder(this)
+                        .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                        .title(getString(R.string.main_act_create_play_list_title))
+                        .positiveText(getString(R.string.okay))
+                        .negativeText(getString(R.string.cancel))
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                String playlist_name = input.getText().toString().trim();
+                                if(ValidatePlaylistName(playlist_name)) {
+                                    if(PlaylistManager.getInstance(ActivityNowPlaying.this).CreatePlaylist(playlist_name)) {
+                                        int[] ids = new int[mAdapter.getSongList().size()];
+                                        for (int i=0; i < ids.length; i++)
+                                        {
+                                            ids[i] = mAdapter.getSongList().get(i);
+                                        }
+
+                                        PlaylistManager.getInstance(ActivityNowPlaying.this)
+                                                .AddSongToPlaylistNew(playlist_name,ids);
+                                       // Toast.makeText(ActivityNowPlaying.this, "Playlist saved!", Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(rootView, getString(R.string.playlist_saved), Snackbar.LENGTH_LONG).show();
+                                    }else {
+                                        //Toast.makeText(ActivityNowPlaying.this, "Playlist already exists", Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(rootView, getString(R.string.play_list_already_exists), Snackbar.LENGTH_LONG).show();
+                                    }
+                                }
+                            }
+                        })
+                        .customView(input,true)
+                        .show();
+                break;
+
+            case R.id.login_to_remove_ads:
+                //signInDialog();
+                signIn();
+                break;
+        }
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        Log.d("ActivityNowPlaying", "onStartDrag: ");
+        mItemTouchHelper.startDrag(viewHolder);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //super.onKeyDown(keyCode,event);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+            case KeyEvent.KEYCODE_MEDIA_PAUSE:
+            case KeyEvent.KEYCODE_MEDIA_PLAY:
+                playerService.play();
+                updateDisc();
+                //togglePlayPauseButton();
+                break;
+
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+                playerService.nextTrack();
+                UpdateUI();
+                break;
+
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                playerService.prevTrack();
+                UpdateUI();
+                break;
+
+            case KeyEvent.KEYCODE_MEDIA_STOP:
+                playerService.stop();
+                UpdateUI();
+                break;
+
+            case KeyEvent.KEYCODE_BACK:
+                onBackPressed();
+                break;
+
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_VOLUME_MUTE:
+                super.onKeyDown(keyCode,event);
+                Log.v(Constants.TAG,keyCode + " v " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)  );
+                break;
+        }
+
+        return false;
+    }
+
+    private void updateDisc(){
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .sendBroadcast(new Intent(Constants.ACTION.DISC_UPDATE));
+        ((FragmentLyrics) viewPagerAdapter.getItem(2)).runLyricThread();
+        if(playerService.getStatus()==PlayerService.PLAYING) {
+            acquireWindowPowerLock(true);
+        }else {
+            acquireWindowPowerLock(false);
+        }
+    }
+
+    public boolean isArtistLoadedInBack(){
+        return isArtistLoadedInBackground;
+    }
+
+    public void setSleepTimerDialog(final Context context){
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+
+        LinearLayout linear = new LinearLayout(context);
+        linear.setOrientation(LinearLayout.VERTICAL);
+        final TextView text = new TextView(context);
+        int timer = MyApp.getPref().getInt(context.getString(R.string.pref_sleep_timer),0);
+        if(timer==0) {
+            text.setText("0"+ getString(R.string.main_act_sleep_timer_status_minutes));
+        }else {
+            String stringTemp = context.getString(R.string.main_act_sleep_timer_status_part1) +
+                    timer +
+                    context.getString(R.string.main_act_sleep_timer_status_part2);
+
+            text.setText(stringTemp);
+            builder.neutralText(getString(R.string.main_act_sleep_timer_neu))
+                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),0).apply();
+                            MyApp.getService().setSleepTimer(0, false);
+                           // Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
+                            Snackbar.make(rootView, getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+        }
+        text.setPadding(0, 10,0,0);
+        text.setGravity(Gravity.CENTER);
+        text.setTypeface(TypeFaceHelper.getTypeFace(this));
+        final SeekBar seek = new SeekBar(context);
+        seek.setPadding(40,10,40,10);
+        seek.setMax(100);
+        seek.setProgress(0);
+
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                String tempString = progress+context.getString(R.string.main_act_sleep_timer_status_minutes);
+                text.setText(tempString);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+            }
+        });
+
+        linear.addView(seek);
+        linear.addView(text);
+
+        builder
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title(context.getString(R.string.main_act_sleep_timer_title))
+                .positiveText(getString(R.string.okay))
+                .negativeText(getString(R.string.cancel))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if(seek.getProgress()!=0) {
+                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),seek.getProgress()).apply();
+                            MyApp.getService().setSleepTimer(seek.getProgress(), true);
+                            MyApp.getService().setSleepTimer(seek.getProgress(), true);
+                            String temp = getString(R.string.sleep_timer_successfully_set)
+                                    + seek.getProgress()
+                                    + getString(R.string.main_act_sleep_timer_status_minutes);
+                            Snackbar.make(rootView, temp, Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .customView(linear,true)
+                .show();
+    }
+
+    private boolean ValidatePlaylistName(String playlist_name){
+
+        String pattern= "^[a-zA-Z0-9 ]*$";
+        if (playlist_name.matches(pattern)){
+            if(playlist_name.length()>2) {
+                //if playlist starts with digit, not allowed
+                if(Character.isDigit(playlist_name.charAt(0))){
+                    Snackbar.make(rootView, getString(R.string.playlist_error_1), Snackbar.LENGTH_LONG).show();
+                    return false;
+                }
+                return true;
+            }else {
+                //Toast.makeText(this,"Enter at least 3 characters",Toast.LENGTH_SHORT).show();
+                Snackbar.make(rootView, getString(R.string.playlist_error_2), Snackbar.LENGTH_LONG).show();
+                return false;
+            }
+        }else {
+            //Toast.makeText(this,"Only alphanumeric characters allowed",Toast.LENGTH_SHORT).show();
+            Snackbar.make(rootView, getString(R.string.playlist_error_3), Snackbar.LENGTH_LONG).show();
+            return false;
+        }
+    }
+
+    public void enableViewpagerScroll(boolean enable){
+        viewPager.setPagingEnabled(enable);
+    }
+
+    /*void signInDialog(){
+        new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title(getString(R.string.main_act_sign_in_title))
+                .content(getString(R.string.main_act_sign_in_content))
+                .positiveText(getString(R.string.main_act_sign_in_pos))
+                .negativeText(getString(R.string.main_act_sign_in_neg))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        signIn();
+                    }
+                })
+                .show();
+    }*/
+
+    public void signIn() {
+        if(mGoogleApiClient==null){
+            return;
+        }
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    //for catching exception generated by recycler view which was causing abend, no other way to handle this
+    private class WrapContentLinearLayoutManager extends LinearLayoutManager {
+        WrapContentLinearLayoutManager(Context context) {
+            super(context);
+        }
+
+        //... constructor
+        @Override
+        public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+            try {
+                super.onLayoutChildren(recycler, state);
+            } catch (IndexOutOfBoundsException e) {
+                Log.e("probe", "meet a IOOBE in RecyclerView");
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(Constants.TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+
+                //permanently hide  sign in button on now playing activity
+            MyApp.getPref().edit().putBoolean("never_show_button_again",true).apply();
+
+
+            MyApp.hasUserSignedIn = true;
+
+            GoogleSignInAccount acct = result.getSignInAccount();
+            if(acct==null){
+                return;
+            }
+
+            //sign up user to tech guru newsletter
+            String email = acct.getEmail();
+            String name = acct.getGivenName();
+
+            //store this email id and time of first sign in
+            if(email!=null) {
+                new CallAPI().execute(email,name);
+            }
+
+        } else {
+            // some Error or user logged out, either case, update the drawer and give user appropriate info
+            MyApp.hasUserSignedIn=false;
+
+            if (result.getStatus().getStatusCode() == CommonStatusCodes.NETWORK_ERROR) {
+                Snackbar.make(rootView, getString(R.string.network_error), Snackbar.LENGTH_LONG).show();
+            } else {
+                Snackbar.make(rootView, getString(R.string.unknown_error), Snackbar.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
+    private void AdsRemovedDialog(){
+        new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title(getString(R.string.main_act_ad_removal_title))
+                .content(getString(R.string.main_act_ad_removal_content))
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        Intent intent = new Intent(ActivityNowPlaying.this,ActivityMain.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                        finish();
+                    }
+                })
+                .positiveText(getString(R.string.okay))
+                .negativeText(getString(R.string.main_act_ad_removal_neg))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        shareApp();
+                    }
+                })
+                .show();
+    }
+
+    private void shareApp() {
+        try {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+            String sAux = getString(R.string.main_act_share_app_text);
+            sAux = sAux + getString(R.string.share_app) + " \n\n";
+            i.putExtra(Intent.EXTRA_TEXT, sAux);
+            startActivity(Intent.createChooser(i, getString(R.string.main_act_share_app_choose)));
+        } catch(Exception e) {
+            //e.toString();
+        }
+    }
+
+    private void AdsRemovalFailedDialog(){
+        new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title(getString(R.string.main_act_ad_removal_failed_title))
+                .content(getString(R.string.main_act_ad_removal_failed_content))
+                .positiveText(getString(R.string.main_act_ad_removal_failed_pos))
+                .negativeText(getString(R.string.cancel))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        feedbackEmail();
+                    }
+                })
+                .show();
+    }
+
+    private void feedbackEmail() {
+        String myDeviceModel = Build.MODEL;
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto",getString(R.string.au_email_id), null));
+        String[] address = new String[]{getString(R.string.au_email_id)};
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, address);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for "+myDeviceModel);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello AndroidDevs, \n\n");
+        startActivity(Intent.createChooser(emailIntent, "Send Feedback"));
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                //.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+
+    private class CallAPI extends AsyncTask<String, String, String> {
+
+        private String email;
+        private String name="";
+        //private ProgressDialog dialog;
+        private String response = "unexpected-error";
+        CallAPI() {
+            //set context variables if required
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //dialog = ProgressDialog.show(ActivityNowPlaying.this,"","Loading. Please wait...", true);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            email = params[0]; // email id
+            if(params[1]!=null) {
+                name = params[1];
+            }
+
+            String urlString = "http://www.thetechguru.in/?es=subscribe";
+
+            String queryPart1 = "es_email=" + email;
+
+            String queryPart2 = "&es_name=" + name;
+
+            String query = queryPart1 + queryPart2 + "&es_group=abmusic&timestamp=&action=0.597592245452881&es_from=abmusic";
+
+            String resultToDisplay = "";
+
+            try {
+
+                URL url = new URL(urlString);
+                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                //Set to POST
+                connection.setDoOutput(true);
+                connection.setRequestMethod("POST");
+                connection.setDoInput(true);
+                connection.addRequestProperty("REFERER", "http://thetechguru.in");
+                connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+                connection.setReadTimeout(10000);
+                Writer writer = new OutputStreamWriter(connection.getOutputStream());
+                writer.write(query);
+                writer.flush();
+                writer.close();
+
+                response = readResponseFullyAsString(connection.getInputStream(),"UTF-8");
+                //processResponse(response);
+
+                Log.v("Response",response);
+
+            } catch (Exception e) {
+
+                System.out.println(e.getMessage());
+
+                return e.getMessage();
+
+            }
+            return resultToDisplay;
+
+        }
+
+        private String readResponseFullyAsString(InputStream inputStream, String encoding) throws IOException {
+            return readFully(inputStream).toString(encoding);
+        }
+
+        private ByteArrayOutputStream readFully(InputStream inputStream) throws IOException {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int length = 0;
+            while ((length = inputStream.read(buffer)) != -1) {
+                baos.write(buffer, 0, length);
+            }
+            return baos;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            //Update the UI
+            /*if(dialog!=null && dialog.isShowing()) {
+                dialog.dismiss();
+            }*/
+            switch (response){
+                case "subscribed-successfully":
+                    SignUpAdRemove.StoreEmailWithTimestamp(email);
+                    //AdsRemovedDialog();
+                    break;
+
+                case "already-exist":
+                case "unexpected-error":
+                case "subscribed-pending-doubleoptin":
+                    //AdsRemovalFailedDialog();
+                    break;
+            }
+
+        }
+    }
+}

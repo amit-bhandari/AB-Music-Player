@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    android:id="@+id/root_view_request_notification_access"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<RelativeLayout
+    android:id="@+id/rl_request_notification_access"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/pw_accent"
+        android:text="@string/instant_lyrics"
+        android:textSize="35sp"
+        android:typeface="monospace"
+        android:id="@+id/text_title" />
+
+    <TextView
+        android:id="@+id/text_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/text_title"
+        android:gravity="center_horizontal"
+        android:paddingTop="20dp"
+        android:text="@string/instant_lyrics_text"
+        android:textSize="20sp"
+        android:typeface="monospace" />
+
+    <TextView
+        android:id="@+id/text_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:paddingBottom="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/text_subtitle"
+        android:gravity="center_horizontal"
+        android:text="@string/instant_lyrics_request"
+        android:textSize="15sp"
+        android:typeface="monospace" />
+
+    <Button
+        android:id="@+id/request_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_request"
+        android:layout_centerHorizontal="true"
+        android:background="@color/pw_accent"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:text="@string/enable_now" />
+
+    <TextView
+        android:id="@+id/text_skip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/request_button"
+        android:gravity="center_horizontal"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
+        android:text="@string/instant_lyrics_skip_this"
+        android:textSize="15sp"
+        android:typeface="monospace" />
+
+    <TextView
+        android:id="@+id/text_never_ask"
+        android:layout_width="wrap_content"
+        android:paddingTop="20dp"
+        android:layout_below="@+id/text_skip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="10dp"
+        android:gravity="center_horizontal"
+        android:text="@string/instant_lyrics_never_ask"
+        android:textSize="15sp"
+        android:typeface="monospace" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:foregroundGravity="center"
+        android:gravity="center_horizontal"
+        android:paddingBottom="10dp"
+        android:layout_below="@+id/text_skip"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+</RelativeLayout>
+
+</ScrollView>

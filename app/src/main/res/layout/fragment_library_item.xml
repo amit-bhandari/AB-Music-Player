@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trackItem"
+    app:cardBackgroundColor="@color/colorTransparent"
+    app:cardCornerRadius="33dp"
+    android:layout_margin="3dp"
+    android:layout_width="match_parent"
+    android:layout_height="70dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+       <!-- <com.music.player.bhandari.m.customViews.RoundedImageView
+            android:id="@+id/imageVIewForStubAlbumArt"
+            android:layout_margin="5dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop">
+        </com.music.player.bhandari.m.customViews.RoundedImageView> -->
+
+        <android.support.v7.widget.CardView
+            app:cardBackgroundColor="@color/colorTransparent"
+            android:layout_margin="5dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:id="@+id/album_art_wrapper"
+            app:cardCornerRadius="30dp"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thicknessRatio="1.9">
+
+            <ImageView
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:id="@+id/imageVIewForStubAlbumArt"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                tools:ignore="ContentDescription">
+            </ImageView>
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toEndOf="@+id/album_art_wrapper"
+            android:layout_toLeftOf="@+id/count"
+            android:layout_toRightOf="@+id/album_art_wrapper"
+            android:layout_toStartOf="@+id/count"
+            android:ellipsize="end"
+            android:gravity="start|bottom"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:text="@string/track"
+            android:textColor="#040404"
+            android:textSize="@dimen/fli_title_view_text"
+            android:typeface="monospace"
+            android:layout_marginStart="10dp" />
+
+
+        <TextView
+            android:id="@+id/secondaryHeader"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignBottom="@+id/album_art_wrapper"
+            android:layout_alignLeft="@+id/header"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/header"
+            android:layout_below="@+id/header"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/count"
+            android:layout_toStartOf="@+id/count"
+            android:gravity="start|center"
+            android:maxLines="1"
+            android:textSize="@dimen/fli_secondary_view_text"
+            android:typeface="monospace" />
+
+        <TextView
+            android:id="@+id/count"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/secondaryHeader"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/menuPopup"
+            android:layout_toStartOf="@+id/menuPopup"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/fli_count_text" />
+
+        <ImageButton
+            android:id="@+id/menuPopup"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/count"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_more_vert_black_24dp"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

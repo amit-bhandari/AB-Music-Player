@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_sort_name"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_name"
+        app:showAsAction="never"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/action_sort_year"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_year"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_size"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_size"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_no_of_album"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_no_of_album"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_no_of_tracks"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_no_of_tracks"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_by_duration"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_by_duration"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_asc"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_asc"
+        android:checkable="true"
+        app:showAsAction="never" />
+
+</menu>

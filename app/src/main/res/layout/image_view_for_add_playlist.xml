@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/image_view_for_stub_add_playlist"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/pa_button_height"
+    android:layout_margin="@dimen/pa_button_margin"
+    android:textColor="@color/colorwhite"
+    android:background="@color/colorAccent"
+    android:text="@string/create_playlist">
+</Button>

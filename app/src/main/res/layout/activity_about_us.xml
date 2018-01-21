@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout
+    android:id="@+id/root_view_about_us"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_size"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:fontFamily="cursive"
+            android:textSize="@dimen/au_app_title"
+            android:typeface="monospace"
+            android:gravity="center_horizontal"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="@dimen/au_app_title_margin"
+            android:layout_marginTop="@dimen/au_app_title_margin" />
+
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/au_app_icon"
+            android:layout_height="@dimen/au_app_icon"
+            android:layout_below="@+id/name"
+            android:src="@mipmap/ic_launcher"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/version"
+            android:layout_below="@+id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/au_version"
+            android:textSize="@dimen/au_app_version"
+            android:typeface="monospace"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/au_app_version_margin"
+            android:layout_marginTop="@dimen/au_app_version_margin" />
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_below="@+id/version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/au_email_id"
+            android:textSize="@dimen/au_app_email"
+            android:typeface="monospace"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/au_app_email_margin" />
+
+
+        <TextView
+            android:id="@+id/website_link"
+            android:text="@string/visit_website"
+            android:layout_below="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/au_app_email"
+            android:typeface="monospace"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fb_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/website_link"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/facebook" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/au_made_with_love"
+            android:textSize="@dimen/au_icon_credit"
+            android:typeface="monospace"
+            android:layout_marginTop="@dimen/au_icon_credit_margin"
+            android:layout_marginRight="@dimen/au_icon_credit_margin"
+            android:layout_marginEnd="@dimen/au_icon_credit_margin" />
+
+        <ImageView
+            android:layout_width="@dimen/au_heart_icon"
+            android:layout_height="@dimen/au_heart_icon"
+            android:background="@drawable/heart_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/au_made_in_india"
+            android:textSize="@dimen/au_icon_credit"
+            android:typeface="monospace"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/au_icon_credit_margin"
+            android:layout_marginRight="@dimen/au_icon_credit_margin"
+            android:layout_marginEnd="@dimen/au_icon_credit_margin" />
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

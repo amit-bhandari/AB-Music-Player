@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/imageViewForStub"
+    android:orientation="vertical"
+    android:layout_width="@dimen/action_bar_size"
+    android:layout_height="@dimen/action_bar_size"
+    android:src="@drawable/ic_folder_special_black_24dp"
+    android:padding="2dp">
+</ImageView>

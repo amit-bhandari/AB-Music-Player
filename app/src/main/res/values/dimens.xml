@@ -1,0 +1,375 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- App bar  main -->
+    <dimen name="fab_xlarge">80dp</dimen>
+
+    <!-- main library recycler view botttom offset-->
+    <dimen name="bottom_offset_dp">50dp</dimen>
+    <dimen name="bottom_offset_secondary_lib">130dp</dimen>
+
+    <!-- Now playing -->
+    <dimen name="pause_bar_width">48dp</dimen>
+    <dimen name="pause_bar_distance">40dp</dimen>
+    <dimen name="pause_bar_height">144dp</dimen>
+
+    <!-- Audio preview -->
+    <dimen name="preview_layout_height">125dp</dimen>
+    <dimen name="preview_play_pause_button">60dp</dimen>
+    <dimen name="preview_layout_seekbar_height">30dp</dimen>
+    <dimen name="preview_layout_padding">20dp</dimen>
+    <dimen name="preview_layout_margin">20dp</dimen>
+    <dimen name="preview_title_textSize">12sp</dimen>
+    <dimen name="preview_artist_textSize">10sp</dimen>
+
+    <!-- Nofication bar button -->
+    <dimen name="status_bar_button_width_height">48dp</dimen>
+    <dimen name="status_bar_album_art">64dp</dimen>
+    <dimen name="status_bar_button_info_container_padding_left">11dp</dimen>
+    <dimen name="notification_expanded_height">128.0dip</dimen>
+    <dimen name="play_controls_notification">48.0dip</dimen>
+    <dimen name="notification_padding">8.0dip</dimen>
+
+    <!-- Text sizes -->
+    <dimen name="text_size_extra_micro">10sp</dimen>
+    <dimen name="text_size_micro">12sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_extra_large">25sp</dimen>
+
+    <dimen name="mini_player">80sp</dimen>
+
+
+    <!-- normal -->
+    <dimen name="action_bar_size">56dp</dimen>
+
+    <!-- About us -->
+    <dimen name="au_app_title">24sp</dimen>
+    <dimen name="au_app_title_margin">5dp</dimen>
+    <dimen name="au_app_icon">80dp</dimen>
+    <dimen name="au_app_version">14sp</dimen>
+    <dimen name="au_app_version_margin">5dp</dimen>
+    <dimen name="au_app_email">16sp</dimen>
+    <dimen name="au_app_email_margin">5dp</dimen>
+    <dimen name="au_icon_credit">16sp</dimen>
+    <dimen name="au_icon_credit_margin">5dp</dimen>
+    <dimen name="au_heart_icon">30dp</dimen>
+
+    <!-- Licenses -->
+    <dimen name="li_text">18sp</dimen>
+    <dimen name="li_title_margin">5dp</dimen>
+    <dimen name="li_title_text">24sp</dimen>
+    <dimen name="li_heart_icon">30dp</dimen>
+    <dimen name="li_icon_credit_margin">5dp</dimen>
+
+    <!-- Now playing -->
+    <dimen name="np_song_title">22sp</dimen>
+    <dimen name="np_song_title_padd_right_left">20dp</dimen>
+    <dimen name="np_song_title_pad_top">10dp</dimen>
+    <dimen name="np_song_title_pad_bottom">5dp</dimen>
+    <dimen name="np_song_artist">15sp</dimen>
+    <dimen name="np_song_artist_padd_left_right">50dp</dimen>
+    <dimen name="np_disc_dimen">350dp</dimen>
+    <dimen name="np_control_pan_margin">2dp</dimen>
+    <dimen name="np_control_pan_buttons_padd">5dp</dimen>
+    <dimen name="np_control_pan_button_dimen">50dp</dimen>
+    <dimen name="np_control_pan_seekbar_padd">5dp</dimen>
+    <dimen name="np_control_pan_seekbar_padd_top_bottom">5dp</dimen>
+    <dimen name="np_control_pan_start_stop_time">40sp</dimen>
+    <dimen name="np_play_queu">15sp</dimen>
+
+    <!-- Secondary library -->
+    <dimen name="sl_expanded_title_margin_start">48dp</dimen>
+    <dimen name="sl_expanded_title_margin_end">64dp</dimen>
+    <dimen name="sl_image_dimen">300dp</dimen>
+
+    <!-- albumName card -->
+    <dimen name="ac_item_offset">10dp</dimen>
+    <dimen name="ac_detail_backdrop_height">250dp</dimen>
+    <dimen name="ac_backdrop_title">30dp</dimen>
+    <dimen name="ac_backdrop_subtitle">18dp</dimen>
+    <dimen name="ac_card_margin">2dp</dimen>
+    <dimen name="ac_card_album_radius">5dp</dimen>
+    <dimen name="ac_album_cover_height">120dp</dimen>
+    <dimen name="ac_album_title_padding">5dp</dimen>
+    <dimen name="ac_album_title">15sp</dimen>
+    <dimen name="ac_songs_count_padding_bottom">5dp</dimen>
+    <dimen name="ac_songs_count">12sp</dimen>
+    <dimen name="ac_ic_album_overflow_width">25dp</dimen>
+    <dimen name="ac_ic_album_overflow_height">20dp</dimen>
+    <dimen name="ac_ic_album_overflow_margin_top">10dp</dimen>
+
+    <!-- app_bar_main -->
+    <dimen name="abm_mini_player_song">15sp</dimen>
+    <dimen name="abm_mini_player_artist">12sp</dimen>
+    <dimen name="abm_mini_player_height">70dp</dimen>
+    <dimen name="abm_mini_player_padd_left_right">5dp</dimen>
+    <dimen name="abm_card_corner_radius">26dp</dimen>
+    <dimen name="abm_title_and_art_padd_combined">5dp</dimen>
+    <dimen name="abm_title_and_art_padd">3dp</dimen>
+    <dimen name="abm_play_next_padd">3dp</dimen>
+
+    <!-- content main -->
+    <dimen name="cm_tab_width_min">100dp</dimen>
+
+    <!-- fragment library -->
+    <dimen name="fl_stub_margin">5dp</dimen>
+
+    <!-- fragment library item -->
+    <dimen name="fli_image_view_margin">2dp</dimen>
+    <dimen name="fli_image_view_text">25sp</dimen>
+    <dimen name="fli_title_secondary_view_text_layout">150dp</dimen>
+    <dimen name="fli_title_secondary_view_padd">3dp</dimen>
+    <dimen name="fli_title_view_text">15sp</dimen>
+    <dimen name="fli_secondary_view_text">10sp</dimen>
+    <dimen name="fli_title_secondary_text_padd">12dp</dimen>
+    <dimen name="fli_count_width">20dp</dimen>
+    <dimen name="fli_count_text">10sp</dimen>
+    <dimen name="fli_overflow_padd">5dp</dimen>
+
+    <!-- add playlist button -->
+    <dimen name="pa_button_height">40dp</dimen>
+    <dimen name="pa_button_margin">3dp</dimen>
+
+    <!-- nav header main -->
+    <dimen name="na_card_corner_radius">28dp</dimen>
+
+    <!-- notification_expanded -->
+    <dimen name="ne_image_view">130dp</dimen>
+    <dimen name="ne_rl_padding">8dp</dimen>
+    <dimen name="ne_rl_margin">5dp</dimen>
+    <dimen name="ne_button_height">45dp</dimen>
+    <dimen name="ne_close_button_height">30dp</dimen>
+
+    <!-- notification small-->
+    <dimen name="ns_image_view">65dp</dimen>
+    <dimen name="ns_image_padding">5dp</dimen>
+    <dimen name="ns_ll_padd">8dp</dimen>
+    <dimen name="ns_button_height">40dp</dimen>
+    <dimen name="ns_close_button_height">30dp</dimen>
+
+    <!-- track item draggable-->
+    <dimen name="dta_margin">2dp</dimen>
+    <dimen name="dta_song_width">200dp</dimen>
+    <dimen name="dta_song_wraper_padd">3dp</dimen>
+    <dimen name="dta_song_text">15sp</dimen>
+    <dimen name="dta_artist_text">10sp</dimen>
+    <dimen name="dta_song_padd">5dp</dimen>
+    <dimen name="dta_drag_handle_width">20dp</dimen>
+    <dimen name="dta_drag_handle_padd">5dp</dimen>
+
+
+
+
+    <!-- *************************-->
+
+    <!-- small -->
+    <dimen name="action_bar_size_small">40dp</dimen>
+
+    <!-- Now playing -->
+    <dimen name="np_song_title_small">15sp</dimen>
+    <dimen name="np_song_title_padd_right_left_small">12dp</dimen>
+    <dimen name="np_song_title_pad_top_small">1dp</dimen>
+    <dimen name="np_song_title_pad_bottom_small">1dp</dimen>
+    <dimen name="np_song_artist_small">12sp</dimen>
+    <dimen name="np_song_artist_padd_left_right_small">30dp</dimen>
+    <dimen name="np_disc_dimen_small">250dp</dimen>
+    <dimen name="np_control_pan_margin_small">5dp</dimen>
+    <dimen name="np_control_pan_buttons_padd_small">1dp</dimen>
+    <dimen name="np_control_pan_button_dimen_small">30dp</dimen>
+    <dimen name="np_control_pan_seekbar_padd_small">0dp</dimen>
+    <dimen name="np_control_pan_seekbar_padd_top_bottom_small">0dp</dimen>
+    <dimen name="np_control_pan_start_stop_time_small">50sp</dimen>
+    <dimen name="np_play_queu_small">15sp</dimen>
+
+    <!-- app_bar_main -->
+    <dimen name="abm_mini_player_height_small">50dp</dimen>
+    <dimen name="abm_mini_player_padd_left_right_small">5dp</dimen>
+    <dimen name="abm_card_corner_radius_small">20dp</dimen>
+    <dimen name="abm_title_and_art_padd_combined_small">5dp</dimen>
+    <dimen name="abm_title_and_art_padd_small">3dp</dimen>
+    <dimen name="abm_play_next_padd_small">3dp</dimen>
+
+    <!-- content main -->
+    <dimen name="cm_tab_width_min_small">80dp</dimen>
+
+    <!-- Secondary library -->
+    <dimen name="sl_expanded_title_margin_start_small">30dp</dimen>
+    <dimen name="sl_expanded_title_margin_end_small">40dp</dimen>
+    <dimen name="sl_image_dimen_small">200dp</dimen>
+
+    <!-- albumName card -->
+    <dimen name="ac_item_offset_small">10dp</dimen>
+    <dimen name="ac_detail_backdrop_height_small">250dp</dimen>
+    <dimen name="ac_backdrop_title_small">30dp</dimen>
+    <dimen name="ac_backdrop_subtitle_small">18dp</dimen>
+    <dimen name="ac_card_margin_small">1dp</dimen>
+    <dimen name="ac_card_album_radius_small">5dp</dimen>
+    <dimen name="ac_album_cover_height_small">90dp</dimen>
+    <dimen name="ac_album_title_padding_small">1dp</dimen>
+    <dimen name="ac_album_title_small">15sp</dimen>
+    <dimen name="ac_songs_count_padding_bottom_small">1dp</dimen>
+    <dimen name="ac_songs_count_small">12sp</dimen>
+    <dimen name="ac_ic_album_overflow_width_small">25dp</dimen>
+    <dimen name="ac_ic_album_overflow_height_small">20dp</dimen>
+    <dimen name="ac_ic_album_overflow_margin_top_small">10dp</dimen>
+
+    <!-- track item draggable-->
+    <dimen name="dta_margin_small">1dp</dimen>
+    <dimen name="dta_song_width_small">200dp</dimen>
+    <dimen name="dta_song_wraper_padd_small">1dp</dimen>
+    <dimen name="dta_song_text_small">12sp</dimen>
+    <dimen name="dta_artist_text_small">10sp</dimen>
+    <dimen name="dta_song_padd_small">1dp</dimen>
+    <dimen name="dta_drag_handle_width_small">20dp</dimen>
+    <dimen name="dta_drag_handle_padd_small">1dp</dimen>
+
+    <!-- fragment library item -->
+    <dimen name="fli_image_view_margin_small">2dp</dimen>
+    <dimen name="fli_image_view_text_small">20sp</dimen>
+    <dimen name="fli_title_secondary_view_text_layout_small">100dp</dimen>
+    <dimen name="fli_title_secondary_view_padd_small">1dp</dimen>
+    <dimen name="fli_title_view_text_small">12sp</dimen>
+    <dimen name="fli_secondary_view_text_small">8sp</dimen>
+    <dimen name="fli_title_secondary_text_padd_small">7dp</dimen>
+    <dimen name="fli_count_width_small">25dp</dimen>
+    <dimen name="fli_count_text_small">10sp</dimen>
+    <dimen name="fli_overflow_padd_small">5dp</dimen>
+
+    <!-- add playlist button -->
+    <dimen name="pa_button_height_small">25dp</dimen>
+    <dimen name="pa_button_margin_small">3dp</dimen>
+
+    <!-- *************************-->
+    <!-- medium -->
+
+    <!-- *************************-->
+    <!-- large -->
+    <dimen name="action_bar_size_large">80dp</dimen>
+
+    <!-- app_bar_main -->
+    <dimen name="abm_mini_player_song_large">28sp</dimen>
+    <dimen name="abm_mini_player_artist_large">20sp</dimen>
+    <dimen name="abm_mini_player_height_large">80dp</dimen>
+    <dimen name="abm_mini_player_padd_left_right_large">5dp</dimen>
+    <dimen name="abm_card_corner_radius_large">38dp</dimen>
+    <dimen name="abm_title_and_art_padd_combined_large">5dp</dimen>
+    <dimen name="abm_title_and_art_padd_large">10dp</dimen>
+    <dimen name="abm_play_next_padd_large">7dp</dimen>
+
+
+    <!-- content main -->
+    <dimen name="cm_tab_width_min_large">150dp</dimen>
+
+    <!-- albumName card -->
+    <dimen name="ac_item_offset_large">10dp</dimen>
+    <dimen name="ac_detail_backdrop_height_large">250dp</dimen>
+    <dimen name="ac_backdrop_title_large">30dp</dimen>
+    <dimen name="ac_backdrop_subtitle_large">18dp</dimen>
+    <dimen name="ac_card_margin_large">3dp</dimen>
+    <dimen name="ac_card_album_radius_large">5dp</dimen>
+    <dimen name="ac_album_cover_height_large">200dp</dimen>
+    <dimen name="ac_album_title_padding_large">10dp</dimen>
+    <dimen name="ac_album_title_large">20sp</dimen>
+    <dimen name="ac_songs_count_padding_bottom_large">5dp</dimen>
+    <dimen name="ac_songs_count_large">15sp</dimen>
+    <dimen name="ac_ic_album_overflow_width_large">35dp</dimen>
+    <dimen name="ac_ic_album_overflow_height_large">20dp</dimen>
+    <dimen name="ac_ic_album_overflow_margin_top_large">10dp</dimen>
+
+    <!-- Secondary library -->
+    <dimen name="sl_expanded_title_margin_start_large">30dp</dimen>
+    <dimen name="sl_expanded_title_margin_end_large">40dp</dimen>
+    <dimen name="sl_image_dimen_large">400dp</dimen>
+
+    <!-- Now playing -->
+    <dimen name="np_song_title_large">35sp</dimen>
+    <dimen name="np_song_title_padd_right_left_large">25dp</dimen>
+    <dimen name="np_song_title_pad_top_large">20dp</dimen>
+    <dimen name="np_song_title_pad_bottom_large">5dp</dimen>
+    <dimen name="np_song_artist_large">25sp</dimen>
+    <dimen name="np_song_artist_padd_left_right_large">50dp</dimen>
+    <dimen name="np_disc_dimen_large">520dp</dimen>
+    <dimen name="np_control_pan_margin_large">2dp</dimen>
+    <dimen name="np_control_pan_buttons_padd_large">10dp</dimen>
+    <dimen name="np_control_pan_button_dimen_large">50dp</dimen>
+    <dimen name="np_control_pan_seekbar_padd_large">10dp</dimen>
+    <dimen name="np_control_pan_seekbar_padd_top_bottom_large">5dp</dimen>
+    <dimen name="np_control_pan_start_stop_time_large">50sp</dimen>
+    <dimen name="np_control_pan_start_stop_time_dimen_large">20sp</dimen>
+    <dimen name="np_play_queu_large">25sp</dimen>
+
+    <!-- fragment library item -->
+    <dimen name="fli_image_view_margin_large">3dp</dimen>
+    <dimen name="fli_image_view_text_large">30sp</dimen>
+    <dimen name="fli_title_secondary_view_text_layout_large">150dp</dimen>
+    <dimen name="fli_title_secondary_view_padd_large">10dp</dimen>
+    <dimen name="fli_title_view_text_large">22sp</dimen>
+    <dimen name="fli_secondary_view_text_large">15sp</dimen>
+    <dimen name="fli_title_secondary_text_padd_large">15dp</dimen>
+    <dimen name="fli_count_width_large">30dp</dimen>
+    <dimen name="fli_count_text_large">15sp</dimen>
+    <dimen name="fli_overflow_padd_large">10dp</dimen>
+
+    <!-- track item draggable-->
+    <dimen name="dta_margin_large">3dp</dimen>
+    <dimen name="dta_song_width_large">300dp</dimen>
+    <dimen name="dta_song_wraper_padd_large">2dp</dimen>
+    <dimen name="dta_song_text_large">25sp</dimen>
+    <dimen name="dta_artist_text_large">18sp</dimen>
+    <dimen name="dta_song_padd_large">5dp</dimen>
+    <dimen name="dta_drag_handle_width_large">20dp</dimen>
+    <dimen name="dta_drag_handle_padd_large">3dp</dimen>
+
+
+    <!-- play widget custom view  -->
+
+    <dimen name="pw_activity_horizontal_margin">16dp</dimen>
+    <dimen name="pw_activity_vertical_margin">16dp</dimen>
+
+    <dimen name="pw_margin_normal">10dp</dimen>
+    <dimen name="pw_margin_large">20dp</dimen>
+
+    <dimen name="pw_big_diffuser_size">350dp</dimen>
+    <dimen name="pw_medium_diffuser_size">210dp</dimen>
+    <dimen name="pw_small_diffuser_size">54dp</dimen>
+
+    <dimen name="pw_big_diffuser_shadow_width">35dp</dimen>
+    <dimen name="pw_medium_diffuser_shadow_width">20dp</dimen>
+    <dimen name="pw_small_diffuser_shadow_width">15dp</dimen>
+
+    <dimen name="pw_small_fab_default_elevation">6dp</dimen>
+    <dimen name="pw_small_fab_big_elevation">20dp</dimen>
+
+    <dimen name="pw_fab_margin_top">15dp</dimen>
+    <dimen name="pw_play_button_margin_bottom">0dp</dimen>
+
+    <dimen name="pw_default_fab_size">56dp</dimen>
+
+    <dimen name="pw_default_diffusers_padding">10dp</dimen>
+    <dimen name="pw_default_progress_line_padding">10dp</dimen>
+
+    <dimen name="pw_progress_complete_line_stroke_width">5dp</dimen>
+    <dimen name="pw_progress_ball_radius">8dp</dimen>
+    <dimen name="pw_progress_line_stroke_width">3dp</dimen>
+
+    <dimen name="pw_image_item_margin">10dp</dimen>
+    <dimen name="pw_image_item_size">48dp</dimen>
+    <dimen name="pw_image_item_double_size">96dp</dimen>
+
+    <dimen name="pw_progress_line_view_touch_radius">16dp</dimen>
+
+    <dimen name="alphabet_width">20dp</dimen>
+    <dimen name="font_medium">10sp</dimen>
+
+    <dimen name="pw_timeText">56dp</dimen>
+
+</resources>

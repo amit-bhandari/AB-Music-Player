@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v7.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view_tab_sequence_drag"
+    android:layout_below="@+id/toolbar_"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@color/blackTransparentLight"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="@dimen/dta_margin">
+
+    <LinearLayout
+        android:id="@+id/tab_sequence_item_Draggable"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_size"
+        android:orientation="horizontal"
+        android:background="?android:selectableItemBackground"
+        >
+
+        <ImageView
+            android:id="@+id/handle_for_drag"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_reorder_black_24dp"
+            android:tint="@color/colorwhite"
+            android:scaleType="center"
+            />
+
+        <!-- Title Of Song-->
+        <TextView
+            android:id="@+id/tab_name"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textColor="@color/colorwhite"
+            android:typeface="sans"
+            android:textSize="@dimen/dta_song_text"
+            android:ellipsize="end"
+            android:scrollHorizontally="true"
+            android:gravity="center|left"
+            android:text="Tab"
+            android:maxLines="1"
+            android:paddingRight="@dimen/dta_song_padd"
+            android:paddingLeft="@dimen/dta_song_padd" />
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

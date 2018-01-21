@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_fav"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_favorite_border_black_24dp"
+        app:showAsAction="always"
+        android:title="@string/action_fav" />
+
+    <item
+        android:id="@+id/action_equ"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        app:showAsAction="never"
+        android:title="@string/action_equ" />
+
+
+    <item
+        android:id="@+id/action_go_to_artist"
+        android:orderInCategory="100"
+        android:title="@string/action_go_to_artist"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/action_go_to_album"
+        android:orderInCategory="100"
+        android:title="@string/action_go_to_album"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_add_to_playlist"
+        android:orderInCategory="100"
+        android:title="@string/action_add_to_playlist"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_edit_track_info"
+        android:orderInCategory="100"
+        android:title="@string/action_edit_track_info"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_share"
+        android:orderInCategory="100"
+        android:title="@string/action_share_file"
+        android:icon="@drawable/ic_share_black_24dp"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_wrong_lyrics"
+        android:orderInCategory="100"
+        android:title="@string/action_wrong_lyrics"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_share_lyrics_offline"
+        android:orderInCategory="100"
+        android:title="@string/action_share_offline_lyrics"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_clear_lyrics_offline"
+        android:orderInCategory="100"
+        android:title="@string/action_clear_offline_lyrics"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sleep_timer"
+        android:orderInCategory="100"
+        android:title="@string/main_act_sleep_timer_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_search_youtube"
+        android:title="@string/title_search_youtube"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+</menu>

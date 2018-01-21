@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="99"
+        android:icon="@drawable/ic_search_white_48dp"
+        app:showAsAction="always"
+        android:title="@string/action_reload" />
+
+    <item
+        android:id="@+id/action_reload"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_refresh_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_reload" />
+
+    <item
+        android:id="@+id/action_share"
+        android:orderInCategory="101"
+        android:icon="@drawable/ic_share_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_share" />
+
+    <item
+        android:id="@+id/action_reward_points"
+        android:title="@string/title_reward_points"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_wrong_lyrics"
+        android:title="@string/action_wrong_lyrics"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sync_problem"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        app:showAsAction="never"
+        android:title="@string/action_sync_problem" />
+
+    <item
+        android:id="@+id/action_remove_ads"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        app:showAsAction="never"
+        android:title="@string/nav_remove_ads" />
+
+</menu>

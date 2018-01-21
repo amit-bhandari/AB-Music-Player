@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:id="@+id/scroll_view_Art_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll_art_bio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="100dp"
+            >
+
+            <TextView
+                android:id="@+id/text_view_art_bio_frag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="3sp"
+                android:padding="20dp"
+                android:textColorLink="@color/colorSleepTimer"
+                android:textSize="20sp"
+                android:text="@string/artist_info_loading"
+                android:textColor="@color/nowPlayingText" />
+
+            <TextView
+                android:id="@+id/retry_text_view"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_margin="20dp"
+                android:textSize="20sp"
+                android:text="@string/tap_to_refresh_art_bio"
+                android:textColor="@color/nowPlayingText" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/loading_lyrics_animation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:indicatorName="BallTrianglePathIndicator"
+                />
+
+            <EditText
+                android:id="@+id/track_artist_artsi_bio_frag"
+                android:visibility="gone"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/nowPlayingText"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions" />
+
+            <Button
+                android:id="@+id/button_update_metadata"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/nowPlayingText"
+                android:background="@color/colorTransparent"
+                android:foreground="@drawable/border_1dp"
+                android:text="@string/update_tags"/>
+
+            <TextView
+                android:visibility="gone"
+                android:paddingTop="10dp"
+                android:id="@+id/update_track_metadata"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:text="@string/tag_update"
+                android:textColor="@color/nowPlayingText"
+                />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/ad_view_wrapper"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_above="@+id/playbackControls"
+        android:paddingBottom="5dp"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/ad_close"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/close"
+            android:textColor="@color/colorwhite"
+            android:paddingEnd="15dp"
+            android:gravity="end"
+            android:textSize="15sp"
+            android:visibility="gone"
+            android:paddingRight="15dp"
+            card_view:ignore="RtlSymmetry" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_art_info_frag"
+            android:layout_gravity="bottom">
+        </com.google.android.gms.ads.AdView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/playbackControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp">
+
+        <ImageView
+            android:id="@id/pw_ivSkipPrevious"
+            android:layout_width="@dimen/pw_image_item_size"
+            android:layout_height="@dimen/pw_image_item_size"
+            android:layout_marginEnd="@dimen/pw_image_item_margin"
+            android:layout_marginRight="@dimen/pw_image_item_margin"
+            android:background="@drawable/pw_bg_iv_white"
+            android:scaleType="centerInside"
+            android:layout_gravity="center"
+            android:src="@drawable/pw_ic_skip_previous"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@id/pw_playButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:src="@drawable/pw_play"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:backgroundTint="@color/pw_accent"
+            app:borderWidth="0dp"
+            app:elevation="@dimen/pw_small_fab_default_elevation"
+            app:fabSize="normal"
+            app:pressedTranslationZ="6dp"
+            />
+
+        <ImageView
+            android:id="@id/pw_ivSkipNext"
+            android:layout_width="@dimen/pw_image_item_size"
+            android:layout_height="@dimen/pw_image_item_size"
+            android:layout_marginLeft="@dimen/pw_image_item_margin"
+            android:layout_marginStart="@dimen/pw_image_item_margin"
+            android:background="@drawable/pw_bg_iv_white"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"
+            android:src="@drawable/pw_ic_skip_next"
+            />
+
+    </LinearLayout>
+</RelativeLayout>

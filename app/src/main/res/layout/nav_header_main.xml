@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_header"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/nav_header_height"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="bottom">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            android:orientation="horizontal">
+
+            <com.music.player.bhandari.m.customViews.RoundedImageView
+                android:id="@+id/navHeaderImageView"
+                android:src="@mipmap/ic_launcher"
+                android:layout_width="@dimen/action_bar_size"
+                android:layout_height="@dimen/action_bar_size"
+                android:scaleType="centerCrop">
+            </com.music.player.bhandari.m.customViews.RoundedImageView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:typeface="monospace"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:id="@+id/signed_up_user_name"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:text="@string/app_name"
+            android:typeface="monospace"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:typeface="monospace"
+        android:maxLines="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/music_is_life" />
+    </LinearLayout>
+
+</LinearLayout>
