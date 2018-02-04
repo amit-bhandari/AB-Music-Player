@@ -128,6 +128,7 @@ public class ActivityMain extends AppCompatActivity
 
     final static String FB_URL = "http://www.facebook.com/abmusicoffline/";
     final static String WEBSITE = "http://www.thetechguru.in";
+    final static String INSTA_WEBSITE = "https://www.instagram.com/_amit_bhandari/?hl=en";
 
     private long mLastClickTime = 0;
     private AdView mAdView;
@@ -1209,6 +1210,13 @@ public class ActivityMain extends AppCompatActivity
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if(id==R.id.nav_dev_message){
             devMessageDialog();
+        } else if(id==R.id.nav_instagram){
+            try {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(INSTA_WEBSITE));
+                startActivity(browserIntent);
+            }catch (Exception e){
+                Snackbar.make(rootView, getString(R.string.error_opening_browser), Snackbar.LENGTH_LONG).show();
+            }
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

@@ -21,8 +21,8 @@ public class AppLaunchCountManager {
 
 
     private final static int DAYS_UNTIL_PROMPT = 1;//Min number of days
-    private final static int DAYS_UNTIL_INTER_AD = 1;
-    private final static int HOURS_UNTIL_BANNER_ADS = 1;
+    private final static int HOURS_UNTIL_INTER_AD = 0; //hours
+    private final static int HOURS_UNTIL_BANNER_ADS = 0;
     private final static int DAYS_UNTIL_RATE_ASK = 1;
 
     public static void app_launched(Context mContext) {
@@ -131,7 +131,7 @@ public class AppLaunchCountManager {
     public static boolean isEligibleForInterstialAd() {
         SharedPreferences prefs = MyApp.getContext().getSharedPreferences("apprater", 0);
         Long date_firstLaunch = prefs.getLong("date_firstlaunch", 0);
-        return date_firstLaunch != 0 && System.currentTimeMillis() >= date_firstLaunch + (DAYS_UNTIL_INTER_AD * 24 * 60 * 60 * 1000);
+        return date_firstLaunch != 0 && System.currentTimeMillis() >= date_firstLaunch + (HOURS_UNTIL_INTER_AD * 60 * 60 * 1000);
     }
 
     public static boolean isEligibleForRatingAsk(){

@@ -442,13 +442,8 @@
             <item>Custom</item>
         </string-array>
 
-    <string name="whats_new"> \u0020* New default album art image and option to remove disc rotation animation and opting out of notifications \n\n
-        * Seek bar in lyrics screen and Timing information on disc screen  \n\n
-        * You can change Primary Color manually by copying color code now \n\n
-        * You can now enable Continuous Playback from Settings screen \n\n
-        * Bug fixes (Playing from folder now queues up all the tracks from that folder) \n\n
-        * PS - If this update slows down AB Music (it should not) in your device, try enabling data saver option in settings.
-        </string>
+    <string name="whats_new"> \u0020* Bug fixes
+    </string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
@@ -791,4 +786,6 @@ that this copyright notice remain intact.</string>
     <string name="title_cache_artist_data">Cache Artist Data Locally</string>
     <string name="pref_artist_cache_manual">pref_artist_cache_started_manually</string>
     <string name="toast_artist_cache_complete">Artist info local caching complete</string>
+    <string name="error_unable_to_share">Sorry, Unable to share this file</string>
+    <string name="find_me_on_instagram">Find me on Instagram</string>
 </resources>

@@ -18,6 +18,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 
@@ -146,15 +148,20 @@ public class OfflineStorageArtistBio {
 
     public static HashMap<String, String> getArtistImageUrls(){
         HashMap<String, String> map = new HashMap<>();
-        for (dataItem item:MusicLibrary.getInstance().getDataItemsArtist()){
-            TrackItem trackItem = new TrackItem();
-            trackItem.setArtist(item.artist_name);
-            trackItem.setArtist_id(item.artist_id);
+        try{
+            ArrayList<dataItem> artistItems = new ArrayList<>(MusicLibrary.getInstance().getDataItemsArtist());
+            for (dataItem item: artistItems){
+                TrackItem trackItem = new TrackItem();
+                trackItem.setArtist(item.artist_name);
+                trackItem.setArtist_id(item.artist_id);
 
-            ArtistInfo artistInfo = OfflineStorageArtistBio.getArtistBioFromDB(trackItem);
-            if(artistInfo!=null){
-                map.put(artistInfo.getOriginalArtist(), artistInfo.getImageUrl());
+                ArtistInfo artistInfo = OfflineStorageArtistBio.getArtistBioFromDB(trackItem);
+                if(artistInfo!=null){
+                    map.put(artistInfo.getOriginalArtist(), artistInfo.getImageUrl());
+                }
             }
+        }catch (ConcurrentModificationException e){
+            return map;
         }
         return map;
     }

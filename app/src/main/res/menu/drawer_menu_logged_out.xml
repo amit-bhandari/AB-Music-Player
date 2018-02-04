@@ -68,6 +68,11 @@
             android:title="@string/nav_rate" />
 
         <item
+            android:id="@+id/nav_instagram"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="@string/find_me_on_instagram" />
+
+        <item
             android:id="@+id/nav_login"
             android:icon="@drawable/ic_people_black_24dp"
             android:title="@string/nav_login" />

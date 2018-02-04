@@ -19,11 +19,11 @@ package com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo;
 public class Keys {
 
     //please use your own keys while forking
-    //if you forked this from git hub, this keys are wrong (intentionally)
+    //if you forked this from github, this keys are wrong (intentionally)
     //get your own keys from respective websites and use them here
-    public static final String GENIUS = "6wPhYenV4K78zZ4ndmuP1iiPTRUGJWG5_X17LvpoCx4XHc1236IIHDUv2rVZh";
+    public static final String GENIUS = "6wPhYenV4K78zZ4ndmuP1iiPTRUGJWG5_X17LvpoCx4XHc1236IIHDUv2rVZhUUN";
 
-    public static String LASTFM = "4e464c9ca4e6763aca6d5a7a04728";
+    public static String LASTFM = "4e464c9ca4e6763aca6d5a7a04728c77";
     //shared secret for lastfm = d82a87b03faa65d001bd48713c60d645
 
 }

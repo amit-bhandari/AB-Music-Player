@@ -354,11 +354,15 @@ public class MusicLibrary{
                 }catch (Exception ignored){}
                 if(cursor!=null && cursor.getCount()>0) {
                     while (cursor.moveToNext()) {
-                        if (getSongListFromGenreIdNew(cursor.getInt(MusicLibrary.INDEX_FOR_GENRE_CURSOR._ID)
-                                , Constants.SORT_ORDER.ASC).size() == 0)
+                        ArrayList<Integer> songList = getSongListFromGenreIdNew(cursor.getInt(MusicLibrary.INDEX_FOR_GENRE_CURSOR._ID)
+                                , Constants.SORT_ORDER.ASC);
+                        if (songList==null || songList.size() == 0)
                             continue;
+
+                        String genre_name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Genres.NAME));
+                        if(genre_name==null) continue;
                         dataItemsForGenres.add(new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Genres._ID))
-                                ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Genres.NAME))
+                                , genre_name
                                 ,0)
                         );
                     }
@@ -685,7 +689,7 @@ public class MusicLibrary{
         int NUMBER_OF_TRACKS=2;
     }
 
-    public synchronized void updateArtistInfo(){
+    private synchronized void updateArtistInfo(){
         artistUrls.clear();
         artistUrls.putAll(OfflineStorageArtistBio.getArtistImageUrls());
     }
