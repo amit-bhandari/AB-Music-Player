@@ -1,0 +1,131 @@
+{
+  "project_info": {
+    "project_number": "922217146598",
+    "firebase_url": "https://ab-music.firebaseio.com",
+    "project_id": "ab-music",
+    "storage_bucket": "ab-music.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922217146598:android:f8e0b444174a3958",
+        "android_client_info": {
+          "package_name": "com.bhandari.music.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922217146598-fmv1cg3gm4e56bethq01mgrptb6st6bn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhandari.music.dev",
+            "certificate_hash": "836ef2fd9d0a96e5853886f80308bbf0716400f5"
+          }
+        },
+        {
+          "client_id": "922217146598-nl4bd6qqb2ds425lrgiu0j8juq6aa3qu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhandari.music",
+            "certificate_hash": "de0138ee613852c6c67dd52b70bfd92c389ada47"
+          }
+        },
+        {
+          "client_id": "922217146598-to5d0g5als7jma8il82gqf37olca2n6g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhandari.music",
+            "certificate_hash": "50babe4dff4c7a3f711b5e2eac087bfe79c0fc6c"
+          }
+        },
+        {
+          "client_id": "922217146598-du46qbmgogk65qdkafv08c5rql8dn8oa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhandari.music",
+            "certificate_hash": "b24cd29e46f6cabddbdb016021150772cc527309"
+          }
+        },
+        {
+          "client_id": "922217146598-17bk34ge0jde5pkv78ptokekp0hokn0g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhandari.music",
+            "certificate_hash": "b70e857424eb3428402418893733bc2dc1e45277"
+          }
+        },
+        {
+          "client_id": "922217146598-57plo6ao23u9epi9iafq6dhpq1ifei9i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8TWjl7Mig3vR2bdqt4TdpZZBMiHqA5oE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "922217146598-57plo6ao23u9epi9iafq6dhpq1ifei9i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922217146598:android:fc7e0eb95907a7a7",
+        "android_client_info": {
+          "package_name": "com.bhandari.music"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922217146598-hig3389iidtbful2egban7dn8k754m2j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhandari.music",
+            "certificate_hash": "836ef2fd9d0a96e5853886f80308bbf0716400f5"
+          }
+        },
+        {
+          "client_id": "922217146598-57plo6ao23u9epi9iafq6dhpq1ifei9i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8TWjl7Mig3vR2bdqt4TdpZZBMiHqA5oE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "922217146598-57plo6ao23u9epi9iafq6dhpq1ifei9i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

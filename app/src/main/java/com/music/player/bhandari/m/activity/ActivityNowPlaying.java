@@ -116,7 +116,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     private ShineButton shineButton;
     private AdView mAdView;
     private InterstitialAd mInterstitialAd;
-    private static final int LAUNCH_COUNT_BEFORE_POPUP=10;
+    private static final int LAUNCH_COUNT_BEFORE_POPUP=4;
 
     private PowerManager.WakeLock mWakeLock;
     private View rootView;
@@ -200,7 +200,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
 
         //noinspection PointlessBooleanExpression
-        if( false && /*AppLaunchCountManager.isEligibleForInterstialAd() && */ !UtilityFun.isAdsRemoved()) {
+        if( /*AppLaunchCountManager.isEligibleForInterstialAd() && */ !UtilityFun.isAdsRemoved()) {
 
             MobileAds.initialize(getApplicationContext(), getString(R.string.banner_play_queue));
 
@@ -224,6 +224,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 requestNewInterstitial();
             }
 
+            /*
             mAdView = findViewById(R.id.adView);
             if (UtilityFun.isConnectedToInternet()) {
                 AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
@@ -236,7 +237,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 if (mAdView != null) {
                     mAdView.setVisibility(View.GONE);
                 }
-            }
+            }*/
         }
 
         if(getIntent().getAction()!=null) {
@@ -843,14 +844,18 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 break;
 
             case R.id.action_share:
-                if(trackItem!=null) {
-                    File fileToBeShared = new File(trackItem.getFilePath());
-                    ArrayList<Uri> files = new ArrayList<>();
-                    files.add(FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
-                    UtilityFun.Share(this, files, trackItem.getTitle() );
-                }else {
-                    //Toast.makeText(this,"Nothing to share!",Toast.LENGTH_LONG).show();
-                    Snackbar.make(rootView, getString(R.string.error_nothing_to_share), Snackbar.LENGTH_LONG).show();
+                try {
+                    if (trackItem != null) {
+                        File fileToBeShared = new File(trackItem.getFilePath());
+                        ArrayList<Uri> files = new ArrayList<>();
+                        files.add(FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
+                        UtilityFun.Share(this, files, trackItem.getTitle());
+                    } else {
+                        //Toast.makeText(this,"Nothing to share!",Toast.LENGTH_LONG).show();
+                        Snackbar.make(rootView, R.string.error_nothing_to_share, Snackbar.LENGTH_LONG).show();
+                    }
+                }catch (IllegalArgumentException e){
+                    Snackbar.make(rootView, R.string.error_unable_to_share, Snackbar.LENGTH_LONG).show();
                 }
                 break;
 

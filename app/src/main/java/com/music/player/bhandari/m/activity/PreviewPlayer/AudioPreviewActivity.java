@@ -571,19 +571,18 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
     }
 
     private void stopPlaybackAndTeardown() {
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (mPreviewPlayer != null) {
-                    if (mPreviewPlayer.isPlaying()) {
-                        mPreviewPlayer.stop();
-                    }
-                    mPreviewPlayer.release();
-                    mPreviewPlayer = null;
+        try {
+            if (mPreviewPlayer != null) {
+                if (mPreviewPlayer.isPlaying()) {
+                    mPreviewPlayer.stop();
                 }
-                abandonAudioFocus();
+                mPreviewPlayer.release();
+                mPreviewPlayer = null;
             }
-        });
+            abandonAudioFocus();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void pausePlayback() {

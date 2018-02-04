@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.Executors;
 
@@ -781,16 +782,26 @@ public class PlayerService extends Service implements
                 if(mMediaSession!=null){
                     mediaStyle.setMediaSession(mMediaSession.getSessionToken());
                 }
+
+
                 //For lollipop above devices, use media style notification
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(PlayerService.this, getString(R.string.notification_channel))
                         .setSmallIcon(R.drawable.ic_batman_kitkat)
                         .setContentTitle(trackInfo)
                         .setContentText(secondaryText)
                         //.setColor(ColorHelper.getColor(R.color.notification_color))
-                        .setStyle(mediaStyle)
+                        //
                         .setContentIntent(pendingIntent)
                         .setDeleteIntent(pSwipeToDismiss)
                         .setAutoCancel(false);
+
+                //posting notification fails for huawei devices in case of mediastyle notification
+                boolean isHuawei = (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1
+                        || android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
+                        && Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("huawei");
+                if(!isHuawei){
+                    builder.setStyle(mediaStyle);
+                }
 
                 if(b!=null) {
                     builder.setLargeIcon(b);
@@ -997,6 +1008,7 @@ public class PlayerService extends Service implements
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
+                if(currentTrack==null) return;
                 MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
                 metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, currentTrack.getTitle());
                 metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, currentTrack.getArtist());
@@ -1086,7 +1098,7 @@ public class PlayerService extends Service implements
         }
         currentTrackPosition = pos;
         setStatus(PLAYING);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+        if (currentTrack!=null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
             setSessionState();
             setMediaSessionMetadata(true);
         }
