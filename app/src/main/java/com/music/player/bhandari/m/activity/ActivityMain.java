@@ -1176,7 +1176,7 @@ public class ActivityMain extends AppCompatActivity
                     .putExtra("ad",true));
         } else  if (id == R.id.nav_remove_ads){
             startActivity(new Intent(this, ActivityRemoveAds.class));
-            finish();
+            //finish();
         } else if(id==R.id.nav_share){
             shareApp();
         } else if(id==R.id.nav_rate){
@@ -1192,12 +1192,7 @@ public class ActivityMain extends AppCompatActivity
                 Snackbar.make(rootView, getString(R.string.error_opening_browser), Snackbar.LENGTH_LONG).show();
             }
         }*/ else if(id==R.id.nav_website){
-            try {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEBSITE));
-                startActivity(browserIntent);
-            }catch (Exception e){
-                Snackbar.make(rootView, getString(R.string.error_opening_browser), Snackbar.LENGTH_LONG).show();
-            }
+            openUrl(Uri.parse(WEBSITE));
         } else if(id==R.id.nav_login){
             //signInDialog();
             signIn();
@@ -1211,17 +1206,55 @@ public class ActivityMain extends AppCompatActivity
         } else if(id==R.id.nav_dev_message){
             devMessageDialog();
         } else if(id==R.id.nav_instagram){
-            try {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(INSTA_WEBSITE));
-                startActivity(browserIntent);
-            }catch (Exception e){
-                Snackbar.make(rootView, getString(R.string.error_opening_browser), Snackbar.LENGTH_LONG).show();
-            }
+            openUrl(Uri.parse(INSTA_WEBSITE));
+        } else if(id==R.id.nav_remove_ads_free){
+            removeAdsForFree();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void openUrl(Uri parse) {
+        try {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, parse);
+            startActivity(browserIntent);
+        } catch (Exception e) {
+            Snackbar.make(rootView, getString(R.string.error_opening_browser), Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void removeAdsForFree(){
+        new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title(R.string.free_ad_removal_dialog_title)
+                .content(getString(R.string.free_ad_removal_dialog_cont))
+                .positiveText(R.string.free_ad_removal_dialog_pos)
+                .negativeText(R.string.free_ad_removal_dialog_neg)
+                .neutralText(R.string.free_ad_removal_dialog_title_neu)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_remove_ads_after_payment), true).apply();
+                        Toast.makeText(getApplicationContext(), getString(R.string.ads_removed),Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.ads_still_showing),Toast.LENGTH_LONG).show();
+                        openUrl(Uri.parse(INSTA_WEBSITE));
+                    }
+                })
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        openUrl(Uri.parse(INSTA_WEBSITE));
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        startActivity(new Intent(ActivityMain.this, ActivityRemoveAds.class));
+                    }
+                })
+                .show();
     }
 
     private void rewardDialog(){
@@ -1995,6 +2028,7 @@ public class ActivityMain extends AppCompatActivity
         if(UtilityFun.isAdsRemoved()) {
             navigationView.getMenu().removeItem(R.id.nav_rewards);
             navigationView.getMenu().removeItem(R.id.nav_remove_ads);
+            navigationView.getMenu().removeItem(R.id.nav_remove_ads_free);
         }
         //updateNavigationMenuItems();
     }

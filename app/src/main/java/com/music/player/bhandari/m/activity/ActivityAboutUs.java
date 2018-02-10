@@ -280,6 +280,7 @@ public class ActivityAboutUs extends AppCompatActivity {
     private void selectDonateDialog() {
 
         new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.about_us_support_dev_title))
                 .content(getString(R.string.about_us_support_dev_content))
                 .positiveText(getString(R.string.about_us_support_dev_pos))

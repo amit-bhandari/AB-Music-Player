@@ -272,8 +272,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
         }
 
         private void reviewNotif(Map<String, String> map){
-
-
             Intent action1Intent = new Intent(MyApp.getContext(), NotificationActionService.class)
                     .setAction(ALREADY_RATED);
             action1Intent.putExtra("from_notif", true);

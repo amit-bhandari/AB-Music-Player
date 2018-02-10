@@ -21,6 +21,12 @@
             android:icon="@drawable/ic_remove_circle_outline_black_24dp"
             android:title="@string/nav_remove_ads" />
 
+
+        <item
+            android:id="@+id/nav_remove_ads_free"
+            android:icon="@drawable/happy"
+            android:title="@string/title_remove_ads_for_free" />
+
         <item
             android:id="@+id/nav_explore_lyrics"
             android:icon="@drawable/ic_explore_black_24dp"
@@ -70,7 +76,7 @@
         <item
             android:id="@+id/nav_instagram"
             android:icon="@drawable/ic_person_black_24dp"
-            android:title="@string/find_me_on_instagram" />
+            android:title="@string/title_find_me_on_instagram" />
 
         <item
             android:id="@+id/nav_login"

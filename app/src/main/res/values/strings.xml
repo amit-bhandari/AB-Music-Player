@@ -119,6 +119,7 @@
         <string name="art_info_not_available">Artist info not available at the moment, try again later</string>
         <string name="lyrics_saved">Lyrics saved</string>
         <string name="lyrics_removed">Lyrics Removed</string>
+        <string name="error_unable_to_share">Sorry, Unable to share this file</string>
 
         <string name="preview_player_server_died">Server has died!</string>
         <string name="preview_player_io_error">I/O error!</string>
@@ -172,6 +173,8 @@
         <string name="error_saving_instant_lyrics">Error saving lyrics!</string>
         <string name="instant_lyric_saved">Lyrics saved</string>
         <string name="instant_lyric_already_saved">Lyrics already saved!</string>
+
+        <string name="toast_artist_cache_complete">Artist info local caching complete</string>
 
     <!-- dialogs -->
         <string name="main_act_new_ver_info_title">Whats new</string>
@@ -316,7 +319,33 @@
             no matter in which application. Whenever you play music in your device, notification will be displayed for fetching lyrics.
             Most major online music players are supported. If it doesn\'t work well with the music player you use, let me know. Turn on now to get Instant Lyrics.</string>
 
-    <string name="cont_playback_content">Enabling this makes sure that Music Playback will go on continuously (Even if Queue is empty). This feature is in Beta stage.</string>
+        <string name="free_ad_removal_dialog_title">Remove Ads for Free</string>
+        <string name="free_ad_removal_dialog_cont"> \u0020 I get it, nobody likes to see advertisement while using Application.
+            But developing this app took me great efforts and I like being rewarded with little bucks I make with the advertisements.
+
+            \n\n I would highly appreciate if you could remove ads by paying one time very small amount towards my account.
+            But if you don\'t want to do that, that is fine.
+
+            \n\nYour ads will be removed for free after clicking button below, but make sure to return the favour and follow and shout out for
+            me on Instagram. I hope you would do that! And if you love using Ad-Free AB Music, I know for a fact that you would consider donating few bucks for me by going
+            in Settings -> About -> Support Development. Have a nice day and cheers!"
+        </string>
+        <string name="free_ad_removal_dialog_pos">Remove Ads for Free</string>
+        <string name="free_ad_removal_dialog_neg">Remove Ads by Paying</string>
+        <string name="free_ad_removal_dialog_title_neu">Follow me!</string>
+
+        <string name="manual_color_title">Manual Color Input</string>
+        <string name="manual_color_content">
+            Google any Color you like and Enter hex string of that color in the form of #XXXXXX \n\n
+            For e.g. \n
+            BLACK = #000000 \n
+            RED = #ff0000
+        </string>
+        <string name="manual_color_hint">6-digit String</string>
+        <string name="manual_color_prefill">#</string>
+        <string name="manual_color_error">Invalid color</string>
+
+        <string name="cont_playback_content">Enabling this makes sure that Music Playback will go on continuously (Even if Queue is empty). This feature is in Beta stage.</string>
 
 
     <!--first time info messages -->
@@ -394,6 +423,8 @@
     <!-- preference screen -->
         <string name="title_remove_ads">Remove Ads</string>
         <string name="title_text_font">Music Library Text Font</string>
+        <string name="title_misc">Miscellaneous</string>
+        <string name="title_continous_playback">Continuous Playback</string>
         <string name="title_batch_download">Batch Lyrics Download</string>
         <string name="title_hide_lock_button">Hide Music Lock Button</string>
         <string name="title_notification">Notifications</string>
@@ -414,6 +445,8 @@
         <string name="title_library">Library</string>
         <string name="title_about">About</string>
         <string name="title_reset">Reset</string>
+        <string name="title_find_me_on_instagram">Find me on Instagram</string>
+        <string name="title_remove_ads_for_free">Remove Ads for Free</string>
         <string name="title_instant_lyric">Instant Lyrics</string>
         <string name="title_ui">User Interface</string>
         <string name="title_theme_category">AB Music theme</string>
@@ -428,6 +461,9 @@
         <string name="title_hide_short_clips">Hide Audio Tracks Shorter Than</string>
         <string name="title_batch_lyrics">Batch Lyrics</string>
         <string name="title_equalizer">Prefer System Equalizer</string>
+        <string name="title_data_Saver">Data Saver</string>
+        <string name="title_cache_artist_data">Cache Artist Data Locally</string>
+
 
     <!-- arrays -->
         <string-array name="now_playing_back_pref_array">
@@ -442,8 +478,9 @@
             <item>Custom</item>
         </string-array>
 
-    <string name="whats_new"> \u0020* Bug fixes
-    </string>
+    <string name="whats_new"><![CDATA[ \u0020* Bug fixes  \n\n
+                                    * Free Ad Removal for everyone! Shout out to me on Instagram for that —> https://www.instagram.com/_amit_bhandari
+    ]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
@@ -482,6 +519,7 @@
     <string name="snack_unable_to_Clear">Cannot clear</string>
 
 
+    <string name="nav_developers_message">Developers Message</string>
     <string name="nav_explore_lyrics">Explore Lyrics</string>
     <string name="lyrics_explore">Explore Lyrics (beta)</string>
     <string name="title_search_youtube">Search Youtube</string>
@@ -495,14 +533,39 @@
     <string name="trending_now_in">Top tracks in %s (from Last.fm)</string>
 
 
+    <!-- Misc -->
+    <string name="developers_message">Hey there, this is AB here. \n\n
+        I am glad you are enjoying AB Music (if you are not, write me to let me know why) and it needs your help.
+        To reach global audience, AB Music needs to be translated to regional languages and if you happen to know one and can translate English to that, please contribute!
+        Write me to know more on how to get started with translations.
+        \n\n
+        If you don\'t want to help in translations, that\'s totally cool, but if you like AB Music, be sure to leave your feedback on store.
+    </string>
+    <string name="write_me">Write me</string>
+
+    <string name="data_saver_content">Prevent loading Artist Images instead of default artwork by turning on data saver. \n\n Though it is recommended to keep it in default setting as it
+        highly affects look and feel of AB Music. All the artist images are cached locally to prevent data usage in either case.
+    </string>
+    <string name="remove_ads_content">Pay one time and enjoy Ad free Superfast experience of AB Music for life time!\n\n
+    Loading ads from network uses resources and thus slow down AB Music a little (very little). Removing ads will make AB Music lightning fast to operate and
+        will get rid of all kind of advertisements from app.
+    </string>
+
+
     <!-- NO TRANSLATION REQUIRED AFTER THIS POINT -->
 
     <!-- now playing back file -->
         <string name="now_playing_back_custom_image">//now_playing_back_custom_image</string>
         <string name="main_lib_back_custom_image">//main_lib_back_custom_image</string>
+
     <!-- strings for shared preferences -->
         <string name="pref_disc_rotation">pref_disc_rotation</string>
+        <string name="pref_data_saver">pref_data_saver</string>
+        <string name="pref_cache_artist_data">pref_cache_artist_data</string>
+        <string name="pref_artist_cache_manual">pref_artist_cache_started_manually</string>
         <string name="pref_last_equ_setting">pref_equ_setting</string>
+        <string name="pref_artinfo_libload">pref_artist_info_load_time</string>
+        <string name="pref_continuous_playback">pref_continuous_playback</string>
         <string name="pref_disc_rotation_speed">pref_disc_rotation_speed</string>
         <string name="pref_rate_reward_granted">pref_rate_reward_granted</string>
         <string name="pref_user_country">user_country</string>
@@ -748,44 +811,10 @@ limitation the rights to use, copy, modify, merge, publish, distribute,
 sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
-    <string name="pref_artinfo_libload">pref_artist_info_load_time</string>
-    <string name="pref_continuous_playback">pref_continuous_playback</string>
-    <string name="title_misc">Miscellaneous</string>
-    <string name="title_continous_playback">Continuous Playback</string>
-    <string name="manual_color_title">Manual Color Input</string>
-    <string name="manual_color_content">
-        Google any Color you like and Enter hex string of that color in the form of #XXXXXX \n\n
-        For e.g. \n
-        BLACK = #000000 \n
-        RED = #ff0000
-    </string>
-    <string name="manual_color_hint">6-digit String</string>
-    <string name="manual_color_prefill">#</string>
-    <string name="manual_color_error">Invalid color</string>
-    <string name="nav_developers_message">Developers Message</string>
 
-    <string name="developers_message">Hey there, this is AB here. \n\n
-        I am glad you are enjoying AB Music (if you are not, write me to let me know why) and it needs your help.
-        To reach global audience, AB Music needs to be translated to regional languages and if you happen to know one and can translate English to that, please contribute!
-        Write me to know more on how to get started with translations.
-        \n\n
-        If you don\'t want to help in translations, that\'s totally cool, but if you like AB Music, be sure to leave your feedback on store.
-    </string>
-    <string name="write_me">Write me</string>
-    <string name="pref_data_saver">pref_data_saver</string>
-    <string name="title_data_Saver">Data Saver</string>
 
-    <string name="data_saver_content">Prevent loading Artist Images instead of default artwork by turning on data saver. \n\n Though it is recommended to keep it in default setting as it
-        highly affects look and feel of AB Music. All the artist images are cached locally to prevent data usage in either case.
-    </string>
-    <string name="remove_ads_content">Pay one time and enjoy Ad free Superfast experience of AB Music for life time!\n\n
-    Loading ads from network uses resources and thus slow down AB Music a little (very little). Removing ads will make AB Music lightning fast to operate and
-        will get rid of all kind of advertisements from app.
-    </string>
-    <string name="pref_cache_artist_data">pref_cache_artist_data</string>
-    <string name="title_cache_artist_data">Cache Artist Data Locally</string>
-    <string name="pref_artist_cache_manual">pref_artist_cache_started_manually</string>
-    <string name="toast_artist_cache_complete">Artist info local caching complete</string>
-    <string name="error_unable_to_share">Sorry, Unable to share this file</string>
-    <string name="find_me_on_instagram">Find me on Instagram</string>
+
+
+
+
 </resources>
