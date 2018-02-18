@@ -12,9 +12,15 @@
             android:title="@string/action_call_for_help" /> -->
 
         <item
+            android:id="@+id/nav_try_new_app"
+            android:icon="@drawable/ic_get_app_black_24dp"
+            android:title="@string/try_my_new_app" />
+
+        <item
             android:id="@+id/nav_rewards"
             android:icon="@drawable/ic_reward"
             android:title="@string/nav_rewards" />
+
 
         <item
             android:id="@+id/nav_remove_ads"

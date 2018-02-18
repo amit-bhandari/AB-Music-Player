@@ -220,7 +220,7 @@ public class ActivityPermissionSeek extends AppCompatActivity {
             MyApp.getPref().edit().putInt(getString(R.string.pref_reward_points), 500).apply();
         }
 
-        //disable lock screen alum art
+        //disable lock screen album art
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
             MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art), false).apply();
         }
@@ -229,10 +229,10 @@ public class ActivityPermissionSeek extends AppCompatActivity {
 
         //remove ads
         //check if ads removed, if yes, then change boolean accordingly
-        Intent serviceIntent =
+        /*Intent serviceIntent =
                 new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
-        bindService(serviceIntent, inAppBillingConnection, Context.BIND_AUTO_CREATE);
+        bindService(serviceIntent, inAppBillingConnection, Context.BIND_AUTO_CREATE);*/
 
         setDeprecatedPreferencesValues();
     }
@@ -267,7 +267,7 @@ public class ActivityPermissionSeek extends AppCompatActivity {
         try {
             Intent playerServiceIntent = new Intent(this, PlayerService.class);
             bindService(playerServiceIntent, playerServiceConnection, Context.BIND_AUTO_CREATE);
-        }catch (Exception e){
+        }catch (Exception ignored){
 
         }
     }
