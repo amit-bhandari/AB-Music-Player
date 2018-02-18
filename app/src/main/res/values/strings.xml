@@ -320,14 +320,17 @@
             Most major online music players are supported. If it doesn\'t work well with the music player you use, let me know. Turn on now to get Instant Lyrics.</string>
 
         <string name="free_ad_removal_dialog_title">Remove Ads for Free</string>
-        <string name="free_ad_removal_dialog_cont"> \u0020 I get it, nobody likes to see advertisement while using Application.
+        <string name="free_ad_removal_dialog_cont"> \u0020 Your ads will be removed for free after clicking button below, but make sure to return the favour and follow and shout out for
+            me on Instagram. I hope you would do that!
+
+            \n\n
+            I get it, nobody likes to see advertisement while using Application.
             But developing this app took me great efforts and I like being rewarded with little bucks I make with the advertisements.
 
             \n\n I would highly appreciate if you could remove ads by paying one time very small amount towards my account.
             But if you don\'t want to do that, that is fine.
 
-            \n\nYour ads will be removed for free after clicking button below, but make sure to return the favour and follow and shout out for
-            me on Instagram. I hope you would do that! And if you love using Ad-Free AB Music, I know for a fact that you would consider donating few bucks for me by going
+            \n\n And if you love using Ad-Free AB Music, I know for a fact that you would consider donating few bucks for me by going
             in Settings -> About -> Support Development. Have a nice day and cheers!"
         </string>
         <string name="free_ad_removal_dialog_pos">Remove Ads for Free</string>
@@ -478,9 +481,7 @@
             <item>Custom</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020* Bug fixes  \n\n
-                                    * Free Ad Removal for everyone! Shout out to me on Instagram for that —> https://www.instagram.com/_amit_bhandari
-    ]]></string>
+    <string name="whats_new"><![CDATA[ \u0020* My new app is out on store. Check out the side navigation drawer.]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
@@ -811,10 +812,7 @@ limitation the rights to use, copy, modify, merge, publish, distribute,
 sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
-
-
-
-
+    <string name="try_my_new_app">Try my new App</string>
 
 
 </resources>

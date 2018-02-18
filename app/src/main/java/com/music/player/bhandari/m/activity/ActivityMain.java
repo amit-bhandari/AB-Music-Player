@@ -129,6 +129,8 @@ public class ActivityMain extends AppCompatActivity
     final static String FB_URL = "http://www.facebook.com/abmusicoffline/";
     final static String WEBSITE = "http://www.thetechguru.in";
     final static String INSTA_WEBSITE = "https://www.instagram.com/_amit_bhandari/?hl=en";
+    final static String AB_REMOTE_WALL_URL = "https://play.google.com/store/apps/details?id=in.thetechguru.walle.remote.abremotewallpaperchanger&hl=en";
+
 
     private long mLastClickTime = 0;
     private AdView mAdView;
@@ -1209,11 +1211,22 @@ public class ActivityMain extends AppCompatActivity
             openUrl(Uri.parse(INSTA_WEBSITE));
         } else if(id==R.id.nav_remove_ads_free){
             removeAdsForFree();
+        } else if(id==R.id.nav_try_new_app){
+            tryApp();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void tryApp(){
+        final String appPackageName = "in.thetechguru.walle.remote.abremotewallpaperchanger"; // getPackageName() from Context or Activity object
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     private void openUrl(Uri parse) {
