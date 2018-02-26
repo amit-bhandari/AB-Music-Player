@@ -64,6 +64,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:11.2.2'
     compile 'com.google.firebase:firebase-messaging:11.2.2'
     compile 'com.google.firebase:firebase-database:11.2.2'
+    compile 'com.google.firebase:firebase-invites:11.2.2'
 
     compile 'com.google.code.gson:gson:2.8.0'
 

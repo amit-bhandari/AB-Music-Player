@@ -776,9 +776,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 if(PlaylistManager.getInstance(getApplicationContext()).isFavNew(playerService.getCurrentTrack().getId())){
                     PlaylistManager.getInstance(getApplicationContext()).RemoveFromFavNew(playerService.getCurrentTrack().getId());
                 }else {
-                    int []ids = new int[]{playerService.getCurrentTrack().getId()};
                     PlaylistManager.getInstance(getApplicationContext())
-                            .AddSongToPlaylistNew(DbHelperUserMusicData.KEY_FAV,ids);
+                            .addSongToFav(playerService.getCurrentTrack().getId());
                     shineButton.setVisibility(View.VISIBLE);
                     shineButton.showAnim();
                     shineButton.clearAnimation();

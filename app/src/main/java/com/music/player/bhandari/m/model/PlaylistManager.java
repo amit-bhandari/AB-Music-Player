@@ -258,6 +258,22 @@ public class PlaylistManager {
 
     }
 
+    public void addSongToFav(final int id){
+        final String playlist_name =  DbHelperUserMusicData.KEY_FAV.replace(" ","_");
+        SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
+        dbHelperUserMusicData.onCreate(db);
+
+        String max = "MAX(" + playlist_name + ")";
+        Cursor cursor = db.query(DbHelperUserMusicData.TABLE_NAME, new String [] {max}, null, null, null, null, null);
+        cursor.moveToFirst();
+        int maxValue = cursor.getInt(0);
+        cursor.close();
+
+        ContentValues c = new ContentValues();
+        c.put(playlist_name, ++maxValue);
+        db.update(DbHelperUserMusicData.TABLE_NAME,c,DbHelperUserMusicData.KEY_ID + "= ?", new String[] {id+""});
+    }
+
     public void RemoveSongFromPlaylistNew(String playlist_name, int id){
         playlist_name = playlist_name.replace(" ","_");
         {
