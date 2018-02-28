@@ -32,13 +32,6 @@
         android:title="@string/title_ui"
         android:key="pref_key_ui_settings">
 
-        <CheckBoxPreference
-            android:title="@string/title_rotatingdisk"
-            android:key="@string/pref_rotatingdisk"
-            android:defaultValue="true">
-        </CheckBoxPreference>
-
-
         <Preference
             android:title="@string/title_text_font"
             android:key="@string/pref_text_font">

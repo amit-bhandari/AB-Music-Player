@@ -86,7 +86,7 @@ public class ColorHelper {
     }
 
     public static int getNowPlayingControlsColor(){
-        return getColor(R.color.pw_shadow_start_color_hard);
+        return getColor(R.color.pw_accent);
     }
 
     public static int getBaseThemeTextColor(){

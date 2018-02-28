@@ -139,8 +139,6 @@ public class ActivityMain extends AppCompatActivity
     final static String INSTA_WEBSITE = "https://www.instagram.com/_amit_bhandari/?hl=en";
     final static String AB_REMOTE_WALL_URL = "https://play.google.com/store/apps/details?id=in.thetechguru.walle.remote.abremotewallpaperchanger&hl=en";
 
-    final private int REQUEST_INVITE = 10;
-
     private long mLastClickTime = 0;
     private AdView mAdView;
 
@@ -186,8 +184,6 @@ public class ActivityMain extends AppCompatActivity
     private Bitmap mainLibBackBitmap;
 
     //rate dialog reward variables
-    private boolean leftAppForRating = false;
-    private long timeOfLeavingForRating;
     private static int RATE_REWARD_BONUS = 1000;
 
     @Override
@@ -206,7 +202,6 @@ public class ActivityMain extends AppCompatActivity
         if(viewPager!=null && i!=-1){
             viewPager.setCurrentItem(currentItemToBeSet);
         }
-
 
         boolean b = intent.getBooleanExtra("refresh",false);
         if(b){
@@ -241,7 +236,7 @@ public class ActivityMain extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         //bind music service
-        //startService(new Intent(this,PlayerService.class));
+        //startService(new Intent(this,MyApp.getService().class));
 
         //if player service not running, kill the app
         if(MyApp.getService()==null){
@@ -480,7 +475,7 @@ public class ActivityMain extends AppCompatActivity
             findViewById(R.id.border_view).setVisibility(View.GONE);
         }
 
-        playerService = MyApp.getService();
+        playerService= MyApp.getService();
 
         //ask for rating
         AppLaunchCountManager.app_launched(this);
@@ -498,43 +493,6 @@ public class ActivityMain extends AppCompatActivity
 
         //throw new NullPointerException();
         Log.d("ActivityMain", "onCreate: reward point count is :" + RewardPoints.getRewardPointsCount());
-    }
-
-    private void checkForDeepLink(){
-        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData data) {
-                        if (data == null) {
-                            Log.d("ActivitMain", "getInvitation: no data");
-                            return;
-                        }
-
-                        // Get the deep link
-                        Uri deepLink = data.getLink();
-
-                        Toast.makeText(playerService, "Deep Link Found : " + deepLink, Toast.LENGTH_SHORT).show();
-                        // Extract invite
-                        FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
-                        Toast.makeText(playerService, "Invite : " + invite, Toast.LENGTH_SHORT).show();
-                        if (invite != null) {
-                            String invitationId = invite.getInvitationId();
-                            Toast.makeText(playerService, invitationId, Toast.LENGTH_SHORT).show();
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            final DatabaseReference myRef = database.getReference("invites");
-                            myRef.child(invitationId).setValue(true);
-                        }
-
-                        // Handle the deep link
-                        // ...
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("ActivitMain", "getDynamicLink:onFailure", e);
-                    }
-                });
     }
 
     private Bitmap getMainLibBackBitmap(){
@@ -804,9 +762,9 @@ public class ActivityMain extends AppCompatActivity
     private void updateUI(boolean expandNeeded){
         try {
 
-            if (playerService != null) {
-                if (playerService.getCurrentTrack() != null) {
-                    Uri uri = MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId());
+            if (MyApp.getService() != null) {
+                if (MyApp.getService().getCurrentTrack() != null) {
+                    Uri uri = MusicLibrary.getInstance().getAlbumArtUri(MyApp.getService().getCurrentTrack().getAlbumId());
 
                     //albumArt.setImageDrawable(getResources().getDrawable(R.drawable.ic_batman_1));
                     Glide.with(this)
@@ -817,7 +775,7 @@ public class ActivityMain extends AppCompatActivity
                                     Log.d("AlbumLibraryAdapter", "onException: ");
                                     if(UtilityFun.isConnectedToInternet() &&
                                             !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                        final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
+                                        final String url = MusicLibrary.getInstance().getArtistUrls().get(MyApp.getService().getCurrentTrack().getArtist());
                                         Glide
                                                 .with(ActivityMain.this)
                                                 .load(url)
@@ -845,21 +803,21 @@ public class ActivityMain extends AppCompatActivity
                             .into(albumArt);
 
 
-                    if (playerService.getStatus() == PlayerService.PLAYING) {
+                    if (MyApp.getService().getStatus() == MyApp.getService().PLAYING) {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
                     } else {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp));
                     }
 
-                    songNameMiniPlayer.setText(playerService.getCurrentTrack().getTitle());
-                    artistNameMiniPlayer.setText(playerService.getCurrentTrack().getArtist());
+                    songNameMiniPlayer.setText(MyApp.getService().getCurrentTrack().getTitle());
+                    artistNameMiniPlayer.setText(MyApp.getService().getCurrentTrack().getArtist());
                     if(expandNeeded) {
                         ((AppBarLayout) findViewById(R.id.app_bar_layout)).setExpanded(true);
                     }
 
                 }
 
-                if (playerService.getStatus() == PlayerService.PLAYING) {
+                if (MyApp.getService().getStatus() == MyApp.getService().PLAYING) {
                     startUpdateTask();
                 } else {
                     stopUpdateTask();
@@ -1255,17 +1213,10 @@ public class ActivityMain extends AppCompatActivity
         } else if(id==R.id.nav_instagram){
             openUrl(Uri.parse(INSTA_WEBSITE));
         } else if(id==R.id.nav_remove_ads_free){
-            removeAdsForFree();
+            startActivity(new Intent(this, ActivityInvite.class));
+            //removeAdsForFree();
         } else if(id==R.id.nav_try_new_app){
             tryApp();
-        } else if(id==R.id.nav_invite){
-                Intent intent = new AppInviteInvitation.IntentBuilder("AB Music")
-                        .setMessage("Use it")
-                        .setDeepLink(Uri.parse("https://ddhk8.app.goo.gl/H3Ed"))
-                       // .setCustomImage(Uri.parse("data:image/jpeg;base64,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"))
-                        .setCallToActionText("Call to action")
-                        .build();
-                startActivityForResult(intent, REQUEST_INVITE);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -1599,7 +1550,7 @@ public class ActivityMain extends AppCompatActivity
             case R.id.play_pause_mini_player:
                 ColorSwitchRunnableForImageView colorSwitchRunnablePlay = new ColorSwitchRunnableForImageView((ImageView) view);
                 mHandler.post(colorSwitchRunnablePlay);
-                if(playerService.getCurrentTrack()==null) {
+                if(MyApp.getService().getCurrentTrack()==null) {
                     //Toast.makeText(this,"Nothing to play!",Toast.LENGTH_LONG).show();
                     Snackbar.make(rootView, getString(R.string.nothing_to_play), Snackbar.LENGTH_LONG).show();
                     return;
@@ -1609,10 +1560,10 @@ public class ActivityMain extends AppCompatActivity
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                playerService.play();
+                MyApp.getService().play();
 
 
-                if (playerService.getStatus() == PlayerService.PLAYING) {
+                if (MyApp.getService().getStatus() == MyApp.getService().PLAYING) {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
                     startUpdateTask();
                 } else {
@@ -1630,7 +1581,7 @@ public class ActivityMain extends AppCompatActivity
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                playerService.nextTrack();
+                MyApp.getService().nextTrack();
                 //no need to expand mini player
                 updateUI(false);
                 Log.v(Constants.TAG,"next track please Jarvis");
@@ -1659,8 +1610,8 @@ public class ActivityMain extends AppCompatActivity
                         Snackbar.make(rootView, getString(R.string.music_is_locked), Snackbar.LENGTH_LONG).show();
                         return ;
                     }
-                    if (playerService.getTrackList().size() > 0) {
-                        playerService.shuffleAll();
+                    if (MyApp.getService().getTrackList().size() > 0) {
+                        MyApp.getService().shuffleAll();
                     } else {
                         Snackbar.make(rootView, getString(R.string.empty_track_list), Snackbar.LENGTH_LONG).show();
                     }
@@ -1681,13 +1632,13 @@ public class ActivityMain extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        checkForDeepLink();
+        //checkForDeepLink();
 
         /*
         if(!UtilityFun.isAdsRemoved() && leftAppForRating){
             leftAppForRating = false;
             Log.d("ActivityMain", "onResume: time took to rate :" + (System.currentTimeMillis()-timeOfLeavingForRating));
-            //Toast.makeText(playerService, "time took to rate :" + (System.currentTimeMillis()-timeOfLeavingForRating), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MyApp.getService(), "time took to rate :" + (System.currentTimeMillis()-timeOfLeavingForRating), Toast.LENGTH_SHORT).show();
             if(!MyApp.getPref().getBoolean(getString(R.string.pref_rate_reward_granted), false)) {
                 grantRewardPoint(true);
                 MyApp.getPref().edit().putBoolean(getString(R.string.pref_rate_reward_granted), true).apply();
@@ -1706,7 +1657,7 @@ public class ActivityMain extends AppCompatActivity
                 ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiverForLibraryRefresh
                 ,new IntentFilter(Constants.ACTION.REFRESH_LIB));
-        seekBar.setProgress(UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress(), playerService.getCurrentTrackDuration()));
+        seekBar.setProgress(UtilityFun.getProgressPercentage(MyApp.getService().getCurrentTrackProgress(), MyApp.getService().getCurrentTrackDuration()));
         startUpdateTask();
     }
 
@@ -1777,22 +1728,22 @@ public class ActivityMain extends AppCompatActivity
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PLAY:
-                playerService.play();
+                MyApp.getService().play();
                 updateUI(false);
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT:
-                playerService.nextTrack();
+                MyApp.getService().nextTrack();
                 updateUI(false);
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                playerService.prevTrack();
+                MyApp.getService().prevTrack();
                 updateUI(false);
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_STOP:
-                playerService.stop();
+                MyApp.getService().stop();
                 updateUI(false);
                 break;
 
@@ -1867,29 +1818,10 @@ public class ActivityMain extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result, true);
         }
-
-        if (requestCode == REQUEST_INVITE) {
-            if (resultCode == RESULT_OK) {
-                // Get the invitation IDs of all sent messages
-                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference myRef = database.getReference("invites");
-
-                for (String id : ids) {
-                    Log.d("ActivityMain", "onActivityResult: sent invitation " + id);
-                    myRef.child(id).setValue(false);
-                }
-            } else {
-                // Sending failed or it was canceled, show failure message to the user
-                // ...
-            }
-        }
-
     }
 
     private void lockInfoDialog(){
@@ -2316,7 +2248,7 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void startUpdateTask(){
-        if(!updateTimeTaskRunning && playerService.getStatus()==PlayerService.PLAYING ){
+        if(!updateTimeTaskRunning && MyApp.getService().getStatus()==MyApp.getService().PLAYING ){
             stopProgressRunnable=false;
             updateTimeTaskRunning=true;
             Executors.newSingleThreadExecutor().execute(mUpdateTimeTask);
@@ -2339,8 +2271,8 @@ public class ActivityMain extends AppCompatActivity
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        int totalDur = playerService.getCurrentTrackDuration();
-                        int curDur = playerService.getCurrentTrackProgress();
+                        int totalDur = MyApp.getService().getCurrentTrackDuration();
+                        int curDur = MyApp.getService().getCurrentTrackProgress();
                         seekBar.setProgress(UtilityFun.getProgressPercentage(curDur,totalDur));
                         Log.v("update task","update");
                     }

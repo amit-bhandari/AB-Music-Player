@@ -76,7 +76,7 @@ public class CountryInfo extends Thread {
                         FirebaseMessaging.getInstance().subscribeToTopic(country);
                         FirebaseMessaging.getInstance().subscribeToTopic("ab_music");
 
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        /*FirebaseDatabase database = FirebaseDatabase.getInstance();
                         final DatabaseReference myRef = database.getReference("countries").child(country);
 
                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -96,7 +96,7 @@ public class CountryInfo extends Thread {
                             public void onCancelled(DatabaseError databaseError) {
 
                             }
-                        });
+                        });*/
                     }catch (Exception ignored){}
 
                     MyApp.getPref().edit().putString(MyApp.getContext().getString(R.string.pref_user_country), country).apply();

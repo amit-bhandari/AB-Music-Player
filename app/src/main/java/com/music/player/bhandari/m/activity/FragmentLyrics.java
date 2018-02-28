@@ -213,7 +213,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if(adapter!=null && b) {
+                if(adapter!=null && !fIsStaticLyrics && b) {
                     adapter.changeCurrent(UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration()));
                     int index = adapter.getCurrentTimeIndex();
                     if (index != -1) {
@@ -235,7 +235,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.d("FragmentLyrics", "onStopTrackingTouch: ");
                 playerService.seekTrack(UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration()));
-                if(adapter!=null) {
+                if(adapter!=null && !fIsStaticLyrics) {
                     scrollLyricsToCurrentLocation();
                 }
                 if(playerService.getStatus()==PlayerService.PLAYING) {
@@ -482,9 +482,10 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
         if(!fIsStaticLyrics && playerService.getStatus()==PlayerService.PLAYING && !fIsLyricUpdaterThreadRunning){
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
+            scrollLyricsToCurrentLocation();
         }
 
-        scrollLyricsToCurrentLocation();
+
     }
 
     @Override
@@ -492,10 +493,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         /* This code together with the one in onDestroy()
          * will make the screen be always on until this Activity gets destroyed. */
         startLyricUpdater();
-
-        if(getUserVisibleHint() && adapter!=null){
-            scrollLyricsToCurrentLocation();
-        }
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mLyricChange
                 ,new IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO));
@@ -516,6 +513,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         if(!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && playerService.getStatus()== PlayerService.PLAYING){
             fLyricUpdaterThreadCancelled =false;
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
+            scrollLyricsToCurrentLocation();
         }
     }
 
@@ -552,9 +550,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         
         if (isVisibleToUser) {
             startLyricUpdater();
-            if(adapter!=null) {
-                scrollLyricsToCurrentLocation();
-            }
         }
         else {
             stopLyricUpdater();

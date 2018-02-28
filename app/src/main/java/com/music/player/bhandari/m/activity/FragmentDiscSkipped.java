@@ -54,27 +54,8 @@ import butterknife.OnClick;
 public class FragmentDiscSkipped extends Fragment{
 
     private PlayerService playerService;
-    private SharedPreferences pref;
     private BroadcastReceiver mUIUpdate;
-    //private AdView mAdView;
-
-    @BindView(R.id.pw_ivShuffle)  ImageView shuffle;
-    @BindView(R.id.pw_ivRepeat)  ImageView repeat;
-    @BindView(R.id.text_in_repeat)  TextView textInsideRepeat;
     @BindView(R.id.album_art_now_playing) ImageView albumArt;
-    @BindView(R.id.seekbar_now_playing) SeekBar seekBar;
-    @BindView(R.id.pw_playButton) FloatingActionButton mPlayButton;
-    @BindView(R.id.pw_runningTime) TextView runningTime;
-    @BindView(R.id.pw_totalTime) TextView totalTime;
-    private long mLastClickTime;
-
-    private Handler mHandler;
-    private  boolean stopProgressRunnable = false;
-    private boolean updateTimeTaskRunning = false;
-
-    @BindView(R.id.ad_view_wrapper) View adViewWrapper;
-    @BindView(R.id.adView)  AdView mAdView;
-    @BindView(R.id.ad_close)  TextView adCloseText;
 
     public FragmentDiscSkipped(){}
 
@@ -86,10 +67,6 @@ public class FragmentDiscSkipped extends Fragment{
         ButterKnife.bind(this, layout);
 
         playerService = MyApp.getService();
-        pref = MyApp.getPref();
-        mHandler=new Handler();
-
-        InitializeUI();
 
         mUIUpdate = new BroadcastReceiver() {
             @Override
@@ -99,221 +76,12 @@ public class FragmentDiscSkipped extends Fragment{
             }
         };
 
-        if(/*AppLaunchCountManager.isEligibleForInterstialAd() &&*/  !UtilityFun.isAdsRemoved()
-                && AppLaunchCountManager.isEligibleForBannerAds()) {
-            MobileAds.initialize(getContext(), getString(R.string.banner_disc_fragment));
-            if (UtilityFun.isConnectedToInternet()) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
-                        .build();
-                if (mAdView != null) {
-                    mAdView.loadAd(adRequest);
-                    mAdView.setVisibility(View.VISIBLE);
-                    adViewWrapper.setVisibility(View.VISIBLE);
-                    adCloseText.setVisibility(View.VISIBLE);
-                    //if fragment is invisible, pause the ad
-                    if(!getUserVisibleHint()){
-                        mAdView.pause();
-                    }
-                }
-            } else {
-                if (mAdView != null) {
-                    mAdView.setVisibility(View.GONE);
-                    adViewWrapper.setVisibility(View.GONE);
-                }
-            }
-        }
-
-
         return layout;
-    }
-
-    @OnClick(R.id.ad_close)
-    public void close_ad(){
-        if(mAdView!=null){
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
-    }
-
-    private void InitializeUI(){
-
-        if(!pref.getBoolean(Constants.PREFERENCES.SHUFFLE,false)){
-            shuffle.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
-        }else {
-            shuffle.setColorFilter(ColorHelper.getNowPlayingControlsColor());
-        }
-
-        if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ALL){
-            textInsideRepeat.setTextColor(ColorHelper.getNowPlayingControlsColor());
-            repeat.setColorFilter(ColorHelper.getNowPlayingControlsColor());
-            textInsideRepeat.setText("A");
-        }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ONE){
-            textInsideRepeat.setTextColor(ColorHelper.getNowPlayingControlsColor());
-            repeat.setColorFilter(ColorHelper.getNowPlayingControlsColor());
-            textInsideRepeat.setText("1");
-        }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.NO_REPEAT){
-            repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
-            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.colorwhite));
-            textInsideRepeat.setText("");
-        }
-        if(playerService.getStatus()==PlayerService.PLAYING){
-            mPlayButton.setImageResource(R.drawable.pw_pause);
-        }else {
-            mPlayButton.setImageResource(R.drawable.pw_play);
-        }
-
-        seekBar.setMax(100);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-                if(b) {
-                    runningTime.setText(UtilityFun.msToString(
-                            UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration())));
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                stopUpdateTask();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                playerService.seekTrack(UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration()));
-                startUpdateTask();
-            }
-        });
-
-    }
-
-    @OnClick(R.id.pw_ivShuffle)
-    void shuffle(){
-        if(playerService.getCurrentTrack()==null) {
-            Toast.makeText(getContext(),getString(R.string.nothing_to_play),Toast.LENGTH_LONG).show();
-            return;
-        }
-        // mLastClickTime = SystemClock.elapsedRealtime();
-        if(pref.getBoolean(Constants.PREFERENCES.SHUFFLE,false)){
-            //shuffle is on, turn it off
-            pref.edit().putBoolean(Constants.PREFERENCES.SHUFFLE,false).apply();
-            playerService.shuffle(false);
-            shuffle.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
-        }else {
-            //shuffle is off, turn it on
-            pref.edit().putBoolean(Constants.PREFERENCES.SHUFFLE,true).apply();
-            playerService.shuffle(true);
-            shuffle.setColorFilter(ColorHelper.getNowPlayingControlsColor());
-        }
-        if(getActivity()!=null){
-            ((ActivityNowPlaying)getActivity()).UpdateCurrentTracklistAdapter();
-        }
-    }
-
-    @OnClick(R.id.pw_ivRepeat)
-    void repeat(){
-        if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.NO_REPEAT){
-            pref.edit().putInt(Constants.PREFERENCES.REPEAT,Constants.PREFERENCE_VALUES.REPEAT_ALL).apply();
-            //repeat.setColorFilter(UtilityFun.GetDominatColor(playerService.getAlbumArt()));
-            textInsideRepeat.setTextColor(ColorHelper.getNowPlayingControlsColor());
-            repeat.setColorFilter(ColorHelper.getNowPlayingControlsColor());
-            textInsideRepeat.setText("A");
-        }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ALL){
-            pref.edit().putInt(Constants.PREFERENCES.REPEAT,Constants.PREFERENCE_VALUES.REPEAT_ONE).apply();
-            textInsideRepeat.setTextColor(ColorHelper.getNowPlayingControlsColor());
-            repeat.setColorFilter(ColorHelper.getNowPlayingControlsColor());
-            textInsideRepeat.setText("1");
-        }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ONE){
-            pref.edit().putInt(Constants.PREFERENCES.REPEAT,Constants.PREFERENCE_VALUES.NO_REPEAT).apply();
-            repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
-            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.colorwhite));
-            textInsideRepeat.setText("");
-        }
-    }
-
-    @OnClick(R.id.pw_ivSkipNext)
-    void skipNext(){
-        if(playerService.getCurrentTrack()==null) {
-            Toast.makeText(getContext(),getString(R.string.nothing_to_play),Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
-            return;
-        }
-        mLastClickTime = SystemClock.elapsedRealtime();
-        playerService.nextTrack();
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-
-    }
-
-    @OnClick(R.id.pw_ivSkipPrevious)
-    void skippPrev(){
-        if(playerService.getCurrentTrack()==null) {
-            Toast.makeText(getContext(),getString(R.string.nothing_to_play),Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
-            return;
-        }
-        mLastClickTime = SystemClock.elapsedRealtime();
-        playerService.prevTrack();
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-
-    }
-
-    @OnClick(R.id.pw_playButton)
-    void play(){
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
-            return;
-        }
-        mLastClickTime = SystemClock.elapsedRealtime();
-        playClicked();
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-    }
-
-    private void playClicked(){
-        if(playerService.getCurrentTrack()==null){
-            Toast.makeText(getActivity(),getString(R.string.nothing_to_play), Toast.LENGTH_SHORT).show();
-        }
-
-        playerService.play();
-
-        if(playerService.getStatus()==PlayerService.PLAYING){
-            mPlayButton.setImageResource(R.drawable.pw_pause);
-            startUpdateTask();
-        }else {
-            mPlayButton.setImageResource(R.drawable.pw_play);
-            stopUpdateTask();
-        }
     }
 
     @Override
     public void onDestroyView() {
-        stopUpdateTask();
-        stopProgressRunnable=true;
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
         super.onDestroyView();
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if(isVisibleToUser){
-            try{
-                if(MyApp.getService().getStatus()==PlayerService.PLAYING){
-                    mPlayButton.setImageResource(R.drawable.pw_pause);
-                }else {
-                    mPlayButton.setImageResource(R.drawable.pw_play);
-                }
-                setSeekbarAndTime();
-            }catch (NullPointerException e){
-                e.printStackTrace();
-            }
-        }
-        super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override
@@ -322,9 +90,6 @@ public class FragmentDiscSkipped extends Fragment{
         if(getContext()!=null) {
             LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mUIUpdate);
         }
-
-        stopUpdateTask();
-        stopProgressRunnable=true;
         super.onPause();
     }
 
@@ -337,33 +102,7 @@ public class FragmentDiscSkipped extends Fragment{
         }
 
         UpdateUI();
-
-        setSeekbarAndTime();
-        startUpdateTask();
         super.onResume();
-    }
-
-    private void setSeekbarAndTime() {
-        seekBar.setProgress(UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress()
-                , playerService.getCurrentTrackDuration()));
-        runningTime.setText(UtilityFun.msToString(playerService.getCurrentTrackProgress()));
-    }
-
-    private void startUpdateTask(){
-        if(getActivity()!=null && !updateTimeTaskRunning && playerService.getStatus()==PlayerService.PLAYING ){
-            stopProgressRunnable=false;
-            Executors.newSingleThreadExecutor().execute(mUpdateTimeTask);
-        }
-    }
-
-    private void stopUpdateTask(){
-        stopProgressRunnable=true;
-        updateTimeTaskRunning=false;
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private void UpdateUI(){
@@ -428,41 +167,6 @@ public class FragmentDiscSkipped extends Fragment{
                     .into(albumArt);
 
         }
-        if(playerService.getStatus()==PlayerService.PLAYING){
-            mPlayButton.setImageResource(R.drawable.pw_pause);
-        }else {
-            mPlayButton.setImageResource(R.drawable.pw_play);
-        }
-
-        totalTime.setText(UtilityFun.msToString(playerService.getCurrentTrackDuration()));
     }
-
-    private final Runnable mUpdateTimeTask = new Runnable() {
-        public void run() {
-            while (true) {
-                if (stopProgressRunnable) {
-                    break;
-                }
-                updateTimeTaskRunning=true;
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int curDur = playerService.getCurrentTrackProgress();
-                        int per = UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress() / 1000,
-                                playerService.getCurrentTrackDuration() / 1000);
-                        runningTime.setText(UtilityFun.msToString(curDur));
-                        seekBar.setProgress(per);
-                    }
-                });
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Log.d("FragmentDiscSkipped", "run: running");
-            }
-            updateTimeTaskRunning = false;
-        }
-    };
 
 }
