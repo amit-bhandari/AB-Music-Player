@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/root_view_invite"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- toolbar -->
+    <android.support.v7.widget.Toolbar
+        android:fitsSystemWindows="true"
+        android:minHeight="@dimen/action_bar_size"
+        app:contentInsetStartWithNavigation="0dp"
+        android:id="@+id/toolbar_"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <RelativeLayout
+        android:id="@+id/invite_button_layout"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/toolbar_"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/invite_text"
+            android:layout_above="@id/invite_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/invite_text"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/invite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@color/fab_Colors_lyric_view"
+            android:paddingStart="15dp"
+            android:elevation="10dp"
+            android:text="@string/invite_now"
+            android:paddingLeft="15dp"
+            android:paddingEnd="15dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/invited_people_layout"
+        android:layout_below="@+id/toolbar_"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_above="@+id/invited_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+            />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/invite_more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:background="@color/fab_Colors_lyric_view"
+            android:paddingStart="15dp"
+            android:elevation="10dp"
+            android:text="@string/invite_more"
+            android:paddingLeft="15dp"
+            android:paddingEnd="15dp"/>
+
+
+        <TextView
+            android:id="@+id/invited_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/invite_more_button"
+            android:layout_alignLeft="@+id/swipeRefreshLayout"
+            android:layout_alignStart="@+id/swipeRefreshLayout"
+            android:gravity="center"
+            android:layout_marginBottom="5dp"
+            android:text="Ads will be removed after one successful invite. Swipe down the list to refresh the status of invitations."
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

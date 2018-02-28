@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -78,12 +79,6 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     @BindView(R.id.track_artist_artsi_bio_frag) EditText  artistEdit;
     @BindView(R.id.button_update_metadata)  Button buttonUpdateMetadata;
 
-    @BindView(R.id.pw_playButton) FloatingActionButton playButton;
-    private Animation playButtonAnimation;
-    private long mLastClickTime;
-
-    private BroadcastReceiver mPlayPauseUpdateReceiver;
-
     @BindView(R.id.ad_view_wrapper) View adViewWrapper;
     @BindView(R.id.adView)  AdView mAdView;
     @BindView(R.id.ad_close)  TextView adCloseText;
@@ -103,16 +98,10 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.fragment_artist_info, container, false);
 
         ButterKnife.bind(this, layout);
-
-        initializeMiniPlaybackControlDashboard();
-        UpdateUI();
-
-        //move view outside
-        playButtonAnimation = AnimationUtils.loadAnimation(MyApp.getContext(), R.anim.shake_animation);
 
         buttonUpdateMetadata.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,13 +204,6 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             }
         };
 
-        mPlayPauseUpdateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                UpdateUI();
-            }
-        };
-
 
         //noinspection PointlessBooleanExpression
         if(false && /*AppLaunchCountManager.isEligibleForInterstialAd() &&*/  !UtilityFun.isAdsRemoved()) {
@@ -257,48 +239,6 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             mAdView.destroy();
         }
         adViewWrapper.setVisibility(View.GONE);
-    }
-
-    private void initializeMiniPlaybackControlDashboard() {
-        ImageView skipNext = layout.findViewById(R.id.pw_ivSkipNext);
-        ImageView skipPrev = layout.findViewById(R.id.pw_ivSkipPrevious);
-
-        skipNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
-                    return;
-                }
-                mLastClickTime = SystemClock.elapsedRealtime();
-                MyApp.getService().nextTrack();
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-            }
-        });
-
-        skipPrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
-                    return;
-                }
-                mLastClickTime = SystemClock.elapsedRealtime();
-                MyApp.getService().prevTrack();
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-            }
-        });
-
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
-                    return;
-                }
-                mLastClickTime = SystemClock.elapsedRealtime();
-                playClicked();
-            }
-        });
     }
 
     @Override
@@ -362,7 +302,6 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mPlayPauseUpdateReceiver);
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mArtistUpdateReceiver);
     }
 
@@ -370,9 +309,6 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     public void onResume() {
         super.onResume();
         updateArtistInfoIfNeeded();
-        UpdateUI();
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mPlayPauseUpdateReceiver
-                ,new IntentFilter(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mArtistUpdateReceiver
                 ,new IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO));
     }
@@ -396,20 +332,6 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         //set loading  text and animation
 
         downloadArtInfo();
-    }
-
-    private void UpdateUI()
-    {
-        if(playButton !=null && MyApp.getService()!=null) {
-            if(playButtonAnimation!=null){
-                playButton.startAnimation(playButtonAnimation);
-            }
-            if(MyApp.getService().getStatus()==PlayerService.PLAYING) {
-                playButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.pw_pause));
-            }else {
-                playButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.pw_play));
-            }
-        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,7 +23,14 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.vending.billing.IInAppBillingService;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.appinvite.FirebaseAppInvite;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.fcm.CountryInfo;
@@ -139,6 +147,10 @@ public class ActivityPermissionSeek extends AppCompatActivity {
 
         setNotificationChannelForOreoPlus();
 
+        //if(MyApp.getPref().getBoolean(getString(R.string.pref_first_install),true)) {
+            checkForDeepLink();
+        //}
+
         changeSettingsForVersion();
 
         new CountryInfo().start();
@@ -146,6 +158,45 @@ public class ActivityPermissionSeek extends AppCompatActivity {
         //log selected font to know which font is used maximum
         //logFont();
     }
+
+
+    private void checkForDeepLink(){
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData data) {
+                        if (data == null) {
+                            Log.d("ActivitMain", "getInvitation: no data");
+                            return;
+                        }
+
+                        // Get the deep link
+                        Uri deepLink = data.getLink();
+
+                        Toast.makeText(ActivityPermissionSeek.this, "Deep Link Found : " + deepLink, Toast.LENGTH_SHORT).show();
+                        // Extract invite
+                        FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
+                        Toast.makeText(ActivityPermissionSeek.this, "Invite : " + invite, Toast.LENGTH_SHORT).show();
+                        if (invite != null) {
+                            String invitationId = invite.getInvitationId();
+                            Toast.makeText(ActivityPermissionSeek.this, invitationId, Toast.LENGTH_SHORT).show();
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            final DatabaseReference myRef = database.getReference("invites");
+                            myRef.child(invitationId).setValue(true);
+                        }
+
+                        // Handle the deep link
+                        // ...
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("ActivitMain", "getDynamicLink:onFailure", e);
+                    }
+                });
+    }
+
 
     private void permissionDetailsDialog(){
         new MaterialDialog.Builder(this)
@@ -225,8 +276,7 @@ public class ActivityPermissionSeek extends AppCompatActivity {
             MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art), false).apply();
         }
 
-
-
+        MyApp.getPref().edit().putBoolean(getString(R.string.pref_rotatingdisk), false).apply();
         //remove ads
         //check if ads removed, if yes, then change boolean accordingly
         /*Intent serviceIntent =

@@ -10,10 +10,6 @@
             android:id="@+id/nav_call_for_help"
             android:icon="@drawable/ic_info_black_24dp"
             android:title="@string/action_call_for_help" /> -->
-        <item
-            android:id="@+id/nav_invite"
-            android:icon="@drawable/ic_get_app_black_24dp"
-            android:title="Invite" />
 
         <item
             android:id="@+id/nav_try_new_app"

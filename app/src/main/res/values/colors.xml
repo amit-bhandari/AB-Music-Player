@@ -51,7 +51,7 @@
     <color name="pw_primary">#3F51B5</color>
     <color name="pw_primary_dark">#303F9F</color>
     <color name="pw_primary_light">#C5CAE9</color>
-    <color name="pw_accent">#a0FF5722</color>
+    <color name="pw_accent">#FF5722</color>
     <color name="pw_primary_text">#212121</color>
     <color name="pw_secondary_text">#727272</color>
     <color name="pw_icons">#FFFFFF</color>
@@ -81,7 +81,7 @@
 
     <color name="pw_bg_dark_gray_item_color_mask">#4d4d4d</color>
     <color name="pw_bg_dark_gray_item_color">#595959</color>
-    <color name="pw_bg_light_gray_item_color">#bababa</color>
+    <color name="pw_bg_light_gray_item_color">#ffffff</color>
 
 
 </resources>

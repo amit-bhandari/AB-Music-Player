@@ -372,7 +372,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         if(!fIsStaticLyrics && !fIsThreadRunning && currentMusicInfo.getBoolean("playing",false)){
             fThreadCancelled=false;
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
-
+            scrollLyricsToCurrentLocation();
             //acquire power lock
             acquireWindowPowerLock(true);
         }
@@ -388,10 +388,6 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             onLyricsDownloaded(mLyrics);
         }else {
             updateLyrics(false);
-        }
-
-        if(adapter!=null) {
-            scrollLyricsToCurrentLocation();
         }
 
         AppLaunchCountManager.instantLyricsLaunched();
@@ -611,9 +607,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             }
         });
 
-        if(adapter!=null) {
-            scrollLyricsToCurrentLocation();
-        }
+
 
     }
 
@@ -672,11 +666,12 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
         if(!fIsStaticLyrics && !fIsThreadRunning){
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
+            scrollLyricsToCurrentLocation();
         }
 
         //adapter.notifyDataSetChanged();
 
-        scrollLyricsToCurrentLocation();
+
     }
 
     private void scrollLyricsToCurrentLocation() {

@@ -813,6 +813,15 @@ sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
     <string name="try_my_new_app">Try my new App</string>
+    <string name="invite_text">Invite one of your friend to AB Music and enjoy ad-free experience lifetime. \n\n
+        Please note, invitation is successful only on new install. If person you invited already has AB Music installed, it will not work.
+    </string>
+    <string name="invite_friends_title">Invite Friends</string>
+    <string name="invitation_sent">Invitation sent</string>
+    <string name="invite_more">Invite More</string>
+    <string name="invite_now">Invite Now</string>
+    <string name="error_invitation_not_sent">Invitation not sent, Please try again!</string>
+    <string name="pref_sent_invittions">pref_sent_invitations</string>
 
 
 </resources>
