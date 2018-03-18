@@ -796,19 +796,25 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menu_share:
-                StringBuilder shareString = new StringBuilder();
-                List<Integer> selectedItemPositions = adapter.getSelectedItems();
-                int currPos;
-                for (int i = 0 ; i <=  selectedItemPositions.size() - 1; i++) {
-                    currPos = selectedItemPositions.get(i);
-                    String lyricLine = adapter.getLineAtPosition(currPos);
-                    if(lyricLine!=null) {
-                        shareString.append(lyricLine).append("\n\n");
+                try {
+                    StringBuilder shareString = new StringBuilder();
+                    List<Integer> selectedItemPositions = adapter.getSelectedItems();
+                    int currPos;
+                    for (int i = 0; i <= selectedItemPositions.size() - 1; i++) {
+                        currPos = selectedItemPositions.get(i);
+                        String lyricLine = adapter.getLineAtPosition(currPos);
+                        if (lyricLine != null) {
+                            shareString.append(lyricLine).append("\n\n");
+                        }
                     }
+                    shareTextIntent(shareString.toString());
+                    actionMode.finish();
+                    actionModeActive = false;
+                }catch (IndexOutOfBoundsException e){
+                    actionMode.finish();
+                    actionModeActive = false;
+                    Toast.makeText(getActivity(), "Invalid selection, please try again", Toast.LENGTH_SHORT).show();
                 }
-                shareTextIntent(shareString.toString());
-                actionMode.finish();
-                actionModeActive = false;
                 break;
         }
         return false;

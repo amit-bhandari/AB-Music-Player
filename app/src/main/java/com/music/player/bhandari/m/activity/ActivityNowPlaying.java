@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -247,6 +246,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
         setSupportActionBar(toolbar);
 
+        InitializeCurrentTracklistAdapter();
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         screenWidth = displayMetrics.widthPixels;
@@ -336,8 +337,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
         }
 
-        //current tracklist
-        InitializeCurrentTracklistAdapter();
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -469,9 +468,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         if(mRecyclerView==null || mAdapter == null){
             return;
         }
-
-        mAdapter.updateDataset();
-
+        mAdapter.fillData();
     }
 
     @Override
@@ -514,7 +511,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     private void UpdateUI() {
         if(playerService!=null) {
             TrackItem item = playerService.getCurrentTrack();
-            mAdapter.notifyDataSetChanged();
+            if(mAdapter!=null) mAdapter.notifyDataSetChanged();
             invalidateOptionsMenu();
 
             if (item != null) {
@@ -665,8 +662,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     protected void onResume() {
         MyApp.isAppVisible = true;
         super.onResume();
-        if(playerService!=null)
+        if(playerService!=null) {
             UpdateUI();
+        }
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mUIUpdateReceiver
                 ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
         AppLaunchCountManager.nowPlayingLaunched();

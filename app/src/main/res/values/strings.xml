@@ -96,6 +96,19 @@
         <string name="abm_song_name_mini_player">Empty queue</string>
         <string name="abm_title">Library</string>
 
+    <!-- Firebase Invites  -->
+        <string name="invite_text">Invite one of your friend to AB Music and enjoy ad-free experience lifetime. \n\n
+            Please note, invitation is successful only on new install. If person you invited already has AB Music installed, it will not work.
+        </string>
+        <string name="invite_friends_title">Invite Friends</string>
+        <string name="invitation_sent">Invitation sent</string>
+        <string name="invite_more">Invite More</string>
+        <string name="invite_now">Invite Now</string>
+        <string name="error_invitation_not_sent">Invitation not sent, Please try again!</string>
+        <string name="pref_sent_invittions">pref_sent_invitations</string>
+        <string name="referral_succeessful">Referral successful! You can remove ads for free by referring one of your friend to AB Music.</string>
+
+
     <!-- toasts and snacks -->
         <string name="main_act_empty_lib">No Music found in Library!</string>
         <string name="main_act_lib_refreshed">Library Refreshed</string>
@@ -307,7 +320,9 @@
         <string name="title_clear_playlist">Clear</string>
 
         <string name="permission_details_title">Permissions required!</string>
-        <string name="permission_details_content">For AB Music to work correctly, following permissions are needed. \n\n * Phone state : For controlling playback during calls  \n\n  * Storage : For reading music on SD Card   \n\n * Record Audio(Optional) : For showing cool animation in Now playing screen</string>
+        <string name="permission_details_content">For AB Music to work correctly, following permissions are needed.
+            \n\n * Phone state : For controlling playback during calls.  \n\n  * Storage : For reading music on SD Card.
+            </string>
         <string name="permission_details_pos">Grant</string>
 
         <string name="turn_on">Turn On</string>
@@ -427,6 +442,7 @@
         <string name="title_remove_ads">Remove Ads</string>
         <string name="title_text_font">Music Library Text Font</string>
         <string name="title_misc">Miscellaneous</string>
+        <string name="title_try_my_new_app">Try my new App</string>
         <string name="title_continous_playback">Continuous Playback</string>
         <string name="title_batch_download">Batch Lyrics Download</string>
         <string name="title_hide_lock_button">Hide Music Lock Button</string>
@@ -481,7 +497,9 @@
             <item>Custom</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020* My new app is out on store. Check out the side navigation drawer.]]></string>
+    <string name="whats_new"><![CDATA[ \u0020 * Removed disc animation. \n\n
+* AB Music do not need audio record permission anymore. \n\n
+* Some critical bug fixes.]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
@@ -613,8 +631,7 @@
         <string name="pref_show_edit_track_info_dialog">pref_show_edit_track_info_dialog</string>
         <string name="pref_show_lock_info_dialog">show_lock_info_dialog</string>
         <string name="pref_hide_lock_button">hide_music_lock_button</string>
-    <string name="pref_notifications">hide_notifications</string>
-    <string name="pref_rotatingdisk">rotating_sidkui</string>
+        <string name="pref_notifications">hide_notifications</string>
         <string name="pref_swipe_right">pref_swipe_right</string>
 
         <!-- info messages preferences  -->
@@ -812,16 +829,5 @@ limitation the rights to use, copy, modify, merge, publish, distribute,
 sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
-    <string name="try_my_new_app">Try my new App</string>
-    <string name="invite_text">Invite one of your friend to AB Music and enjoy ad-free experience lifetime. \n\n
-        Please note, invitation is successful only on new install. If person you invited already has AB Music installed, it will not work.
-    </string>
-    <string name="invite_friends_title">Invite Friends</string>
-    <string name="invitation_sent">Invitation sent</string>
-    <string name="invite_more">Invite More</string>
-    <string name="invite_now">Invite Now</string>
-    <string name="error_invitation_not_sent">Invitation not sent, Please try again!</string>
-    <string name="pref_sent_invittions">pref_sent_invitations</string>
-
 
 </resources>

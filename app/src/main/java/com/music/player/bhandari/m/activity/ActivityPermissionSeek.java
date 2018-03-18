@@ -54,8 +54,7 @@ public class ActivityPermissionSeek extends AppCompatActivity {
 
     final private int MY_PERMISSIONS_REQUEST = 0;
     private static String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE
-            , Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ,Manifest.permission.RECORD_AUDIO};
+            , Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private boolean mBound=false;
     private boolean mInAppBillingBound = false;
     private ServiceConnection playerServiceConnection = new ServiceConnection() {
@@ -166,33 +165,25 @@ public class ActivityPermissionSeek extends AppCompatActivity {
                     @Override
                     public void onSuccess(PendingDynamicLinkData data) {
                         if (data == null) {
-                            Log.d("ActivitMain", "getInvitation: no data");
+                            Log.d("ActivityMain", "getInvitation: no data");
                             return;
                         }
-
-                        // Get the deep link
-                        Uri deepLink = data.getLink();
-
-                        Toast.makeText(ActivityPermissionSeek.this, "Deep Link Found : " + deepLink, Toast.LENGTH_SHORT).show();
                         // Extract invite
                         FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
-                        Toast.makeText(ActivityPermissionSeek.this, "Invite : " + invite, Toast.LENGTH_SHORT).show();
                         if (invite != null) {
                             String invitationId = invite.getInvitationId();
-                            Toast.makeText(ActivityPermissionSeek.this, invitationId, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityPermissionSeek.this, R.string.referral_succeessful
+                                    , Toast.LENGTH_LONG).show();
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             final DatabaseReference myRef = database.getReference("invites");
                             myRef.child(invitationId).setValue(true);
                         }
-
-                        // Handle the deep link
-                        // ...
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("ActivitMain", "getDynamicLink:onFailure", e);
+                        Log.w("ActivityMain", "getDynamicLink:onFailure", e);
                     }
                 });
     }
@@ -275,14 +266,6 @@ public class ActivityPermissionSeek extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
             MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art), false).apply();
         }
-
-        MyApp.getPref().edit().putBoolean(getString(R.string.pref_rotatingdisk), false).apply();
-        //remove ads
-        //check if ads removed, if yes, then change boolean accordingly
-        /*Intent serviceIntent =
-                new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
-        bindService(serviceIntent, inAppBillingConnection, Context.BIND_AUTO_CREATE);*/
 
         setDeprecatedPreferencesValues();
     }

@@ -74,6 +74,8 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
 
     final private int REQUEST_INVITE = 10;
 
+    private static final String invitation = "Invitation ";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -313,7 +315,8 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            holder.invitationId.setText(invitationItems.get(position).invitationId);
+
+            holder.invitationId.setText(invitation + (position+1));
             if(invitationItems.get(position).invitationAccepted) {
                 holder.status.setImageDrawable(getResources().getDrawable(R.drawable.ic_cloud_done_black_24dp));
             }else {
