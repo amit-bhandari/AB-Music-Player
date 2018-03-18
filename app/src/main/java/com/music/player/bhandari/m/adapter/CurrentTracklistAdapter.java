@@ -75,8 +75,6 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
         handler = new Handler(Looper.getMainLooper());
 
-        long t = System.currentTimeMillis();
-
         dataItems.clear();
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -105,7 +103,6 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
             }
         });
 
-        Log.v(Constants.TAG,"AMIT "+(System.currentTimeMillis()-t));
 
         position = playerService.getCurrentTrackPosition();
         this.context=context;
@@ -113,7 +110,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 //setHasStableIds(true);
     }
 
-    public void updateDataset(){
+    public void fillData(){
         if(playerService==null) return;
         dataItems.clear();
         ArrayList<Integer> temp = playerService.getTrackList();
@@ -140,15 +137,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = inflater.inflate(R.layout.track_item_for_dragging, parent, false);
-        final CurrentTracklistAdapter.MyViewHolder holder = new CurrentTracklistAdapter.MyViewHolder(view);
-
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-
-        return holder;
+        return new MyViewHolder(view);
     }
 
     @Override

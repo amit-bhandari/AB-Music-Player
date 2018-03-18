@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/root_view_invite"
+
+<android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+    android:id="@+id/root_view_invite"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
 
     <!-- toolbar -->
     <android.support.v7.widget.Toolbar
@@ -102,3 +109,5 @@
     </RelativeLayout>
 
 </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

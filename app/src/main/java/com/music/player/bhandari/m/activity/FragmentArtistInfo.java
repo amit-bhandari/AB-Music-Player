@@ -49,6 +49,7 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArt
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.interfaces.DoubleClickListener;
 import com.music.player.bhandari.m.MyApp;
+import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -206,7 +207,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
 
         //noinspection PointlessBooleanExpression
-        if(false && /*AppLaunchCountManager.isEligibleForInterstialAd() &&*/  !UtilityFun.isAdsRemoved()) {
+        if(/*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved()) {
             MobileAds.initialize(getContext(), getString(R.string.banner_art_info_frag));
             mAdView = layout.findViewById(R.id.adView);
             if (UtilityFun.isConnectedToInternet()) {

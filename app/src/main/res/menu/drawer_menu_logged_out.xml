@@ -14,7 +14,7 @@
         <item
             android:id="@+id/nav_try_new_app"
             android:icon="@drawable/ic_get_app_black_24dp"
-            android:title="@string/try_my_new_app" />
+            android:title="@string/title_try_my_new_app" />
 
         <item
             android:id="@+id/nav_rewards"
@@ -30,7 +30,7 @@
 
         <item
             android:id="@+id/nav_remove_ads_free"
-            android:icon="@drawable/happy"
+            android:icon="@drawable/ic_remove_circle_outline_black_24dp"
             android:title="@string/title_remove_ads_for_free" />
 
         <item

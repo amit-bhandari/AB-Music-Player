@@ -287,7 +287,7 @@ public class MusicLibrary{
                 Long lastTimeDidAt = MyApp.getPref().getLong(context.getString(R.string.pref_artinfo_libload),0);
                 if (System.currentTimeMillis() >= lastTimeDidAt +
                         (2 * 24 * 60 * 60 * 1000)) {
-                    //new BulkArtInfoGrabber().start();
+                    new BulkArtInfoGrabber().start();
                 }
             }
         });

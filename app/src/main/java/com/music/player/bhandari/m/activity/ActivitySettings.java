@@ -1611,8 +1611,6 @@ public class ActivitySettings extends AppCompatActivity {
 
                             editor.putBoolean(getString(R.string.pref_hide_lock_button),false);
 
-                            editor.putBoolean(getString(R.string.pref_rotatingdisk),true);
-
                             editor.putBoolean(getString(R.string.pref_notifications), true);
 
                             editor.putBoolean(getString(R.string.pref_continuous_playback), false);
