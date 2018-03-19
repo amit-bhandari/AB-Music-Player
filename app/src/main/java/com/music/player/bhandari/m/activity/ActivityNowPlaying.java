@@ -118,7 +118,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
     int screenWidth, screenHeight;
     private InterstitialAd mInterstitialAd;
-    private static final int LAUNCH_COUNT_BEFORE_POPUP=4;
+    private static final int LAUNCH_COUNT_BEFORE_POPUP=7;
     private static final int RC_SIGN_IN = 7;
     private long mLastClickTime;
     private  boolean stopProgressRunnable = false;
@@ -158,6 +158,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     //now playing background bitmap
     Bitmap nowPlayingCustomBackBitmap;
+
+    private int selectedPageIndex;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -347,6 +349,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             public void onPageSelected(int position) {
                 Log.v(Constants.L_TAG+"wow","selected "+position );
 
+                selectedPageIndex = position;
                 //display disclaimer if not accepted already
                 if(position==2 && !MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted),false)){
                     showDisclaimerDialog();
@@ -959,10 +962,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         .show();
                 break;
 
-            case R.id.login_to_remove_ads:
+            /*case R.id.login_to_remove_ads:
                 //signInDialog();
                 signIn();
-                break;
+                break;*/
         }
     }
 
@@ -1271,6 +1274,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 if(b) {
                     runningTime.setText(UtilityFun.msToString(
                             UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration())));
+                    if(selectedPageIndex==2) {
+                        ((FragmentLyrics) viewPagerAdapter.getItem(2)).smoothScrollAfterSeekbarTouched(seekBar.getProgress());
+                    }
                 }
             }
 

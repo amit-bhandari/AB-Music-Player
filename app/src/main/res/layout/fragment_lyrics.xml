@@ -106,11 +106,11 @@
 
     <LinearLayout
         android:id="@+id/ad_view_wrapper"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_above="@+id/playbackControls"
+        android:layout_alignParentBottom="true"
         android:paddingBottom="5dp"
         android:layout_centerHorizontal="true">
 
@@ -135,85 +135,6 @@
             ads:adUnitId="@string/banner_lyric_frag"
             android:layout_gravity="bottom">
         </com.google.android.gms.ads.AdView>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/playbackControls"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="30dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingRight="20dp"
-            android:paddingLeft="20dp"
-            android:paddingBottom="10dp"
-            >
-
-            <SeekBar
-                android:id="@+id/pc_seekbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:thumb="@drawable/thumb"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            >
-
-            <ImageView
-                android:id="@id/pw_ivSkipPrevious"
-                android:layout_width="@dimen/pw_image_item_size"
-                android:layout_height="@dimen/pw_image_item_size"
-                android:layout_marginEnd="@dimen/pw_image_item_margin"
-                android:layout_marginRight="@dimen/pw_image_item_margin"
-                android:background="@drawable/pw_bg_iv_white"
-                android:scaleType="centerInside"
-                android:layout_gravity="center"
-                android:src="@drawable/pw_ic_skip_previous"
-                />
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@id/pw_playButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="center"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/pw_play"
-                app:backgroundTint="@color/pw_accent"
-                app:borderWidth="0dp"
-                app:elevation="@dimen/pw_small_fab_default_elevation"
-                app:fabSize="normal"
-                app:pressedTranslationZ="6dp"
-                />
-
-            <ImageView
-                android:id="@id/pw_ivSkipNext"
-                android:layout_width="@dimen/pw_image_item_size"
-                android:layout_height="@dimen/pw_image_item_size"
-                android:layout_marginLeft="@dimen/pw_image_item_margin"
-                android:layout_marginStart="@dimen/pw_image_item_margin"
-                android:background="@drawable/pw_bg_iv_white"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:scaleType="centerInside"
-                android:src="@drawable/pw_ic_skip_next"
-                />
-
-        </LinearLayout>
 
     </LinearLayout>
 

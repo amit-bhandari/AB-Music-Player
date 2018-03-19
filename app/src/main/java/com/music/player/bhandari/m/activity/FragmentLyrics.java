@@ -99,7 +99,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     @BindView(R.id.ad_view_wrapper) View adViewWrapper;
     @BindView(R.id.adView)  AdView mAdView;
     @BindView(R.id.ad_close)  TextView adCloseText;
-    @BindView(R.id.pc_seekbar) SeekBar seekBar;
 
     private BroadcastReceiver mLyricChange;
     @BindView(R.id.text_view_lyric_status)  TextView  lyricStatus;
@@ -116,8 +115,8 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private Boolean fIsLyricUpdaterThreadRunning =false;
     private Handler handler ;
 
-    private boolean fSeekbarThreadCancelled = false;
-    private boolean fSeekbarRunning = false;
+    /*private boolean fSeekbarThreadCancelled = false;
+    private boolean fSeekbarRunning = false;*/
 
     @BindView(R.id.dynamic_lyrics_recycler_view) RecyclerView recyclerView;
     private LyricsViewAdapter adapter;
@@ -126,11 +125,11 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private ActionMode actionMode;
     private boolean actionModeActive = false;
 
-    @BindView(R.id.pw_playButton) FloatingActionButton playButton;
+    /*@BindView(R.id.pw_playButton) FloatingActionButton playButton;
     private long mLastClickTime;
-    private Animation playButtonAnimation;
+    private Animation playButtonAnimation;*/
 
-    private BroadcastReceiver mPlayPauseUpdateReceiver;
+    //private BroadcastReceiver mPlayPauseUpdateReceiver;
 
     PlayerService playerService;
 
@@ -142,20 +141,20 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         ButterKnife.bind(this, layout);
         playerService = MyApp.getService();
         //bindViews();
-        initializeMiniPlaybackControlDashboard();
-        UpdateUI();
-        showAdIfApplicable();
+        //initializeMiniPlaybackControlDashboard();
+        //UpdateUI();
+        //showAdIfApplicable();
         initializeListeners();
         return layout;
     }
 
     private void initializeListeners() {
-        mPlayPauseUpdateReceiver = new BroadcastReceiver() {
+        /*mPlayPauseUpdateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 UpdateUI();
             }
-        };
+        };*/
         buttonUpdateMetadata.setOnClickListener(this);
 
         lyricStatus.setOnClickListener(this);
@@ -198,7 +197,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         }
     }
 
-    private void initializeMiniPlaybackControlDashboard() {
+    /*private void initializeMiniPlaybackControlDashboard() {
         ImageView skipNext = layout.findViewById(R.id.pw_ivSkipNext);
         ImageView skipPrev = layout.findViewById(R.id.pw_ivSkipPrevious);
 
@@ -246,7 +245,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 startLyricUpdater();
             }
         });
-    }
+    }*/
 
     @OnClick(R.id.ad_close)
     public void close_ad(){
@@ -496,16 +495,16 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mLyricChange
                 ,new IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO));
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mPlayPauseUpdateReceiver
-                ,new IntentFilter(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-        UpdateUI();
+        /*LocalBroadcastManager.getInstance(getContext()).registerReceiver(mPlayPauseUpdateReceiver
+                ,new IntentFilter(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));*/
+        //UpdateUI();
         updateLyrics();
         super.onResume();
 
-        if(!fSeekbarRunning && playerService.getStatus()==PlayerService.PLAYING) {
+        /*if(!fSeekbarRunning && playerService.getStatus()==PlayerService.PLAYING) {
             fSeekbarThreadCancelled = false;
             Executors.newSingleThreadExecutor().execute(seekbarUpdater);
-        }
+        }*/
 
     }
 
@@ -527,6 +526,18 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         adapter.notifyDataSetChanged();
     }
 
+    public void smoothScrollAfterSeekbarTouched(int progress){
+        if(adapter!=null && !fIsStaticLyrics) {
+            adapter.changeCurrent(UtilityFun.progressToTimer(progress, playerService.getCurrentTrackDuration()));
+            int index = adapter.getCurrentTimeIndex();
+            if (index != -1) {
+                recyclerView.smoothScrollToPosition(index);
+                adapter.notifyDataSetChanged();
+            }
+            Log.d("FragmentLyrics", "scrollLyricsToCurrentLocation: index " + index);
+        }
+    }
+
     @Override
     public void onPause() {
 
@@ -536,9 +547,9 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         }
         stopLyricUpdater();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mLyricChange);
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mPlayPauseUpdateReceiver);
+        //LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mPlayPauseUpdateReceiver);
 
-        fSeekbarThreadCancelled = true;
+        //fSeekbarThreadCancelled = true;
         super.onPause();
     }
 
@@ -555,11 +566,11 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             stopLyricUpdater();
         }
 
-        if(isVisibleToUser && seekBar!=null){
+        /*if(isVisibleToUser && seekBar!=null){
             int per = UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress() / 1000,
                 playerService.getCurrentTrackDuration() / 1000);
             seekBar.setProgress(per);
-        }
+        }*/
 
         Log.v("frag",isVisibleToUser+"");
         if(isVisibleToUser && mAdView!=null){
@@ -570,14 +581,14 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             }
         }
 
-        if(isVisibleToUser && playerService.getStatus()==PlayerService.PLAYING){
+        /*if(isVisibleToUser && playerService.getStatus()==PlayerService.PLAYING){
             fSeekbarThreadCancelled = false;
             if(!fSeekbarRunning) {
                 Executors.newSingleThreadExecutor().execute(seekbarUpdater);
             }
         }else {
             fSeekbarThreadCancelled=true;
-        }
+        }*/
 
         Log.v(Constants.L_TAG,"Called...." + isVisibleToUser);
     }
@@ -708,15 +719,15 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             stopLyricUpdater();
         }
 
-        if(playerService.getStatus()==PlayerService.PLAYING) {
+        /*if(playerService.getStatus()==PlayerService.PLAYING) {
             fSeekbarThreadCancelled = false;
             Executors.newSingleThreadExecutor().execute(seekbarUpdater);
         }else {
             fSeekbarThreadCancelled = true;
-        }
+        }*/
     }
 
-    private void UpdateUI(){
+    /*private void UpdateUI(){
         if(playButton !=null && playerService!=null ) {
             if(playButtonAnimation!=null){
                 playButton.startAnimation(playButtonAnimation);
@@ -727,12 +738,12 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 playButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.pw_play));
             }
         }
-    }
+    }*/
 
     @Override
     public void onDestroy() {
         fLyricUpdaterThreadCancelled =true;
-        fSeekbarThreadCancelled = true;
+        //fSeekbarThreadCancelled = true;
         super.onDestroy();
     }
 
@@ -743,7 +754,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         }
 
         fLyricUpdaterThreadCancelled =true;
-        fSeekbarThreadCancelled = true;
+        //fSeekbarThreadCancelled = true;
         super.onDestroyView();
     }
 
@@ -840,6 +851,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 }
                 break;
 
+                /*
             case R.id.pw_ivSkipNext:
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
                     return;
@@ -866,7 +878,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
                 playClicked();
-                break;
+                break;*/
 
             case R.id.text_view_lyric_status:
                 if(lyricStatus.getText().equals(getString(R.string.reward_points_exhausted))){
@@ -1000,7 +1012,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         }
     };
 
-    private final Runnable seekbarUpdater = new Runnable() {
+    /*private final Runnable seekbarUpdater = new Runnable() {
         @Override
         public void run() {
 
@@ -1026,6 +1038,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
             fSeekbarRunning = false;
         }
-    };
+    };*/
 }
 

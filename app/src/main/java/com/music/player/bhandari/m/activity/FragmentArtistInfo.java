@@ -207,7 +207,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
 
         //noinspection PointlessBooleanExpression
-        if(/*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved()) {
+        /*if(!UtilityFun.isAdsRemoved()) {
             MobileAds.initialize(getContext(), getString(R.string.banner_art_info_frag));
             mAdView = layout.findViewById(R.id.adView);
             if (UtilityFun.isConnectedToInternet()) {
@@ -229,7 +229,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
                     adViewWrapper.setVisibility(View.GONE);
                 }
             }
-        }
+        }*/
 
         return layout;
     }

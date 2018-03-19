@@ -497,9 +497,9 @@
             <item>Custom</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020 * Removed disc animation. \n\n
-* AB Music do not need audio record permission anymore. \n\n
-* Some critical bug fixes.]]></string>
+    <string name="whats_new"><![CDATA[ \u0020 * Added Russian Translations, thanks to Anonymous Person! \n\n
+                                              * Dynamic lyrics sources are up and running. Click alternate lyric sources in now
+playing screen for alternate lyrics.]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
