@@ -163,7 +163,7 @@ public class NotificationListenerService extends android.service.notification.No
                 metadataEditor.getString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, ""));
         String track = metadataEditor.getString(MediaMetadataRetriever.METADATA_KEY_TITLE, "");
 
-        postNotification(artist, track);
+        //postNotification(artist, track);
 
         if (durationObject instanceof Double) {
             if (artist != null && !artist.isEmpty())

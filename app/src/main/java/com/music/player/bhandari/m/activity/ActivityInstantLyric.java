@@ -372,9 +372,11 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         if(!fIsStaticLyrics && !fIsThreadRunning && currentMusicInfo.getBoolean("playing",false)){
             fThreadCancelled=false;
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
-            scrollLyricsToCurrentLocation();
-            //acquire power lock
+        }
+
+        if(!fIsStaticLyrics){
             acquireWindowPowerLock(true);
+            scrollLyricsToCurrentLocation();
         }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter(Constants.ACTION.UPDATE_INSTANT_LYRIC));
@@ -579,6 +581,9 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
             lyricStatus.setVisibility(View.GONE);
             fIsStaticLyrics = !mLyrics.isLRC();
+            if(!fIsStaticLyrics){
+                acquireWindowPowerLock(true);
+            }
             fThreadCancelled=false;
             recyclerView.setVisibility(View.VISIBLE);
             lyricStatus.setVisibility(View.GONE);
