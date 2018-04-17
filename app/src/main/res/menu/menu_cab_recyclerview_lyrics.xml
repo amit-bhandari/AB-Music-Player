@@ -2,9 +2,16 @@
 
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu_lyric_card"
+        android:title="@string/title_lyric_card"
+        android:icon="@drawable/ic_photo_black_24dp"
+        android:orderInCategory="9"
+        app:showAsAction="always" />
+
     <item android:id="@+id/menu_share"
         android:title="@string/action_share"
         android:icon="@drawable/ic_share_black_24dp"
         android:orderInCategory="10"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

@@ -46,6 +46,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter;
+import com.music.player.bhandari.m.lyricCard.ActivityLyricCard;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.PlaylistManager;
@@ -808,17 +809,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         switch (menuItem.getItemId()) {
             case R.id.menu_share:
                 try {
-                    StringBuilder shareString = new StringBuilder();
-                    List<Integer> selectedItemPositions = adapter.getSelectedItems();
-                    int currPos;
-                    for (int i = 0; i <= selectedItemPositions.size() - 1; i++) {
-                        currPos = selectedItemPositions.get(i);
-                        String lyricLine = adapter.getLineAtPosition(currPos);
-                        if (lyricLine != null) {
-                            shareString.append(lyricLine).append("\n\n");
-                        }
-                    }
-                    shareTextIntent(shareString.toString());
+                    shareTextIntent(getSelectedLyricString().toString());
                     actionMode.finish();
                     actionModeActive = false;
                 }catch (IndexOutOfBoundsException e){
@@ -827,8 +818,28 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                     Toast.makeText(getActivity(), "Invalid selection, please try again", Toast.LENGTH_SHORT).show();
                 }
                 break;
+
+            case R.id.menu_lyric_card:
+                Intent intent = new Intent(getActivity(), ActivityLyricCard.class);
+                intent.putExtra("lyric", getSelectedLyricString().toString());
+                startActivity(intent);
+                break;
         }
         return false;
+    }
+
+    private StringBuilder getSelectedLyricString() {
+        StringBuilder shareString = new StringBuilder();
+        List<Integer> selectedItemPositions = adapter.getSelectedItems();
+        int currPos;
+        for (int i = 0; i <= selectedItemPositions.size() - 1; i++) {
+            currPos = selectedItemPositions.get(i);
+            String lyricLine = adapter.getLineAtPosition(currPos);
+            if (lyricLine != null) {
+                shareString.append(lyricLine).append("\n\n");
+            }
+        }
+        return shareString;
     }
 
     @Override
