@@ -27,4 +27,9 @@
 
     </declare-styleable>
 
+
+    <declare-styleable name="MyImageView">
+        <attr name="url" format="string" />
+    </declare-styleable>
+
 </resources>

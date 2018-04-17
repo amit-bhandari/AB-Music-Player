@@ -62,6 +62,7 @@ import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter;
+import com.music.player.bhandari.m.lyricCard.ActivityLyricCard;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.ArtistInfo.ArtistInfo;
@@ -757,22 +758,32 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menu_share:
-                StringBuilder shareString = new StringBuilder();
-                List<Integer> selectedItemPositions = adapter.getSelectedItems();
-                int currPos;
-                for (int i = 0 ; i <=  selectedItemPositions.size() - 1; i++) {
-                    currPos = selectedItemPositions.get(i);
-                    String lyricLine = adapter.getLineAtPosition(currPos);
-                    if(lyricLine!=null) {
-                        shareString.append(lyricLine).append("\n\n");
-                    }
-                }
-                shareTextIntent(shareString.toString());
+                shareTextIntent(getSelectedLyricString().toString());
                 actionMode.finish();
                 actionModeActive = false;
                 break;
+
+            case R.id.menu_lyric_card:
+                Intent intent = new Intent(this, ActivityLyricCard.class);
+                intent.putExtra("lyric", getSelectedLyricString().toString());
+                startActivity(intent);
+                break;
         }
         return false;
+    }
+
+    private StringBuilder getSelectedLyricString() {
+        StringBuilder shareString = new StringBuilder();
+        List<Integer> selectedItemPositions = adapter.getSelectedItems();
+        int currPos;
+        for (int i = 0; i <= selectedItemPositions.size() - 1; i++) {
+            currPos = selectedItemPositions.get(i);
+            String lyricLine = adapter.getLineAtPosition(currPos);
+            if (lyricLine != null) {
+                shareString.append(lyricLine).append("\n\n");
+            }
+        }
+        return shareString;
     }
 
     @Override

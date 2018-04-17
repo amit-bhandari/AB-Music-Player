@@ -497,6 +497,18 @@
             <item>Custom</item>
         </string-array>
 
+        <string-array name="colors">
+            <item>#ffffff</item>
+            <item>#ffffff</item>
+            <item>#ffffff</item>
+            <item>#ffffff</item>
+            <item>#ffffff</item>
+            <item>#ffffff</item>
+            <item>#ffffff</item>
+            <item>#ffffff</item>
+            <item>#ffffff</item>
+        </string-array>
+
     <string name="whats_new"><![CDATA[ \u0020 * Added Russian Translations, thanks to Anonymous Person! \n\n
                                               * Dynamic lyrics sources are up and running. Click alternate lyric sources in now
 playing screen for alternate lyrics.]]></string>
@@ -829,5 +841,5 @@ limitation the rights to use, copy, modify, merge, publish, distribute,
 sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
-
+    <string name="title_lyric_card">Lyric card</string>
 </resources>
