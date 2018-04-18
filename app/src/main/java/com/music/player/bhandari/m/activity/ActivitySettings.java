@@ -75,7 +75,7 @@ import java.util.concurrent.Executors;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by Amit Bhandari on 1/27/2017.
+ * Created by Amit AB Bhandari on 1/27/2017.
  */
 
 public class ActivitySettings extends AppCompatActivity {

@@ -13,7 +13,7 @@ import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 
 /**
- * Created by Amit Bhandari on 2/21/2017.
+ * Created by Amit AB Bhandari on 2/21/2017.
  */
 
 public class AppLaunchCountManager {
@@ -58,7 +58,7 @@ public class AppLaunchCountManager {
         new MaterialDialog.Builder(mContext)
                 .typeface(TypeFaceHelper.getTypeFace(mContext),TypeFaceHelper.getTypeFace(mContext))
                 .title("Hello there!")
-                .content("This is Amit (developer of AB Music) and I hope you" +
+                .content("This is Amit AB (developer of AB Music) and I hope you" +
                         " are enjoying AB Music as much as I enjoyed developing it. Please consider rating and leaving review for "
                         + mContext.getString(R.string.app_name)
                         + " on store, you will bring smile on my face. Thank you in advance!")

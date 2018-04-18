@@ -65,7 +65,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by Amit Bhandari on 3/10/2017.
+ * Created by Amit AB Bhandari on 3/10/2017.
  */
 
 public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback {

@@ -45,7 +45,7 @@ import java.util.Collections;
 import java.util.concurrent.Executors;
 
 /**
- * Created by amit on 21/12/16.
+ * Created by Amit AB on 21/12/16.
  */
 
 public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTracklistAdapter.MyViewHolder>

@@ -8,7 +8,7 @@ import com.music.player.bhandari.m.R;
 import java.util.Random;
 
 /**
- * Created by abami on 10/31/2017.
+ * Created by Amit AB AB on 10/31/2017.
  */
 
 public class RewardPoints {

@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import com.music.player.bhandari.m.adapter.MainLibraryAdapter;
 
 /**
- * Created by Amit Bhandari on 2/4/2017.
+ * Created by Amit AB Bhandari on 2/4/2017.
  */
 
 public class CustomRecyclerView extends RecyclerView {

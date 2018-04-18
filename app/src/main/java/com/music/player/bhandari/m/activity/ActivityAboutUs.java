@@ -40,7 +40,7 @@ import com.music.player.bhandari.m.utils.UtilityFun;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by Amit Bhandari on 1/27/2017.
+ * Created by Amit AB Bhandari on 1/27/2017.
  */
 
 public class ActivityAboutUs extends AppCompatActivity {
@@ -48,7 +48,7 @@ public class ActivityAboutUs extends AppCompatActivity {
     private final static String FB_URL = "http://www.facebook.com/abmusicoffline/";
     private final String SITE_URL = "http://www.thetechguru.in/ab_music";
     final static String WEBSITE = "http://www.thetechguru.in";
-    final static String TRANSLATION_HELP_WEBSITE = "https://github.com/amit-bhandari/AB-Music-Translations";
+    final static String TRANSLATION_HELP_WEBSITE = "https://github.com/Amit AB-bhandari/AB-Music-Translations";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState)

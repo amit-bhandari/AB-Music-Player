@@ -96,7 +96,7 @@ import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by AMIT on 9/23/2017.
+ * Created by Amit AB on 9/23/2017.
  */
 
 public class ActivityInstantLyric extends AppCompatActivity implements RecyclerView.OnItemTouchListener, Lyrics.Callback
@@ -154,7 +154,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.v("amit", "created");
+        Log.v("Amit AB", "created");
 
         currentMusicInfo = getSharedPreferences("current_music", Context.MODE_PRIVATE);
 

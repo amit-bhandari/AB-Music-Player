@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by AMIT on 9/23/2017.
+ * Created by Amit AB on 9/23/2017.
  */
 
 public class ActivityRequestNotificationAccess extends AppCompatActivity implements View.OnClickListener {

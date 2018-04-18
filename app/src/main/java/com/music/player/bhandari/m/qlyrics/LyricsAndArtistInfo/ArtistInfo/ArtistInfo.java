@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.io.Serializable;
 
 /**
- * Created by Amit Bhandari on 3/27/2017.
+ * Created by Amit AB Bhandari on 3/27/2017.
  */
 
 public class ArtistInfo implements Serializable, Parcelable{

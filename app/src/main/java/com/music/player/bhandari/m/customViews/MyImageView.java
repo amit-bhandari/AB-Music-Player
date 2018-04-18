@@ -1,7 +1,7 @@
 package com.music.player.bhandari.m.customViews;
 
 /**
- * Created by abami on 17-Apr-18.
+ * Created by Amit AB AB on 17-Apr-18.
  */
 
 
@@ -20,7 +20,7 @@ import com.music.player.bhandari.m.R;
  * This product is protected by copyright and distributed under
  * licenses restricting copying, distribution and decompilation.
  *
- * Created by <Amit AB> on 16/03/2018 (Replace with date).
+ * Created by <Amit AB AB> on 16/03/2018 (Replace with date).
  *
  * @version
  * @file

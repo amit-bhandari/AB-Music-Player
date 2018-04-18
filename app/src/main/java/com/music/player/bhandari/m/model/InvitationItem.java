@@ -1,7 +1,7 @@
 package com.music.player.bhandari.m.model;
 
 /**
- * Created by abami on 27-Feb-18.
+ * Created by Amit AB AB on 27-Feb-18.
  */
 
 public class InvitationItem {

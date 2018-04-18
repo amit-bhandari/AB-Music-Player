@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by abami on 1/12/2018.
+ * Created by Amit AB AB on 1/12/2018.
  */
 //this thread is started from Music library once all artists are loaded
 

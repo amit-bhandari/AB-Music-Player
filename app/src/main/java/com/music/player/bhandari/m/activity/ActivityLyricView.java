@@ -87,7 +87,7 @@ import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by abami on 12/6/2017.
+ * Created by Amit AB AB on 12/6/2017.
  */
 
 public class ActivityLyricView extends AppCompatActivity implements View.OnClickListener, RecyclerView.OnItemTouchListener, Lyrics.Callback

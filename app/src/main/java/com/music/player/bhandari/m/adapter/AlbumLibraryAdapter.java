@@ -45,7 +45,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Created by amit on 24/12/16.
+ * Created by Amit AB on 24/12/16.
  */
 
 public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapter.MyViewHolder>

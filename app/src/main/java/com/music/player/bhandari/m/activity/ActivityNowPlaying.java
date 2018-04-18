@@ -110,7 +110,7 @@ import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by amit on 11/12/16.
+ * Created by Amit AB on 11/12/16.
  */
 
 public class ActivityNowPlaying extends AppCompatActivity implements

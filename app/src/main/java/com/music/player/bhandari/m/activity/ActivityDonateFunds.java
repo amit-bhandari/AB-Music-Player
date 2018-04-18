@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by Amit Bhandari on 2/11/2017.
+ * Created by Amit AB Bhandari on 2/11/2017.
  */
 
 public class ActivityDonateFunds extends AppCompatActivity {
