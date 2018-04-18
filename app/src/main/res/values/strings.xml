@@ -499,14 +499,14 @@
 
         <string-array name="colors">
             <item>#ffffff</item>
-            <item>#ffffff</item>
-            <item>#ffffff</item>
-            <item>#ffffff</item>
-            <item>#ffffff</item>
-            <item>#ffffff</item>
-            <item>#ffffff</item>
-            <item>#ffffff</item>
-            <item>#ffffff</item>
+            <item>#ffaaff</item>
+            <item>#ff00ff</item>
+            <item>#11ffff</item>
+            <item>#fff11f</item>
+            <item>#fffddf</item>
+            <item>#33ffff</item>
+            <item>#ffff55</item>
+            <item>#ffffaa</item>
         </string-array>
 
     <string name="whats_new"><![CDATA[ \u0020 * Added Russian Translations, thanks to Anonymous Person! \n\n

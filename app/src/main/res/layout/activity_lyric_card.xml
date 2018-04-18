@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+
+<LinearLayout android:id="@+id/root_view_lyric_card"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-        <variable name="model" type="com.music.player.bhandari.m.lyricCard.ModelLyricCard"/>
-    </data>
-
-
-    <LinearLayout
-        android:id="@+id/root_view_lyric_card"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_"
@@ -21,14 +15,27 @@
             android:theme="@style/AppTheme.AppBarOverlay"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        <com.music.player.bhandari.m.customViews.MyImageView
-            android:id="@+id/image_lyric_card"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="8"
-            android:scaleType="centerCrop"
-            tools:ignore="ContentDescription"
-            app:url="https://i.pinimg.com/originals/30/ba/3a/30ba3a8c0e6e6e7d1ba4ea45250a2fda.png"/>
+                android:layout_height="0dp"
+                android:layout_weight="8">
+
+                <com.music.player.bhandari.m.customViews.MyImageView
+                    android:id="@+id/mainImageLyricCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    tools:ignore="ContentDescription"/>
+
+                <TextView
+                    android:id="@+id/text_lyric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="30sp"/>
+
+        </FrameLayout>
+
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_colors"
@@ -52,5 +59,3 @@
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
-
-</layout>

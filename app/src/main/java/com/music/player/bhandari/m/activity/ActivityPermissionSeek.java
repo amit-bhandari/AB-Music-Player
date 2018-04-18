@@ -34,6 +34,7 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.fcm.CountryInfo;
+import com.music.player.bhandari.m.lyricCard.ActivityLyricCard;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.service.NotificationListenerService;
 import com.music.player.bhandari.m.service.PlayerService;
@@ -72,7 +73,9 @@ public class ActivityPermissionSeek extends AppCompatActivity {
                     !NotificationListenerService.isListeningAuthorized(ActivityPermissionSeek.this)){
                 startActivity(new Intent(ActivityPermissionSeek.this, ActivityRequestNotificationAccess.class));
             }else {
-                startActivity(new Intent(ActivityPermissionSeek.this, ActivityMain.class));
+
+                startActivity(new Intent(ActivityPermissionSeek.this, ActivityLyricCard.class).putExtra("lyric", "Wow"));
+                //startActivity(new Intent(ActivityPermissionSeek.this, ActivityMain.class));
             }
             finish();
         }
