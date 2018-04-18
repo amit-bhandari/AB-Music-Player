@@ -821,7 +821,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
             case R.id.menu_lyric_card:
                 Intent intent = new Intent(getActivity(), ActivityLyricCard.class);
-                intent.putExtra("lyric", getSelectedLyricString().toString());
+                intent.putExtra("lyric", getSelectedLyricString().toString()).putExtra("artist", mLyrics.getArtist());
                 startActivity(intent);
                 break;
         }

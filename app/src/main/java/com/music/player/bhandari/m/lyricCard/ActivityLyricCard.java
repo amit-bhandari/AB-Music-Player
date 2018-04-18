@@ -14,6 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,7 +27,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -36,6 +38,7 @@ import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.activity.ActivityPermissionSeek;
+import com.music.player.bhandari.m.customViews.ZoomTextView;
 import com.music.player.bhandari.m.model.Constants;
 
 import java.io.File;
@@ -63,12 +66,16 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     @BindView(R.id.rv_colors) RecyclerView recyclerViewColors;
     @BindView(R.id.rv_images) RecyclerView recyclerViewImages;
     @BindView(R.id.mainImageLyricCard) ImageView mainImage;
-    @BindView(R.id.text_lyric) TextView lyricText;
+    @BindView(R.id.text_lyric) ZoomTextView lyricText;
+    @BindView(R.id.text_artist) ZoomTextView artistText;
     @BindView(R.id.dragView) View dragView;
+
+    float dx;
+    float dy;
 
     private static final String fileName = "file.jpg";
 
-    ImagesAdapter adapter = new ImagesAdapter();
+    ImagesAdapter imagesAdapter = new ImagesAdapter();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,6 +111,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
             return;
         }
         lyricText.setText(getIntent().getExtras().getString("lyric"));
+        artistText.setText(getIntent().getExtras().getString("artist"));
 
         findViewById(R.id.root_view_lyric_card).setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
 
@@ -133,7 +141,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         recyclerViewColors.setAdapter(new ColorAdapter());
 
         recyclerViewImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewImages.setAdapter(adapter);
+        recyclerViewImages.setAdapter(imagesAdapter);
 
         FirebaseDatabase.getInstance().getReference().child("cardLinks").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -143,7 +151,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
                     urls.add(snap.getValue(String.class));
                 }
-                adapter.setUrls(urls);
+                imagesAdapter.setUrls(urls);
             }
 
             @Override
@@ -157,26 +165,42 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     }
 
     private void initiateDragView(){
-        dragView.setOnTouchListener(this);
+        artistText.setOnTouchListener(this);
+        lyricText.setOnTouchListener(this);
     }
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN :
+                dx = v.getX() - event.getRawX();
+                dy = v.getY() - event.getRawY();
                 break;
 
             case MotionEvent.ACTION_MOVE :
-                lyricText.animate()
-                        .x(event.getX()-lyricText.getWidth()/2)
-                        .y(event.getY()-lyricText.getHeight()/2)
-                        .setDuration(0)
-                        .start();
+                switch (v.getId()){
+                    case R.id.text_artist:
+                        artistText.animate()
+                                .x(event.getRawX() + dx)
+                                .y(event.getRawY() + dy)
+                                .setDuration(0)
+                                .start();
+                        break;
+
+                    case R.id.text_lyric:
+                        lyricText.animate()
+                            .x(event.getRawX() + dx)
+                            .y(event.getRawY() + dy)
+                            .setDuration(0)
+                            .start();
+                        break;
+                }
                 break;
 
             default: return false;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -203,10 +227,24 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         mainImage.setDrawingCacheEnabled(true);
         Bitmap bitmap = mainImage.getDrawingCache();
         Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(30f);
-        canvas.drawText(lyricText.getText().toString(), 500f, 500f, paint);
+        TextPaint lyricPaint = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
+        lyricPaint.setColor(lyricText.getCurrentTextColor());
+        lyricPaint.setTextSize(lyricText.getTextSize());
+
+        TextPaint artistPaint = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
+        artistPaint.setColor(artistText.getCurrentTextColor());
+        artistPaint.setTextSize(artistText.getTextSize());
+
+        //give proper width here
+        StaticLayout sl = new StaticLayout(lyricText.getText(), lyricPaint,
+                300, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
+        canvas.save();
+        canvas.translate(lyricText.getX(), lyricText.getY());
+        sl.draw(canvas);
+        canvas.restore();
+        //canvas.drawText(lyricText.getText().toString(), lyricText.getX(), lyricText.getY(), lyricPaint);
+        //canvas.drawText(artistText.getText().toString(), artistText.getX(), artistText.getY(), artistPaint);
+
         File dir =new File(Environment.getExternalStorageDirectory().toString() + "/abmusic");
         dir.mkdirs();
 
@@ -224,7 +262,6 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
         Toast.makeText(this, "Created lyric card ", Toast.LENGTH_SHORT).show();
     }
-
 
     class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.MyViewHolder>{
 
