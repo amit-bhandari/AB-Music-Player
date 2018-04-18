@@ -106,12 +106,32 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         setContentView(R.layout.activity_lyric_card);
         ButterKnife.bind(this);
 
+
         if(getIntent().getExtras()==null){
+            Toast.makeText(this, "Missing lyric text", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        lyricText.setText(getIntent().getExtras().getString("lyric"));
-        artistText.setText(getIntent().getExtras().getString("artist"));
+
+        String text;
+        String author;
+        if(getIntent().getExtras().getString("lyric")!=null){
+            text = getIntent().getExtras().getString("lyric");
+        }else {
+            text = "";
+        }
+
+        if(getIntent().getExtras().getString("artist")!=null){
+            author = getIntent().getExtras().getString("artist");
+        }else {
+            author = "";
+        }
+
+        lyricText.setText(text);
+        artistText.setText(author);
+
+        Log.d("ActivityLyricCard", "onCreate: lyric " + lyricText.getText());
+        Log.d("ActivityLyricCard", "onCreate: artist " + artistText.getText());
 
         findViewById(R.id.root_view_lyric_card).setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
 
@@ -224,26 +244,9 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     }
 
     private void shareCard(){
-        mainImage.setDrawingCacheEnabled(true);
-        Bitmap bitmap = mainImage.getDrawingCache();
-        Canvas canvas = new Canvas(bitmap);
-        TextPaint lyricPaint = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
-        lyricPaint.setColor(lyricText.getCurrentTextColor());
-        lyricPaint.setTextSize(lyricText.getTextSize());
-
-        TextPaint artistPaint = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
-        artistPaint.setColor(artistText.getCurrentTextColor());
-        artistPaint.setTextSize(artistText.getTextSize());
-
-        //give proper width here
-        StaticLayout sl = new StaticLayout(lyricText.getText(), lyricPaint,
-                300, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
-        canvas.save();
-        canvas.translate(lyricText.getX(), lyricText.getY());
-        sl.draw(canvas);
-        canvas.restore();
-        //canvas.drawText(lyricText.getText().toString(), lyricText.getX(), lyricText.getY(), lyricPaint);
-        //canvas.drawText(artistText.getText().toString(), artistText.getX(), artistText.getY(), artistPaint);
+        dragView.destroyDrawingCache();  //if not done, image is going to be overridden every time
+        dragView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = dragView.getDrawingCache();
 
         File dir =new File(Environment.getExternalStorageDirectory().toString() + "/abmusic");
         dir.mkdirs();
