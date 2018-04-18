@@ -1,7 +1,6 @@
 package com.music.player.bhandari.m.lyricCard;
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -11,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,13 +19,21 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.activity.ActivityPermissionSeek;
-import com.music.player.bhandari.m.databinding.ActivityLyricCardBinding;
 import com.music.player.bhandari.m.model.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,9 +44,13 @@ import butterknife.ButterKnife;
 
 public class ActivityLyricCard extends AppCompatActivity {
 
-    ModelLyricCard model;
 
     @BindView(R.id.rv_colors) RecyclerView recyclerViewColors;
+    @BindView(R.id.rv_images) RecyclerView recyclerViewImages;
+    @BindView(R.id.mainImageLyricCard) ImageView mainImage;
+    @BindView(R.id.text_lyric) TextView lyricText;
+
+    ImagesAdapter adapter = new ImagesAdapter();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,12 +78,14 @@ public class ActivityLyricCard extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        ActivityLyricCardBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_lyric_card);
-
+        setContentView(R.layout.activity_lyric_card);
         ButterKnife.bind(this);
 
-        model = new ModelLyricCard();
-        binding.setModel(model);
+        if(getIntent().getExtras()==null){
+            finish();
+            return;
+        }
+        lyricText.setText(getIntent().getExtras().getString("lyric"));
 
         findViewById(R.id.root_view_lyric_card).setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
 
@@ -99,6 +113,27 @@ public class ActivityLyricCard extends AppCompatActivity {
     private void initiateUI(){
         recyclerViewColors.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewColors.setAdapter(new ColorAdapter());
+
+        recyclerViewImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewImages.setAdapter(adapter);
+
+        FirebaseDatabase.getInstance().getReference().child("cardLinks").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("ActivityLyricCard", "onDataChange: ");
+                ArrayList<String> urls = new ArrayList<>();
+                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                    urls.add(snap.getValue(String.class));
+                }
+                adapter.setUrls(urls);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     @Override
@@ -138,31 +173,58 @@ public class ActivityLyricCard extends AppCompatActivity {
 
             public MyViewHolder(View itemView) {
                 super(itemView);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        lyricText.setTextColor(Color.parseColor(colors[getLayoutPosition()]));
+                    }
+                });
                 color = itemView.findViewById(R.id.colorView);
             }
         }
     }
 
-    class imagesAdapter extends RecyclerView.Adapter<imagesAdapter.MyViewHolder>{
+    class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder>{
+
+        private List<String> urls = new ArrayList<>();
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return null;
+            View v = LayoutInflater.from(ActivityLyricCard.this).inflate(R.layout.item_image_lyric_card, parent, false);
+            return new MyViewHolder(v);
         }
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-
+            Glide.with(ActivityLyricCard.this).load(urls.get(position)).into(holder.imageView);
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return urls.size();
+        }
+
+        void setUrls(ArrayList<String> urls){
+            this.urls = urls;
+            setMainImage(urls.get(0));
+            notifyDataSetChanged();
+        }
+
+        private void setMainImage(String url) {
+            Glide.with(ActivityLyricCard.this).load(url).into(mainImage);
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder{
+            ImageView imageView;
             public MyViewHolder(View itemView) {
                 super(itemView);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setMainImage(urls.get(getLayoutPosition()));
+                    }
+                });
+                imageView = itemView.findViewById(R.id.image_lyric_card);
             }
         }
     }
