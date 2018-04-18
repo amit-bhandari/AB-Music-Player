@@ -49,7 +49,7 @@ import butterknife.OnClick;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by abami on 27-Feb-18.
+ * Created by Amit AB AB on 27-Feb-18.
  */
 
 public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {

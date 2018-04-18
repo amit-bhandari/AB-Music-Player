@@ -19,7 +19,7 @@ import java.io.ObjectOutputStream;
 import java.util.concurrent.Executors;
 
 /**
- * Created by Amit Bhandari on 3/29/2017.
+ * Created by Amit AB Bhandari on 3/29/2017.
  */
 
 public class OfflineStorageLyrics {
@@ -281,7 +281,7 @@ public class OfflineStorageLyrics {
                     out = new ObjectOutputStream(new FileOutputStream(actual_file_path));
                     out.writeObject(lyrics);
                     out.close();
-                    Log.v("amit", "saved lyrics to cache");
+                    Log.v("Amit AB", "saved lyrics to cache");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -319,7 +319,7 @@ public class OfflineStorageLyrics {
         }
 
         if(lyrics!=null){
-            Log.v("amit", "got from cache"+lyrics.getOriginalTrack());
+            Log.v("Amit AB", "got from cache"+lyrics.getOriginalTrack());
         }
         return lyrics;
     }

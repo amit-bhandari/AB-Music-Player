@@ -3,7 +3,7 @@ package com.music.player.bhandari.m.interfaces;
 import android.view.View;
 
 /**
- * Created by Amit Bhandari on 2/26/2017.
+ * Created by Amit AB Bhandari on 2/26/2017.
  */
 
 public abstract class DoubleClickListener implements View.OnClickListener {

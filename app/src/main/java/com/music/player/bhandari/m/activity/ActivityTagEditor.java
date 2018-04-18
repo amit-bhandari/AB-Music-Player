@@ -54,7 +54,7 @@ import butterknife.ButterKnife;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by Amit Bhandari on 3/2/2017.
+ * Created by Amit AB Bhandari on 3/2/2017.
  */
 
 public class ActivityTagEditor extends AppCompatActivity implements  View.OnClickListener {

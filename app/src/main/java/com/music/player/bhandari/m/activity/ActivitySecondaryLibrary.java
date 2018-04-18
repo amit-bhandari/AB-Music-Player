@@ -62,7 +62,7 @@ import butterknife.OnClick;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by amit on 6/12/16.
+ * Created by Amit AB on 6/12/16.
  */
 
 public class ActivitySecondaryLibrary extends AppCompatActivity implements View.OnClickListener {

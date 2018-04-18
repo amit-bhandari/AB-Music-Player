@@ -31,7 +31,7 @@ import java.util.Random;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by abami on 10/31/2017.
+ * Created by Amit AB AB on 10/31/2017.
  */
 
 public class ActivityRewardVideo extends AppCompatActivity {

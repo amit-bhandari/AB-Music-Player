@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.music.player.bhandari.m.equalizer.EqualizerSetting;
 
 /**
- * Created by abami on 11/7/2017.
+ * Created by Amit AB AB on 11/7/2017.
  */
 
 public class DbHelperEqualizer extends SQLiteOpenHelper{

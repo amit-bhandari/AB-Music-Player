@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by Amit Bhandari on 1/29/2017.
+ * Created by Amit AB Bhandari on 1/29/2017.
  */
 
 public class ActivityPermissionSeek extends AppCompatActivity {
@@ -73,9 +73,8 @@ public class ActivityPermissionSeek extends AppCompatActivity {
                     !NotificationListenerService.isListeningAuthorized(ActivityPermissionSeek.this)){
                 startActivity(new Intent(ActivityPermissionSeek.this, ActivityRequestNotificationAccess.class));
             }else {
-
-                startActivity(new Intent(ActivityPermissionSeek.this, ActivityLyricCard.class).putExtra("lyric", "Wow"));
-                //startActivity(new Intent(ActivityPermissionSeek.this, ActivityMain.class));
+                //startActivity(new Intent(ActivityPermissionSeek.this, ActivityLyricCard.class).putExtra("lyric", "Wow"));
+                startActivity(new Intent(ActivityPermissionSeek.this, ActivityMain.class));
             }
             finish();
         }

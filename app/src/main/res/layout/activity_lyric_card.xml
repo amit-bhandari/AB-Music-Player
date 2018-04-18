@@ -16,9 +16,10 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <FrameLayout
+            android:id="@+id/dragView"
             android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="8">
+            android:layout_height="0dp"
+            android:layout_weight="8">
 
                 <com.music.player.bhandari.m.customViews.MyImageView
                     android:id="@+id/mainImageLyricCard"

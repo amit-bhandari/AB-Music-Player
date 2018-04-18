@@ -47,7 +47,7 @@ import java.util.Calendar;
 import java.util.concurrent.Executors;
 
 /**
- * Created by amit on 8/1/17.
+ * Created by Amit AB on 8/1/17.
  */
 
 public class UtilityFun {
@@ -406,7 +406,7 @@ public class UtilityFun {
             @Override
             public void run() {
                 try {
-                    Log.v("amit","deleting cache");
+                    Log.v("Amit AB","deleting cache");
                     int daysBack = 2;
 
                     File CACHE = MyApp.getContext().getCacheDir();
@@ -419,19 +419,19 @@ public class UtilityFun {
                     cal.add(Calendar.DAY_OF_MONTH, daysBack * -1);
                     long purgeTime = cal.getTimeInMillis();
 
-                    Log.v("amit","cache size " + fileSizeInBytes);
-                    Log.v("amit","cache directory " + CACHE.getAbsolutePath());
+                    Log.v("Amit AB","cache size " + fileSizeInBytes);
+                    Log.v("Amit AB","cache directory " + CACHE.getAbsolutePath());
                     //if (fileSizeInMB > 1) {
                         for (File listFile : CACHE.listFiles()) {
 
                             //if (listFile.lastModified() < purgeTime) {
                                 listFile.delete();
-                                Log.v("amit","deleting "+listFile.getName() );
+                                Log.v("Amit AB","deleting "+listFile.getName() );
                             //}
                         }
                     //}
                 }catch (Exception ignored){
-                    Log.v("amit","Error deleting cache");
+                    Log.v("Amit AB","Error deleting cache");
                 }
             }
         });

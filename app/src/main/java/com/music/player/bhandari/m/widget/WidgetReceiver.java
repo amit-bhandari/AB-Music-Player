@@ -21,7 +21,7 @@ import com.music.player.bhandari.m.MyApp;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 /**
- * Created by Amit Bhandari on 3/16/2017.
+ * Created by Amit AB Bhandari on 3/16/2017.
  */
 
 public class WidgetReceiver extends AppWidgetProvider {

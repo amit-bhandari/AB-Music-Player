@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * Created by Amit Bhandari on 3/27/2017.
+ * Created by Amit AB Bhandari on 3/27/2017.
  */
 
 public class DownloadArtInfoThread extends Thread {

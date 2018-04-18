@@ -1,10 +1,14 @@
 package com.music.player.bhandari.m.lyricCard;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,12 +18,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +38,8 @@ import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.activity.ActivityPermissionSeek;
 import com.music.player.bhandari.m.model.Constants;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,16 +47,26 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by abami on 17-Apr-18.
+ * Created by Amit AB AB on 17-Apr-18.
+ *
+ * I know, I know, there is not even bit of "Good Architecture" is followed in this class
+ * Everything is mixed up, UI, data, card creation. Everything.
+ * But its too late for this app to follow architectural guidelines.
+ * You agree with me? Cheers.
+ * If not. May god help you.
+ *
  */
 
-public class ActivityLyricCard extends AppCompatActivity {
+public class ActivityLyricCard extends AppCompatActivity implements View.OnTouchListener  {
 
 
     @BindView(R.id.rv_colors) RecyclerView recyclerViewColors;
     @BindView(R.id.rv_images) RecyclerView recyclerViewImages;
     @BindView(R.id.mainImageLyricCard) ImageView mainImage;
     @BindView(R.id.text_lyric) TextView lyricText;
+    @BindView(R.id.dragView) View dragView;
+
+    private static final String fileName = "file.jpg";
 
     ImagesAdapter adapter = new ImagesAdapter();
 
@@ -134,16 +152,77 @@ public class ActivityLyricCard extends AppCompatActivity {
             }
         });
 
+        initiateDragView();
+
+    }
+
+    private void initiateDragView(){
+        dragView.setOnTouchListener(this);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN :
+                break;
+
+            case MotionEvent.ACTION_MOVE :
+                lyricText.animate()
+                        .x(event.getX()-lyricText.getWidth()/2)
+                        .y(event.getY()-lyricText.getHeight()/2)
+                        .setDuration(0)
+                        .start();
+                break;
+
+            default: return false;
+        }
+        return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_lyric_card, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+
+            case R.id.action_share:
+                shareCard();
+                break;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void shareCard(){
+        mainImage.setDrawingCacheEnabled(true);
+        Bitmap bitmap = mainImage.getDrawingCache();
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(30f);
+        canvas.drawText(lyricText.getText().toString(), 500f, 500f, paint);
+        File dir =new File(Environment.getExternalStorageDirectory().toString() + "/abmusic");
+        dir.mkdirs();
+
+        File lyricCardFile = new File(dir, fileName);
+        if(lyricCardFile.exists()) lyricCardFile.delete();
+
+        try{
+            FileOutputStream stream = new FileOutputStream(lyricCardFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            stream.flush();
+            stream.close();
+        }catch (Exception e){
+            Log.d("ActivityLyricCard", "shareCard: " + e.getLocalizedMessage());
+        }
+
+        Toast.makeText(this, "Created lyric card ", Toast.LENGTH_SHORT).show();
     }
 
 

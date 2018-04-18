@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 
 /**
- * Created by Amit Bhandari on 3/29/2017.
+ * Created by Amit AB Bhandari on 3/29/2017.
  */
 
 public class OfflineStorageArtistBio {
@@ -118,7 +118,7 @@ public class OfflineStorageArtistBio {
                     out = new ObjectOutputStream(new FileOutputStream(actual_file_path));
                     out.writeObject(artistInfo);
                     out.close();
-                    Log.v("amit", "saved artist to cache");
+                    Log.v("Amit AB", "saved artist to cache");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -141,7 +141,7 @@ public class OfflineStorageArtistBio {
         }
 
         if(artistInfo!=null){
-            Log.v("amit", "got from cache"+artistInfo.getOriginalArtist());
+            Log.v("Amit AB", "got from cache"+artistInfo.getOriginalArtist());
         }
         return artistInfo;
     }

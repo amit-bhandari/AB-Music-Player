@@ -55,7 +55,7 @@ import butterknife.OnClick;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by abami on 12/6/2017.
+ * Created by Amit AB AB on 12/6/2017.
  */
 
 public class ActivityExploreLyrics extends AppCompatActivity implements OnPopularTracksReady

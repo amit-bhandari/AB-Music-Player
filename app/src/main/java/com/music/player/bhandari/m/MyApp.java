@@ -13,7 +13,7 @@ import com.squareup.leakcanary.LeakCanary;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
- * Created by Amit Bhandari on 1/26/2017.
+ * Created by Amit AB Bhandari on 1/26/2017.
  */
 
 public class MyApp extends Application {

@@ -1,7 +1,7 @@
 package com.music.player.bhandari.m.equalizer;
 
 /**
- * Created by abami on 11/7/2017.
+ * Created by Amit AB AB on 11/7/2017.
  */
 
 public class EqualizerSetting {
