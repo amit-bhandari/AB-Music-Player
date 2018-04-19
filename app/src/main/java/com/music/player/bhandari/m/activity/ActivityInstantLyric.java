@@ -780,7 +780,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             currPos = selectedItemPositions.get(i);
             String lyricLine = adapter.getLineAtPosition(currPos);
             if (lyricLine != null) {
-                shareString.append(lyricLine).append("\n\n");
+                shareString.append(lyricLine).append("\n");
             }
         }
         return shareString;

@@ -58,6 +58,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/notification_channel"/>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name=".activity.ActivityMain"
@@ -282,6 +285,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
     </application>
 
