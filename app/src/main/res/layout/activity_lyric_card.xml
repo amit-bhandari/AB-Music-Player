@@ -51,14 +51,14 @@
                             android:layout_height="match_parent"
                             />
 
-                        <com.music.player.bhandari.m.customViews.ZoomTextView
-                            android:id="@+id/text_lyric"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start|top"
-                            android:layout_margin="20dp"
-                            android:lineSpacingExtra="2sp"
-                            android:textSize="25sp" />
+                <com.music.player.bhandari.m.customViews.ZoomTextView
+                    android:id="@+id/text_lyric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+                    android:layout_margin="20dp"
+                    android:lineSpacingExtra="2sp"
+                    android:textSize="25sp" />
 
                         <com.music.player.bhandari.m.customViews.ZoomTextView
                             android:id="@+id/text_artist"

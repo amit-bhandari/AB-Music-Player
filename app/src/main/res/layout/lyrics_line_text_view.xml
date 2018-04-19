@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/lyrics_line"
-    android:background="@drawable/statelist_item_background"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:textColor="@android:color/white"
-    android:gravity="center"
-    android:padding="10sp"
+    android:background="@drawable/statelist_item_background"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="10sp"
+    android:textColor="@android:color/white"
+    android:textSize="20sp">
 
 </TextView>
