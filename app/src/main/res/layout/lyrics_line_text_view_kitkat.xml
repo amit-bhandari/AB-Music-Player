@@ -9,7 +9,6 @@
     android:gravity="center"
     android:padding="10sp"
     android:clickable="true"
-    android:typeface="monospace"
     android:focusable="true">
 
 </TextView>

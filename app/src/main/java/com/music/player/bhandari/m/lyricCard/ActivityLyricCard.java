@@ -378,14 +378,12 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     }
 
     private void fillFonts(){
-        requestDownload("Aref Ruqaa");
-        requestDownload("Bubblegum Sans");
-        requestDownload("Lancelot");
+        requestDownload(new QueryBuilder("Aref Ruqaa").build());
+        requestDownload(new QueryBuilder("Bubblegum Sans").build());
+        requestDownload(new QueryBuilder("Lancelot").build());
     }
 
-    private void requestDownload(String familyName) {
-        QueryBuilder queryBuilder = new QueryBuilder(familyName);
-        String query = queryBuilder.build();
+    private void requestDownload(String query) {
 
         FontRequest request = new FontRequest(
                 "com.google.android.gms.fonts",
@@ -516,6 +514,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     }
 
     void addArtistImage(){
+        mainImage.setImageBitmap(null);
         progressBar.setVisibility(View.VISIBLE);
         if (UtilityFun.isConnectedToInternet()) {
             String artist = UtilityFun.filterArtistString(artistText.getText().toString());

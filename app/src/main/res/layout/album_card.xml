@@ -42,7 +42,6 @@
                 android:paddingLeft="@dimen/ac_album_title_padding"
                 android:paddingRight="@dimen/ac_album_title_padding"
                 android:textSize="@dimen/ac_songs_count"
-                android:typeface="monospace"
                 android:layout_toLeftOf="@+id/overflow"
                 android:layout_toStartOf="@+id/overflow" />
 
@@ -69,7 +68,6 @@
                 android:textColor="@color/colorwhite"
                 android:textSize="@dimen/ac_album_title"
                 android:layout_below="@+id/thumbnail"
-                android:typeface="monospace"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@+id/overflow"

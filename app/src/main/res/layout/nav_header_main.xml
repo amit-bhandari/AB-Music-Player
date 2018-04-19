@@ -36,7 +36,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:typeface="monospace"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:id="@+id/signed_up_user_name"/>
 
@@ -47,12 +46,10 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:text="@string/app_name"
-            android:typeface="monospace"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:id="@+id/textView"
-        android:typeface="monospace"
         android:maxLines="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

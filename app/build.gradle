@@ -3,14 +3,6 @@ android {
     lintOptions {
         abortOnError false
     }
-    signingConfigs {
-        config {
-            keyAlias 'music player'
-            keyPassword 'heisenberg'
-            storeFile file('C:/Users/Amit Bhandari/Desktop/AB Music Player/key_very_imp/music_player/music_player.jks')
-            storePassword 'heisenberg'
-        }
-    }
     compileSdkVersion 27
     buildToolsVersion '26.0.2'
     defaultConfig {
