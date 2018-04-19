@@ -91,7 +91,16 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.music.player.bhandari.m.BuildConfig;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
@@ -118,8 +127,11 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
 import jp.wasabeef.blurry.Blurry;
@@ -1220,29 +1232,52 @@ public class ActivityMain extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    
+
+    /**
+     * upload lyric card photos
+     */
     private void uploadPhotos(){
         Log.d("ActivityMain", "uploadPhotos: ");
 
-        File dir =new File(Environment.getExternalStorageDirectory().toString() + "/upload");
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference myRef = database.getReference("cardlinks");
 
-        /*for(File f:dir.listFiles()){
-            StorageReference uploadedFile = FirebaseStorage.getInstance().getReference().child(f.getName());
-            final UploadTask uploadTask = uploadedFile.putFile(Uri.fromFile(f));
+                File dir =new File(Environment.getExternalStorageDirectory().toString() + "/upload/compressjpeg");
 
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
+                File[] files = dir.listFiles();
+                for(int i=0; i<files.length; i++){
+                    StorageReference uploadedFile = FirebaseStorage.getInstance().getReference().child(files[i].getName());
+                    final UploadTask uploadTask = uploadedFile.putFile(Uri.fromFile(files[i]));
+                    Log.d("ActivityMain", "run: Uploading " + files[i].getName());
+
+                    final int finalI = i;
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
+                            if(taskSnapshot.getDownloadUrl()==null)  return;
+                            myRef.child(Integer.toString(finalI)).setValue(taskSnapshot.getDownloadUrl().toString());
+                        }
+                    });
+
+                    try {
+                        com.google.android.gms.tasks.Tasks.await(uploadTask);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
-                }
-            });
-        }*/
-
+            }
+        });
     }
 
     private void tryApp(){

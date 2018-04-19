@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AB-Music-Player.iml" filepath="$PROJECT_DIR$/AB-Music-Player.iml" />
-      <module fileurl="file://F:/AndroidStudioProjects/ABMusicAfterCorruption/AB-Music-Player.iml" filepath="F:/AndroidStudioProjects/ABMusicAfterCorruption/AB-Music-Player.iml" />
+      <module fileurl="file://F:\AndroidStudioProjects\ABMusicAfterCorruption\AB-Music-Player.iml" filepath="F:\AndroidStudioProjects\ABMusicAfterCorruption\AB-Music-Player.iml" />
       <module fileurl="file://$PROJECT_DIR$/ABMusicAfterCorruption.iml" filepath="$PROJECT_DIR$/ABMusicAfterCorruption.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
