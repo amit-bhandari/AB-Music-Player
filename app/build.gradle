@@ -12,7 +12,7 @@ android {
         applicationId 'com.bhandari.music'
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 140
+        versionCode 141
         versionName "Version 7.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -30,10 +30,10 @@ android {
 
     Properties props = new Properties()
     def propFile = file('../signing.properties')
-    if (propFile.canRead()){
+    if (propFile.canRead()) {
         props.load(new FileInputStream(propFile))
 
-        if (props!=null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+        if (props != null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
                 props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
 
             android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
@@ -43,7 +43,7 @@ android {
         } else {
             android.buildTypes.release.signingConfig = null
         }
-    }else {
+    } else {
         android.buildTypes.release.signingConfig = null
     }
 }
@@ -83,6 +83,8 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:11.2.2'
     compile 'com.google.firebase:firebase-database:11.2.2'
     compile 'com.google.firebase:firebase-invites:11.2.2'
+    implementation 'com.google.firebase:firebase-storage:11.2.2'
+    implementation 'com.google.firebase:firebase-auth:11.2.2'
 
     compile 'com.google.code.gson:gson:2.8.0'
 

@@ -104,6 +104,8 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
     private final static int DAYS_UNTIL_CACHE = 5;//Min number of days
 
+    boolean typefaceSet = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //if player service not running, kill the app
@@ -203,7 +205,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 && urls!=null){
             imagesAdapter.setUrls(urls);
         }else {
-            FirebaseDatabase.getInstance().getReference().child("cardLinks").addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("cardlinks").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.d("ActivityLyricCard", "onDataChange: ");
@@ -412,6 +414,12 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
             @Override
             public void onTypefaceRetrieved(Typeface typeface) {
                 Log.d("ActivityLyricCard", "onTypefaceRetrieved: " + typeface.toString());
+                if(!typefaceSet){
+                    lyricText.setTypeface(typeface);
+                    artistText.setTypeface(typeface);
+                    trackText.setTypeface(typeface);
+                    typefaceSet = true;
+                }
                 typefaces.add(typeface);
             }
 
@@ -673,7 +681,9 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
         void setUrls(ArrayList<String> urls){
             this.urls = urls;
-            setMainImage(urls.get(0));
+            if(urls.size()!=0) {
+                setMainImage(urls.get(0));
+            }
             notifyDataSetChanged();
         }
 
@@ -686,7 +696,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        setMainImage(urls.get(getLayoutPosition()));
+                        setMainImage(urls.get(getLayoutPosition()-2));
                     }
                 });
                 imageView = itemView.findViewById(R.id.image_lyric_card);
