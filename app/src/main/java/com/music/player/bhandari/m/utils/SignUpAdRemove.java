@@ -35,7 +35,7 @@ public class SignUpAdRemove {
     public static void CheckAndUpdateAdRemovalExpiration(Context context){
         long dateOfRegister = MyApp.getPref().getLong("sign-up-time-stamp", 0);
         if (System.currentTimeMillis() >= dateOfRegister +
-                (TimeUnit.DAYS.toMillis(DAYS_UNTIL_AD_REMOVED))) {
+                        (TimeUnit.DAYS.toMillis(DAYS_UNTIL_AD_REMOVED))) {
             MyApp.getPref().edit().putBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_temp), false).apply();
         }
     }

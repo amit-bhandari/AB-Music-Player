@@ -842,4 +842,8 @@ sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
     <string name="title_lyric_card">Lyric card</string>
+    <string name="action_font">Font</string>
+    <string name="action_text_alignment">Text Alignment</string>
+    <string name="pref_card_image_links">pref_card_image_links</string>
+    <string name="pref_card_image_saved_at">pref_card_image_saved_at</string>
 </resources>

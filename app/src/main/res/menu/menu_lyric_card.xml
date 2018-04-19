@@ -2,12 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item
+        android:id="@+id/action_font"
+        android:orderInCategory="90"
+        android:icon="@drawable/ic_text_fields_black_24dp"
+        app:showAsAction="always"
+        android:title="@string/action_font" />
+
+    <item
+        android:id="@+id/action_alignment"
+        android:orderInCategory="90"
+        android:icon="@drawable/ic_format_align_left_black_24dp"
+        app:showAsAction="always"
+        android:title="@string/action_text_alignment" />
 
     <item
         android:id="@+id/action_share"
         android:orderInCategory="90"
         android:icon="@drawable/ic_menu_share"
         app:showAsAction="always"
-        android:title="@string/action_reload" />
+        android:title="@string/action_share" />
+
+
+    <item
+        android:id="@+id/action_save"
+        android:orderInCategory="90"
+        android:icon="@drawable/ic_save_black_24dp"
+        app:showAsAction="never"
+        android:title="@string/action_save" />
 
 </menu>
