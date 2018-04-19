@@ -32,4 +32,9 @@
         <attr name="url" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="FixedAspectRatioFrameLayout">
+        <attr name="aspectRatioWidth" format="integer" />
+        <attr name="aspectRatioHeight" format="integer" />
+    </declare-styleable>
+
 </resources>

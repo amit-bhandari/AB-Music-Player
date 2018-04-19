@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blackTransparent"
+    android:background="@color/colorBlack"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -13,53 +13,74 @@
             android:id="@+id/toolbar_"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_size"
+            android:background="@color/colorBlack"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+
+        <!-- Extra parent for weight adjustment and inner frame layout for square image-->
         <FrameLayout
-            android:id="@+id/dragView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_gravity="center"
             android:layout_weight="8">
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_gravity="center"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp" />
-
-                <com.music.player.bhandari.m.customViews.MyImageView
-                    android:id="@+id/mainImageLyricCard"
+            <com.music.player.bhandari.m.customViews.FixedAspectRatioFrameLayout
+                    android:id="@+id/dragView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    tools:ignore="ContentDescription" />
+                    android:layout_gravity="center">
 
-                <View
-                    android:id="@+id/overImageLayer"
-                    android:background="#10000000"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    />
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            android:layout_gravity="center"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp" />
 
-                <com.music.player.bhandari.m.customViews.ZoomTextView
-                    android:id="@+id/text_lyric"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|top"
-                    android:layout_margin="20dp"
-                    android:lineSpacingExtra="2sp"
-                    android:textSize="25sp" />
+                        <com.music.player.bhandari.m.customViews.MyImageView
+                            android:id="@+id/mainImageLyricCard"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:ignore="ContentDescription" />
 
-                <com.music.player.bhandari.m.customViews.ZoomTextView
-                    android:id="@+id/text_artist"
-                    android:layout_margin="20dp"
-                    android:lineSpacingExtra="2sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:layout_gravity="start|bottom"/>
+                        <View
+                            android:id="@+id/overImageLayer"
+                            android:background="#10000000"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            />
 
+                        <com.music.player.bhandari.m.customViews.ZoomTextView
+                            android:id="@+id/text_lyric"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|top"
+                            android:layout_margin="20dp"
+                            android:lineSpacingExtra="2sp"
+                            android:textSize="25sp" />
+
+                        <com.music.player.bhandari.m.customViews.ZoomTextView
+                            android:id="@+id/text_artist"
+                            android:layout_margin="20dp"
+                            android:lineSpacingExtra="2sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:layout_gravity="start|bottom"/>
+
+                        <com.music.player.bhandari.m.customViews.ZoomTextView
+                            android:id="@+id/text_track"
+                            android:layout_margin="20dp"
+                            android:lineSpacingExtra="2sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:paddingBottom="25dp"
+                            android:layout_gravity="start|bottom"/>
+
+
+                </com.music.player.bhandari.m.customViews.FixedAspectRatioFrameLayout>
 
         </FrameLayout>
 
@@ -67,6 +88,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="1">
 
             <ImageView
@@ -101,34 +124,24 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_colors"
             android:layout_weight="1"
-            android:layout_margin="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
         </android.support.v7.widget.RecyclerView>
 
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_images"
+        android:layout_weight="1"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
 
-                <ImageView
-                    android:id="@+id/addCustomImage"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="2dp"
-                    android:src="@drawable/ic_add_black_24dp"
-                    android:background="@drawable/border_1dp"
-                    tools:ignore="ContentDescription" />
+    </android.support.v7.widget.RecyclerView>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_images"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                </android.support.v7.widget.RecyclerView>
-
-        </LinearLayout>
 
     </LinearLayout>

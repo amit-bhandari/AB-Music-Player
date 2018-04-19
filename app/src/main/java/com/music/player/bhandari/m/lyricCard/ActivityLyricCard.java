@@ -2,19 +2,14 @@ package com.music.player.bhandari.m.lyricCard;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.provider.FontsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.provider.FontRequest;
@@ -23,9 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,6 +31,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -58,16 +51,16 @@ import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.activity.ActivityPermissionSeek;
 import com.music.player.bhandari.m.customViews.ZoomTextView;
 import com.music.player.bhandari.m.model.Constants;
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.ArtistInfo.ArtistInfo;
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArtInfoThread;
+import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
-
-import javax.sql.DataSource;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,6 +86,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     @BindView(R.id.mainImageLyricCard) ImageView mainImage;
     @BindView(R.id.text_lyric) ZoomTextView lyricText;
     @BindView(R.id.text_artist) ZoomTextView artistText;
+    @BindView(R.id.text_track) TextView trackText;
     @BindView(R.id.dragView) View dragView;
     @BindView(R.id.progressBar) ProgressBar progressBar;
     @BindView(R.id.brightnessSeekBar) SeekBar brightnessSeekBar;
@@ -148,6 +142,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
         String text;
         String author;
+        String track;
         if(getIntent().getExtras().getString("lyric")!=null){
             text = getIntent().getExtras().getString("lyric");
         }else {
@@ -160,20 +155,24 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
             author = "";
         }
 
+        if(getIntent().getExtras().getString("track")!=null){
+            track = getIntent().getExtras().getString("track");
+        }else {
+            track = "";
+        }
+
         lyricText.setText(text);
-        artistText.setText(author);
+        artistText.setText(author.toUpperCase());
+        trackText.setText(track);
 
         Log.d("ActivityLyricCard", "onCreate: lyric " + lyricText.getText());
         Log.d("ActivityLyricCard", "onCreate: artist " + artistText.getText());
-
-        findViewById(R.id.root_view_lyric_card).setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
 
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ColorHelper.getPrimaryColor()));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -181,7 +180,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
+            window.setStatusBarColor(ColorHelper.getColor(R.color.colorBlack));
         }
 
         setTitle("Lyric Card");
@@ -257,6 +256,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     private void initiateDragView(){
         artistText.setOnTouchListener(this);
         lyricText.setOnTouchListener(this);
+        trackText.setOnTouchListener(this);
     }
 
     @Override
@@ -283,6 +283,14 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                             .y(event.getRawY() + dy)
                             .setDuration(0)
                             .start();
+                        break;
+
+                    case R.id.text_track:
+                        trackText.animate()
+                                .x(event.getRawX() + dx)
+                                .y(event.getRawY() + dy)
+                                .setDuration(0)
+                                .start();
                         break;
                 }
                 break;
@@ -417,10 +425,12 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
             currentFontPosition=0;
             lyricText.setTypeface(typefaces.get(currentFontPosition));
             artistText.setTypeface(typefaces.get(currentFontPosition));
+            trackText.setTypeface(typefaces.get(currentFontPosition));
         }else {
             int index=++currentFontPosition;
             lyricText.setTypeface(typefaces.get(index));
             artistText.setTypeface(typefaces.get(index));
+            trackText.setTypeface(typefaces.get(index));
         }
     }
 
@@ -429,24 +439,28 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
             case 0:
                 lyricText.setGravity(Gravity.CENTER);
                 artistText.setGravity(Gravity.CENTER);
+                trackText.setGravity(Gravity.CENTER);
                 currentTextAlignment = 1;
                 break;
 
             case 1:
                 lyricText.setGravity(Gravity.RIGHT);
                 artistText.setGravity(Gravity.RIGHT);
+                trackText.setGravity(Gravity.RIGHT);
                 currentTextAlignment = 2;
                 break;
 
             case 2:
                 lyricText.setGravity(Gravity.LEFT);
                 artistText.setGravity(Gravity.LEFT);
+                trackText.setGravity(Gravity.LEFT);
                 currentTextAlignment = 0;
                 break;
 
             default:
                 lyricText.setGravity(Gravity.CENTER);
                 artistText.setGravity(Gravity.CENTER);
+                trackText.setGravity(Gravity.CENTER);
                 currentTextAlignment = 1;
                 break;
         }
@@ -494,12 +508,33 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 .into(mainImage);
     }
 
-    @OnClick(R.id.addCustomImage)
     void addCustomImage(){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+    }
+
+    void addArtistImage(){
+        progressBar.setVisibility(View.VISIBLE);
+        if (UtilityFun.isConnectedToInternet()) {
+            String artist = UtilityFun.filterArtistString(artistText.getText().toString());
+            new DownloadArtInfoThread(new ArtistInfo.Callback() {
+                @Override
+                public void onArtInfoDownloaded(ArtistInfo artistInfo) {
+                    if(artistInfo!=null && !artistInfo.getImageUrl().isEmpty()) {
+                        setMainImage(artistInfo.getImageUrl());
+                    }else {
+                        Toast.makeText(ActivityLyricCard.this, "Artist image not found", Toast.LENGTH_SHORT).show();
+                        if(imagesAdapter.urls.size()>0){
+                            setMainImage(imagesAdapter.urls.get(0));
+                        }
+                    }
+                }
+            }, artist, null).start();
+        } else {
+            Toast.makeText(this, "Not connected to internet", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -543,6 +578,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                     public void onClick(View view) {
                         lyricText.setTextColor(Color.parseColor(colors[getLayoutPosition()]));
                         artistText.setTextColor(Color.parseColor(colors[getLayoutPosition()]));
+                        trackText.setTextColor(Color.parseColor(colors[getLayoutPosition()]));
                     }
                 });
                 color = itemView.findViewById(R.id.colorView);
@@ -550,41 +586,74 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         }
     }
 
-    class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder>{
+    class ImagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         private List<String> urls = new ArrayList<>();
 
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(ActivityLyricCard.this).inflate(R.layout.item_image_lyric_card, parent, false);
-            return new MyViewHolder(v);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v;
+            switch (viewType){
+                case 0:
+                    v = LayoutInflater.from(ActivityLyricCard.this).inflate(R.layout.item_custom_image, parent, false);
+                    return new CustomHolder(v);
+
+                case 1:
+                    v = LayoutInflater.from(ActivityLyricCard.this).inflate(R.layout.item_artist_image, parent, false);
+                    return new ArtistHolder(v);
+
+                case 2:
+                    v = LayoutInflater.from(ActivityLyricCard.this).inflate(R.layout.item_image_lyric_card, parent, false);
+                    return new ImageHolder(v);
+            }
+            return null;
         }
 
         @Override
-        public void onBindViewHolder(final MyViewHolder holder, int position) {
-            holder.progressBar.setVisibility(View.VISIBLE);
-            Glide.with(ActivityLyricCard.this)
-                    .load(urls.get(position))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            holder.progressBar.setVisibility(View.GONE);
-                            return false;
-                        }
+        public int getItemViewType(int position) {
+            switch (position){
+                case 0:
+                    return 0;
 
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            holder.progressBar.setVisibility(View.GONE);
-                            return false;
-                        }
-                    })
-                    .into(holder.imageView);
+                case 1:
+                    return 1;
+
+                default:
+                    return 2;
+            }
+        }
+
+        @Override
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+            switch (holder.getItemViewType()){
+                case 2:
+                    if(holder instanceof ImageHolder) {
+                        ((ImageHolder) holder).progressBar.setVisibility(View.VISIBLE);
+                        Glide.with(ActivityLyricCard.this)
+                                .load(urls.get(position-2))     //offset for 2 extra elements
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .listener(new RequestListener<String, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        ((ImageHolder) holder).progressBar.setVisibility(View.GONE);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        ((ImageHolder) holder).progressBar.setVisibility(View.GONE);
+                                        return false;
+                                    }
+                                })
+                                .into(((ImageHolder) holder).imageView);
+                    }
+                    break;
+            }
         }
 
         @Override
         public int getItemCount() {
-            return urls.size();
+            return urls.size()+2; //offset for 2 extra elements
         }
 
         void setUrls(ArrayList<String> urls){
@@ -593,11 +662,11 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
             notifyDataSetChanged();
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder{
+        class ImageHolder extends RecyclerView.ViewHolder{
             ImageView imageView;
             ProgressBar progressBar;
 
-            public MyViewHolder(View itemView) {
+            ImageHolder(View itemView) {
                 super(itemView);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -607,6 +676,31 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 });
                 imageView = itemView.findViewById(R.id.image_lyric_card);
                 progressBar = itemView.findViewById(R.id.progressBar);
+            }
+        }
+
+        class ArtistHolder extends RecyclerView.ViewHolder{
+            ArtistHolder(View itemView) {
+                super(itemView);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addArtistImage();
+                    }
+                });
+
+            }
+        }
+
+        class CustomHolder extends RecyclerView.ViewHolder{
+            CustomHolder(View itemView) {
+                super(itemView);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addCustomImage();
+                    }
+                });
             }
         }
     }
