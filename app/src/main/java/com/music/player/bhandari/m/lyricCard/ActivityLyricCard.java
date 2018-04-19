@@ -378,12 +378,28 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     }
 
     private void fillFonts(){
-        requestDownload(new QueryBuilder("Aref Ruqaa").build());
-        requestDownload(new QueryBuilder("Bubblegum Sans").build());
-        requestDownload(new QueryBuilder("Lancelot").build());
+        requestDownload(new QueryBuilder("Aldrich").build());  //ok
+        requestDownload(new QueryBuilder("Berkshire Swash").build());  //good
+        requestDownload(new QueryBuilder("Black Ops One").build());  //good, thick
+        requestDownload(new QueryBuilder("Bubblegum Sans").build()); //good
+        requestDownload(new QueryBuilder("Cabin Sketch").build()); //good
+        requestDownload(new QueryBuilder("Caveat Brush").build()); //good
+        requestDownload(new QueryBuilder("Condiment").build()); //good cursue
+        requestDownload(new QueryBuilder("Faster One").build());
+        requestDownload(new QueryBuilder("Just Me Again Down Here").build()); //nice
+        requestDownload(new QueryBuilder("Kalam").build());  //same as gloria hallelua, better
+        requestDownload(new QueryBuilder("Kaushan Script").build()); //same as gloria hallelua, better
+        requestDownload(new QueryBuilder("Lobster Two").build());  //good
+        requestDownload(new QueryBuilder("Monofett").build()); //good
+        requestDownload(new QueryBuilder("Pacifico").build());  //full caps not good
+        requestDownload(new QueryBuilder("Shrikhand").build()); //thick nice
+        requestDownload(new QueryBuilder("Source Sans Pro").build()); //simple
+        requestDownload(new QueryBuilder("UnifrakturMaguntia").build());  //unique
     }
 
     private void requestDownload(String query) {
+
+        Log.d("ActivityLyricCard", "requestDownload: " + query);
 
         FontRequest request = new FontRequest(
                 "com.google.android.gms.fonts",
@@ -401,7 +417,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
             @Override
             public void onTypefaceRequestFailed(int reason) {
-
+                Log.d("ActivityLyricCard", "onTypefaceRequestFailed: " + reason);
             }
         };
         FontsContractCompat

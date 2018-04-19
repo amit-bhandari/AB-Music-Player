@@ -499,14 +499,63 @@
 
         <string-array name="colors">
             <item>#ffffff</item>
-            <item>#ffaaff</item>
-            <item>#ff00ff</item>
-            <item>#11ffff</item>
-            <item>#fff11f</item>
-            <item>#fffddf</item>
-            <item>#33ffff</item>
-            <item>#ffff55</item>
-            <item>#ffffaa</item>
+            <item>#F5F5F5</item>
+            <item>#757575</item>
+            <item>#424242</item>
+            <item>#000000</item>
+
+            <item>#D81B60</item>
+            <item>#E91E63</item>
+            <item>#FF4081</item>
+            <item>#F48FB1</item>
+            <item>#F8BBD0</item>
+
+
+            <item>#9C27B0</item>
+            <item>#AA00FF</item>
+            <item>#E040FB</item>
+            <item>#BA68C8</item>
+            <item>#E1BEE7</item>
+
+            <item>#1A237E</item>
+            <item>#303F9F</item>
+            <item>#3F51B5</item>
+            <item>#5C6BC0</item>
+            <item>#9FA8DA</item>
+
+
+            <item>#2E7D32</item>
+            <item>#00C853</item>
+            <item>#66BB6A</item>
+            <item>#A5D6A7</item>
+            <item>#E8F5E9</item>
+
+            <item>#BF360C</item>
+            <item>#E64A19</item>
+            <item>#FF5722</item>
+            <item>#FF8A65</item>
+            <item>#FFCCBC</item>
+
+            <item>#093145</item>
+            <item>#0c374d</item>
+            <item>#0d3d56</item>
+            <item>#3c6478</item>
+
+            <item>#bca136</item>
+            <item>#d3b53d</item>
+            <item>#ebc944</item>
+            <item>#efd469</item>
+
+
+            <item>#9a2617</item>
+            <item>#ad2a1a</item>
+            <item>#c02f1d</item>
+            <item>#cd594a</item>
+
+            <item>#107896</item>
+            <item>#1287a8</item>
+            <item>#1496bb</item>
+            <item>#43abc9</item>
         </string-array>
 
     <string name="whats_new"><![CDATA[ \u0020 * Added Russian Translations, thanks to Anonymous Person! \n\n
@@ -535,7 +584,7 @@ playing screen for alternate lyrics.]]></string>
     <string name="preset_saved_toast">Saved preset to DB</string>
     <string name="error_valid_preset_name_toast">Enter valid name for preset.</string>
     <string name="title_load_preset">Load Preset</string>
-    <string name="equalizer_title">Equalizer (beta)</string>
+    <string name="equalizer_title">Equalizer</string>
     <string name="error_equ_not_supported">Equalizer is not Supported by your device.</string>
     <string name="save_preset">Save Preset</string>
     <string name="load_preset">Load preset</string>
@@ -552,7 +601,7 @@ playing screen for alternate lyrics.]]></string>
 
     <string name="nav_developers_message">Developers Message</string>
     <string name="nav_explore_lyrics">Explore Lyrics</string>
-    <string name="lyrics_explore">Explore Lyrics (beta)</string>
+    <string name="lyrics_explore">Search Lyrics</string>
     <string name="title_search_youtube">Search Youtube</string>
     <string name="no_internet_explore_lyrics">Unable to connect to Internet, click here to retry!</string>
     <string name="error_fetching_popular_tracks">Error fetching data, Please make sure you are connected!</string>

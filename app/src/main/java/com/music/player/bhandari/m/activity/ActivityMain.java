@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -79,8 +80,8 @@ import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -90,14 +91,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.appinvite.FirebaseAppInvite;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.music.player.bhandari.m.BuildConfig;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
@@ -1217,11 +1212,37 @@ public class ActivityMain extends AppCompatActivity
             //removeAdsForFree();
         } else if(id==R.id.nav_try_new_app){
             tryApp();
+        } else if(id==192){
+            uploadPhotos();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    
+    private void uploadPhotos(){
+        Log.d("ActivityMain", "uploadPhotos: ");
+
+        File dir =new File(Environment.getExternalStorageDirectory().toString() + "/upload");
+
+        /*for(File f:dir.listFiles()){
+            StorageReference uploadedFile = FirebaseStorage.getInstance().getReference().child(f.getName());
+            final UploadTask uploadTask = uploadedFile.putFile(Uri.fromFile(f));
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
+                }
+            });
+        }*/
+
     }
 
     private void tryApp(){
@@ -2051,6 +2072,12 @@ public class ActivityMain extends AppCompatActivity
             navigationView.getMenu().removeItem(R.id.nav_remove_ads);
             navigationView.getMenu().removeItem(R.id.nav_remove_ads_free);
         }
+
+        //add upload image button
+        if(BuildConfig.DEBUG){
+            navigationView.getMenu().add(R.id.grp2, 192, 10,"Upload");
+        }
+
         //updateNavigationMenuItems();
     }
 
