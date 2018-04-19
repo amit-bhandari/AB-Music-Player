@@ -30,7 +30,6 @@
             android:text="@string/app_name"
             android:fontFamily="cursive"
             android:textSize="@dimen/au_app_title"
-            android:typeface="monospace"
             android:gravity="center_horizontal"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
@@ -54,7 +53,6 @@
             android:layout_height="wrap_content"
             android:text="@string/au_version"
             android:textSize="@dimen/au_app_version"
-            android:typeface="monospace"
             android:gravity="center"
             android:layout_marginBottom="@dimen/au_app_version_margin"
             android:layout_marginTop="@dimen/au_app_version_margin" />
@@ -66,7 +64,6 @@
             android:layout_height="wrap_content"
             android:text="@string/au_email_id"
             android:textSize="@dimen/au_app_email"
-            android:typeface="monospace"
             android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/au_app_email_margin" />
 
@@ -78,7 +75,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/au_app_email"
-            android:typeface="monospace"
             android:gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"/>
@@ -104,7 +100,6 @@
             android:layout_height="wrap_content"
             android:text="@string/au_made_with_love"
             android:textSize="@dimen/au_icon_credit"
-            android:typeface="monospace"
             android:layout_marginTop="@dimen/au_icon_credit_margin"
             android:layout_marginRight="@dimen/au_icon_credit_margin"
             android:layout_marginEnd="@dimen/au_icon_credit_margin" />
@@ -119,7 +114,6 @@
             android:layout_height="wrap_content"
             android:text="@string/au_made_in_india"
             android:textSize="@dimen/au_icon_credit"
-            android:typeface="monospace"
             android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/au_icon_credit_margin"
             android:layout_marginRight="@dimen/au_icon_credit_margin"

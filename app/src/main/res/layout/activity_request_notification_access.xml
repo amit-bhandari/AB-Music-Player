@@ -24,7 +24,6 @@
         android:textColor="@color/pw_accent"
         android:text="@string/instant_lyrics"
         android:textSize="35sp"
-        android:typeface="monospace"
         android:id="@+id/text_title" />
 
     <TextView
@@ -37,8 +36,7 @@
         android:gravity="center_horizontal"
         android:paddingTop="20dp"
         android:text="@string/instant_lyrics_text"
-        android:textSize="20sp"
-        android:typeface="monospace" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/text_request"
@@ -51,8 +49,7 @@
         android:layout_below="@+id/text_subtitle"
         android:gravity="center_horizontal"
         android:text="@string/instant_lyrics_request"
-        android:textSize="15sp"
-        android:typeface="monospace" />
+        android:textSize="15sp" />
 
     <Button
         android:id="@+id/request_button"
@@ -78,8 +75,7 @@
         android:paddingTop="20dp"
         android:paddingBottom="10dp"
         android:text="@string/instant_lyrics_skip_this"
-        android:textSize="15sp"
-        android:typeface="monospace" />
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/text_never_ask"
@@ -92,8 +88,7 @@
         android:paddingBottom="10dp"
         android:gravity="center_horizontal"
         android:text="@string/instant_lyrics_never_ask"
-        android:textSize="15sp"
-        android:typeface="monospace" />
+        android:textSize="15sp" />
 
     <ProgressBar
         android:id="@+id/progressBar"

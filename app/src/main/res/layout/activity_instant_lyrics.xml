@@ -82,8 +82,7 @@
                                 android:paddingBottom="20dp"
                                 android:text="@string/tap_to_refresh_lyrics"
                                 android:textColor="@color/nowPlayingText"
-                                android:textSize="20sp"
-                                android:typeface="monospace" />
+                                android:textSize="20sp" />
 
                             <com.wang.avi.AVLoadingIndicatorView
                             android:id="@+id/loading_lyrics_animation"
@@ -110,8 +109,7 @@
                         android:paddingBottom="20dp"
                         android:text="@string/tap_to_refresh_lyrics"
                         android:textColor="@color/nowPlayingText"
-                        android:textSize="20sp"
-                        android:typeface="monospace" />
+                        android:textSize="20sp" />
 
                 </ScrollView>
 

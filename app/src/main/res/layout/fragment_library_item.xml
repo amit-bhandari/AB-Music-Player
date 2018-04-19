@@ -64,7 +64,6 @@
             android:text="@string/track"
             android:textColor="#040404"
             android:textSize="@dimen/fli_title_view_text"
-            android:typeface="monospace"
             android:layout_marginStart="10dp" />
 
 
@@ -83,8 +82,7 @@
             android:layout_toStartOf="@+id/count"
             android:gravity="start|center"
             android:maxLines="1"
-            android:textSize="@dimen/fli_secondary_view_text"
-            android:typeface="monospace" />
+            android:textSize="@dimen/fli_secondary_view_text" />
 
         <TextView
             android:id="@+id/count"
