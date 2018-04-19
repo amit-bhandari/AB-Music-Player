@@ -765,7 +765,9 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
             case R.id.menu_lyric_card:
                 Intent intent = new Intent(this, ActivityLyricCard.class);
-                intent.putExtra("lyric", getSelectedLyricString().toString()).putExtra("artist",mLyrics.getArtist());
+                intent.putExtra("lyric", getSelectedLyricString().toString())
+                        .putExtra("artist",mLyrics.getArtist())
+                        .putExtra("track", mLyrics.getTrack());
                 startActivity(intent);
                 break;
         }

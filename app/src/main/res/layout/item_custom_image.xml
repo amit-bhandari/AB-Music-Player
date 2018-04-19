@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ImageView android:id="@+id/addCustomImage"
+    android:layout_width="50dp"
+    android:layout_height="match_parent"
+    android:layout_margin="2dp"
+    android:src="@drawable/ic_add_black_24dp"
+    android:background="@drawable/border_1dp"
+    tools:ignore="ContentDescription"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" />
