@@ -902,4 +902,7 @@ that this copyright notice remain intact.</string>
 
     <string name="dialog_lyric_card_content">Now create awesome lyric cards by selecting lyric text and pressing image button on top right tool bar.</string>
     <string name="dialog_lyric_card_pos">Try now!</string>
+
+    <string name="first_launch_lyric_card_no_internet">Internet is needed for loading images for cards. Images will be downloaded once and will be cached for later use.</string>
+    <string name="first_launch_lyric_card">First launch might take a while for loading images from our servers. Subsequent launches should work lightning fast!</string>
 </resources>

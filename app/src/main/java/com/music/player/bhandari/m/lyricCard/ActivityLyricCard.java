@@ -64,7 +64,6 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by Amit AB AB on 17-Apr-18.
@@ -108,38 +107,21 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        //if player service not running, kill the app
-        if(MyApp.getService()==null){
-            Intent intent = new Intent(this, ActivityPermissionSeek.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-        }
-
-        int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-        switch (themeSelector){
-            case Constants.PRIMARY_COLOR.DARK:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.GLOSSY:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.LIGHT:
-                setTheme(R.style.AppThemeLight);
-                break;
-        }
-
+        setTheme();
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_lyric_card);
         ButterKnife.bind(this);
 
-
         if(getIntent().getExtras()==null){
             Toast.makeText(this, "Missing lyric text", Toast.LENGTH_SHORT).show();
             finish();
             return;
+        }
+
+        if(MyApp.getPref().getBoolean("pref_first_time_lyric_card_launch", true)){
+            MyApp.getPref().edit().putBoolean("pref_first_time_lyric_card_launch", false).apply();
+            firstTimeLaunch();
         }
 
         String text;
@@ -167,9 +149,36 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         artistText.setText(author.toUpperCase());
         trackText.setText(track);
 
-        Log.d("ActivityLyricCard", "onCreate: lyric " + lyricText.getText());
-        Log.d("ActivityLyricCard", "onCreate: artist " + artistText.getText());
+        initiateToolbar();
+        fillFonts();
+        initiateUI();
+    }
 
+    private void setTheme() {
+        //if player service not running, kill the app
+        if(MyApp.getService()==null){
+            Intent intent = new Intent(this, ActivityPermissionSeek.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        }
+
+        int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
+        switch (themeSelector){
+            case Constants.PRIMARY_COLOR.DARK:
+                setTheme(R.style.AppThemeDark);
+                break;
+
+            case Constants.PRIMARY_COLOR.GLOSSY:
+                setTheme(R.style.AppThemeDark);
+                break;
+
+            case Constants.PRIMARY_COLOR.LIGHT:
+                setTheme(R.style.AppThemeLight);
+                break;
+        }
+    }
+
+    private void initiateToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
 
@@ -186,9 +195,6 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         }
 
         setTitle("Lyric Card");
-
-        fillFonts();
-        initiateUI();
     }
 
     private void initiateUI(){
@@ -259,6 +265,14 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         artistText.setOnTouchListener(this);
         lyricText.setOnTouchListener(this);
         trackText.setOnTouchListener(this);
+    }
+
+    private void firstTimeLaunch(){
+        if(UtilityFun.isConnectedToInternet()){
+            Toast.makeText(this, R.string.first_launch_lyric_card, Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(this, R.string.first_launch_lyric_card_no_internet, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
