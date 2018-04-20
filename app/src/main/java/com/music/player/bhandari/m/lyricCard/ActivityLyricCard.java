@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.provider.FontRequest;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -85,13 +87,13 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     @BindView(R.id.mainImageLyricCard) ImageView mainImage;
     @BindView(R.id.text_lyric) ZoomTextView lyricText;
     @BindView(R.id.text_artist) ZoomTextView artistText;
-    @BindView(R.id.text_track) TextView trackText;
+    @BindView(R.id.text_track) ZoomTextView trackText;
     @BindView(R.id.dragView) View dragView;
     @BindView(R.id.progressBar) ProgressBar progressBar;
     @BindView(R.id.brightnessSeekBar) SeekBar brightnessSeekBar;
     @BindView(R.id.overImageLayer) View overImageLayer;
 
-    float dx;
+    float dx;   //for dragging text views
     float dy;
 
     private ImagesAdapter imagesAdapter = new ImagesAdapter();
@@ -204,6 +206,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         recyclerViewImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewImages.setAdapter(imagesAdapter);
 
+        //get images links
         Type type = new TypeToken<ArrayList<String>>() {}.getType();
         ArrayList<String> urls;
         urls = new Gson().fromJson(MyApp.getPref().getString(getString(R.string.pref_card_image_links), ""), type);
@@ -216,9 +219,11 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.d("ActivityLyricCard", "onDataChange: ");
                     ArrayList<String> urls = new ArrayList<>();
-                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        urls.add(snap.getValue(String.class));
-                    }
+                    try {
+                        for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                            urls.add(snap.getValue(String.class));
+                        }
+                    }catch (Exception ignored){}
                     imagesAdapter.setUrls(urls);
 
                     //cache links in shared pref
@@ -229,6 +234,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.d("ActivityLyricCard", "onCancelled: " + databaseError.getMessage());
+                    Toast.makeText(ActivityLyricCard.this, "Error retrieving images from server", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -259,6 +265,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
             }
         });
+        brightnessSeekBar.setProgress(30);
     }
 
     private void initiateDragView(){
@@ -588,14 +595,15 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
         String[] colors = getResources().getStringArray(R.array.colors);
 
+        @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(ActivityLyricCard.this).inflate(R.layout.item_color, parent, false);
             return new MyViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             holder.color.setBackgroundColor(Color.parseColor(colors[position]));
         }
 
