@@ -28,16 +28,22 @@
             android:title="@string/nav_remove_ads" />
 
 
+        <!--
         <item
             android:id="@+id/nav_remove_ads_free"
             android:icon="@drawable/ic_remove_circle_outline_black_24dp"
-            android:title="@string/title_remove_ads_for_free" />
+            android:title="@string/title_remove_ads_for_free" /> -->
 
         <item
             android:id="@+id/nav_explore_lyrics"
             android:icon="@drawable/ic_explore_black_24dp"
             android:title="@string/nav_explore_lyrics" />
 
+
+        <item
+            android:id="@+id/nav_lyric_card"
+            android:icon="@drawable/ic_photo_black_24dp"
+            android:title="@string/nav_lyric_cards" />
         <!--
         <item
             android:id="@+id/nav_sleep_timer"

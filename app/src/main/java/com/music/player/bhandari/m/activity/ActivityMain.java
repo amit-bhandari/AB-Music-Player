@@ -96,8 +96,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -1219,12 +1222,14 @@ public class ActivityMain extends AppCompatActivity
             devMessageDialog();
         } else if(id==R.id.nav_instagram){
             openUrl(Uri.parse(INSTA_WEBSITE));
-        } else if(id==R.id.nav_remove_ads_free){
+        } /*else if(id==R.id.nav_remove_ads_free){
             startActivity(new Intent(this, ActivityInvite.class));
             //removeAdsForFree();
-        } else if(id==R.id.nav_try_new_app){
+        }*/ else if(id==R.id.nav_try_new_app){
             tryApp();
-        } else if(id==192){
+        } else if(id == R.id.nav_lyric_card){
+            lyricCardDialog();
+        }else if(id==192){
             uploadPhotos();
         }
 
@@ -1239,45 +1244,86 @@ public class ActivityMain extends AppCompatActivity
     private void uploadPhotos(){
         Log.d("ActivityMain", "uploadPhotos: ");
 
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("cardlinks");
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void run() {
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference myRef = database.getReference("cardlinks");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final int numberOfLinks = ((int) dataSnapshot.getChildrenCount());
 
-                File dir =new File(Environment.getExternalStorageDirectory().toString() + "/upload/compressjpeg");
+                Executors.newSingleThreadExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
 
-                File[] files = dir.listFiles();
-                for(int i=0; i<files.length; i++){
-                    StorageReference uploadedFile = FirebaseStorage.getInstance().getReference().child(files[i].getName());
-                    final UploadTask uploadTask = uploadedFile.putFile(Uri.fromFile(files[i]));
-                    Log.d("ActivityMain", "run: Uploading " + files[i].getName());
+                        File dir =new File(Environment.getExternalStorageDirectory().toString() + "/upload/compressjpeg");
 
-                    final int finalI = i;
-                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
+                        File[] files = dir.listFiles();
+                        for(int i=numberOfLinks; i<files.length+numberOfLinks; i++){
+                            StorageReference uploadedFile = FirebaseStorage.getInstance().getReference().child(files[i-numberOfLinks].getName());
+                            final UploadTask uploadTask = uploadedFile.putFile(Uri.fromFile(files[i-numberOfLinks]));
+                            Log.d("ActivityMain", "run: Uploading " + files[i-numberOfLinks].getName());
+
+                            final int finalI = i;
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
+                                    if(taskSnapshot.getDownloadUrl()==null)  return;
+                                    myRef.child(Integer.toString(finalI)).setValue(taskSnapshot.getDownloadUrl().toString());
+                                }
+                            });
+
+                            try {
+                                com.google.android.gms.tasks.Tasks.await(uploadTask);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                            Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
-                            if(taskSnapshot.getDownloadUrl()==null)  return;
-                            myRef.child(Integer.toString(finalI)).setValue(taskSnapshot.getDownloadUrl().toString());
-                        }
-                    });
-
-                    try {
-                        com.google.android.gms.tasks.Tasks.await(uploadTask);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
                     }
-                }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
+
+
+    }
+
+    private void lyricCardDialog(){
+        new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title(getString(R.string.nav_lyric_cards))
+                .content(R.string.dialog_lyric_card_content)
+                .positiveText(R.string.dialog_lyric_card_pos)
+                .neutralText(getString(R.string.cancel))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Intent searchLyricIntent = new Intent(MyApp.getContext(), ActivityExploreLyrics.class);
+                        searchLyricIntent.setAction(Constants.ACTION.MAIN_ACTION);
+                        searchLyricIntent.putExtra("search_on_launch", true);
+                        searchLyricIntent.putExtra("from_notif", false);
+                        startActivity(searchLyricIntent);
+                    }
+                })
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private void tryApp(){
@@ -2105,7 +2151,7 @@ public class ActivityMain extends AppCompatActivity
         if(UtilityFun.isAdsRemoved()) {
             navigationView.getMenu().removeItem(R.id.nav_rewards);
             navigationView.getMenu().removeItem(R.id.nav_remove_ads);
-            navigationView.getMenu().removeItem(R.id.nav_remove_ads_free);
+            //navigationView.getMenu().removeItem(R.id.nav_remove_ads_free);
         }
 
         //add upload image button

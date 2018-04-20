@@ -558,9 +558,11 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020 * Added Russian Translations, thanks to Anonymous Person! \n\n
-                                              * Dynamic lyrics sources are up and running. Click alternate lyric sources in now
-playing screen for alternate lyrics.]]></string>
+    <string name="whats_new"><![CDATA[ \u0020 * Now create lyric cards by selecting lyrics and pressin image icon on toolbar.  \n\n
+                                              * Please leave your feedback about lyric cards on store or over my email, I will be thankful. \n\n
+                                              * Small bug when system default font is selected is solved.
+
+]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
@@ -600,7 +602,7 @@ playing screen for alternate lyrics.]]></string>
 
 
     <string name="nav_developers_message">Developers Message</string>
-    <string name="nav_explore_lyrics">Explore Lyrics</string>
+    <string name="nav_explore_lyrics">Search Lyrics</string>
     <string name="lyrics_explore">Search Lyrics</string>
     <string name="title_search_youtube">Search Youtube</string>
     <string name="no_internet_explore_lyrics">Unable to connect to Internet, click here to retry!</string>
@@ -890,9 +892,14 @@ limitation the rights to use, copy, modify, merge, publish, distribute,
 sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
+
     <string name="title_lyric_card">Lyric card</string>
     <string name="action_font">Font</string>
     <string name="action_text_alignment">Text Alignment</string>
     <string name="pref_card_image_links">pref_card_image_links</string>
     <string name="pref_card_image_saved_at">pref_card_image_saved_at</string>
+    <string name="nav_lyric_cards">Lyric Cards</string>
+
+    <string name="dialog_lyric_card_content">Now create awesome lyric cards by selecting lyric text and pressing image button on top right tool bar.</string>
+    <string name="dialog_lyric_card_pos">Try now!</string>
 </resources>

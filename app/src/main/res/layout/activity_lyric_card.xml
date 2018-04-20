@@ -37,7 +37,7 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp" />
 
-                        <com.music.player.bhandari.m.customViews.MyImageView
+                        <ImageView
                             android:id="@+id/mainImageLyricCard"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
