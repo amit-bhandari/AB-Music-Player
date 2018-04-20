@@ -324,6 +324,9 @@
     <string name="dialog_lyric_card_content">Теперь создайте потрясающие лирические Фото, выбрав лирический текст и нажав кнопку изображения в верхней правой панели инструментов.</string>
     <string name="dialog_lyric_card_pos">Попробуй!</string>
 
+    <string name="first_launch_lyric_card_no_internet">Интернет необходим для загрузки изображений. Изображения будут загружаться один раз и будут кэшироваться для последующего использования.</string>
+    <string name="first_launch_lyric_card">Первый запуск может занять некоторое время для загрузки изображений с наших серверов. Последующие запуски должны работать молниеносно!</string>
+
     <string-array name="now_playing_back_pref_array">
         <item>Системные умолчанию</item>
         <item>художник</item>

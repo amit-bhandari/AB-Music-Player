@@ -263,6 +263,11 @@ public class ActivityRewardVideo extends AppCompatActivity {
                 Log.d("RewardActivity", "onRewardedVideoAdFailedToLoad: ");
             }
 
+            @Override
+            public void onRewardedVideoCompleted() {
+                Log.d("ActivityRewardVideo", "onRewardedVideoCompleted: ");
+            }
+
             private void showRewardedDialog() {
                 loadAdd();
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(ActivityRewardVideo.this)
