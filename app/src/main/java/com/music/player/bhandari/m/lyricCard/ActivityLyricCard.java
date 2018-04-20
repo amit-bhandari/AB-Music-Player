@@ -565,7 +565,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE) {
             Log.d("ActivityLyricCard", "onActivityResult: " + data);
-            if(data.getData()!=null) setMainImage(data.getData());
+            if(data!=null && data.getData()!=null) setMainImage(data.getData());
             else Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
         }
     }
@@ -682,7 +682,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         void setUrls(ArrayList<String> urls){
             this.urls = urls;
             if(urls.size()!=0) {
-                setMainImage(urls.get(0));
+                setMainImage(urls.get(UtilityFun.getRandom(0,urls.size())));
             }
             notifyDataSetChanged();
         }

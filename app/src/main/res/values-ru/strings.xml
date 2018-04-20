@@ -288,7 +288,7 @@
     <string name="snack_cleared">Чисто</string>
     <string name="snack_unable_to_Clear">Не могу очистить</string>
     <string name="nav_developers_message">Сообщение разработчику</string>
-    <string name="nav_explore_lyrics">Получить текст песни</string>
+    <string name="nav_explore_lyrics">поиск текст песни</string>
     <string name="no_internet_explore_lyrics">Невозможно подключиться к Интернету. нажмите для повторной попытки</string>
     <string name="title_hide_lock_button">Не показывать кнопку блокировки музыки</string>
     <string name="notif_minutes_to_sleep">"  минут до остановки"</string>
@@ -315,6 +315,14 @@
 
     <string name="pos_reward_points">Refill</string>
     <string name="app_restart_pos">Перезапустить плеер</string>
+
+    <string name="title_lyric_card">Тексты песен карточка</string>
+    <string name="action_font">Шрифт</string>
+    <string name="action_text_alignment">Выравнивание текста</string>
+    <string name="nav_lyric_cards">Тексты песен карточка</string>
+
+    <string name="dialog_lyric_card_content">Теперь создайте потрясающие лирические Фото, выбрав лирический текст и нажав кнопку изображения в верхней правой панели инструментов.</string>
+    <string name="dialog_lyric_card_pos">Попробуй!</string>
 
     <string-array name="now_playing_back_pref_array">
         <item>Системные умолчанию</item>

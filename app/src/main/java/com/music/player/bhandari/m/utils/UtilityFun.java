@@ -44,6 +44,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.concurrent.Executors;
 
 /**
@@ -444,6 +445,17 @@ public class UtilityFun {
 
     public static void logEvent(@NonNull Bundle bundle){
         FirebaseAnalytics.getInstance(MyApp.getContext()).logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
+
+    /**
+     * This gives you a random number in between from (inclusive) and to (exclusive)
+     * @param from
+     * @param to
+     * @return
+     */
+    public static int getRandom(int from, int to){
+        Random r = new Random();
+        return r.nextInt(to-from) + from;
     }
 
 }
