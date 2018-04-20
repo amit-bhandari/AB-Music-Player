@@ -9,5 +9,5 @@
 .externalNativeBuild
 /.idea/*
 signing.properties
-
+app/google-services.json
 .idea/modules.xml
