@@ -10,3 +10,4 @@
 /.idea/*
 signing.properties
 
+.idea/modules.xml
