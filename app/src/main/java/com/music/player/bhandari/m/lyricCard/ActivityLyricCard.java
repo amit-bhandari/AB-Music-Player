@@ -394,6 +394,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
             share.setType("image/*");
             share.putExtra(Intent.EXTRA_STREAM
                     , FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + "com.bhandari.music.provider", lyricCardFile));
+            share.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_lyric_card_extra_text));
             startActivity(Intent.createChooser(share, "Share Lyric Card"));
         }catch (Exception e){
             Toast.makeText(this, "Error while sharing, lyric card is saved at " + lyricCardFile.getAbsolutePath(), Toast.LENGTH_LONG).show();

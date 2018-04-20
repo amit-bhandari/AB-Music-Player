@@ -326,7 +326,7 @@
 
     <string name="first_launch_lyric_card_no_internet">Интернет необходим для загрузки изображений. Изображения будут загружаться один раз и будут кэшироваться для последующего использования.</string>
     <string name="first_launch_lyric_card">Первый запуск может занять некоторое время для загрузки изображений с наших серверов. Последующие запуски должны работать молниеносно!</string>
-
+    <string name="share_lyric_card_extra_text"><![CDATA[Создано с использованием AB Music -> https://tinyurl.com/mtxvchw]]></string>
     <string-array name="now_playing_back_pref_array">
         <item>Системные умолчанию</item>
         <item>художник</item>
