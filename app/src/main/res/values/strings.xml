@@ -498,11 +498,11 @@
         </string-array>
 
         <string-array name="colors">
-            <item>#ffffff</item>
-            <item>#F5F5F5</item>
-            <item>#757575</item>
-            <item>#424242</item>
             <item>#000000</item>
+            <item>#424242</item>
+            <item>#757575</item>
+            <item>#F5F5F5</item>
+            <item>#ffffff</item>
 
             <item>#D81B60</item>
             <item>#E91E63</item>

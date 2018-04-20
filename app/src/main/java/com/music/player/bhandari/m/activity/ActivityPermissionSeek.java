@@ -136,6 +136,16 @@ public class ActivityPermissionSeek extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //check version and make changes if any
 
+        /*
+          This will finish your Launcher Activity before it is displayed by detecting that there is already a task running,
+          and app should instead resume to the last visible Activity.
+          https://stackoverflow.com/a/21022876/5430666
+         */
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
+
         if(!hasPermissions(this, PERMISSIONS)) {
             try {
                 permissionDetailsDialog();
