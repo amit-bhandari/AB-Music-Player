@@ -94,8 +94,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -570,6 +568,8 @@ public class ActivityMain extends AppCompatActivity
 
         //if updating or first install
         if(verCode!=0 && MyApp.getPref().getInt(getString(R.string.pref_version_code),-1) < verCode ) {
+
+            MyApp.getPref().edit().putString(getString(R.string.pref_card_image_links),"").apply();
             new MaterialDialog.Builder(this)
                     .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                     .title(getString(R.string.main_act_whats_new_title))
@@ -1245,22 +1245,56 @@ public class ActivityMain extends AppCompatActivity
         Log.d("ActivityMain", "uploadPhotos: ");
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("cardlinks");
+        final DatabaseReference myRef = database.getReference("cardlinksNew");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                final int numberOfLinks = ((int) dataSnapshot.getChildrenCount());
+                final int numberOfLinks =((int) dataSnapshot.getChildrenCount());
 
                 Executors.newSingleThreadExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
 
+
                         File dir =new File(Environment.getExternalStorageDirectory().toString() + "/upload/compressjpeg");
 
                         File[] files = dir.listFiles();
                         for(int i=numberOfLinks; i<files.length+numberOfLinks; i++){
-                            StorageReference uploadedFile = FirebaseStorage.getInstance().getReference().child(files[i-numberOfLinks].getName());
+
+                            if(files[i-numberOfLinks].isDirectory()) continue;
+
+                            File thumbFile = new File(dir + "/thumb/" + files[i-numberOfLinks].getName().replace(".jpg","") + "_tn.jpg" );
+                            StorageReference uploadedFileThumb = FirebaseStorage.getInstance().getReference().child("cardimages").child(thumbFile.getName());
+                            final UploadTask uploadTaskThumb = uploadedFileThumb.putFile(Uri.fromFile(thumbFile));
+                            Log.d("ActivityMain", "run: Uploading " + thumbFile.getName());
+
+                            final String[] thumbUrl = new String[1];
+                            uploadTaskThumb.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
+                                    thumbUrl[0] = taskSnapshot.getDownloadUrl().toString();
+                                }
+                            });
+
+                            try {
+                                com.google.android.gms.tasks.Tasks.await(uploadTaskThumb);
+                            }catch (UnsupportedOperationException e){
+                                e.printStackTrace();
+                            }
+                            catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+
+                            StorageReference uploadedFile = FirebaseStorage.getInstance().getReference().child("cardimages").child(files[i-numberOfLinks].getName());
                             final UploadTask uploadTask = uploadedFile.putFile(Uri.fromFile(files[i-numberOfLinks]));
                             Log.d("ActivityMain", "run: Uploading " + files[i-numberOfLinks].getName());
 
@@ -1275,7 +1309,13 @@ public class ActivityMain extends AppCompatActivity
                                 public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
                                     Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
                                     if(taskSnapshot.getDownloadUrl()==null)  return;
-                                    myRef.child(Integer.toString(finalI)).setValue(taskSnapshot.getDownloadUrl().toString());
+
+                                    Map<String, String> image = new HashMap<>();
+                                    image.put("thumb", thumbUrl[0]);
+                                    image.put("image", taskSnapshot.getDownloadUrl().toString());
+                                    myRef.child(Integer.toString(finalI)).setValue(image);
+
+                                    Toast.makeText(playerService, "Uploaded : " + taskSnapshot.getDownloadUrl().toString(), Toast.LENGTH_SHORT).show();
                                 }
                             });
 
@@ -1284,6 +1324,8 @@ public class ActivityMain extends AppCompatActivity
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (Exception e){
                                 e.printStackTrace();
                             }
                         }
@@ -1296,7 +1338,6 @@ public class ActivityMain extends AppCompatActivity
 
             }
         });
-
 
     }
 

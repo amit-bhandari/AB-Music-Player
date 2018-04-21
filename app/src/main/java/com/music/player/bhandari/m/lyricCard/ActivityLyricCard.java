@@ -29,11 +29,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -61,7 +59,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -207,23 +207,27 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         recyclerViewImages.setAdapter(imagesAdapter);
 
         //get images links
-        Type type = new TypeToken<ArrayList<String>>() {}.getType();
-        ArrayList<String> urls;
+        Type type = new TypeToken<Map<String, String>>() {}.getType();
+        Map<String, String> urls;
         urls = new Gson().fromJson(MyApp.getPref().getString(getString(R.string.pref_card_image_links), ""), type);
         if(System.currentTimeMillis() >= MyApp.getPref().getLong(getString(R.string.pref_card_image_saved_at), 0) + DAYS_UNTIL_CACHE
                 && urls!=null){
             imagesAdapter.setUrls(urls);
         }else {
-            FirebaseDatabase.getInstance().getReference().child("cardlinks").addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("cardlinksNew").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.d("ActivityLyricCard", "onDataChange: ");
-                    ArrayList<String> urls = new ArrayList<>();
-                    try {
+                    Map<String, String> urls = new LinkedHashMap<>();
+
                         for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                            urls.add(snap.getValue(String.class));
+                            try {
+                            Map<String, String> map = (Map) snap.getValue();
+                            urls.put(map.get("thumb"), map.get("image"));
+                            }catch (Exception ignored){
+                            }
                         }
-                    }catch (Exception ignored){}
+
                     imagesAdapter.setUrls(urls);
 
                     //cache links in shared pref
@@ -519,6 +523,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
+                        Toast.makeText(ActivityLyricCard.this, R.string.error_loading_image_lyric_card, Toast.LENGTH_SHORT).show();
                         return false;
                     }
 
@@ -540,6 +545,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                     @Override
                     public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
+                        Toast.makeText(ActivityLyricCard.this, R.string.error_loading_image_lyric_card, Toast.LENGTH_SHORT).show();
                         return false;
                     }
 
@@ -634,10 +640,11 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
     class ImagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-        private List<String> urls = new ArrayList<>();
+        private Map<String,String> urls = new LinkedHashMap<>();
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v;
             switch (viewType){
                 case 0:
@@ -670,14 +677,15 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         }
 
         @Override
-        public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
             switch (holder.getItemViewType()){
                 case 2:
                     if(holder instanceof ImageHolder) {
                         ((ImageHolder) holder).progressBar.setVisibility(View.VISIBLE);
                         Glide.with(ActivityLyricCard.this)
-                                .load(urls.get(position-2))     //offset for 2 extra elements
+                                .load(getThumbElementByIndex(position-2))     //offset for 2 extra elements
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .centerCrop()
                                 .listener(new RequestListener<String, GlideDrawable>() {
                                     @Override
                                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -702,12 +710,21 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
             return urls.size()+2; //offset for 2 extra elements
         }
 
-        void setUrls(ArrayList<String> urls){
+        void setUrls(Map<String , String> urls){
             this.urls = urls;
             if(urls.size()!=0) {
-                setMainImage(urls.get(UtilityFun.getRandom(0,urls.size())));
+                List<String> mainUrls = new ArrayList<>(urls.values());
+                setMainImage(mainUrls.get(UtilityFun.getRandom(0,urls.size())));
             }
             notifyDataSetChanged();
+        }
+
+        private String getThumbElementByIndex(int index){
+            return  (urls.keySet().toArray())[ index ].toString();
+        }
+
+        private String getMainElementByIndex(int index){
+            return  urls.get( (urls.keySet().toArray())[ index ] );
         }
 
         class ImageHolder extends RecyclerView.ViewHolder{
@@ -719,7 +736,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        setMainImage(urls.get(getLayoutPosition()-2));
+                        setMainImage(getMainElementByIndex(getLayoutPosition()-2));
                     }
                 });
                 imageView = itemView.findViewById(R.id.image_lyric_card);
