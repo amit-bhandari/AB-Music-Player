@@ -12,7 +12,7 @@ android {
         applicationId 'com.bhandari.music'
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 142
+        versionCode 144
         versionName "Version 8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:15.0.0'
     implementation 'com.google.firebase:firebase-invites:15.0.0'
     implementation 'com.google.firebase:firebase-storage:15.0.0'
-    implementation 'com.google.firebase:firebase-auth:15.0.0'
+    //implementation 'com.google.firebase:firebase-auth:15.0.0'
 
     implementation 'com.google.code.gson:gson:2.8.2'
 
