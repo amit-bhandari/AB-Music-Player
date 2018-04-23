@@ -14,6 +14,8 @@ Check it on your device by downlaoding from store
 
 Some screenshots
 
+![alt text](https://user-images.githubusercontent.com/16557921/39107795-2d027a34-46e2-11e8-943c-baa7e44292e8.jpg)
+
 ![alt text](https://user-images.githubusercontent.com/16557921/36733117-96c1a4ee-1bf5-11e8-8212-23d8a5f51151.png)
 
 ![alt text](https://user-images.githubusercontent.com/16557921/36733121-9c2b61f4-1bf5-11e8-9d02-b25e7841ee14.png)
