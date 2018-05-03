@@ -144,7 +144,7 @@ public class ActivityMain extends AppCompatActivity
 
     final static String FB_URL = "http://www.facebook.com/abmusicoffline/";
     final static String WEBSITE = "http://www.thetechguru.in";
-    final static String INSTA_WEBSITE = "https://www.instagram.com/_Amit AB_bhandari/?hl=en";
+    final static String INSTA_WEBSITE = "https://www.instagram.com/_amit_bhandari/?hl=en";
     final static String AB_REMOTE_WALL_URL = "https://play.google.com/store/apps/details?id=in.thetechguru.walle.remote.abremotewallpaperchanger&hl=en";
 
     private long mLastClickTime = 0;
