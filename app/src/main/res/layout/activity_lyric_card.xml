@@ -80,11 +80,11 @@
                     android:layout_gravity="start|bottom"/>
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="40dp"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
                     android:foregroundGravity="bottom"
                     android:src="@drawable/ab_logo"
-                    android:layout_gravity="bottom|center"
+                    android:layout_gravity="bottom|end"
                     tools:ignore="ContentDescription" />
 
 
@@ -93,6 +93,7 @@
         </FrameLayout>
 
         <LinearLayout
+            android:id="@+id/black_overlay_wrap"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
