@@ -39,6 +39,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -154,6 +156,32 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         initiateToolbar();
         fillFonts();
         initiateUI();
+
+        new TapTargetSequence(this)
+                .targets(
+                        TapTarget.forView(findViewById(R.id.toolbar_), "Stuff"),
+                        TapTarget.forView(findViewById(R.id.black_overlay_wrap), "Stuff here too", "Up"),
+                        TapTarget.forView(findViewById(R.id.rv_colors), "Stuff here too", "Up"),
+                        TapTarget.forView(findViewById(R.id.rv_images), "Stuff here too", "Up")
+                )
+                .listener(new TapTargetSequence.Listener() {
+                    // This listener will tell us when interesting(tm) events happen in regards
+                    // to the sequence
+                    @Override
+                    public void onSequenceFinish() {
+                        // Yay
+                    }
+
+                    @Override
+                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                    }
+
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        // Boo
+                    }
+                });
     }
 
     private void setTheme() {
