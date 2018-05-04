@@ -29,7 +29,9 @@
                     android:id="@+id/dragView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:background="@color/dark_gray1"
+                >
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -58,6 +60,7 @@
                     android:layout_gravity="start|top"
                     android:layout_margin="20dp"
                     android:lineSpacingExtra="2sp"
+                    android:textColor="@color/colorwhite"
                     android:textSize="25sp" />
 
                 <com.music.player.bhandari.m.customViews.ZoomTextView
@@ -67,6 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
+                    android:textColor="@color/colorwhite"
                     android:layout_gravity="start|bottom"/>
 
                 <com.music.player.bhandari.m.customViews.ZoomTextView
@@ -76,6 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
+                    android:textColor="@color/colorwhite"
                     android:paddingBottom="25dp"
                     android:layout_gravity="start|bottom"/>
 

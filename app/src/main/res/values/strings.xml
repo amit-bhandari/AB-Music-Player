@@ -440,7 +440,7 @@
 
     <!-- preference screen -->
         <string name="title_remove_ads">Remove Ads</string>
-        <string name="title_text_font">Music Library Text Font</string>
+        <string name="title_text_font">Font</string>
         <string name="title_misc">Miscellaneous</string>
         <string name="title_try_my_new_app">Try my new App</string>
         <string name="title_continous_playback">Continuous Playback</string>
@@ -907,4 +907,9 @@ that this copyright notice remain intact.</string>
     <string name="first_launch_lyric_card">First launch might take a while for loading images from our servers. Subsequent launches should work lightning fast!</string>
     <string name="share_lyric_card_extra_text"><![CDATA[Created using AB Music -> https://tinyurl.com/mtxvchw]]></string>
     <string name="error_loading_image_lyric_card">Error loading image, check your connection.</string>
+    <string name="pref_info_lyric_card_shown">pref_info_lyric_card_shown</string>
+    <string name="title_edit">Edit Text</string>
+    <string name="hint_lyric">Lyric</string>
+    <string name="hint_author">Author</string>
+    <string name="hint_track">Track</string>
 </resources>

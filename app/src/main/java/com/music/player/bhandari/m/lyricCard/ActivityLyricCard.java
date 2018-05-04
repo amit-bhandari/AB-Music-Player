@@ -16,6 +16,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.provider.FontRequest;
 import android.support.v4.provider.FontsContractCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +35,8 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -50,6 +53,7 @@ import com.google.gson.reflect.TypeToken;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityPermissionSeek;
 import com.music.player.bhandari.m.customViews.ZoomTextView;
 import com.music.player.bhandari.m.model.Constants;
@@ -150,38 +154,12 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         }
 
         lyricText.setText(text);
-        artistText.setText(author.toUpperCase());
+        artistText.setText(author);
         trackText.setText(track);
 
         initiateToolbar();
         fillFonts();
         initiateUI();
-
-        new TapTargetSequence(this)
-                .targets(
-                        TapTarget.forView(findViewById(R.id.toolbar_), "Stuff"),
-                        TapTarget.forView(findViewById(R.id.black_overlay_wrap), "Stuff here too", "Up"),
-                        TapTarget.forView(findViewById(R.id.rv_colors), "Stuff here too", "Up"),
-                        TapTarget.forView(findViewById(R.id.rv_images), "Stuff here too", "Up")
-                )
-                .listener(new TapTargetSequence.Listener() {
-                    // This listener will tell us when interesting(tm) events happen in regards
-                    // to the sequence
-                    @Override
-                    public void onSequenceFinish() {
-                        // Yay
-                    }
-
-                    @Override
-                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
-
-                    }
-
-                    @Override
-                    public void onSequenceCanceled(TapTarget lastTarget) {
-                        // Boo
-                    }
-                });
     }
 
     private void setTheme() {
@@ -358,7 +336,102 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_lyric_card, menu);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (!MyApp.getPref().getBoolean(getString(R.string.pref_info_lyric_card_shown), false)) {
+                        showFirstTimeInfo();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }, 1000);
         return true;
+    }
+
+    private void showFirstTimeInfo(){
+        new TapTargetSequence(ActivityLyricCard.this)
+                .targets(
+                        TapTarget.forView(findViewById(R.id.action_font), "Change text font by clicking here")
+                                .outerCircleColorInt(ColorHelper.getPrimaryColor())
+                                .outerCircleAlpha(0.9f)
+                                .transparentTarget(true)
+                                .titleTextColor(R.color.colorwhite)
+                                .descriptionTextColor(R.color.colorwhite)
+                                .drawShadow(true)
+                                .tintTarget(true),
+                        TapTarget.forView(findViewById(R.id.action_alignment), "Change text alignment by clicking here")
+                                .outerCircleColorInt(ColorHelper.getPrimaryColor())
+                                .outerCircleAlpha(0.9f)
+                                .transparentTarget(true)
+                                .titleTextColor(R.color.colorwhite)
+                                .descriptionTextColor(R.color.colorwhite)
+                                .drawShadow(true)
+                                .tintTarget(true),
+                        TapTarget.forView(findViewById(R.id.action_edit), "Edit lyric text by clicking here")
+                                .outerCircleColorInt(ColorHelper.getPrimaryColor())
+                                .outerCircleAlpha(0.9f)
+                                .transparentTarget(true)
+                                .titleTextColor(R.color.colorwhite)
+                                .descriptionTextColor(R.color.colorwhite)
+                                .drawShadow(true)
+                                .tintTarget(true),
+                        TapTarget.forView(findViewById(R.id.black_overlay_wrap), "Blacken background image by using this slider")
+                                .outerCircleColorInt(ColorHelper.getPrimaryColor())
+                                .outerCircleAlpha(0.9f)
+                                .transparentTarget(true)
+                                .titleTextColor(R.color.colorwhite)
+                                .descriptionTextColor(R.color.colorwhite)
+                                .drawShadow(true)
+                                .tintTarget(true),
+                        TapTarget.forView(findViewById(R.id.rv_colors), "Choose text color among given options")
+                                .outerCircleColorInt(ColorHelper.getPrimaryColor())
+                                .outerCircleAlpha(0.9f)
+                                .transparentTarget(true)
+                                .titleTextColor(R.color.colorwhite)
+                                .descriptionTextColor(R.color.colorwhite)
+                                .drawShadow(true)
+                                .tintTarget(true),
+                        TapTarget.forView(findViewById(R.id.text_artist), "You can remove artist or album text by dragging it towards bottom of image.")
+                                .outerCircleColorInt(ColorHelper.getPrimaryColor())
+                                .outerCircleAlpha(0.9f)
+                                .transparentTarget(true)
+                                .titleTextColor(R.color.colorwhite)
+                                .descriptionTextColor(R.color.colorwhite)
+                                .drawShadow(true)
+                                .tintTarget(true),
+                        TapTarget.forView(recyclerViewImages.getLayoutManager().findViewByPosition(0), "You can select custom or artist image from here for background.")
+                                .outerCircleColorInt(ColorHelper.getPrimaryColor())
+                                .outerCircleAlpha(0.9f)
+                                .transparentTarget(true)
+                                .titleTextColor(R.color.colorwhite)
+                                .descriptionTextColor(R.color.colorwhite)
+                                .drawShadow(true)
+                                .tintTarget(true)
+                )
+                .continueOnCancel(true)
+                .considerOuterCircleCanceled(true)
+                .listener(new TapTargetSequence.Listener() {
+                    // This listener will tell us when interesting(tm) events happen in regards
+                    // to the sequence
+                    @Override
+                    public void onSequenceFinish() {
+                        // Yay
+                        //MyApp.getPref().edit().putBoolean(getString(R.string.pref_info_lyric_card_shown), true).apply();
+                    }
+
+                    @Override
+                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                    }
+
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        // Boo
+                    }
+                }).start();
     }
 
     @Override
@@ -378,6 +451,10 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
             case R.id.action_alignment:
                 changeAlignment();
+                break;
+
+            case R.id.action_edit:
+                showTextEditDialog();
                 break;
 
             case R.id.action_save:
@@ -616,6 +693,42 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         }
     }
 
+    void showTextEditDialog(){
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title("Edit text")
+                .positiveText(getString(R.string.okay))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        View view = dialog.getCustomView();
+                        if(view==null) return;
+                        AppCompatEditText lyric = view.findViewById(R.id.text_lyric);
+                        AppCompatEditText artist = view.findViewById(R.id.text_artist);
+                        AppCompatEditText track = view.findViewById(R.id.text_track);
+
+                        lyricText.setText(lyric.getText());
+                        artistText.setText(artist.getText());
+                        trackText.setText(track.getText());
+                    }
+                })
+                .customView(R.layout.dialog_edit_lyric_card_texts, true);
+
+        MaterialDialog dialog = builder.build();
+
+        View view = dialog.getCustomView();
+        if(view==null) return;
+        AppCompatEditText lyric = view.findViewById(R.id.text_lyric);
+        AppCompatEditText artist = view.findViewById(R.id.text_artist);
+        AppCompatEditText track = view.findViewById(R.id.text_track);
+
+        lyric.setText(lyricText.getText());
+        artist.setText(artistText.getText());
+        track.setText(trackText.getText());
+
+        dialog.show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -707,6 +820,38 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         @Override
         public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
             switch (holder.getItemViewType()){
+                case 1:
+                    if (UtilityFun.isConnectedToInternet()) {
+                        String artist = UtilityFun.filterArtistString(artistText.getText().toString());
+                        new DownloadArtInfoThread(new ArtistInfo.Callback() {
+                            @Override
+                            public void onArtInfoDownloaded(ArtistInfo artistInfo) {
+                                if(artistInfo!=null && !artistInfo.getImageUrl().isEmpty()) {
+                                    Glide.with(ActivityLyricCard.this)
+                                            .load(artistInfo.getImageUrl())     //offset for 2 extra elements
+                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                            .centerCrop()
+                                            .listener(new RequestListener<String, GlideDrawable>() {
+                                                @Override
+                                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                                    ((ArtistHolder) holder).progressBar.setVisibility(View.GONE);
+                                                    ((ArtistHolder) holder).imageView.setImageResource(R.drawable.ic_text_format_black_24dp);
+                                                    return false;
+                                                }
+
+                                                @Override
+                                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                                    ((ArtistHolder) holder).progressBar.setVisibility(View.GONE);
+                                                    return false;
+                                                }
+                                            })
+                                            .into(((ArtistHolder) holder).imageView);
+                                }
+                            }
+                        }, artist, null).start();
+                    }
+                    break;
+
                 case 2:
                     if(holder instanceof ImageHolder) {
                         ((ImageHolder) holder).progressBar.setVisibility(View.VISIBLE);
@@ -773,8 +918,13 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         }
 
         class ArtistHolder extends RecyclerView.ViewHolder{
+            ImageView imageView;
+            ProgressBar progressBar;
+
             ArtistHolder(View itemView) {
                 super(itemView);
+                imageView = itemView.findViewById(R.id.addArtistImage);
+                progressBar = itemView.findViewById(R.id.progressBar);
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
