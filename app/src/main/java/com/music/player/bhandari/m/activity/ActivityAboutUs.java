@@ -224,6 +224,10 @@ public class ActivityAboutUs extends AppCompatActivity {
                 break;
 
             case R.id.action_licenses:
+                /*new LibsBuilder()
+                        .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                        .withActivityTitle("Libraries")
+                        .start(this);*/
                 startActivity(new Intent(this, ActivityLicenses.class));
                 break;
 

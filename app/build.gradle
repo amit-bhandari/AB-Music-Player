@@ -120,6 +120,9 @@ dependencies {
 
     //font
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+
+    //open source lib information
+    //implementation "com.mikepenz:aboutlibraries:6.0.8"
 }
 
 repositories {

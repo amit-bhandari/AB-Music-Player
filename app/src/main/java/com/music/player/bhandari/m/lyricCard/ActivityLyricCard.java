@@ -44,6 +44,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -60,6 +64,7 @@ import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.ArtistInfo.ArtistInfo;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArtInfoThread;
+import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.io.File;
@@ -99,6 +104,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     @BindView(R.id.progressBar) ProgressBar progressBar;
     @BindView(R.id.brightnessSeekBar) SeekBar brightnessSeekBar;
     @BindView(R.id.overImageLayer) View overImageLayer;
+    @BindView(R.id.watermark) View watermark;
 
     float dx;   //for dragging text views
     float dy;
@@ -113,6 +119,10 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     private final static int DAYS_UNTIL_CACHE = 5;//Min number of days
 
     boolean typefaceSet = false;
+
+    //when watermark is removed
+    private InterstitialAd mInterstitialAd;
+    private boolean adShown =false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -464,6 +474,19 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                     Toast.makeText(this, "Lyric card is saved at " +f.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 }
                 break;
+
+            case R.id.action_remove_watermark:
+                if(item.isChecked()){
+                    item.setChecked(false);
+                    watermark.setVisibility(View.VISIBLE);
+                }else {
+                    item.setChecked(true);
+                    watermark.setVisibility(View.INVISIBLE);
+                    if(!UtilityFun.isAdsRemoved() && !adShown) {
+                        launchAd();
+                    }
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -730,6 +753,36 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         track.setText(trackText.getText());
 
         dialog.show();
+    }
+
+    void launchAd(){
+        Log.d("ActivityLyricCard", "launchAd: ");
+
+        Toast.makeText(this, R.string.ad_serve_toast, Toast.LENGTH_LONG).show();
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.inter_lyric_card_activity));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                mInterstitialAd.show();
+                adShown = true;
+            }
+        });
+        requestNewInterstitial();
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                //.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
     }
 
     @Override
