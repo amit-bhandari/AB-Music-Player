@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                app:indicatorName="BallTrianglePathIndicator"
+                app:indicatorName="BallScaleMultipleIndicator"
                 />
 
             <EditText
@@ -60,7 +60,8 @@
                 android:textSize="20sp"
                 android:textColor="@color/nowPlayingText"
                 android:layout_height="wrap_content"
-                android:inputType="textNoSuggestions" />
+                android:inputType="textNoSuggestions"
+                card_view:ignore="LabelFor" />
 
             <Button
                 android:id="@+id/button_update_metadata"

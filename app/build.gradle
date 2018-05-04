@@ -49,34 +49,51 @@ android {
 }
 
 dependencies {
-
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
     testImplementation 'junit:junit:4.12'
+
+    //small animations for lyric loading
     implementation 'com.wang.avi:library:2.1.3'
+
+    //slide up panel for now playing view
     implementation 'com.sothree.slidinguppanel:library:3.3.1'
+
+    //shake detection
     implementation 'com.squareup:seismic:1.0.2'
+
+    //glide
+    //noinspection GradleDependency
     implementation 'com.github.bumptech.glide:glide:3.7.0'
+
+    //blur images
     implementation 'jp.wasabeef:blurry:2.1.0'
 
+    //scroll smoothly and fast scroll
     implementation 'com.nshmura:snappysmoothscroller:1.0.0'
     implementation 'com.simplecityapps:recyclerview-fastscroll:1.0.16'
 
+    //jsoup and okhttp
     implementation 'org.jsoup:jsoup:1.9.2'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
+
+    //first time info bubbles
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.9.1'
+
+    //shine animation after clicking fav
     implementation 'com.sackcentury:shinebutton:0.1.7'
 
+    //dialogs
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
+    //firebase
     implementation 'com.google.firebase:firebase-ads:15.0.1'
     implementation 'com.google.firebase:firebase-core:15.0.2'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
@@ -86,18 +103,23 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:15.0.2'
     //implementation 'com.google.firebase:firebase-auth:15.0.0'
 
+    //gson
     implementation 'com.google.code.gson:gson:2.8.2'
 
+    //leak detection
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
+    //crop images
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.0'
 
-    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
-
+    //view binding
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    //font
+    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
 }
 
 repositories {
