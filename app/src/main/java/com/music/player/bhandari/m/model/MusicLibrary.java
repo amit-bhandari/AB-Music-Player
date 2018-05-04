@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.music.player.bhandari.m.BuildConfig;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.BulkArtInfoGrabber;
@@ -282,12 +283,14 @@ public class MusicLibrary{
                 updateArtistInfo();
                 libraryLoadCounter = atomicInt.incrementAndGet();
 
-                //if its been more than 2 days since artist info has been cached locally, do it
-                //fetch art info thread
-                Long lastTimeDidAt = MyApp.getPref().getLong(context.getString(R.string.pref_artinfo_libload),0);
-                if (System.currentTimeMillis() >= lastTimeDidAt +
-                        (2 * 24 * 60 * 60 * 1000)) {
-                    new BulkArtInfoGrabber().start();
+                if(!BuildConfig.DEBUG) {
+                    //if its been more than 2 days since artist info has been cached locally, do it
+                    //fetch art info thread
+                    Long lastTimeDidAt = MyApp.getPref().getLong(context.getString(R.string.pref_artinfo_libload), 0);
+                    if (System.currentTimeMillis() >= lastTimeDidAt +
+                            (2 * 24 * 60 * 60 * 1000)) {
+                        new BulkArtInfoGrabber().start();
+                    }
                 }
             }
         });
