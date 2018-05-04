@@ -512,23 +512,19 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     }
 
     private void fillFonts(){
-        requestDownload(new QueryBuilder("Aldrich").build());  //ok
-        requestDownload(new QueryBuilder("Berkshire Swash").build());  //good
-        requestDownload(new QueryBuilder("Black Ops One").build());  //good, thick
+        requestDownload(new QueryBuilder("Ubuntu").build());  //unique
+        requestDownload(new QueryBuilder("Roboto Slab").build());  //unique
+        requestDownload(new QueryBuilder("Indie Flower").build());  //unique
+        requestDownload(new QueryBuilder("Satisfy").build());  //unique
+        requestDownload(new QueryBuilder("Berkshire Swash").build());  //r
         requestDownload(new QueryBuilder("Bubblegum Sans").build()); //good
         requestDownload(new QueryBuilder("Cabin Sketch").build()); //good
         requestDownload(new QueryBuilder("Caveat Brush").build()); //good
         requestDownload(new QueryBuilder("Condiment").build()); //good cursue
-        requestDownload(new QueryBuilder("Faster One").build());
-        requestDownload(new QueryBuilder("Just Me Again Down Here").build()); //nice
-        requestDownload(new QueryBuilder("Kalam").build());  //same as gloria hallelua, better
-        requestDownload(new QueryBuilder("Kaushan Script").build()); //same as gloria hallelua, better
-        requestDownload(new QueryBuilder("Lobster Two").build());  //good
-        requestDownload(new QueryBuilder("Monofett").build()); //good
-        requestDownload(new QueryBuilder("Pacifico").build());  //full caps not good
-        requestDownload(new QueryBuilder("Shrikhand").build()); //thick nice
-        requestDownload(new QueryBuilder("Source Sans Pro").build()); //simple
-        requestDownload(new QueryBuilder("UnifrakturMaguntia").build());  //unique
+        requestDownload(new QueryBuilder("Slabo 27px").build());  //unique
+        requestDownload(new QueryBuilder("Acme").build());  //unique
+        requestDownload(new QueryBuilder("Dosis").build());  //unique
+        requestDownload(new QueryBuilder("Bangers").build());  //unique
     }
 
     private void requestDownload(String query) {
@@ -695,6 +691,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 }
             }, artist, null).start();
         } else {
+            progressBar.setVisibility(View.INVISIBLE);
             Toast.makeText(this, "Not connected to internet", Toast.LENGTH_SHORT).show();
         }
     }

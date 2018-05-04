@@ -1,28 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
-        <item>@font/aldrich</item>
-        <item>@font/aref_ruqaa</item>
+        <item>@font/acme</item>
+        <item>@font/bangers</item>
         <item>@font/berkshire_swash</item>
-        <item>@font/black_ops_one</item>
         <item>@font/bubblegum_sans</item>
         <item>@font/cabin_sketch_bold</item>
         <item>@font/caveat_brush</item>
         <item>@font/condiment</item>
-        <item>@font/faster_one</item>
-        <item>@font/gloria_hallelujah</item>
-        <item>@font/great_vibes</item>
-        <item>@font/just_me_again_down_here</item>
-        <item>@font/kalam_bold</item>
-        <item>@font/kaushan_script</item>
-        <item>@font/lancelot</item>
-        <item>@font/lobster_two_italic</item>
-        <item>@font/monofett</item>
-        <item>@font/pacifico</item>
-        <item>@font/raleway_thin</item>
-        <item>@font/shrikhand</item>
-        <item>@font/source_sans_pro</item>
-        <item>@font/tangerine_bold</item>
-        <item>@font/unifrakturmaguntia</item>
+        <item>@font/dosis_semibold</item>
+        <item>@font/indie_flower</item>
+        <item>@font/roboto_slab</item>
+        <item>@font/satisfy</item>
+        <item>@font/slabo_27px</item>
+        <item>@font/ubuntu_medium</item>
     </array>
 </resources>

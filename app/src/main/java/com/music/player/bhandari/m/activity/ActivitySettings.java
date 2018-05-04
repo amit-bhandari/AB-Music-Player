@@ -1636,13 +1636,11 @@ public class ActivitySettings extends AppCompatActivity {
             new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_text_font))
-
                     .items((CharSequence[]) new String[]{MONOSPACE, SOFIA, RISQUE, VAST_SHADOW,  SYSTEM_DEFAULT})
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                             switch (text.toString()){
-
                                 case MONOSPACE:
                                     MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONOSPACE).apply();
                                     findPreference(getString(R.string.pref_text_font)).setSummary(MONOSPACE);
