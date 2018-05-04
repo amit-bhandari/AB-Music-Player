@@ -38,8 +38,7 @@
                 android:paddingBottom="5dp"
                 android:text="track info"
                 android:textSize="18sp"
-                app:fontFamily="@font/acme"
-                tools:ignore="RtlSymmetry" />
+                tools:ignore="HardcodedText,RtlSymmetry" />
 
             <TextView
                 android:id="@+id/playCount"
@@ -50,7 +49,7 @@
                 android:paddingBottom="3dp"
                 android:text="15"
                 android:textSize="12sp"
-                tools:ignore="RtlSymmetry" />
+                tools:ignore="HardcodedText,RtlSymmetry" />
 
         </LinearLayout>
 

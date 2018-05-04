@@ -35,8 +35,8 @@ public class TypeFaceHelper {
                     typeface = Typeface.createFromAsset(context.getAssets(), "fonts/monospace.ttf");
                     break;
 
-                case Constants.TYPEFACE.VAST_SHADOW:
-                    typeface = Typeface.createFromAsset(context.getAssets(), "fonts/vastshadow.ttf");
+                case Constants.TYPEFACE.ASAP:
+                    typeface = Typeface.createFromAsset(context.getAssets(), "fonts/asap.ttf");
                     break;
 
                 case Constants.TYPEFACE.ACME:
@@ -67,8 +67,8 @@ public class TypeFaceHelper {
                 typefacePath = "fonts/monospace.ttf";
                 break;
 
-            case Constants.TYPEFACE.VAST_SHADOW:
-                typefacePath = "fonts/vastshadow.ttf";
+            case Constants.TYPEFACE.ASAP:
+                typefacePath = "fonts/asap.ttf";
                 break;
 
             case Constants.TYPEFACE.ACME:

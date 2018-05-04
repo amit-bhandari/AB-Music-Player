@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -34,7 +33,6 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.fcm.CountryInfo;
-import com.music.player.bhandari.m.lyricCard.ActivityLyricCard;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.service.NotificationListenerService;
 import com.music.player.bhandari.m.service.PlayerService;
@@ -362,8 +360,8 @@ public class ActivityPermissionSeek extends AppCompatActivity {
                     fontString = "RISQUE";
                     break;
 
-                case Constants.TYPEFACE.VAST_SHADOW:
-                    fontString = "VAST_SHADOW";
+                case Constants.TYPEFACE.ASAP:
+                    fontString = "ASAP";
                     break;
             }
             Bundle bundle = new Bundle();

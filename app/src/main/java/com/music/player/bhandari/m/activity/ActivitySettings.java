@@ -72,6 +72,7 @@ import java.io.File;
 import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -336,7 +337,7 @@ public class ActivitySettings extends AppCompatActivity {
         final String MONOSPACE = "Monospace";
         final String SOFIA = "Sofia";
         final String RISQUE = "Risque";
-        final String VAST_SHADOW = "Vast Shadow";
+        final String ASAP = "Asap";
         final String SYSTEM_DEFAULT = "System Default";
 
         private CheckBoxPreference instantLyricStatus;
@@ -561,8 +562,8 @@ public class ActivitySettings extends AppCompatActivity {
                     findPreference(getString(R.string.pref_text_font)).setSummary(RISQUE);
                     break;
 
-                case Constants.TYPEFACE.VAST_SHADOW:
-                    findPreference(getString(R.string.pref_text_font)).setSummary(VAST_SHADOW);
+                case Constants.TYPEFACE.ASAP:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(ASAP);
                     break;
             }
             fontPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -1335,11 +1336,7 @@ public class ActivitySettings extends AppCompatActivity {
                                     break;
                             }
 
-                            Intent intent = getActivity().getIntent();
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            intent.putExtra("ad",false);
-                            getActivity().finish();
-                            startActivity(intent);
+                            restartSettingsActivity();
                         }
                     })
                     .show();
@@ -1555,13 +1552,7 @@ public class ActivitySettings extends AppCompatActivity {
                             }
                         }
 
-                        private void restartSettingsActivity() {
-                            Intent intent = getActivity().getIntent();
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            intent.putExtra("ad", false);
-                            getActivity().finish();
-                            startActivity(intent);
-                        }
+
                     })
                     .show();
         }
@@ -1620,11 +1611,7 @@ public class ActivitySettings extends AppCompatActivity {
                             editor.apply();
 
 
-                            Intent intent = getActivity().getIntent();
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            intent.putExtra("ad",false);
-                            getActivity().finish();
-                            startActivity(intent);
+                            restartSettingsActivity();
                         }
                     })
                    // .customView(linear,false)
@@ -1636,7 +1623,7 @@ public class ActivitySettings extends AppCompatActivity {
             new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_text_font))
-                    .items((CharSequence[]) new String[]{MONOSPACE, SOFIA, RISQUE, VAST_SHADOW,  SYSTEM_DEFAULT})
+                    .items((CharSequence[]) new String[]{MONOSPACE, SOFIA, RISQUE, ASAP,  SYSTEM_DEFAULT})
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -1656,9 +1643,9 @@ public class ActivitySettings extends AppCompatActivity {
                                     findPreference(getString(R.string.pref_text_font)).setSummary(RISQUE);
                                     break;
 
-                                case VAST_SHADOW:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.VAST_SHADOW).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(VAST_SHADOW);
+                                case ASAP:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(ASAP);
                                     break;
 
                                 case SYSTEM_DEFAULT:
@@ -1668,42 +1655,24 @@ public class ActivitySettings extends AppCompatActivity {
                             }
 
                             MyApp.getPref().edit().putBoolean(getString(R.string.pref_font_already_logged), false).apply();
-                            //Toast.makeText(getActivity(),"Font changed!",Toast.LENGTH_SHORT).show();
-                            //Snackbar.make(rootView, "Font changed!", Snackbar.LENGTH_LONG).show();
-                            restartAppDialog();
+
+                            CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                                    .setDefaultFontPath(TypeFaceHelper.getTypeFacePath())
+                                    .setFontAttrId(R.attr.fontPath)
+                                    .build());
+
+                            restartSettingsActivity();
                         }
                     })
                     .show();
         }
 
-        private void restartAppDialog(){
-            new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
-                    .cancelable(false)
-                    .title(getString(R.string.app_restart_title))
-                    .content(getString(R.string.app_restart_content))
-                    .positiveText(getString(R.string.app_restart_pos))
-                    .negativeText(getString(R.string.app_restart_neg))
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                            MyApp.getService().stopService();
-
-                            Intent mStartActivity = new Intent(MyApp.getContext(), ActivityPermissionSeek.class);
-                            int mPendingIntentId = 123456;
-                            PendingIntent mPendingIntent = PendingIntent.getActivity(MyApp.getContext(), mPendingIntentId, mStartActivity,
-                                    PendingIntent.FLAG_CANCEL_CURRENT);
-                            AlarmManager mgr = (AlarmManager) MyApp.getContext().getSystemService(Context.ALARM_SERVICE);
-                            if (mgr != null) {
-                                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                            }
-
-                            System.exit(0);
-
-                        }
-                    })
-                    .show();
+        private void restartSettingsActivity() {
+            Intent intent = getActivity().getIntent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("ad", false);
+            getActivity().finish();
+            startActivity(intent);
         }
 
         @Override
