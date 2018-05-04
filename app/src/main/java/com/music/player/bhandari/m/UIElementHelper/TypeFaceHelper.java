@@ -18,7 +18,7 @@ public class TypeFaceHelper {
 
     public static Typeface getTypeFace(Context context) {
         if (typeface == null) {
-            switch (MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_text_font), Constants.TYPEFACE.SYSTEM_DEFAULT)){
+            switch (MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP)){
                 case Constants.TYPEFACE.SOFIA:
                     typeface = Typeface.createFromAsset(context.getAssets(), "fonts/sofia.ttf");
                     break;
@@ -50,7 +50,7 @@ public class TypeFaceHelper {
     }
 
     public static String getTypeFacePath() {
-        switch (MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_text_font), Constants.TYPEFACE.SYSTEM_DEFAULT)){
+        switch (MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP)){
             case Constants.TYPEFACE.SOFIA:
                 typefacePath = "fonts/sofia.ttf";
                 break;

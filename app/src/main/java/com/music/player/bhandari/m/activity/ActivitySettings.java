@@ -337,7 +337,7 @@ public class ActivitySettings extends AppCompatActivity {
         final String MONOSPACE = "Monospace";
         final String SOFIA = "Sofia";
         final String RISQUE = "Risque";
-        final String ASAP = "Asap";
+        final String ASAP = "Asap (Recommended)";
         final String SYSTEM_DEFAULT = "System Default";
 
         private CheckBoxPreference instantLyricStatus;
@@ -543,7 +543,7 @@ public class ActivitySettings extends AppCompatActivity {
 
             //text font
             Preference fontPref = findPreference(getString(R.string.pref_text_font));
-            int textFontPref = MyApp.getPref().getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SYSTEM_DEFAULT);
+            int textFontPref = MyApp.getPref().getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP);
             switch (textFontPref){
 
                 case Constants.TYPEFACE.MONOSPACE:
@@ -574,7 +574,7 @@ public class ActivitySettings extends AppCompatActivity {
                 }
             });
 
-            //lockscrreen albumName art
+            //lockscreen albumName art
             CheckBoxPreference lockScreenArt = (CheckBoxPreference)findPreference(getString(R.string.pref_lock_screen_album_Art));
 
             lockScreenArt.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -588,14 +588,10 @@ public class ActivitySettings extends AppCompatActivity {
 
                     if(((boolean) newValue)){
                         MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art),true).apply();
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                            MyApp.getService().setMediaSessionMetadata(true);
-                        }
+                        MyApp.getService().setMediaSessionMetadata(true);
                     }else {
                         MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art),false).apply();
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                            MyApp.getService().setMediaSessionMetadata(false);
-                        }
+                        MyApp.getService().setMediaSessionMetadata(false);
                     }
                     return true;
                 }
@@ -1623,7 +1619,7 @@ public class ActivitySettings extends AppCompatActivity {
             new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_text_font))
-                    .items((CharSequence[]) new String[]{MONOSPACE, SOFIA, RISQUE, ASAP,  SYSTEM_DEFAULT})
+                    .items((CharSequence[]) new String[]{ ASAP, MONOSPACE, SOFIA, RISQUE, SYSTEM_DEFAULT})
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {

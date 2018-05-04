@@ -189,6 +189,13 @@
 
         <string name="toast_artist_cache_complete">Artist info local caching complete</string>
 
+        <string name="first_launch_lyric_card_no_internet">Internet is needed for loading images for cards. Images will be downloaded once and will be cached for later use.</string>
+        <string name="first_launch_lyric_card">First launch might take a while for loading images from our servers. Subsequent launches should work lightning fast!</string>
+        <string name="share_lyric_card_extra_text"><![CDATA[Created using AB Music -> https://tinyurl.com/mtxvchw]]></string>
+
+        <string name="error_loading_image_lyric_card">Error loading image, check your connection.</string>
+
+
     <!-- dialogs -->
         <string name="main_act_new_ver_info_title">Whats new</string>
         <string name="main_act_new_ver_info_neg">Share the word</string>
@@ -313,6 +320,14 @@
         <string name="title_reward_failed">Ooops</string>
         <string name="pos_reward_failed">Refill</string>
         <string name="neg_reward_failed">Done</string>
+
+        <string name="title_lyric_card">Lyric card</string>
+        <string name="action_font">Font</string>
+        <string name="action_text_alignment">Text Alignment</string>
+        <string name="nav_lyric_cards">Lyric Cards</string>
+
+        <string name="dialog_lyric_card_content">Now create awesome lyric cards by selecting lyric text and pressing image button on top right tool bar.</string>
+        <string name="dialog_lyric_card_pos">Try now!</string>
 
         <string name="main_act_content_rate_reward_failed">You have already claimed reward points for rating AB Music in store!</string>
         <string name="close">close</string>
@@ -484,6 +499,7 @@
         <string name="title_cache_artist_data">Cache Artist Data Locally</string>
 
 
+
     <!-- arrays -->
         <string-array name="now_playing_back_pref_array">
             <item>System default</item>
@@ -558,9 +574,10 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020 * Now create lyric cards by selecting lyrics and pressin image icon on toolbar.  \n\n
-                                              * Please leave your feedback about lyric cards on store or over my email, I will be thankful. \n\n
-                                              * Small bug when system default font is selected is solved.
+    <string name="whats_new"><![CDATA[ \u0020 * Added ability to update text and remove watermark in lyric cards.  \n\n
+                                              * Replaced \'Vast Shadow\' font with cool new \'Asap\' font. \n\n
+                                              * Reach me for any kind of feedback from side navigation drawer. \n\n
+                                              * Bug fixes.
 
 ]]></string>
 
@@ -714,6 +731,9 @@
         <string name="pref_prefer_system_equ">pref_prefer_system_equ</string>
         <string name="pref_terms_of_use">pref_terms_use</string>
         <string name="pref_tab_seq">pref_tab_seq</string>
+        <string name="pref_card_image_links">pref_card_image_links</string>
+        <string name="pref_card_image_saved_at">pref_card_image_saved_at</string>
+        <string name="pref_info_lyric_card_shown">pref_info_lyric_card_shown</string>
 
 
 
@@ -740,6 +760,7 @@
     <string name="banner_tag_editor">ca-app-pub-3876828674787345/7980548178</string>
     <!--used for now playing now -->
     <string name="inter_settings_activity">ca-app-pub-3876828674787345/6269116115</string>
+    <string name="inter_lyric_card_activity">ca-app-pub-3876828674787345/5997989493</string>
 
 
     <string name="inter_about_us_activity">ca-app-pub-3876828674787345/7745849318</string>
@@ -893,23 +914,11 @@ sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
 
-    <string name="title_lyric_card">Lyric card</string>
-    <string name="action_font">Font</string>
-    <string name="action_text_alignment">Text Alignment</string>
-    <string name="pref_card_image_links">pref_card_image_links</string>
-    <string name="pref_card_image_saved_at">pref_card_image_saved_at</string>
-    <string name="nav_lyric_cards">Lyric Cards</string>
-
-    <string name="dialog_lyric_card_content">Now create awesome lyric cards by selecting lyric text and pressing image button on top right tool bar.</string>
-    <string name="dialog_lyric_card_pos">Try now!</string>
-
-    <string name="first_launch_lyric_card_no_internet">Internet is needed for loading images for cards. Images will be downloaded once and will be cached for later use.</string>
-    <string name="first_launch_lyric_card">First launch might take a while for loading images from our servers. Subsequent launches should work lightning fast!</string>
-    <string name="share_lyric_card_extra_text"><![CDATA[Created using AB Music -> https://tinyurl.com/mtxvchw]]></string>
-    <string name="error_loading_image_lyric_card">Error loading image, check your connection.</string>
-    <string name="pref_info_lyric_card_shown">pref_info_lyric_card_shown</string>
     <string name="title_edit">Edit Text</string>
     <string name="hint_lyric">Lyric</string>
     <string name="hint_author">Author</string>
     <string name="hint_track">Track</string>
+    <string name="title_remove_watermark">Remove Watermark</string>
+    <string name="ad_serve_toast">One ad will be served for removing watermark. You can remove ads permanently from Settings.</string>
+
 </resources>

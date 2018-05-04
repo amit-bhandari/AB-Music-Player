@@ -342,4 +342,12 @@
         <item>изготовленный на заказ</item>
     </string-array>
 
+    <string name="title_edit">Редактировать текст</string>
+    <string name="hint_lyric">лирический</string>
+    <string name="hint_author">автор</string>
+    <string name="hint_track">песня</string>
+    <string name="title_remove_watermark">Удалить водяной знак</string>
+    <string name="ad_serve_toast">Для удаления водяного знака будет использовано одно объявление. Вы можете удалить объявления из настроек.</string>
+
+
 </resources>

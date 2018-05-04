@@ -39,4 +39,10 @@
         app:showAsAction="never"
         android:title="@string/action_save" />
 
+    <item android:id="@+id/action_remove_watermark"
+        android:orderInCategory="90"
+        android:title="@string/title_remove_watermark"
+        app:showAsAction="never"
+        android:checkable="true" />
+
 </menu>

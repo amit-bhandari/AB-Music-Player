@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<ScrollView xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view_request_notification_access"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,6 +30,8 @@
         android:id="@+id/text_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/text_title"
@@ -44,6 +46,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="30dp"
         android:paddingBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/text_subtitle"
@@ -57,12 +61,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_request"
         android:layout_centerHorizontal="true"
-        android:background="@color/pw_accent"
+        android:background="@drawable/round_button"
         android:elevation="10dp"
         android:gravity="center"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
-        android:text="@string/enable_now" />
+        android:text="@string/enable_now"
+        tools:ignore="UnusedAttribute" />
 
     <TextView
         android:id="@+id/text_skip"
@@ -80,12 +85,11 @@
     <TextView
         android:id="@+id/text_never_ask"
         android:layout_width="wrap_content"
-        android:paddingTop="20dp"
+        android:paddingTop="10dp"
         android:layout_below="@+id/text_skip"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="10dp"
         android:gravity="center_horizontal"
         android:text="@string/instant_lyrics_never_ask"
         android:textSize="15sp" />

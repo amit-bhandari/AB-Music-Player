@@ -85,6 +85,7 @@
                     android:layout_gravity="start|bottom"/>
 
                 <ImageView
+                    android:id="@+id/watermark"
                     android:layout_width="50dp"
                     android:layout_height="30dp"
                     android:foregroundGravity="bottom"
