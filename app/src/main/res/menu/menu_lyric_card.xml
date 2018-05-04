@@ -16,11 +16,19 @@
         app:showAsAction="always"
         android:title="@string/action_text_alignment" />
 
+
+    <item
+        android:id="@+id/action_edit"
+        android:orderInCategory="90"
+        android:icon="@drawable/ic_edit_black_24dp"
+        app:showAsAction="always"
+        android:title="@string/title_edit" />
+
     <item
         android:id="@+id/action_share"
         android:orderInCategory="90"
         android:icon="@drawable/ic_menu_share"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/action_share" />
 
 

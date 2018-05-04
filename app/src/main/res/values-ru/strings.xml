@@ -302,7 +302,7 @@
     <string name="instant_lyrics_text">Теперь тексты песен получаются практически мгновенно, пока вы слушаете музыку на вашем устройстве (поддерживаются Saavn, Gaana, Google Play и Spotify)</string>
     <string name="instant_lyrics_skip_this">Пока пропустить >>></string>
     <string name="instant_lyrics_request">Для работы AB Music со всеми приложениями необходимо изменить некоторые настройки!</string>
-    <string name="title_text_font">Шрифт для библиотеки музыки</string>
+    <string name="title_text_font">Шрифт</string>
     <string name="title_misc">Прочее</string>
     <string name="title_data_Saver">Сохранение данных</string>
     <string name="title_batch_download">Пакетная загрузка текстов</string>
