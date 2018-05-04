@@ -250,17 +250,26 @@ public class UtilityFun {
                     values.put(MediaStore.Audio.Media.IS_ALARM, true);
                     values.put(MediaStore.Audio.Media.IS_MUSIC, false);
 
-//Insert it into the database
+                    //Insert it into the database
                     Uri uri1 = MediaStore.Audio.Media.getContentUriForPath(newFile.getAbsolutePath());
                     context.getContentResolver().delete(uri1, MediaStore.MediaColumns.DATA + "=\"" + newFile.getAbsolutePath() + "\"",
                             null);
                     Uri newUri = context.getContentResolver().insert(uri1, values);
 
-                    RingtoneManager.setActualDefaultRingtoneUri(
-                            context,
-                            RingtoneManager.TYPE_RINGTONE,
-                            newUri
-                    );
+                    try {
+                        RingtoneManager.setActualDefaultRingtoneUri(
+                                context,
+                                RingtoneManager.TYPE_RINGTONE,
+                                newUri
+                        );
+                    }catch (SecurityException e){
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Error setting ringtone.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override

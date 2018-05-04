@@ -1,6 +1,7 @@
 package com.music.player.bhandari.m.activity;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -368,8 +369,12 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
                     if(mArtistInfo.getArtistUrl()==null){
                         Toast.makeText(getContext(),getString(R.string.error_invalid_url),Toast.LENGTH_SHORT).show();
                     }else {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mArtistInfo.getArtistUrl()));
-                        startActivity(browserIntent);
+                        try {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mArtistInfo.getArtistUrl()));
+                            startActivity(browserIntent);
+                        }catch (ActivityNotFoundException e){
+                            Toast.makeText(getContext(), "No supporting application found for opening the link.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
                 @Override
