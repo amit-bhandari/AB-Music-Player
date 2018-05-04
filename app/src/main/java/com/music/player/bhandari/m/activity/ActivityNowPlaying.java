@@ -646,9 +646,13 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         fadeIn.setDuration(2000);
         findViewById(R.id.full_screen_iv).startAnimation(fadeIn);
 
-        Blurry.with(this).radius(1).color(Color.argb(100
-                , 50, 0, 0)).from(b)
-                .into(((ImageView) findViewById(R.id.full_screen_iv)));
+        try {
+            Blurry.with(this).radius(1).color(Color.argb(100
+                    , 50, 0, 0)).from(b)
+                    .into(((ImageView) findViewById(R.id.full_screen_iv)));
+        }catch (OutOfMemoryError e){
+            Toast.makeText(playerService, "Error setting blurry background due to insufficient memory", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
