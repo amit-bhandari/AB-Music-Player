@@ -58,6 +58,7 @@ import com.music.player.bhandari.m.activity.ActivityPermissionSeek;
 import com.music.player.bhandari.m.customViews.ZoomTextView;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.ArtistInfo.ArtistInfo;
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArtInfoThread;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
@@ -419,7 +420,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                     @Override
                     public void onSequenceFinish() {
                         // Yay
-                        //MyApp.getPref().edit().putBoolean(getString(R.string.pref_info_lyric_card_shown), true).apply();
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_info_lyric_card_shown), true).apply();
                     }
 
                     @Override
@@ -673,7 +674,12 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     void addArtistImage(){
         mainImage.setImageBitmap(null);
         progressBar.setVisibility(View.VISIBLE);
-        if (UtilityFun.isConnectedToInternet()) {
+
+        ArtistInfo info = OfflineStorageArtistBio.getArtistInfoFromCache(artistText.getText().toString());
+        Log.d("ActivityLyricCard", "addArtistImage: " + info);
+        if(info!=null){
+            setMainImage(info.getImageUrl());
+        } else if (UtilityFun.isConnectedToInternet()) {
             String artist = UtilityFun.filterArtistString(artistText.getText().toString());
             new DownloadArtInfoThread(new ArtistInfo.Callback() {
                 @Override
@@ -821,31 +827,20 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
             switch (holder.getItemViewType()){
                 case 1:
-                    if (UtilityFun.isConnectedToInternet()) {
+                    //load artist image in thumbnail view
+                    ArtistInfo info = OfflineStorageArtistBio.getArtistInfoFromCache(artistText.getText().toString());
+                    Log.d("ImagesAdapter", "onBindViewHolder: " + info);
+                    if(info!=null){
+                        ((ArtistHolder) holder).progressBar.setVisibility(View.VISIBLE);
+                        loadImageUsingGlide(info.getImageUrl(), ((ArtistHolder) holder).imageView ,  ((ArtistHolder) holder).progressBar);
+                    }
+                    else if (UtilityFun.isConnectedToInternet()) {
                         String artist = UtilityFun.filterArtistString(artistText.getText().toString());
                         new DownloadArtInfoThread(new ArtistInfo.Callback() {
                             @Override
                             public void onArtInfoDownloaded(ArtistInfo artistInfo) {
                                 if(artistInfo!=null && !artistInfo.getImageUrl().isEmpty()) {
-                                    Glide.with(ActivityLyricCard.this)
-                                            .load(artistInfo.getImageUrl())     //offset for 2 extra elements
-                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                            .centerCrop()
-                                            .listener(new RequestListener<String, GlideDrawable>() {
-                                                @Override
-                                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                                    ((ArtistHolder) holder).progressBar.setVisibility(View.GONE);
-                                                    ((ArtistHolder) holder).imageView.setImageResource(R.drawable.ic_text_format_black_24dp);
-                                                    return false;
-                                                }
-
-                                                @Override
-                                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                                    ((ArtistHolder) holder).progressBar.setVisibility(View.GONE);
-                                                    return false;
-                                                }
-                                            })
-                                            .into(((ArtistHolder) holder).imageView);
+                                    loadImageUsingGlide(artistInfo.getImageUrl(), ((ArtistHolder) holder).imageView,  ((ArtistHolder) holder).progressBar);
                                 }
                             }
                         }, artist, null).start();
@@ -855,27 +850,31 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
                 case 2:
                     if(holder instanceof ImageHolder) {
                         ((ImageHolder) holder).progressBar.setVisibility(View.VISIBLE);
-                        Glide.with(ActivityLyricCard.this)
-                                .load(getThumbElementByIndex(position-2))     //offset for 2 extra elements
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .centerCrop()
-                                .listener(new RequestListener<String, GlideDrawable>() {
-                                    @Override
-                                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                        ((ImageHolder) holder).progressBar.setVisibility(View.GONE);
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                        ((ImageHolder) holder).progressBar.setVisibility(View.GONE);
-                                        return false;
-                                    }
-                                })
-                                .into(((ImageHolder) holder).imageView);
+                        loadImageUsingGlide(getThumbElementByIndex(position-2),((ImageHolder) holder).imageView,  ((ImageHolder) holder).progressBar);
                     }
                     break;
             }
+        }
+
+        private void loadImageUsingGlide(String url, ImageView view, final ProgressBar progressBar){
+            Glide.with(ActivityLyricCard.this)
+                    .load(url)     //offset for 2 extra elements
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                           progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(view);
         }
 
         @Override

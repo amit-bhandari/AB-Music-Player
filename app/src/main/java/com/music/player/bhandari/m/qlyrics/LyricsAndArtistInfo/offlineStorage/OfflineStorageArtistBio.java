@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
  */
 
 public class OfflineStorageArtistBio {
-    public static ArtistInfo getArtistBioFromDB(TrackItem item){
+    public static ArtistInfo getArtistBioFromTrackItem(TrackItem item){
         if(item==null){
             return null;
         }
@@ -61,7 +61,7 @@ public class OfflineStorageArtistBio {
         return artistInfo;
     }
 
-    public static void putArtistBioFromDB(ArtistInfo artistInfo, TrackItem item){
+    public static void putArtistBioToDB(ArtistInfo artistInfo, TrackItem item){
         if(item==null || artistInfo==null){
             return;
         }
@@ -155,7 +155,7 @@ public class OfflineStorageArtistBio {
                 trackItem.setArtist(item.artist_name);
                 trackItem.setArtist_id(item.artist_id);
 
-                ArtistInfo artistInfo = OfflineStorageArtistBio.getArtistBioFromDB(trackItem);
+                ArtistInfo artistInfo = OfflineStorageArtistBio.getArtistBioFromTrackItem(trackItem);
                 if(artistInfo!=null){
                     map.put(artistInfo.getOriginalArtist(), artistInfo.getImageUrl());
                 }

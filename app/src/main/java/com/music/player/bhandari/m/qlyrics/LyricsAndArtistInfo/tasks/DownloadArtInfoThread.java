@@ -89,7 +89,7 @@ public class DownloadArtInfoThread extends Thread {
 
                     //put in db
                     if(item!=null && artistInfo.getFlag() == ArtistInfo.POSITIVE){
-                        OfflineStorageArtistBio.putArtistBioFromDB(artistInfo,item);
+                        OfflineStorageArtistBio.putArtistBioToDB(artistInfo,item);
                     }
 
                     Message msgObj = handler.obtainMessage();

@@ -52,7 +52,7 @@ public class BulkArtInfoGrabber extends Thread {
                         trackItem.setArtist(item.artist_name);
                         trackItem.setArtist_id(item.artist_id);
 
-                        ArtistInfo artistInfo = OfflineStorageArtistBio.getArtistBioFromDB(trackItem);
+                        ArtistInfo artistInfo = OfflineStorageArtistBio.getArtistBioFromTrackItem(trackItem);
                         if (artistInfo != null && artistInfo.getFlag() == ArtistInfo.POSITIVE) {
                             Log.d("BulkArtInfoGrabber", "run: found in db");
                             continue;
