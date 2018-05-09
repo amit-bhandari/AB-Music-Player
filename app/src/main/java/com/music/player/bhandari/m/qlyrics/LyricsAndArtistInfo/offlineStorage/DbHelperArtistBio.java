@@ -5,18 +5,29 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by Amit AB Bhandari on 3/29/2017.
- */
+ Copyright 2017 Amit Bhandari AB
 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 public class DbHelperArtistBio extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "artist_bio";
 
-    static public final String KEY_ARTIST = "song_artist";
-    static public final String ARTIST_ID = "_id";
-    static public final String ARTIST_BIO = "art_bio";
+    static final String KEY_ARTIST = "song_artist";
+    static final String ARTIST_ID = "_id";
+    static final String ARTIST_BIO = "art_bio";
 
-    public static final String TABLE_NAME = "offline_artist_bio";
+    static final String TABLE_NAME = "offline_artist_bio";
 
     private static final String TABLE_CREATE= "CREATE TABLE IF NOT EXISTS "
             +TABLE_NAME+" ("+ ARTIST_ID +" INTEGER, " + KEY_ARTIST + " TEXT, "
