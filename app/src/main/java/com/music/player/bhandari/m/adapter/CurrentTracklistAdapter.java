@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AlertDialog;
@@ -228,11 +229,19 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 break;
 
             case R.id.action_share:
-                ArrayList<Uri> uris = new ArrayList<>();  //for sending multiple files
-                File file = new File(dataItems.get(position).file_path);
-                Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", file);
-                uris.add(fileUri);
-                UtilityFun.Share(context, uris, dataItems.get(position).title);
+                try {
+                    ArrayList<Uri> uris = new ArrayList<>();  //for sending multiple files
+                    File file = new File(dataItems.get(position).file_path);
+                    Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", file);
+                    uris.add(fileUri);
+                    UtilityFun.Share(context, uris, dataItems.get(position).title);
+                }catch (IllegalArgumentException e){
+                    try{
+                        UtilityFun.ShareFromPath(context, dataItems.get(position).file_path);
+                    }catch (Exception ex) {
+                        Toast.makeText(context, context.getString(R.string.error_unable_to_share), Toast.LENGTH_SHORT).show();
+                    }
+                }
                 break;
 
             case R.id.action_delete:

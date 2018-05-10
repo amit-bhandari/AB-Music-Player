@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -249,12 +250,16 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
             case R.id.action_share:
                 ArrayList<Uri> files = new ArrayList<>();
+                File fileToBeShared = new File(MusicLibrary.getInstance().getTrackItemFromId(clikedON).getFilePath());
                 try {
-                    File fileToBeShared = new File(MusicLibrary.getInstance().getTrackItemFromId(clikedON).getFilePath());
                     files.add(FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
                     UtilityFun.Share(context, files, dataItems.get(position).title);
-                }catch (Exception e) {
-                    Toast.makeText(context,context.getString(R.string.error_something_wrong) ,Toast.LENGTH_LONG).show();
+                }catch (IllegalArgumentException e) {
+                    try{
+                        UtilityFun.ShareFromPath(context, fileToBeShared.getAbsolutePath());
+                    }catch (Exception ex) {
+                        Toast.makeText(context,context.getString(R.string.error_unable_to_share) ,Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
 

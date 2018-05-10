@@ -446,21 +446,33 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
     }
 
     private void Share(){
-        ArrayList<Uri> files = new ArrayList<>();  //for sending multiple files
-        if(clickedFile.isFile()){
-            files.add(
-                    FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", clickedFile));
-        }else {
-            File[] fileList = clickedFile.listFiles();
-            for(File f:fileList){
-                if(isFileExtensionValid(f)) {
-                    files.add(
-                            FileProvider.getUriForFile(context
-                                    , context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", f));
+        try {
+            ArrayList<Uri> files = new ArrayList<>();  //for sending multiple files
+            if (clickedFile.isFile()) {
+                files.add(
+                        FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", clickedFile));
+            } else {
+                File[] fileList = clickedFile.listFiles();
+                for (File f : fileList) {
+                    if (isFileExtensionValid(f)) {
+                        files.add(
+                                FileProvider.getUriForFile(context
+                                        , context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", f));
+                    }
                 }
             }
+            UtilityFun.Share(context, files, "music");
+        }catch (IllegalArgumentException e){
+            try{
+                if (clickedFile.isFile()) {
+                    UtilityFun.ShareFromPath(context, clickedFile.getAbsolutePath());
+                } else {
+                    throw new Exception();
+                }
+            }catch (Exception ex) {
+                Snackbar.make(viewParent, R.string.error_unable_to_share, Snackbar.LENGTH_LONG).show();
+            }
         }
-        UtilityFun.Share(context, files, "music");
     }
 
     private void AddToQ(int positionToAdd){

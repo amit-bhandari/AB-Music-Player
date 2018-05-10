@@ -192,6 +192,9 @@
         <string name="first_launch_lyric_card_no_internet">Internet is needed for loading images for cards. Images will be downloaded once and will be cached for later use.</string>
         <string name="first_launch_lyric_card">First launch might take a while for loading images from our servers. Subsequent launches should work lightning fast!</string>
         <string name="share_lyric_card_extra_text"><![CDATA[Created using AB Music -> https://tinyurl.com/mtxvchw]]></string>
+        <string name="share_file_extra_text"><![CDATA[Shared using AB Music -> https://tinyurl.com/mtxvchw]]></string>
+        <string name="share_file_extra_subject">Check out this awesome track</string>
+
 
         <string name="error_loading_image_lyric_card">Error loading image, check your connection.</string>
 

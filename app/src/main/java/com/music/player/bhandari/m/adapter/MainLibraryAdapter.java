@@ -381,7 +381,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                     Share();
                 }catch (Exception e){
                     //Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
-                    Snackbar.make(viewParent, context.getString(R.string.error_something_wrong), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(viewParent, context.getString(R.string.error_unable_to_share), Snackbar.LENGTH_LONG).show();
                 }
                 break;
 
@@ -649,9 +649,17 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
-                File fileToBeShared = new File(filteredDataItems.get(position).file_path);
-                files.add(FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
-                UtilityFun.Share(context, files, filteredDataItems.get(position).title);
+                try {
+                    File fileToBeShared = new File(filteredDataItems.get(position).file_path);
+                    files.add(FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
+                    UtilityFun.Share(context, files, filteredDataItems.get(position).title);
+                }catch (IllegalArgumentException e){
+                    try{
+                        UtilityFun.ShareFromPath(context, filteredDataItems.get(position).file_path);
+                    }catch (Exception ex) {
+                        Snackbar.make(viewParent, R.string.error_unable_to_share, Snackbar.LENGTH_LONG).show();
+                    }
+                }
                 break;
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
