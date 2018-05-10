@@ -5,12 +5,6 @@
         android:id="@+id/grp2"
         android:checkableBehavior="none">
 
-        <!--
-        <item
-            android:id="@+id/nav_call_for_help"
-            android:icon="@drawable/ic_info_black_24dp"
-            android:title="@string/action_call_for_help" /> -->
-
         <item
             android:id="@+id/nav_try_new_app"
             android:icon="@drawable/ic_star_black_24dp"
@@ -27,12 +21,6 @@
             android:icon="@drawable/ic_remove_circle_outline_black_24dp"
             android:title="@string/nav_remove_ads" />
 
-        <!--
-        <item
-            android:id="@+id/nav_remove_ads_free"
-            android:icon="@drawable/ic_remove_circle_outline_black_24dp"
-            android:title="@string/title_remove_ads_for_free" />-->
-
         <item
             android:id="@+id/nav_explore_lyrics"
             android:icon="@drawable/ic_explore_black_24dp"
@@ -43,17 +31,10 @@
             android:icon="@drawable/ic_photo_black_24dp"
             android:title="@string/nav_lyric_cards" />
 
-        <!--
-        <item
-            android:id="@+id/nav_sleep_timer"
-            android:icon="@drawable/ic_query_builder_black_24dp"
-            android:title="@string/nav_sleep_timer" /> -->
-
         <item
             android:id="@+id/nav_share"
             android:icon="@drawable/ic_share_black_24dp"
             android:title="@string/nav_share" />
-
 
 
         <item
@@ -65,17 +46,6 @@
             android:id="@+id/nav_dev_message"
             android:icon="@drawable/ic_person_black_24dp"
             android:title="@string/nav_developers_message" />
-
-        <!--
-        <item
-            android:id="@+id/nav_social"
-            android:icon="@drawable/ic_person_black_24dp"
-            android:title="@string/nav_social" />
-
-        <item
-            android:id="@+id/nav_website"
-            android:icon="@drawable/ic_public_black_24dp"
-            android:title="@string/nav_website" /> -->
 
         <item
             android:id="@+id/nav_settings"
