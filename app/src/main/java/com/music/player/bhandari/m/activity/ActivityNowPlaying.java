@@ -832,15 +832,18 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 try {
                     if (trackItem != null) {
                         File fileToBeShared = new File(trackItem.getFilePath());
-                        ArrayList<Uri> files = new ArrayList<>();
-                        files.add(FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
-                        UtilityFun.Share(this, files, trackItem.getTitle());
+                        ArrayList<Uri> fileUris = new ArrayList<>();
+                        fileUris.add(FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
+                        UtilityFun.Share(this, fileUris, trackItem.getTitle());
                     } else {
-                        //Toast.makeText(this,"Nothing to share!",Toast.LENGTH_LONG).show();
                         Snackbar.make(rootView, R.string.error_nothing_to_share, Snackbar.LENGTH_LONG).show();
                     }
                 }catch (IllegalArgumentException e){
-                    Snackbar.make(rootView, R.string.error_unable_to_share, Snackbar.LENGTH_LONG).show();
+                    try{
+                        UtilityFun.ShareFromPath(this, trackItem.getFilePath());
+                    }catch (Exception ex) {
+                        Snackbar.make(rootView, R.string.error_unable_to_share, Snackbar.LENGTH_LONG).show();
+                    }
                 }
                 break;
 

@@ -142,6 +142,18 @@ public class UtilityFun {
         }
     }
 
+    public static void ShareFromPath(Context context, String filePath){
+        Intent intentShareFile = new Intent();
+        intentShareFile.setType("audio/*");
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+filePath));
+
+        intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                context.getString(R.string.share_file_extra_subject));
+        intentShareFile.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_file_extra_text));
+
+        context.startActivity(Intent.createChooser(intentShareFile, "Share track via"));
+    }
+
     public static void LaunchYoutube(@NonNull Context context, @NonNull String query){
         Intent intent = new Intent(Intent.ACTION_SEARCH);
         intent.setPackage("com.google.android.youtube");

@@ -9,7 +9,7 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
     defaultConfig {
-        applicationId 'com.bhandari.music'
+        applicationId 'com.bhandari.music.dev'
         minSdkVersion 14
         targetSdkVersion 26
         versionCode 145
