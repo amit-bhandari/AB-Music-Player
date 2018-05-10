@@ -16,7 +16,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -80,25 +79,18 @@ import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.customViews.CustomViewPager;
-import com.music.player.bhandari.m.utils.SignUpAdRemove;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
+import com.music.player.bhandari.m.utils.SignUp;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.sackcentury.shinebuttonlib.ShineButton;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -1205,7 +1197,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
             //store this email id and time of first sign in
             if(email!=null) {
-                new CallAPI().execute(email,name);
+                new SignUp().execute(email,name);
             }
 
         } else {
@@ -1487,108 +1479,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
-        }
-    }
-
-    private class CallAPI extends AsyncTask<String, String, String> {
-
-        private String email;
-        private String name="";
-        //private ProgressDialog dialog;
-        private String response = "unexpected-error";
-        CallAPI() {
-            //set context variables if required
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //dialog = ProgressDialog.show(ActivityNowPlaying.this,"","Loading. Please wait...", true);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            email = params[0]; // email id
-            if(params[1]!=null) {
-                name = params[1];
-            }
-
-            String urlString = "http://www.thetechguru.in/?es=subscribe";
-
-            String queryPart1 = "es_email=" + email;
-
-            String queryPart2 = "&es_name=" + name;
-
-            String query = queryPart1 + queryPart2 + "&es_group=abmusic&timestamp=&action=0.597592245452881&es_from=abmusic";
-
-            String resultToDisplay = "";
-
-            try {
-
-                URL url = new URL(urlString);
-                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                //Set to POST
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setDoInput(true);
-                connection.addRequestProperty("REFERER", "http://thetechguru.in");
-                connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-                connection.setReadTimeout(10000);
-                Writer writer = new OutputStreamWriter(connection.getOutputStream());
-                writer.write(query);
-                writer.flush();
-                writer.close();
-
-                response = readResponseFullyAsString(connection.getInputStream(),"UTF-8");
-                //processResponse(response);
-
-                Log.v("Response",response);
-
-            } catch (Exception e) {
-
-                System.out.println(e.getMessage());
-
-                return e.getMessage();
-
-            }
-            return resultToDisplay;
-
-        }
-
-        private String readResponseFullyAsString(InputStream inputStream, String encoding) throws IOException {
-            return readFully(inputStream).toString(encoding);
-        }
-
-        private ByteArrayOutputStream readFully(InputStream inputStream) throws IOException {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int length = 0;
-            while ((length = inputStream.read(buffer)) != -1) {
-                baos.write(buffer, 0, length);
-            }
-            return baos;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            //Update the UI
-            /*if(dialog!=null && dialog.isShowing()) {
-                dialog.dismiss();
-            }*/
-            switch (response){
-                case "subscribed-successfully":
-                    SignUpAdRemove.StoreEmailWithTimestamp(email);
-                    //AdsRemovedDialog();
-                    break;
-
-                case "already-exist":
-                case "unexpected-error":
-                case "subscribed-pending-doubleoptin":
-                    //AdsRemovalFailedDialog();
-                    break;
-            }
-
         }
     }
 }

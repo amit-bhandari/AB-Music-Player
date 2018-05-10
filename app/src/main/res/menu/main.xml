@@ -11,11 +11,26 @@
         android:tint="#FFFFFF"/>
 
     <item
+        android:id="@+id/action_sort"
+        android:title="@string/menu_sort_by"
+        android:icon="@drawable/ic_sort_black_24dp"
+        app:showAsAction="ifRoom"
+        android:tint="#FFFFFF"
+        />
+
+    <item
         android:id="@+id/action_sleep_timer"
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/main_act_sleep_timer_title"
         app:showAsAction="never"
         android:tint="#FFFFFF"/>
+
+    <item
+        android:id="@+id/action_equ"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        app:showAsAction="never"
+        android:title="@string/action_equ" />
+
 
     <item
         android:id="@+id/action_search"
@@ -26,13 +41,6 @@
         android:tint="#FFFFFF"
         />
 
-    <item
-        android:id="@+id/action_sort"
-        android:title="@string/menu_sort_by"
-        android:orderInCategory="200"
-        android:icon="@drawable/ic_sort_black_24dp"
-        app:showAsAction="ifRoom"
-        android:tint="#FFFFFF"
-        />
+
 
 </menu>
