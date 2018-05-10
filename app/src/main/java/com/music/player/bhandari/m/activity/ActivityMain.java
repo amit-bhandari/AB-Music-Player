@@ -12,8 +12,8 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.audiofx.AudioEffect;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -81,7 +81,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -114,19 +113,12 @@ import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
-import com.music.player.bhandari.m.utils.SignUpAdRemove;
+import com.music.player.bhandari.m.utils.SignUp;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -160,6 +152,7 @@ public class ActivityMain extends AppCompatActivity
 
     final static String FB_URL = "http://www.facebook.com/abmusicoffline/";
     final static String WEBSITE = "http://www.thetechguru.in";
+    final static String GITHUB = "https://github.com/amit-bhandari/AB-Music-Player";
     final static String INSTA_WEBSITE = "https://www.instagram.com/_amit_bhandari/?hl=en";
     final static String AB_REMOTE_WALL_URL = "https://play.google.com/store/apps/details?id=in.thetechguru.walle.remote.abremotewallpaperchanger&hl=en";
 
@@ -1002,6 +995,26 @@ public class ActivityMain extends AppCompatActivity
                 handleSearch();
                 break;
 
+            case R.id.action_equ:
+                Intent intent = new Intent(AudioEffect
+                        .ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+
+                if(MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
+                        && (intent.resolveActivity(getPackageManager()) != null)){
+                    try {
+                        //show system equalizer
+                        startActivityForResult(intent, 0);
+                    }catch (Exception ignored){}
+                }else {
+                    //show app equalizer
+                    if(playerService.getEqualizerHelper().isEqualizerSupported()) {
+                        startActivity(new Intent(this, ActivityEqualizer.class));
+                    }else {
+                        Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_LONG).show();
+                    }
+                }
+                break;
+
             case R.id.action_sort:
                 PopupMenu popupMenu;
                 View menuItemView = findViewById(R.id.action_sort); // SAME ID AS MENU ID
@@ -1214,18 +1227,9 @@ public class ActivityMain extends AppCompatActivity
             setRateDialog();
         } else if(id==R.id.nav_feedback){
             feedbackEmail();
-        } /*else if(id==R.id.nav_social){
-            try {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(FB_URL));
-                startActivity(browserIntent);
-            }catch (Exception ignored){
-                //Toast.makeText(this,"Unable to open browser!",Toast.LENGTH_SHORT).show();
-                Snackbar.make(rootView, getString(R.string.error_opening_browser), Snackbar.LENGTH_LONG).show();
-            }
-        }*/ else if(id==R.id.nav_website){
+        } else if(id==R.id.nav_website){
             openUrl(Uri.parse(WEBSITE));
-        } else if(id==R.id.nav_login){
-            //signInDialog();
+        } else if(id==R.id.nav_signup){
             signIn();
         } else if(id==R.id.nav_logout){
             signOut();
@@ -1238,14 +1242,11 @@ public class ActivityMain extends AppCompatActivity
             devMessageDialog();
         } else if(id==R.id.nav_instagram){
             openUrl(Uri.parse(INSTA_WEBSITE));
-        } /*else if(id==R.id.nav_remove_ads_free){
-            startActivity(new Intent(this, ActivityInvite.class));
-            //removeAdsForFree();
-        }*/ else if(id==R.id.nav_try_new_app){
+        } else if(id==R.id.nav_try_new_app){
             tryApp();
         } else if(id == R.id.nav_lyric_card){
             lyricCardDialog();
-        }else if(id==192){
+        } else if(id==192){
             uploadPhotos();
         }
 
@@ -1401,38 +1402,6 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
-    private void removeAdsForFree(){
-        new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                .title(R.string.free_ad_removal_dialog_title)
-                .content(getString(R.string.free_ad_removal_dialog_cont))
-                .positiveText(R.string.free_ad_removal_dialog_pos)
-                .negativeText(R.string.free_ad_removal_dialog_neg)
-                .neutralText(R.string.free_ad_removal_dialog_title_neu)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_remove_ads_after_payment), true).apply();
-                        Toast.makeText(getApplicationContext(), getString(R.string.ads_removed),Toast.LENGTH_LONG).show();
-                        Toast.makeText(getApplicationContext(), getString(R.string.ads_still_showing),Toast.LENGTH_LONG).show();
-                        openUrl(Uri.parse(INSTA_WEBSITE));
-                    }
-                })
-                .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        openUrl(Uri.parse(INSTA_WEBSITE));
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        startActivity(new Intent(ActivityMain.this, ActivityRemoveAds.class));
-                    }
-                })
-                .show();
-    }
-
     private void rewardDialog(){
         startActivity(new Intent(this, ActivityRewardVideo.class));
     }
@@ -1469,6 +1438,7 @@ public class ActivityMain extends AppCompatActivity
                 .content(getString(R.string.developers_message))
                 .positiveText(R.string.write_me)
                 .neutralText(getString(R.string.main_act_rate_dialog_pos))
+                .negativeText(getString(R.string.title_contribute))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -1492,20 +1462,10 @@ public class ActivityMain extends AppCompatActivity
                         }
                     }
                 })
-                .show();
-    }
-
-    private void signInDialog(){
-        new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                .title(getString(R.string.main_act_sign_in_title))
-                .content(getString(R.string.main_act_sign_in_content))
-                .positiveText(getString(R.string.main_act_sign_in_pos))
-                .negativeText(getString(R.string.main_act_sign_in_neg))
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        signIn();
+                        openUrl(Uri.parse(GITHUB));
                     }
                 })
                 .show();
@@ -1820,48 +1780,6 @@ public class ActivityMain extends AppCompatActivity
         startUpdateTask();
     }
 
-    private void grantRewardPoint(boolean granted){
-        if(granted){
-            RewardPoints.incrementRewardPointsCount(RATE_REWARD_BONUS);
-            new MaterialDialog.Builder(this)
-                    .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                    .title(getString(R.string.main_act_ad_removal_title))
-                    .content(getString(R.string.main_act_ad_removal_content))
-                    .positiveText(getString(R.string.okay))
-                    .negativeText(getString(R.string.main_act_ad_removal_neg))
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            shareApp();
-                        }
-                    })
-                    .show();
-            try {
-                Bundle bundle = new Bundle();
-                bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, 8);
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "reward_rate_granted");
-                //Logs an app event.
-                FirebaseAnalytics.getInstance(this).logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-            }catch (Exception ignored){
-                Log.d("ActivityMain", "onCreate: exception in logging");
-            }
-        }else {
-            new MaterialDialog.Builder(this)
-                    .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                    .title(getString(R.string.main_act_ad_removal_failed_title))
-                    .content(R.string.main_act_content_rate_reward_failed)
-                    .positiveText(getString(R.string.main_act_ad_removal_failed_pos))
-                    .negativeText(getString(R.string.cancel))
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            feedbackEmail();
-                        }
-                    })
-                    .show();
-        }
-    }
-
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -2106,7 +2024,7 @@ public class ActivityMain extends AppCompatActivity
             String name = acct.getGivenName();
             //store this email id and time of first sign in
             if(manualSignIn && email!=null) {
-                new CallAPI().execute(email,name);
+                new SignUp().execute(email,name);
             }
 
             String personPhotoUrl="";
@@ -2130,48 +2048,6 @@ public class ActivityMain extends AppCompatActivity
                 }
             }
         }
-    }
-
-    private void AdsRemovedDialog(){
-
-        //strings are used for another dialog as well, do not change
-        new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                .title(getString(R.string.main_act_ad_removal_title))
-                .content(getString(R.string.main_act_ad_removal_content))
-                .dismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialogInterface) {
-                        recreate();
-                    }
-                })
-                .positiveText(getString(R.string.okay))
-                .negativeText(getString(R.string.main_act_ad_removal_neg))
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        shareApp();
-                    }
-                })
-                .show();
-    }
-
-    private void AdsRemovalFailedDialog(){
-
-        //strings are used for another dialog as well, do not change
-        new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                .title(getString(R.string.main_act_ad_removal_failed_title))
-                .content(getString(R.string.main_act_ad_removal_failed_content))
-                .positiveText(getString(R.string.main_act_ad_removal_failed_pos))
-                .negativeText(getString(R.string.cancel))
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        feedbackEmail();
-                    }
-                })
-                .show();
     }
 
     private void updateDrawerUI(String displayName, String personPhotoUrl, boolean signedIn) {
@@ -2306,109 +2182,6 @@ public class ActivityMain extends AppCompatActivity
                 v.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
                 colorChanged = false;
             }
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private class CallAPI extends AsyncTask<String, String, String> {
-
-        private String email;
-        private String name="";
-        //private ProgressDialog dialog;
-        private String response = "unexpected-error";
-        CallAPI() {
-            //set context variables if required
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //dialog = ProgressDialog.show(ActivityMain.this,"","Loading. Please wait...", true);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            email = params[0]; // email id
-            if(params[1]!=null) {
-                name = params[1];
-            }
-
-            String urlString = "http://www.thetechguru.in/?es=subscribe";
-
-            String queryPart1 = "es_email=" + email;
-
-            String queryPart2 = "&es_name=" + name;
-
-            String query = queryPart1 + queryPart2 + "&es_group=abmusic&timestamp=&action=0.597592245452881&es_from=abmusic";
-
-            String resultToDisplay = "";
-
-            try {
-
-                URL url = new URL(urlString);
-                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                //Set to POST
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setDoInput(true);
-                connection.addRequestProperty("REFERER", "http://thetechguru.in");
-                connection.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-                connection.setReadTimeout(10000);
-                Writer writer = new OutputStreamWriter(connection.getOutputStream());
-                writer.write(query);
-                writer.flush();
-                writer.close();
-
-                response = readResponseFullyAsString(connection.getInputStream(),"UTF-8");
-                //processResponse(response);
-
-                Log.v("Response",response);
-
-            } catch (Exception e) {
-
-                System.out.println(e.getMessage());
-
-                return e.getMessage();
-
-            }
-            return resultToDisplay;
-
-        }
-
-        private String readResponseFullyAsString(InputStream inputStream, String encoding) throws IOException {
-            return readFully(inputStream).toString(encoding);
-        }
-
-        private ByteArrayOutputStream readFully(InputStream inputStream) throws IOException {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int length = 0;
-            while ((length = inputStream.read(buffer)) != -1) {
-                baos.write(buffer, 0, length);
-            }
-            return baos;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            //Update the UI
-            /*if(dialog!=null) {
-                dialog.dismiss();
-            }*/
-            switch (response){
-                case "subscribed-successfully":
-                    SignUpAdRemove.StoreEmailWithTimestamp(email);
-                    //AdsRemovedDialog();
-                    break;
-
-                case "already-exist":
-                case "unexpected-error":
-                case "subscribed-pending-doubleoptin":
-                    //AdsRemovalFailedDialog();
-                    break;
-            }
-
         }
     }
 
