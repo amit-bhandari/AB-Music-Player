@@ -132,7 +132,8 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
         if(!searchQuery.equals("")){
             filteredDataItems.clear();
             for(dataItem d:dataItems){
-                if(d.title.toLowerCase().contains(searchQuery)){
+                if(d.title.toLowerCase().contains(searchQuery)
+                        || d.artist_name.toLowerCase().contains(searchQuery)){
                     filteredDataItems.add(d);
                 }
             }
@@ -142,15 +143,16 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
         }
         notifyDataSetChanged();
     }
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.album_card, parent, false);
         viewParent = parent;
         return new AlbumLibraryAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         holder.title.setText(filteredDataItems.get(position).albumName);
 
         final String url = MusicLibrary.getInstance().getArtistUrls().get(filteredDataItems.get(position).artist_name);
