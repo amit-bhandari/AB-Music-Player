@@ -578,11 +578,8 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020 * Added ability to update text and remove watermark in lyric cards.  \n\n
-                                              * Replaced \'Vast Shadow\' font with cool new \'Asap\' font. \n\n
-                                              * Reach me for any kind of feedback from side navigation drawer. \n\n
-                                              * Bug fixes.
-
+    <string name="whats_new"><![CDATA[ \u0020 * Bug fixes. \n\n
+                                              * Some minor UI tweaks.
 ]]></string>
 
     <!-- Request notification access-->

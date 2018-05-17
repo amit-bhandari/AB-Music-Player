@@ -42,6 +42,7 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.Of
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArtInfoThread;
 import com.music.player.bhandari.m.interfaces.DoubleClickListener;
 import com.music.player.bhandari.m.MyApp;
+import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -88,6 +89,8 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     @BindView(R.id.adView)  AdView mAdView;
     @BindView(R.id.ad_close)  TextView adCloseText;
 
+    private PlayerService playerService;
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         Log.v("frag",isVisibleToUser+"");
@@ -107,11 +110,12 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         layout = inflater.inflate(R.layout.fragment_artist_info, container, false);
 
         ButterKnife.bind(this, layout);
+        playerService = MyApp.getService();
 
         buttonUpdateMetadata.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TrackItem item = MyApp.getService().getCurrentTrack();
+                TrackItem item =playerService.getCurrentTrack();
                 if(item==null){
                     return;
                 }
@@ -136,7 +140,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
                     Intent intent = new Intent(getContext(), ActivityNowPlaying.class);
                     intent.putExtra("refresh", true);
-                    intent.putExtra("position", MyApp.getService().getCurrentTrackPosition());
+                    intent.putExtra("position",playerService.getCurrentTrackPosition());
                     intent.putExtra("originalTitle",item.getTitle());
                     intent.putExtra("title", item.getTitle());
                     intent.putExtra("artist", edited_artist);
@@ -256,7 +260,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     }
 
     private void downloadArtInfo(){
-        TrackItem item = MyApp.getService().getCurrentTrack();
+        TrackItem item =playerService.getCurrentTrack();
         if(item==null || item.getArtist()==null){
             return;
         }
@@ -299,7 +303,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
 
 
-        MyApp.getService().play();
+       playerService.play();
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
         //animateDiscView();
     }
@@ -313,13 +317,17 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     @Override
     public void onResume() {
         super.onResume();
-        updateArtistInfoIfNeeded();
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mArtistUpdateReceiver
-                ,new IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO));
+        if(MyApp.getService()!=null) {
+            updateArtistInfoIfNeeded();
+            LocalBroadcastManager.getInstance(getContext()).registerReceiver(mArtistUpdateReceiver
+                    , new IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO));
+        }else {
+            UtilityFun.restartApp();
+        }
     }
 
     private void updateArtistInfoIfNeeded() {
-        TrackItem item = MyApp.getService().getCurrentTrack();
+        TrackItem item =playerService.getCurrentTrack();
         if(item==null){
             artBioText.setVisibility(View.GONE);
             retryText.setText(getString(R.string.no_music_found));
@@ -346,7 +354,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         if(artistInfo==null || getActivity()==null || !isAdded()){
             return;
         }
-        TrackItem item = MyApp.getService().getCurrentTrack();
+        TrackItem item =playerService.getCurrentTrack();
         //if song is already changed , return
         if(item!=null && !item.getArtist().trim().equals(artistInfo.getOriginalArtist().trim())){
             //artBioText.setText(getString(R.string.artist_info_loading));
@@ -360,7 +368,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             retryText.setText(getString(R.string.artist_info_no_result));
             retryText.setVisibility(View.VISIBLE);
             artBioText.setVisibility(View.GONE);
-            TrackItem tempItem = MyApp.getService().getCurrentTrack();
+            TrackItem tempItem =playerService.getCurrentTrack();
             if(tempItem!=null) {
                 artistEdit.setVisibility(View.VISIBLE);
                 updateTagsText.setVisibility(View.VISIBLE);
@@ -418,7 +426,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
                 artBioText.setVisibility(View.GONE);
                 retryText.setText(getString(R.string.artist_info_no_result));
                 retryText.setVisibility(View.VISIBLE);
-                TrackItem tempItem = MyApp.getService().getCurrentTrack();
+                TrackItem tempItem =playerService.getCurrentTrack();
                 if(tempItem!=null) {
                     artistEdit.setVisibility(View.VISIBLE);
                     updateTagsText.setVisibility(View.VISIBLE);

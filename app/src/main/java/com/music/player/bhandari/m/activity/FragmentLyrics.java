@@ -490,6 +490,12 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     @Override
     public void onResume() {
+        super.onResume();
+        if(MyApp.getService()==null){
+            UtilityFun.restartApp();
+            return;
+        }
+
         /* This code together with the one in onDestroy()
          * will make the screen be always on until this Activity gets destroyed. */
         startLyricUpdater();
@@ -500,7 +506,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 ,new IntentFilter(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));*/
         //UpdateUI();
         updateLyrics();
-        super.onResume();
 
         /*if(!fSeekbarRunning && playerService.getStatus()==PlayerService.PLAYING) {
             fSeekbarThreadCancelled = false;

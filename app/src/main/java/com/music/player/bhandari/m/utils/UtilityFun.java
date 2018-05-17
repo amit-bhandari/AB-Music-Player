@@ -30,6 +30,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
+import com.music.player.bhandari.m.activity.ActivityPermissionSeek;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.PlaylistManager;
@@ -489,6 +490,12 @@ public class UtilityFun {
     public static int getRandom(int from, int to){
         Random r = new Random();
         return r.nextInt(to-from) + from;
+    }
+
+    public static void restartApp() {
+        Intent intent = new Intent(MyApp.getContext(), ActivityPermissionSeek.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        MyApp.getContext().startActivity(intent);
     }
 
 }

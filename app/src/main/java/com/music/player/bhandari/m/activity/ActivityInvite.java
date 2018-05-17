@@ -92,9 +92,7 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(MyApp.getService()==null){
-            Intent intent = new Intent(this, ActivityPermissionSeek.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+            UtilityFun.restartApp();
         }
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);

@@ -78,9 +78,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
         mDragStartListener = dragStartListener;
 
         if(MyApp.getService()==null){
-            Intent intent = new Intent(context, ActivityPermissionSeek.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            context.startActivity(intent);
+            UtilityFun.restartApp();
             return;
         }
 

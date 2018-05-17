@@ -163,9 +163,7 @@ public class ActivityRemoveAds extends AppCompatActivity {
 
         //if player service not running, kill the app
         if(MyApp.getService()==null){
-            Intent intent = new Intent(this, ActivityPermissionSeek.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+           UtilityFun.restartApp();
         }
 
 

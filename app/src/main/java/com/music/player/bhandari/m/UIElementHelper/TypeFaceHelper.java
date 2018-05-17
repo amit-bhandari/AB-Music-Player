@@ -54,9 +54,7 @@ public class TypeFaceHelper {
                 case Constants.TYPEFACE.ACME:
                     typeface = Typeface.createFromAsset(context.getAssets(), "fonts/acme.ttf");
                     break;
-
             }
-
         }
         return typeface;
     }
