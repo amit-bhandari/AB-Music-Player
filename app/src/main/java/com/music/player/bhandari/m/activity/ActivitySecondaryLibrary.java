@@ -12,12 +12,15 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.media.audiofx.AudioEffect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -25,15 +28,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.StringSignature;
@@ -43,6 +50,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.SecondaryLibraryAdapter;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.TrackItem;
@@ -106,6 +114,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
     private Drawable batmanDrawable;
 
+    PlayerService playerService;
 
     public ActivitySecondaryLibrary(){}
 
@@ -120,11 +129,11 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 String album = intent.getStringExtra("album");
                 String originalTitle = intent.getStringExtra("originalTitle");
 
-                TrackItem currentItem = MyApp.getService().getCurrentTrack();
+                TrackItem currentItem = playerService.getCurrentTrack();
                 if (currentItem.getTitle().equals(originalTitle)) {
                     //current song is playing, update  track item
-                    MyApp.getService().updateTrackItem(MyApp.getService().getCurrentTrackPosition(), currentItem.getId(), title, artist, album);
-                    MyApp.getService().PostNotification();
+                    playerService.updateTrackItem(playerService.getCurrentTrackPosition(), currentItem.getId(), title, artist, album);
+                    playerService.PostNotification();
                     updateMiniplayerUI();
                 }
 
@@ -144,12 +153,12 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
         //if player service not running, kill the app
         if(MyApp.getService()==null){
-            Intent intent = new Intent(this, ActivityPermissionSeek.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+            UtilityFun.restartApp();
+            finish();
+            return;
         }
 
-
+        playerService = MyApp.getService();
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
@@ -424,11 +433,11 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
     private void updateMiniplayerUI(){
         try {
-            if (MyApp.getService() != null) {
-                if (MyApp.getService().getCurrentTrack() != null) {
+            if (playerService != null) {
+                if (playerService.getCurrentTrack() != null) {
 
                     Glide.with(getApplication())
-                            .load(MusicLibrary.getInstance().getAlbumArtUri(MyApp.getService().getCurrentTrack().getAlbumId()))
+                            .load(MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()))
                             .asBitmap()
                             .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .centerCrop()
@@ -436,14 +445,14 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                             .animate(R.anim.fade_in)
                             .into(albumArtIv);
 
-                    //albumArtIv.setImageBitmap(MyApp.getService().getAlbumArt());
-                    if (MyApp.getService().getStatus() == PlayerService.PLAYING) {
+                    //albumArtIv.setImageBitmap(playerService.getAlbumArt());
+                    if (playerService.getStatus() == PlayerService.PLAYING) {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
                     } else {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp));
                     }
-                    songNameMiniPlayer.setText(MyApp.getService().getCurrentTrack().getTitle());
-                    artistNameMiniPlayer.setText(MyApp.getService().getCurrentTrack().getArtist());
+                    songNameMiniPlayer.setText(playerService.getCurrentTrack().getTitle());
+                    artistNameMiniPlayer.setText(playerService.getCurrentTrack().getArtist());
                     ((AppBarLayout) findViewById(R.id.app_bar_layout)).setExpanded(true);
                     //mHandler.post(getDominantColorRunnable());
                 }
@@ -459,7 +468,12 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
     @Override
     public void onClick(View view) {
-        Intent notificationIntent=new Intent(getApplicationContext(),PlayerService.class);
+        if(MyApp.getService()==null){
+            UtilityFun.restartApp();
+            finish();
+            return;
+        }
+
         switch (view.getId()){
             case R.id.mini_player:
                 Intent intent=new Intent(getApplicationContext(),ActivityNowPlaying.class);
@@ -471,7 +485,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 break;
 
             case R.id.play_pause_mini_player:
-                if(MyApp.getService().getCurrentTrack()==null) {
+                if(playerService.getCurrentTrack()==null) {
                     Toast.makeText(this,getString(R.string.nothing_to_play),Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -480,10 +494,10 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                MyApp.getService().play();
-                MyApp.getService().PostNotification();
+                playerService.play();
+                playerService.PostNotification();
 
-                if (MyApp.getService().getStatus() == PlayerService.PLAYING) {
+                if (playerService.getStatus() == PlayerService.PLAYING) {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
                 } else {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp));
@@ -498,7 +512,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                MyApp.getService().nextTrack();
+                playerService.nextTrack();
                 updateMiniplayerUI();
                 /*
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent()
@@ -536,17 +550,120 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 startActivity(new Intent(this,ActivitySettings.class).putExtra("ad",true));
                 break;
 
+            case R.id.action_sleep_timer:
+                setSleepTimerDialog(this);
+                break;
+
+            case R.id.action_equ:
+                Intent intent = new Intent(AudioEffect
+                        .ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+
+                if(MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
+                        && (intent.resolveActivity(getPackageManager()) != null)){
+                    try {
+                        //show system equalizer
+                        startActivityForResult(intent, 0);
+                    }catch (Exception ignored){}
+                }else {
+                    //show app equalizer
+                    if(playerService.getEqualizerHelper().isEqualizerSupported()) {
+                        startActivity(new Intent(this, ActivityEqualizer.class));
+                    }else {
+                        Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_LONG).show();
+                    }
+                }
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    public void setSleepTimerDialog(final Context context){
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+
+        LinearLayout linear = new LinearLayout(context);
+        linear.setOrientation(LinearLayout.VERTICAL);
+        final TextView text = new TextView(context);
+
+        int timer = MyApp.getPref().getInt(context.getString(R.string.pref_sleep_timer),0);
+        if(timer==0) {
+            String tempString = "0 "+context.getString(R.string.main_act_sleep_timer_status_minutes);
+            text.setText(tempString);
+        }else {
+            String stringTemp = context.getString(R.string.main_act_sleep_timer_status_part1) +
+                    timer +
+                    context.getString(R.string.main_act_sleep_timer_status_part2);
+
+            text.setText(stringTemp);
+
+            builder.neutralText(context.getString(R.string.main_act_sleep_timer_neu))
+                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),0).apply();
+                            playerService.setSleepTimer(0, false);
+                            //Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
+                            Snackbar.make(rootView,context.getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+        }
+        text.setPadding(0, 10,0,0);
+        text.setGravity(Gravity.CENTER);
+        text.setTypeface(TypeFaceHelper.getTypeFace(this));
+
+        final SeekBar seek = new SeekBar(context);
+        seek.setPadding(40,10,40,10);
+        seek.setMax(100);
+        seek.setProgress(0);
+
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                String tempString = progress+context.getString(R.string.main_act_sleep_timer_status_minutes);
+                text.setText(tempString);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        linear.addView(seek);
+        linear.addView(text);
+
+        builder
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                .title(context.getString(R.string.main_act_sleep_timer_title))
+                .positiveText(context.getString(R.string.okay))
+                .negativeText(context.getString(R.string.cancel))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if(seek.getProgress()!=0) {
+                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),seek.getProgress()).apply();
+                            playerService.setSleepTimer(seek.getProgress(), true);
+                            String temp = context.getString(R.string.sleep_timer_successfully_set)
+                                    + seek.getProgress()
+                                    + context.getString(R.string.main_act_sleep_timer_status_minutes);
+                            //Toast.makeText(context, temp, Toast.LENGTH_LONG).show();
+                            Snackbar.make(rootView, temp, Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .customView(linear,true)
+                .show();
+    }
+
     @Override
     public void onDestroy() {
         mRecyclerView=null;
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
+        mAdView.destroy();
         super.onDestroy(); //get search icon back on action bar
     }
 
@@ -554,6 +671,12 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     public void onResume() {
         super.onResume();
         MyApp.isAppVisible = true;
+        if(MyApp.getService()==null){
+            UtilityFun.restartApp();
+            finish();
+            return;
+        }
+
         if(adapter!=null) {
             adapter.bindService();
         }
@@ -581,19 +704,19 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PLAY:
-                MyApp.getService().play();
+                playerService.play();
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT:
-                MyApp.getService().nextTrack();
+                playerService.nextTrack();
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                MyApp.getService().prevTrack();
+                playerService.prevTrack();
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_STOP:
-                MyApp.getService().stop();
+                playerService.stop();
                 break;
 
             case KeyEvent.KEYCODE_BACK:

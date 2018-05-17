@@ -72,6 +72,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -130,7 +131,7 @@ public class PlayerService extends Service implements
     @Override
     public void onCreate() {
         // MyApp.getPref().edit().putBoolean(getString(R.string.pref_remove_ads),true).apply();
-        Log.v(Constants.TAG,"SERVICE ON CREATE");
+        Log.d("PlayerService", "onCreate: ");
         super.onCreate();
         mHandler = new Handler();
 
@@ -159,6 +160,7 @@ public class PlayerService extends Service implements
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer arg0) {
+                Log.d("PlayerService", "onCompletion: " + arg0);
                 if (currentTrackPosition == trackList.size()-1) {
                     if(MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ALL){
                         playTrack(0);
@@ -197,10 +199,31 @@ public class PlayerService extends Service implements
                     mediaPlayer.start();
                 }else {
                     Log.d("PlayerService", "onPrepared: seeking to : " + MyApp.getPref().getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0));
-                    //mediaPlayer.seekTo(MyApp.getPref().getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0));
+                    try {
+                        mediaPlayer.seekTo(MyApp.getPref().getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0));
+                    }catch (Exception e){
+                        Log.d("PlayerService", "onPrepared: Unable to seek track");
+                    }
                 }
             }
         });
+
+        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                Log.d("PlayerService", "onError: " + mediaPlayer + " " + i + " " + i1);
+                return false;
+            }
+        });
+
+        mediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(MediaPlayer mediaPlayer, int i, int i1) {
+                Log.d("PlayerService", "onInfo: " + mediaPlayer);
+                return false;
+            }
+        });
+
         currentTrackPosition = -1;
         setStatus(STOPPED);
         playerBinder = new PlayerBinder();
@@ -280,25 +303,18 @@ public class PlayerService extends Service implements
                 switch (action){
                     case Constants.ACTION.PLAY_PAUSE_ACTION:
                         Log.v("Widget", "play");
-                        if (status == PLAYING) {
-                            pause();
-                        } else {
-                            play();
-                        }
-                        //PostNotification(false);
+                        play();
                         notifyUI();
                         break;
 
                     case Constants.ACTION.PREV_ACTION:
                         prevTrack();
                         notifyUI();
-                        //PostNotification(true);
                         break;
 
                     case Constants.ACTION.NEXT_ACTION:
                         nextTrack();
                         notifyUI();
-                        //PostNotification(true);
                         break;
 
                     case Constants.ACTION.DISMISS_EVENT:
@@ -318,10 +334,11 @@ public class PlayerService extends Service implements
                         }
                         // even if music is stopped because of focus loss, don't allow to resume playback after clicking close button
                         musicPuasedBecauseOfFocusLoss  = false;
-                        stopForeground(true);
                         mNotificationManager.cancel(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE);
                         notifyUI();
                         setShakeListener(false);
+                        stopForeground(true);
+                        stopSelf();
                         break;
 
                     case Constants.ACTION.SWIPE_TO_DISMISS:
@@ -851,7 +868,7 @@ public class PlayerService extends Service implements
                     //builder.setOngoing(true);
                     startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
                 } else {
-                    stopForeground(false);
+                    //stopForeground(false);
                     mNotificationManager.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
                 }
 
@@ -994,6 +1011,25 @@ public class PlayerService extends Service implements
     }
 
     private void setStatus(int s) {
+        try{
+            throw  new Exception();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        switch (s){
+            case PLAYING:
+                Log.d("PlayerService", "setStatus: Playing");
+                break;
+
+            case PAUSED:
+                Log.d("PlayerService", "setStatus: Paused");
+                break;
+
+            case STOPPED:
+                Log.d("PlayerService", "setStatus: Stopped");
+                break;
+        }
         status = s;
     }
 
@@ -1152,7 +1188,8 @@ public class PlayerService extends Service implements
     }
 
     public void play() {
-
+        Log.d("PlayerService", "play: current status " + status);
+        Log.d("PlayerService", "play: current track " + currentTrack.getFilePath());
         switch (status) {
             case STOPPED:
                 if (!trackList.isEmpty()) {
@@ -1166,7 +1203,8 @@ public class PlayerService extends Service implements
                     mediaPlayer.pause();
                     setStatus(PAUSED);
                     setSessionState();
-                }catch (IllegalStateException ignored){}
+                }catch (IllegalStateException ignored){
+                }
                 break;
 
             case PAUSED:
@@ -1175,7 +1213,8 @@ public class PlayerService extends Service implements
                     mediaPlayer.start();
                     setStatus(PLAYING);
                     setSessionState();
-                }catch (IllegalStateException ignored){}
+                }catch (IllegalStateException ignored){
+                }
                 break;
         }
         PostNotification();
@@ -1385,30 +1424,10 @@ public class PlayerService extends Service implements
             Log.d(TAG, "onTaskRemoved: Stopping player service");
         }
     }
-
-    public void stopService(){
-        if(getStatus()!=PLAYING) {
-            pause();
-        }
-        if(MyApp.getPref().getInt(getString(R.string.pref_sleep_timer),0)!=0) {
-            MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer), 0).apply();
-            sleepTimerHandler.removeCallbacksAndMessages(null);
-        }
-        stopForeground(true);
-        stopSelf();
-        Log.d(TAG, "stopService: Stopping player service");
-    }
-
-    public int getAudioSessionId(){
-        if(mediaPlayer!=null){
-            return mediaPlayer.getAudioSessionId();
-        }else {
-            return -1;
-        }
-    }
+    
     @Override
     public void onDestroy() {
-        Log.v(Constants.TAG,"SERVICE ON DESTROY");
+        Log.d("PlayerService", "onDestroy: ");
         updateWidget(true);
         storeTracklist();
         //mNotificationManager.cancelAll();
@@ -1436,6 +1455,7 @@ public class PlayerService extends Service implements
         }
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mReceiver);
         mAudioManager.abandonAudioFocus(this);
+        MyApp.setService(null);
         super.onDestroy();
     }
 
@@ -1579,7 +1599,7 @@ public class PlayerService extends Service implements
         } else {
             mHandler.removeCallbacksAndMessages(gradualVolumeRaiseRunnable);
         }
-        Log.d("PlayerService", "gradualIncreaseVolume: current volume : " + currentVolume);
+        //Log.d("PlayerService", "gradualIncreaseVolume: current volume : " + currentVolume);
         //currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,0,0);
@@ -1593,7 +1613,7 @@ public class PlayerService extends Service implements
                 if (mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC) < currentVolume) {
                     fVolumeIsBeingChanged = true;
                     mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC) + 1, 0);
-                    Log.d("PlayerService", "run: Volume :" + mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+                    //Log.d("PlayerService", "run: Volume :" + mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
                     mHandler.postDelayed(gradualVolumeRaiseRunnable, 50);
                 } else {
                     fVolumeIsBeingChanged = false;

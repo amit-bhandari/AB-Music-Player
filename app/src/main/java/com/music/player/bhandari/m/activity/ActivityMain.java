@@ -229,10 +229,10 @@ public class ActivityMain extends AppCompatActivity
             String artist = intent.getStringExtra("artist");
             String album = intent.getStringExtra("album");
 
-            if(MyApp.getService().getCurrentTrack().getTitle().equals(originalTitle)){
+            if(playerService.getCurrentTrack().getTitle().equals(originalTitle)){
                 //current song is playing, update  track item
-                MyApp.getService().updateTrackItem(MyApp.getService().getCurrentTrackPosition(),MyApp.getService().getCurrentTrack().getId(),title,artist,album);
-                MyApp.getService().PostNotification();
+                playerService.updateTrackItem(playerService.getCurrentTrackPosition(),playerService.getCurrentTrack().getId(),title,artist,album);
+                playerService.PostNotification();
                 updateUI(false);
             }
 
@@ -253,10 +253,11 @@ public class ActivityMain extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         //bind music service
-        //startService(new Intent(this,MyApp.getService().class));
+        //startService(new Intent(this,playerService.class));
 
         //if player service not running, kill the app
-        if(MyApp.getService()==null){
+        playerService = MyApp.getService();
+        if(playerService==null){
             Intent intent = new Intent(this, ActivityPermissionSeek.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
@@ -491,8 +492,6 @@ public class ActivityMain extends AppCompatActivity
         }else {
             findViewById(R.id.border_view).setVisibility(View.GONE);
         }
-
-        playerService= MyApp.getService();
 
         //ask for rating
         AppLaunchCountManager.app_launched(this);
@@ -780,10 +779,9 @@ public class ActivityMain extends AppCompatActivity
     //even when presed back from secondary activity, no need to expand
     private void updateUI(boolean expandNeeded){
         try {
-
-            if (MyApp.getService() != null) {
-                if (MyApp.getService().getCurrentTrack() != null) {
-                    Uri uri = MusicLibrary.getInstance().getAlbumArtUri(MyApp.getService().getCurrentTrack().getAlbumId());
+            if (playerService != null) {
+                if (playerService.getCurrentTrack() != null) {
+                    Uri uri = MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId());
 
                     //albumArt.setImageDrawable(getResources().getDrawable(R.drawable.ic_batman_1));
                     Glide.with(this)
@@ -794,7 +792,7 @@ public class ActivityMain extends AppCompatActivity
                                     Log.d("AlbumLibraryAdapter", "onException: ");
                                     if(UtilityFun.isConnectedToInternet() &&
                                             !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                        final String url = MusicLibrary.getInstance().getArtistUrls().get(MyApp.getService().getCurrentTrack().getArtist());
+                                        final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
                                         Glide
                                                 .with(ActivityMain.this)
                                                 .load(url)
@@ -822,21 +820,21 @@ public class ActivityMain extends AppCompatActivity
                             .into(albumArt);
 
 
-                    if (MyApp.getService().getStatus() == MyApp.getService().PLAYING) {
+                    if (playerService.getStatus() == PlayerService.PLAYING) {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
                     } else {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp));
                     }
 
-                    songNameMiniPlayer.setText(MyApp.getService().getCurrentTrack().getTitle());
-                    artistNameMiniPlayer.setText(MyApp.getService().getCurrentTrack().getArtist());
+                    songNameMiniPlayer.setText(playerService.getCurrentTrack().getTitle());
+                    artistNameMiniPlayer.setText(playerService.getCurrentTrack().getArtist());
                     if(expandNeeded) {
                         ((AppBarLayout) findViewById(R.id.app_bar_layout)).setExpanded(true);
                     }
 
                 }
 
-                if (MyApp.getService().getStatus() == MyApp.getService().PLAYING) {
+                if (playerService.getStatus() == PlayerService.PLAYING) {
                     startUpdateTask();
                 } else {
                     stopUpdateTask();
@@ -845,7 +843,8 @@ public class ActivityMain extends AppCompatActivity
             } else {
                 //this should not happen
                 //restart app
-                System.exit(0);
+                UtilityFun.restartApp();
+            finish();
             }
         }catch (Exception ignored){
 
@@ -1548,7 +1547,7 @@ public class ActivityMain extends AppCompatActivity
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),0).apply();
-                        MyApp.getService().setSleepTimer(0, false);
+                        playerService.setSleepTimer(0, false);
                         //Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
                         Snackbar.make(rootView,context.getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_LONG).show();
                     }
@@ -1593,7 +1592,7 @@ public class ActivityMain extends AppCompatActivity
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if(seek.getProgress()!=0) {
                             MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),seek.getProgress()).apply();
-                            MyApp.getService().setSleepTimer(seek.getProgress(), true);
+                            playerService.setSleepTimer(seek.getProgress(), true);
                             String temp = context.getString(R.string.sleep_timer_successfully_set)
                                     + seek.getProgress()
                                     + context.getString(R.string.main_act_sleep_timer_status_minutes);
@@ -1656,6 +1655,11 @@ public class ActivityMain extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
+        if(MyApp.getService()==null){
+            UtilityFun.restartApp();
+            finish();
+            return;
+        }
         switch (view.getId()){
             case R.id.mini_player:
                 Intent intent=new Intent(getApplicationContext(),ActivityNowPlaying.class);
@@ -1669,7 +1673,7 @@ public class ActivityMain extends AppCompatActivity
             case R.id.play_pause_mini_player:
                 ColorSwitchRunnableForImageView colorSwitchRunnablePlay = new ColorSwitchRunnableForImageView((ImageView) view);
                 mHandler.post(colorSwitchRunnablePlay);
-                if(MyApp.getService().getCurrentTrack()==null) {
+                if(playerService.getCurrentTrack()==null) {
                     //Toast.makeText(this,"Nothing to play!",Toast.LENGTH_LONG).show();
                     Snackbar.make(rootView, getString(R.string.nothing_to_play), Snackbar.LENGTH_LONG).show();
                     return;
@@ -1679,10 +1683,10 @@ public class ActivityMain extends AppCompatActivity
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                MyApp.getService().play();
+                playerService.play();
 
 
-                if (MyApp.getService().getStatus() == MyApp.getService().PLAYING) {
+                if (playerService.getStatus() == PlayerService.PLAYING) {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
                     startUpdateTask();
                 } else {
@@ -1700,7 +1704,7 @@ public class ActivityMain extends AppCompatActivity
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
-                MyApp.getService().nextTrack();
+                playerService.nextTrack();
                 //no need to expand mini player
                 updateUI(false);
                 Log.v(Constants.TAG,"next track please Jarvis");
@@ -1729,8 +1733,8 @@ public class ActivityMain extends AppCompatActivity
                         Snackbar.make(rootView, getString(R.string.music_is_locked), Snackbar.LENGTH_LONG).show();
                         return ;
                     }
-                    if (MyApp.getService().getTrackList().size() > 0) {
-                        MyApp.getService().shuffleAll();
+                    if (playerService.getTrackList().size() > 0) {
+                        playerService.shuffleAll();
                     } else {
                         Snackbar.make(rootView, getString(R.string.empty_track_list), Snackbar.LENGTH_LONG).show();
                     }
@@ -1757,7 +1761,7 @@ public class ActivityMain extends AppCompatActivity
         if(!UtilityFun.isAdsRemoved() && leftAppForRating){
             leftAppForRating = false;
             Log.d("ActivityMain", "onResume: time took to rate :" + (System.currentTimeMillis()-timeOfLeavingForRating));
-            //Toast.makeText(MyApp.getService(), "time took to rate :" + (System.currentTimeMillis()-timeOfLeavingForRating), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(playerService, "time took to rate :" + (System.currentTimeMillis()-timeOfLeavingForRating), Toast.LENGTH_SHORT).show();
             if(!MyApp.getPref().getBoolean(getString(R.string.pref_rate_reward_granted), false)) {
                 grantRewardPoint(true);
                 MyApp.getPref().edit().putBoolean(getString(R.string.pref_rate_reward_granted), true).apply();
@@ -1766,17 +1770,18 @@ public class ActivityMain extends AppCompatActivity
             }
         }*/
         if(MyApp.getService()==null){
-            Intent intent = new Intent(this, ActivityPermissionSeek.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+            UtilityFun.restartApp();
+            finish();
+            return;
         }
+
         MyApp.isAppVisible = true;
         updateUI(false);
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiverForMiniPLayerUpdate
                 ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiverForLibraryRefresh
                 ,new IntentFilter(Constants.ACTION.REFRESH_LIB));
-        seekBar.setProgress(UtilityFun.getProgressPercentage(MyApp.getService().getCurrentTrackProgress(), MyApp.getService().getCurrentTrackDuration()));
+        seekBar.setProgress(UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress(), playerService.getCurrentTrackDuration()));
         startUpdateTask();
     }
 
@@ -1801,26 +1806,31 @@ public class ActivityMain extends AppCompatActivity
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(playerService==null) {
+            UtilityFun.restartApp();
+            finish();
+            return false;
+        }
         switch (keyCode) {
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PLAY:
-                MyApp.getService().play();
+                playerService.play();
                 updateUI(false);
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT:
-                MyApp.getService().nextTrack();
+                playerService.nextTrack();
                 updateUI(false);
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                MyApp.getService().prevTrack();
+                playerService.prevTrack();
                 updateUI(false);
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_STOP:
-                MyApp.getService().stop();
+                playerService.stop();
                 updateUI(false);
                 break;
 
@@ -2186,7 +2196,7 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void startUpdateTask(){
-        if(!updateTimeTaskRunning && MyApp.getService().getStatus()==MyApp.getService().PLAYING ){
+        if(!updateTimeTaskRunning && playerService.getStatus()==playerService.PLAYING ){
             stopProgressRunnable=false;
             updateTimeTaskRunning=true;
             Executors.newSingleThreadExecutor().execute(mUpdateTimeTask);
@@ -2209,8 +2219,8 @@ public class ActivityMain extends AppCompatActivity
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        int totalDur = MyApp.getService().getCurrentTrackDuration();
-                        int curDur = MyApp.getService().getCurrentTrackProgress();
+                        int totalDur = playerService.getCurrentTrackDuration();
+                        int curDur = playerService.getCurrentTrackProgress();
                         seekBar.setProgress(UtilityFun.getProgressPercentage(curDur,totalDur));
                         Log.v("update task","update");
                     }

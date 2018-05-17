@@ -95,6 +95,7 @@ public class ActivitySettings extends AppCompatActivity {
 
     private  int launchedFrom = 0;
     private AdView mAdView;
+    private PlayerService playerService;
 
     //flag to know for which background, crop image is invoked
     //true = main library
@@ -107,11 +108,12 @@ public class ActivitySettings extends AppCompatActivity {
 
         //if player service not running, kill the app
         if(MyApp.getService()==null){
-            Intent intent = new Intent(this, ActivityPermissionSeek.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+            UtilityFun.restartApp();
+            finish();
+            return;
         }
 
+        playerService = MyApp.getService();
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
@@ -211,6 +213,10 @@ public class ActivitySettings extends AppCompatActivity {
 
     @Override
     public void onResume() {
+        if(MyApp.getService()==null){
+            UtilityFun.restartApp();
+            finish();
+        }
         MyApp.isAppVisible = true;
         super.onResume();
     }
@@ -221,19 +227,19 @@ public class ActivitySettings extends AppCompatActivity {
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PLAY:
-                MyApp.getService().play();
+                playerService.play();
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT:
-                MyApp.getService().nextTrack();
+                playerService.nextTrack();
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                MyApp.getService().prevTrack();
+                playerService.prevTrack();
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_STOP:
-                MyApp.getService().stop();
+                playerService.stop();
                 break;
 
             case KeyEvent.KEYCODE_BACK:

@@ -170,10 +170,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
         //if player service not running, kill the app
         if(MyApp.getService()==null){
-            Intent intent = new Intent(this, ActivityPermissionSeek.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+            UtilityFun.restartApp();
         }
+
+        playerService = MyApp.getService();
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
@@ -243,7 +243,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             isInvokedFromFileExplorer = false;
         }
 
-        playerService = MyApp.getService();
         pref = MyApp.getPref();
         if(playerService!=null && playerService.getCurrentTrack()!=null) {
             toolbar.setTitle(playerService.getCurrentTrack().getTitle());
@@ -378,8 +377,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 .getInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.DISC_FRAG), true);
 
         //display current play queue header
-        if(MyApp.getService()!=null && MyApp.getService().getTrackList()!=null) {
-            if (!MyApp.getService().getTrackList().isEmpty()) {
+        if(playerService!=null && playerService.getTrackList()!=null) {
+            if (!playerService.getTrackList().isEmpty()) {
                 String title = "Save Playlist";
                 ((TextView) findViewById(R.id.save_queue_button)).setText(title);
             }
@@ -521,8 +520,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             invalidateOptionsMenu();
 
             if (item != null) {
-                //update lyrics and info
-                //Log.d(MyApp.getService().getCurrentTrack().getId()+"", Log.getStackTraceString(new Exception()));
 
                 Intent intent = new Intent().setAction(Constants.ACTION.UPDATE_LYRIC_AND_INFO);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
@@ -608,18 +605,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             }
         }
         else {
-                //this should not happen
-                //restart app
-                Intent mStartActivity = new Intent(this, ActivityMain.class);
-                int mPendingIntentId = 123456;
-                PendingIntent mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-            if (mgr != null) {
-                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-            }
-            System.exit(0);
+            UtilityFun.restartApp();
+            finish();
         }
-
     }
 
     private Bitmap getNowPlayingBackBitmap(){
@@ -670,11 +658,15 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
     @Override
     protected void onResume() {
-        MyApp.isAppVisible = true;
         super.onResume();
-        if(playerService!=null) {
-            UpdateUI();
+        MyApp.isAppVisible = true;
+
+        if(MyApp.getService()==null){
+            UtilityFun.restartApp();
+            return;
         }
+        UpdateUI();
+
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mUIUpdateReceiver
                 ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
         AppLaunchCountManager.nowPlayingLaunched();
@@ -866,7 +858,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                             .putExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING)
                             .putExtra("file_path", trackItem.getFilePath())
                             .putExtra("track_title", trackItem.getTitle())
-                            .putExtra("position", MyApp.getService().getCurrentTrackPosition())
+                            .putExtra("position", playerService.getCurrentTrackPosition())
                             .putExtra("id",trackItem.getId()));
                 }else {
                     Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_LONG).show();
@@ -929,6 +921,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     @Override
     public void onClick(View view) {
 
+        if(MyApp.getService()==null){
+            UtilityFun.restartApp();
+            return;
+        }
         switch (view.getId()){
             case R.id.save_queue_button:
 
@@ -1063,7 +1059,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),0).apply();
-                            MyApp.getService().setSleepTimer(0, false);
+                            playerService.setSleepTimer(0, false);
                            // Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
                             Snackbar.make(rootView, getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_LONG).show();
                         }
@@ -1108,8 +1104,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if(seek.getProgress()!=0) {
                             MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),seek.getProgress()).apply();
-                            MyApp.getService().setSleepTimer(seek.getProgress(), true);
-                            MyApp.getService().setSleepTimer(seek.getProgress(), true);
+                            playerService.setSleepTimer(seek.getProgress(), true);
+                            playerService.setSleepTimer(seek.getProgress(), true);
                             String temp = getString(R.string.sleep_timer_successfully_set)
                                     + seek.getProgress()
                                     + getString(R.string.main_act_sleep_timer_status_minutes);
