@@ -995,109 +995,117 @@ public class ActivityMain extends AppCompatActivity
                 break;
 
             case R.id.action_equ:
-                Intent intent = new Intent(AudioEffect
-                        .ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-
-                if(MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
-                        && (intent.resolveActivity(getPackageManager()) != null)){
-                    try {
-                        //show system equalizer
-                        startActivityForResult(intent, 0);
-                    }catch (Exception ignored){}
-                }else {
-                    //show app equalizer
-                    if(playerService.getEqualizerHelper().isEqualizerSupported()) {
-                        startActivity(new Intent(this, ActivityEqualizer.class));
-                    }else {
-                        Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_LONG).show();
-                    }
-                }
+                launchEqu();
                 break;
 
             case R.id.action_sort:
-                PopupMenu popupMenu;
-                View menuItemView = findViewById(R.id.action_sort); // SAME ID AS MENU ID
-                if(menuItemView==null){
-                     popupMenu = new PopupMenu(this, findViewById(R.id.action_search));
-                }else {
-                     popupMenu = new PopupMenu(this, menuItemView);
-                }
-                popupMenu.inflate(R.menu.sort_menu);
-
-                if(savedTabSeqInt[viewPager.getCurrentItem()]!=Constants.TABS.TRACKS){
-                    popupMenu.getMenu().removeItem(R.id.action_sort_size);
-                    popupMenu.getMenu().removeItem(R.id.action_sort_by_duration);
-                    if(savedTabSeqInt[viewPager.getCurrentItem()]!=Constants.TABS.ALBUMS){
-                        popupMenu.getMenu().removeItem(R.id.action_sort_year);
-                    }
-                }
-
-                if(savedTabSeqInt[viewPager.getCurrentItem()]!=Constants.TABS.ARTIST){
-                    popupMenu.getMenu().removeItem(R.id.action_sort_no_of_album);
-                    popupMenu.getMenu().removeItem(R.id.action_sort_no_of_tracks);
-                }
-
-
-                if(MyApp.getPref().getInt(getString(R.string.pref_order_by),Constants.SORT_BY.ASC)==Constants.SORT_BY.ASC){
-                    popupMenu.getMenu().findItem(R.id.action_sort_asc).setChecked(true);
-                }else {
-                    popupMenu.getMenu().findItem(R.id.action_sort_asc).setChecked(false);
-                }
-
-                switch (savedTabSeqInt[viewPager.getCurrentItem()]){
-                    case Constants.TABS.ALBUMS:
-                        currentPageSort = getString(R.string.pref_album_sort_by);
-                        break;
-
-                    case Constants.TABS.ARTIST:
-                        currentPageSort = getString(R.string.pref_artist_sort_by);
-                        break;
-
-                    case Constants.TABS.GENRE:
-                        currentPageSort = getString(R.string.pref_genre_sort_by);
-                        break;
-
-                    case Constants.TABS.FOLDER:
-                    case Constants.TABS.PLAYLIST:
-                        break;
-
-                    case Constants.TABS.TRACKS:
-                        currentPageSort = getString(R.string.pref_tracks_sort_by);
-                        break;
-                }
-
-                switch (MyApp.getPref().getInt(currentPageSort,Constants.SORT_BY.NAME)){
-                    case Constants.SORT_BY.NAME:
-                        popupMenu.getMenu().findItem(R.id.action_sort_name).setChecked(true);
-                        break;
-
-                    case Constants.SORT_BY.YEAR:
-                        popupMenu.getMenu().findItem(R.id.action_sort_year).setChecked(true);
-                        break;
-
-                    case Constants.SORT_BY.SIZE:
-                        popupMenu.getMenu().findItem(R.id.action_sort_size).setChecked(true);
-                        break;
-
-                    case Constants.SORT_BY.NO_OF_ALBUMS:
-                        popupMenu.getMenu().findItem(R.id.action_sort_no_of_album).setChecked(true);
-                        break;
-
-                    case Constants.SORT_BY.NO_OF_TRACKS:
-                        popupMenu.getMenu().findItem(R.id.action_sort_no_of_tracks).setChecked(true);
-                        break;
-
-                    case Constants.SORT_BY.DURATION:
-                        popupMenu.getMenu().findItem(R.id.action_sort_by_duration).setChecked(true);
-                        break;
-
-                }
-                popupMenu.setOnMenuItemClickListener(this);
-                popupMenu.show();
+                sortLibrary();
                 break;
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchEqu() {
+        Intent intent = new Intent(AudioEffect
+                .ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+
+        if(MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
+                && (intent.resolveActivity(getPackageManager()) != null)){
+            try {
+                //show system equalizer
+                startActivityForResult(intent, 0);
+            }catch (Exception ignored){}
+        }else {
+            //show app equalizer
+            if(playerService.getEqualizerHelper().isEqualizerSupported()) {
+                startActivity(new Intent(this, ActivityEqualizer.class));
+            }else {
+                Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void sortLibrary() {
+        PopupMenu popupMenu;
+        View menuItemView = findViewById(R.id.action_sort); // SAME ID AS MENU ID
+        if(menuItemView==null){
+             popupMenu = new PopupMenu(this, findViewById(R.id.action_search));
+        }else {
+             popupMenu = new PopupMenu(this, menuItemView);
+        }
+        popupMenu.inflate(R.menu.sort_menu);
+
+        if(savedTabSeqInt[viewPager.getCurrentItem()]!= Constants.TABS.TRACKS){
+            popupMenu.getMenu().removeItem(R.id.action_sort_size);
+            popupMenu.getMenu().removeItem(R.id.action_sort_by_duration);
+            if(savedTabSeqInt[viewPager.getCurrentItem()]!=Constants.TABS.ALBUMS){
+                popupMenu.getMenu().removeItem(R.id.action_sort_year);
+            }
+        }
+
+        if(savedTabSeqInt[viewPager.getCurrentItem()]!=Constants.TABS.ARTIST){
+            popupMenu.getMenu().removeItem(R.id.action_sort_no_of_album);
+            popupMenu.getMenu().removeItem(R.id.action_sort_no_of_tracks);
+        }
+
+
+        if(MyApp.getPref().getInt(getString(R.string.pref_order_by),Constants.SORT_BY.ASC)==Constants.SORT_BY.ASC){
+            popupMenu.getMenu().findItem(R.id.action_sort_asc).setChecked(true);
+        }else {
+            popupMenu.getMenu().findItem(R.id.action_sort_asc).setChecked(false);
+        }
+
+        switch (savedTabSeqInt[viewPager.getCurrentItem()]){
+            case Constants.TABS.ALBUMS:
+                currentPageSort = getString(R.string.pref_album_sort_by);
+                break;
+
+            case Constants.TABS.ARTIST:
+                currentPageSort = getString(R.string.pref_artist_sort_by);
+                break;
+
+            case Constants.TABS.GENRE:
+                currentPageSort = getString(R.string.pref_genre_sort_by);
+                break;
+
+            case Constants.TABS.FOLDER:
+            case Constants.TABS.PLAYLIST:
+                break;
+
+            case Constants.TABS.TRACKS:
+                currentPageSort = getString(R.string.pref_tracks_sort_by);
+                break;
+        }
+
+        switch (MyApp.getPref().getInt(currentPageSort,Constants.SORT_BY.NAME)){
+            case Constants.SORT_BY.NAME:
+                popupMenu.getMenu().findItem(R.id.action_sort_name).setChecked(true);
+                break;
+
+            case Constants.SORT_BY.YEAR:
+                popupMenu.getMenu().findItem(R.id.action_sort_year).setChecked(true);
+                break;
+
+            case Constants.SORT_BY.SIZE:
+                popupMenu.getMenu().findItem(R.id.action_sort_size).setChecked(true);
+                break;
+
+            case Constants.SORT_BY.NO_OF_ALBUMS:
+                popupMenu.getMenu().findItem(R.id.action_sort_no_of_album).setChecked(true);
+                break;
+
+            case Constants.SORT_BY.NO_OF_TRACKS:
+                popupMenu.getMenu().findItem(R.id.action_sort_no_of_tracks).setChecked(true);
+                break;
+
+            case Constants.SORT_BY.DURATION:
+                popupMenu.getMenu().findItem(R.id.action_sort_by_duration).setChecked(true);
+                break;
+
+        }
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.show();
     }
 
     public void refreshLibrary(){
