@@ -89,11 +89,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     @BindView(R.id.adView)  AdView mAdView;
     @BindView(R.id.ad_close)  TextView adCloseText;
 
-<<<<<<< Updated upstream
     private PlayerService playerService;
-=======
-    PlayerService playerService;
->>>>>>> Stashed changes
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -116,7 +112,8 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         playerService = MyApp.getService();
 
         if(MyApp.getService()==null){
-
+            UtilityFun.restartApp();
+            return layout;
         }
         playerService = MyApp.getService();
 
@@ -278,21 +275,6 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
     }
 
-<<<<<<< Updated upstream
-    private void playClicked(){
-        if (getActivity() == null) {
-            return;
-        }
-
-
-
-       playerService.play();
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-        //animateDiscView();
-    }
-
-=======
->>>>>>> Stashed changes
     @Override
     public void onPause() {
         super.onPause();
