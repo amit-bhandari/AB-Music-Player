@@ -140,6 +140,10 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.fragment_lyrics, container, false);
         ButterKnife.bind(this, layout);
+        if(MyApp.getService()==null){
+            UtilityFun.restartApp();
+            return layout;
+        }
         playerService = MyApp.getService();
         //bindViews();
         //initializeMiniPlaybackControlDashboard();
@@ -197,56 +201,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             }
         }
     }
-
-    /*private void initializeMiniPlaybackControlDashboard() {
-        ImageView skipNext = layout.findViewById(R.id.pw_ivSkipNext);
-        ImageView skipPrev = layout.findViewById(R.id.pw_ivSkipPrevious);
-
-        skipNext.setOnClickListener(this);
-
-        skipPrev.setOnClickListener(this);
-
-        playButton.setOnClickListener(this);
-        playButtonAnimation = AnimationUtils.loadAnimation(MyApp.getContext(), R.anim.shake_animation);
-
-        seekBar.setMax(100);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if(adapter!=null && !fIsStaticLyrics && b) {
-                    adapter.changeCurrent(UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration()));
-                    int index = adapter.getCurrentTimeIndex();
-                    if (index != -1) {
-                        recyclerView.smoothScrollToPosition(index);
-                    }
-                    Log.d("FragmentLyrics", "scrollLyricsToCurrentLocation: index " + index);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                Log.d("FragmentLyrics", "onStartTrackingTouch: ");
-                fSeekbarThreadCancelled=true;
-                stopLyricUpdater();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                Log.d("FragmentLyrics", "onStopTrackingTouch: ");
-                playerService.seekTrack(UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration()));
-                if(adapter!=null && !fIsStaticLyrics) {
-                    scrollLyricsToCurrentLocation();
-                }
-                if(playerService.getStatus()==PlayerService.PLAYING) {
-                    fSeekbarThreadCancelled = false;
-                    Executors.newSingleThreadExecutor().execute(seekbarUpdater);
-                }
-
-                startLyricUpdater();
-            }
-        });
-    }*/
 
     @OnClick(R.id.ad_close)
     public void close_ad(){
@@ -587,15 +541,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             }
         }
 
-        /*if(isVisibleToUser && playerService.getStatus()==PlayerService.PLAYING){
-            fSeekbarThreadCancelled = false;
-            if(!fSeekbarRunning) {
-                Executors.newSingleThreadExecutor().execute(seekbarUpdater);
-            }
-        }else {
-            fSeekbarThreadCancelled=true;
-        }*/
-
         Log.v(Constants.L_TAG,"Called...." + isVisibleToUser);
     }
 
@@ -724,27 +669,8 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         }else {
             stopLyricUpdater();
         }
-
-        /*if(playerService.getStatus()==PlayerService.PLAYING) {
-            fSeekbarThreadCancelled = false;
-            Executors.newSingleThreadExecutor().execute(seekbarUpdater);
-        }else {
-            fSeekbarThreadCancelled = true;
-        }*/
     }
 
-    /*private void UpdateUI(){
-        if(playButton !=null && playerService!=null ) {
-            if(playButtonAnimation!=null){
-                playButton.startAnimation(playButtonAnimation);
-            }
-            if(playerService.getStatus()==PlayerService.PLAYING) {
-                playButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.pw_pause));
-            }else {
-                playButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.pw_play));
-            }
-        }
-    }*/
 
     @Override
     public void onDestroy() {
@@ -869,34 +795,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 }
                 break;
 
-                /*
-            case R.id.pw_ivSkipNext:
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
-                    return;
-                }
-                mLastClickTime = SystemClock.elapsedRealtime();
-                playerService.nextTrack();
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-                break;
-
-            case R.id.pw_ivSkipPrevious:
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
-                    return;
-                }
-                mLastClickTime = SystemClock.elapsedRealtime();
-                playerService.prevTrack();
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-                break;
-
-            case R.id.pw_playButton:
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
-                    return;
-                }
-                mLastClickTime = SystemClock.elapsedRealtime();
-                playClicked();
-                break;*/
 
             case R.id.text_view_lyric_status:
                 if(lyricStatus.getText().equals(getString(R.string.reward_points_exhausted))){
@@ -1029,33 +927,5 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             Log.v(Constants.L_TAG,"Lyric thread stopped");
         }
     };
-
-    /*private final Runnable seekbarUpdater = new Runnable() {
-        @Override
-        public void run() {
-
-            while (true) {
-                if(fSeekbarThreadCancelled){
-                    break;
-                }
-                fSeekbarRunning = true;
-                if(seekBar!=null) {
-                    int per = UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress() / 1000,
-                            playerService.getCurrentTrackDuration() / 1000);
-                    seekBar.setProgress(per);
-                }
-
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Log.d("FragmentLyrics", "run: ");
-            }
-
-            fSeekbarRunning = false;
-        }
-    };*/
 }
 
