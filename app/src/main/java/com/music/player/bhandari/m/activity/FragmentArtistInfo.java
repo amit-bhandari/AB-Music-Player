@@ -89,7 +89,11 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     @BindView(R.id.adView)  AdView mAdView;
     @BindView(R.id.ad_close)  TextView adCloseText;
 
+<<<<<<< Updated upstream
     private PlayerService playerService;
+=======
+    PlayerService playerService;
+>>>>>>> Stashed changes
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -108,8 +112,12 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.fragment_artist_info, container, false);
-
         ButterKnife.bind(this, layout);
+        playerService = MyApp.getService();
+
+        if(MyApp.getService()==null){
+
+        }
         playerService = MyApp.getService();
 
         buttonUpdateMetadata.setOnClickListener(new View.OnClickListener() {
@@ -213,32 +221,6 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             }
         };
 
-
-        //noinspection PointlessBooleanExpression
-        /*if(!UtilityFun.isAdsRemoved()) {
-            MobileAds.initialize(getContext(), getString(R.string.banner_art_info_frag));
-            mAdView = layout.findViewById(R.id.adView);
-            if (UtilityFun.isConnectedToInternet()) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
-                        .build();
-                if (mAdView != null) {
-                    mAdView.loadAd(adRequest);
-                    mAdView.setVisibility(View.VISIBLE);
-                    adViewWrapper.setVisibility(View.VISIBLE);
-                    adCloseText.setVisibility(View.VISIBLE);
-                    //if fragment is invisible, pause the ad
-                    if(!getUserVisibleHint()){
-                        mAdView.pause();
-                    }
-                }
-            } else {
-                if (mAdView != null) {
-                    mAdView.setVisibility(View.GONE);
-                    adViewWrapper.setVisibility(View.GONE);
-                }
-            }
-        }*/
-
         return layout;
     }
 
@@ -296,6 +278,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
     }
 
+<<<<<<< Updated upstream
     private void playClicked(){
         if (getActivity() == null) {
             return;
@@ -308,6 +291,8 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         //animateDiscView();
     }
 
+=======
+>>>>>>> Stashed changes
     @Override
     public void onPause() {
         super.onPause();
