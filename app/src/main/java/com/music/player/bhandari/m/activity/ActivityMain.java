@@ -1443,16 +1443,16 @@ public class ActivityMain extends AppCompatActivity
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.nav_developers_message))
                 .content(getString(R.string.developers_message))
-                .positiveText(R.string.write_me)
-                .neutralText(getString(R.string.main_act_rate_dialog_pos))
+                .neutralText(R.string.write_me)
+                .positiveText(getString(R.string.main_act_rate_dialog_pos))
                 .negativeText(getString(R.string.title_contribute))
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         feedbackEmail();
                     }
                 })
-                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
