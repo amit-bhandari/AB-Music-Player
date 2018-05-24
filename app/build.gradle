@@ -26,19 +26,14 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 //}
 
 android {
-    lintOptions {
-        abortOnError false
-    }
-    signingConfigs {
-        release
-    }
+    
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId 'com.bhandari.music'
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 150
         versionName "Version 8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

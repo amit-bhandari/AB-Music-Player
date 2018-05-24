@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.utils;
 
+import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -334,9 +335,11 @@ public class UtilityFun {
         return retVal;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private static void openAndroidPermissionsMenu(Context context) {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-        intent.setData(Uri.parse("package:" + context.getPackageName()));
+        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + context.getPackageName()));
+        //intent.setData(Uri.parse("package:" + context.getPackageName()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
