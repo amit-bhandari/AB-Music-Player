@@ -1,4 +1,30 @@
 apply plugin: 'com.android.application'
+
+//apk publish automation
+buildscript {
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.triplet.gradle:play-publisher:1.1.5'
+    }
+}
+
+apply plugin: 'com.github.triplet.play'
+
+// Load keystore
+def keystorePropertiesFile = rootProject.file("/home/amit/StudioProjects/Billte/keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+//play {
+//    track = 'alpha'
+//    serviceAccountEmail = 'ab-amit@api-9064146907984057788-54989.iam.gserviceaccount.com'
+//    pk12File = file(keystoreProperties['p12keyFile'])
+//}
+
 android {
     lintOptions {
         abortOnError false
@@ -8,6 +34,7 @@ android {
     }
     compileSdkVersion 27
     buildToolsVersion '27.0.3'
+
     defaultConfig {
         applicationId 'com.bhandari.music'
         minSdkVersion 14
@@ -16,12 +43,27 @@ android {
         versionName "Version 8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs{
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    lintOptions{
+        abortOnError = false
     }
 
     dataBinding {
