@@ -19,11 +19,11 @@ def keystorePropertiesFile = rootProject.file("/home/amit/StudioProjects/trash/A
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-//play {
-//    track = 'alpha'
-//    serviceAccountEmail = 'ab-amit@api-9064146907984057788-54989.iam.gserviceaccount.com'
-//    pk12File = file(keystoreProperties['p12keyFile'])
-//}
+play {
+    track = 'alpha'
+    serviceAccountEmail = 'ab-amit@api-9064146907984057788-54989.iam.gserviceaccount.com'
+    pk12File = file(keystoreProperties['p12keyFile'])
+}
 
 android {
 
