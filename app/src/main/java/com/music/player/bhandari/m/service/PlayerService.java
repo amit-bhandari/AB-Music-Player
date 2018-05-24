@@ -138,6 +138,7 @@ public class PlayerService extends Service implements
         //for shake to play feature
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         shakeDetector = new ShakeDetector(this);
+        shakeDetector.setSensitivity(ShakeDetector.SENSITIVITY_LIGHT);
 
         if(MyApp.getPref().getBoolean(getString(R.string.pref_shake),false)){
             setShakeListener(true);
@@ -1011,12 +1012,6 @@ public class PlayerService extends Service implements
     }
 
     private void setStatus(int s) {
-        try{
-            throw  new Exception();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
         switch (s){
             case PLAYING:
                 Log.d("PlayerService", "setStatus: Playing");
