@@ -4,11 +4,11 @@ apply plugin: 'com.android.application'
 buildscript {
 
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.github.triplet.gradle:play-publisher:1.1.5'
+        classpath 'com.github.triplet.gradle:play-publisher:1.2.2'
     }
 }
 
