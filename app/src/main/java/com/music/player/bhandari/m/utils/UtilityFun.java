@@ -295,6 +295,7 @@ public class UtilityFun {
                                 Toast.makeText(context, "Error setting ringtone.", Toast.LENGTH_SHORT).show();
                             }
                         });
+                        return;
                     }
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
