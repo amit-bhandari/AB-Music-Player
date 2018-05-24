@@ -156,7 +156,7 @@ public class ActivityRewardVideo extends AppCompatActivity {
 
     private void initializeRewardedAdVideo() {
         //initialise rewarded ad video
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(MyApp.getContext());
 
         mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
@@ -312,7 +312,6 @@ public class ActivityRewardVideo extends AppCompatActivity {
             }
         });
 
-
         loadAdd();
     }
 
@@ -325,6 +324,7 @@ public class ActivityRewardVideo extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        mRewardedVideoAd.setRewardedVideoAdListener(null);
         mRewardedVideoAd.destroy(this);
         super.onDestroy();
     }
