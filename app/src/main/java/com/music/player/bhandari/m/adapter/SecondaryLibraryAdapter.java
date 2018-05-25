@@ -3,11 +3,7 @@ package com.music.player.bhandari.m.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -39,7 +35,6 @@ import com.music.player.bhandari.m.utils.UtilityFun;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -193,7 +188,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
         clikedON = dataItems.get(position).id;
         switch (view.getId()) {
-            case R.id.trackItem:
+            case R.id.libraryItem:
                 if(MyApp.isLocked()){
                     Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
                     //Snackbar.make(viewParent, "Music is Locked!", Snackbar.LENGTH_LONG).show();

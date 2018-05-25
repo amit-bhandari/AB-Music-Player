@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -77,8 +78,10 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
         headers = PlaylistManager.getInstance(context).GetPlaylistList(false);
         notifyDataSetChanged();
     }
+
+    @NonNull
     @Override
-    public PlaylistLibraryAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PlaylistLibraryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.fragment_library_item, parent, false);
         viewParent = parent;
         final PlaylistLibraryAdapter.MyViewHolder holder=new PlaylistLibraryAdapter.MyViewHolder (view);
@@ -93,7 +96,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
     }
 
     @Override
-    public void onBindViewHolder(PlaylistLibraryAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PlaylistLibraryAdapter.MyViewHolder holder, int position) {
         holder.title.setText(headers.get(position));
         holder.title.setPadding(20,0,0,0);
     }
@@ -270,7 +273,8 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
     public void onClick(View view, int position) {
         this.position=position;
         switch (view.getId()){
-            case R.id.trackItem:
+            //launch playlist
+            case R.id.libraryItem:
                 Intent intent = new Intent(context,ActivitySecondaryLibrary.class);
                 intent.putExtra("status",Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT);
                 intent.putExtra("title",headers.get(position).trim());
@@ -288,6 +292,15 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;

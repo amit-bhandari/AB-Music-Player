@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -238,7 +235,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         clickedFile = files.get(filteredHeaders.get(clickedItemPosition));
         if(clickedFile==null) return;
         switch (view.getId()){
-            case R.id.trackItem:
+            case R.id.libraryItem:
                 if(clickedFile.isDirectory()) {
                     //update list here
                     refreshList(clickedFile);
