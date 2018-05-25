@@ -15,15 +15,15 @@ buildscript {
 apply plugin: 'com.github.triplet.play'
 
 // Load keystore
-def keystorePropertiesFile = rootProject.file("/home/amit/StudioProjects/trash/AB-Music-Player/keystore.properties")
+def keystorePropertiesFile = rootProject.file("F:\\AndroidStudioProjects\\ABMusicAfterCorruption\\keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-play {
+/*play {
     track = 'alpha'
     serviceAccountEmail = 'ab-amit@api-9064146907984057788-54989.iam.gserviceaccount.com'
     pk12File = file(keystoreProperties['p12keyFile'])
-}
+}*/
 
 android {
 

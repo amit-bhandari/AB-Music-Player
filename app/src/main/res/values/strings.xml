@@ -155,6 +155,7 @@
 
         <string name="change_tags_to_update">Please change tags to update!</string>
         <string name="no_music_found">No music found. Play some Music for artist information to be displayed.</string>
+        <string name="no_music_found_lyrics">No music found. Play some Music for lyrics to be displayed.</string>
 
         <string name="phone_stat_perm_required">Reading phone state is necessary to control playback during calls!</string>
         <string name="storage_perm_required">Please provide storage permission from Settings for app to work properly</string>
