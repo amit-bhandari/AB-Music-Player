@@ -597,12 +597,13 @@ public class PlaylistManager {
         SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
         dbHelperUserMusicData.onCreate(db);
 
-        String where = playlist_name + " != 0";
+        String where = "\"" + playlist_name + "\"" + " != 0";
 
         Cursor c = db.query(DbHelperUserMusicData.TABLE_NAME, new String[]{DbHelperUserMusicData.KEY_ID}
                 , where, null
-                , null, null, playlist_name );
+                , null, null, "\"" + playlist_name + "\"" );
         ArrayList<dataItem> tracklist=new ArrayList<>();
+        
         while (c.moveToNext()) {
             for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks()) {
                 if (d.id == c.getInt(0)) {
