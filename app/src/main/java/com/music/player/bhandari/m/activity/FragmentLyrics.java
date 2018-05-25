@@ -176,34 +176,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     }
 
-    private void showAdIfApplicable() {
-        if(/*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved()
-                && AppLaunchCountManager.isEligibleForBannerAds()) {
-            MobileAds.initialize(getContext(), getString(R.string.banner_lyric_frag));
-            mAdView = layout.findViewById(R.id.adView);
-
-            if (UtilityFun.isConnectedToInternet()) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
-                        .build();
-                if (mAdView != null) {
-                    mAdView.loadAd(adRequest);
-                    mAdView.setVisibility(View.VISIBLE);
-                    adViewWrapper.setVisibility(View.VISIBLE);
-                    adCloseText.setVisibility(View.VISIBLE);
-                    //if fragment is invisible, pause the ad
-                    if(!getUserVisibleHint()){
-                        mAdView.pause();
-                    }
-                }
-            } else {
-                if (mAdView != null) {
-                    mAdView.setVisibility(View.GONE);
-                    adViewWrapper.setVisibility(View.GONE);
-                }
-            }
-        }
-    }
-
     @OnClick(R.id.ad_close)
     public void close_ad(){
         if(mAdView!=null){
@@ -213,7 +185,8 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     }
 
     private void updateLyricsIfNeeded() {
-        TrackItem item = playerService.getCurrentTrack();
+
+        item = playerService.getCurrentTrack();
         if(item==null){
             lyricStatus.setText(getString(R.string.no_music_found_lyrics));
             lyricStatus.setVisibility(View.VISIBLE);
@@ -242,14 +215,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             return;
         }
 
-
-        TrackItem item = playerService.getCurrentTrack();
-        if(item==null){
-            lyricStatus.setText(getString(R.string.no_music_found_lyrics));
-            lyricStatus.setVisibility(View.VISIBLE);
-            lyricLoadAnimation.hide();
-            return;
-        }
+        item = playerService.getCurrentTrack();
 
         artistEdit.setVisibility(View.GONE);
         titleEdit.setVisibility(View.GONE);
@@ -294,15 +260,12 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
         if(mLyrics!=null && mLyrics.getFlag()==Lyrics.POSITIVE_RESULT
                 && mLyrics.getTrackId()!=-1
-                && mLyrics.getTrackId() == playerService.getCurrentTrack().getId()){
+                && mLyrics.getTrackId() == item.getId()){
             onLyricsDownloaded(mLyrics);
             return;
         }
 
-
-        item = playerService.getCurrentTrack();
         if(item!=null) {
-
 
             //check in offline storage
             mLyrics = OfflineStorageLyrics.getLyricsFromDB(item);
@@ -323,6 +286,10 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 lyricStatus.setText(getString(R.string.no_connection));
                 lyricLoadAnimation.hide();
             }
+        }else {
+            lyricStatus.setText(getString(R.string.no_music_found_lyrics));
+            lyricStatus.setVisibility(View.VISIBLE);
+            lyricLoadAnimation.hide();
         }
     }
 
@@ -396,8 +363,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             }else {
                 //in case no lyrics found, set staticLyric flag true as we start lyric thread based on its value
                 //and we dont want our thread to run even if no lyrics found
-                TrackItem item = playerService.getCurrentTrack();
-                if(item!=null) {
+                if(playerService.getCurrentTrack()!=null) {
                     artistEdit.setVisibility(View.VISIBLE);
                     titleEdit.setVisibility(View.VISIBLE);
                     updateTagsTextView.setVisibility(View.VISIBLE);
@@ -575,8 +541,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     public void clearLyrics(){
 
-        TrackItem item = playerService.getCurrentTrack();
-        if(item!=null) {
+        if(playerService.getCurrentTrack()!=null) {
             try {
                 ll_lyric_view.setVisibility(View.GONE);
                 fIsStaticLyrics = true;
@@ -612,7 +577,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             return;
         }
 
-        final TrackItem item = playerService.getCurrentTrack();
+        item = playerService.getCurrentTrack();
 
         ///filter title string
         final String title = item.getTitle();
@@ -817,7 +782,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 break;
 
             case R.id.button_update_metadata:
-                TrackItem item = playerService.getCurrentTrack();
+                item = playerService.getCurrentTrack();
                 if(item==null){
                     return;
                 }
