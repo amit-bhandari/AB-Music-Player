@@ -1184,7 +1184,6 @@ public class PlayerService extends Service implements
 
     public void play() {
         Log.d("PlayerService", "play: current status " + status);
-        Log.d("PlayerService", "play: current track " + currentTrack.getFilePath());
         switch (status) {
             case STOPPED:
                 if (!trackList.isEmpty()) {
