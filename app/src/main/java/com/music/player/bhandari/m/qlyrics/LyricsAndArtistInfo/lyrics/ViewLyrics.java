@@ -334,6 +334,8 @@ public class ViewLyrics {
         client.setConnectTimeout(10, TimeUnit.SECONDS);
         client.setReadTimeout(30, TimeUnit.SECONDS);
 
+        Log.d("ViewLyrics", "search: " + searchQuery);
+
         RequestBody body = RequestBody.create(MediaType.parse("application/text"), assembleQuery(searchQuery.getBytes("UTF-8")));
 
         Request request = new Request.Builder()
@@ -342,6 +344,7 @@ public class ViewLyrics {
                 .url(url)
                 .build();
 
+        Log.d("ViewLyrics", "search: body " + body);
         Response response = client.newCall(request).execute();
 
         BufferedReader rd = new BufferedReader
@@ -355,6 +358,8 @@ public class ViewLyrics {
             builder.append(buffer, 0, read);
         }
         String full = builder.toString();
+
+        Log.d("ViewLyrics", "search: " + full);
 
         // Decrypt, parse, store, and return the result list
         return parseResultXML(decryptResultXML(full));
@@ -404,6 +409,8 @@ public class ViewLyrics {
         // Write encrypted value
         result.write(valueBytes);
 
+        Log.d("ViewLyrics", "assembleQuery: " + result);
+
         // Return magic encoded query
         return result.toByteArray();
     }
@@ -423,6 +430,7 @@ public class ViewLyrics {
         for (int i = 22; i < value.length(); i++)
             neomagic.write((byte) (value.charAt(i) ^ magickey));
 
+        Log.d("ViewLyrics", "decryptResultXML: " + neomagic.toString());
         // Return value
         return neomagic.toString();
     }

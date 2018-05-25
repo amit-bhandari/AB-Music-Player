@@ -1387,6 +1387,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     private void playClicked(){
         if(playerService.getCurrentTrack()==null){
             Toast.makeText(this,getString(R.string.nothing_to_play), Toast.LENGTH_SHORT).show();
+            return;
         }
 
         playerService.play();

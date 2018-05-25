@@ -164,6 +164,7 @@
     <string name="error_batch_download_running">Пакетная загрузка уже запущена!</string>
     <string name="change_tags_to_update">Пожалуйста, измените теги для обновления!</string>
     <string name="no_music_found">Музыка не найдена.</string>
+    <string name="no_music_found_lyrics">Музыка не найдена.</string>
     <string name="phone_stat_perm_required">Чтение состояния телефона необходимо для управления воспроизведением во время звонков!</string>
     <string name="storage_perm_required">Пожалуйста, предоставьте разрешение для правильной работы приложения</string>
     <string name="ads_already_removed">Реклама уже удалена!</string>

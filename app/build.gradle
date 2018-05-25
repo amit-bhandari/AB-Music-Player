@@ -21,7 +21,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 play {
     track = 'alpha'
-    serviceAccountEmail = 'ab-amit@api-9064146907984057788-54989.iam.gserviceaccount.com'
+    serviceAccountEmail = keystoreProperties['serviceEmail']
     pk12File = file(keystoreProperties['p12keyFile'])
 }
 
@@ -34,7 +34,7 @@ android {
         applicationId 'com.bhandari.music'
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 151
+        versionCode 152
         versionName "Version 8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

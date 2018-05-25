@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -137,7 +138,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.fragment_lyrics, container, false);
         ButterKnife.bind(this, layout);
         if(MyApp.getService()==null){
@@ -145,6 +146,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             return layout;
         }
         playerService = MyApp.getService();
+
         //bindViews();
         //initializeMiniPlaybackControlDashboard();
         //UpdateUI();
@@ -213,7 +215,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private void updateLyricsIfNeeded() {
         TrackItem item = playerService.getCurrentTrack();
         if(item==null){
-            lyricStatus.setText(getString(R.string.no_music_found));
+            lyricStatus.setText(getString(R.string.no_music_found_lyrics));
             lyricStatus.setVisibility(View.VISIBLE);
             lyricLoadAnimation.hide();
             return;
@@ -237,6 +239,15 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         //hide edit metadata things
 
         if(!isAdded() || getActivity()==null){
+            return;
+        }
+
+
+        TrackItem item = playerService.getCurrentTrack();
+        if(item==null){
+            lyricStatus.setText(getString(R.string.no_music_found_lyrics));
+            lyricStatus.setVisibility(View.VISIBLE);
+            lyricLoadAnimation.hide();
             return;
         }
 
