@@ -335,11 +335,10 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
 
         Log.d("SecondaryLibraryActivi", "onCreate: item " + item);
-        // first url --> then cache --> then default
         if(item!=null){
             String url = MusicLibrary.getInstance().getArtistUrls().get(item.getArtist());
             Log.d("SecondaryLibraryActivi", "onCreate: url " + url);
-            if(url!=null) {
+            if(UtilityFun.isConnectedToInternet() && url!=null) {
                 Glide
                         .with(getApplicationContext())
                         .load(url)
