@@ -1757,24 +1757,13 @@ public class ActivityMain extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        //checkForDeepLink();
 
-        /*
-        if(!UtilityFun.isAdsRemoved() && leftAppForRating){
-            leftAppForRating = false;
-            Log.d("ActivityMain", "onResume: time took to rate :" + (System.currentTimeMillis()-timeOfLeavingForRating));
-            //Toast.makeText(playerService, "time took to rate :" + (System.currentTimeMillis()-timeOfLeavingForRating), Toast.LENGTH_SHORT).show();
-            if(!MyApp.getPref().getBoolean(getString(R.string.pref_rate_reward_granted), false)) {
-                grantRewardPoint(true);
-                MyApp.getPref().edit().putBoolean(getString(R.string.pref_rate_reward_granted), true).apply();
-            }else {
-                grantRewardPoint(false);
-            }
-        }*/
         if(MyApp.getService()==null){
             UtilityFun.restartApp();
             finish();
             return;
+        }else {
+            playerService = MyApp.getService();
         }
 
         MyApp.isAppVisible = true;
