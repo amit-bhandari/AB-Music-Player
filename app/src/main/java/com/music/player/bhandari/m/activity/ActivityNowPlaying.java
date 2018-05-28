@@ -664,7 +664,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         if(MyApp.getService()==null){
             UtilityFun.restartApp();
             return;
+        }else {
+            playerService = MyApp.getService();
         }
+
         UpdateUI();
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mUIUpdateReceiver

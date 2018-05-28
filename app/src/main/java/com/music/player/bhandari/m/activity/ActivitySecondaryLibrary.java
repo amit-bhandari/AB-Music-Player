@@ -668,6 +668,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             UtilityFun.restartApp();
             finish();
             return;
+        }else {
+            playerService = MyApp.getService();
         }
 
         if(adapter!=null) {
