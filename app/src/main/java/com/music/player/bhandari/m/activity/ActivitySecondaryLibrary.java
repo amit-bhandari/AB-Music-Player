@@ -335,11 +335,10 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
 
         Log.d("SecondaryLibraryActivi", "onCreate: item " + item);
-        // first url --> then cache --> then default
         if(item!=null){
             String url = MusicLibrary.getInstance().getArtistUrls().get(item.getArtist());
             Log.d("SecondaryLibraryActivi", "onCreate: url " + url);
-            if(url!=null) {
+            if(UtilityFun.isConnectedToInternet() && url!=null) {
                 Glide
                         .with(getApplicationContext())
                         .load(url)
@@ -348,27 +347,21 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(mainBackdrop);
             }else {
-                String CACHE_ART_THUMBS = this.getCacheDir()+"/art_thumbs/";
-                String actual_file_path = CACHE_ART_THUMBS+title;
-                albumArtBitmap = BitmapFactory.decodeFile(actual_file_path);
-                if(albumArtBitmap!=null){
-                    mainBackdrop.setImageBitmap(albumArtBitmap);
-                }else {
-                    mainBackdrop.setImageDrawable(batmanDrawable);
-                }
+                Glide.with(getApplicationContext())
+                        .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
+                        .crossFade(500)
+                        .placeholder(R.drawable.ic_batman_1)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(mainBackdrop);
             }
         }
 
         final Drawable d;
-        if(MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY)== Constants.PRIMARY_COLOR.GLOSSY){
-            int color = 0 ;
-            if(albumArtBitmap!=null) {
-                color = ColorHelper.GetDominantColor(albumArtBitmap);
-            }else {
-                color = ColorHelper.GetDominantColor
-                        (drawableToBitmap(ContextCompat.getDrawable(this, R.drawable.ic_batman_1)));
-            }
+        if(MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY) == Constants.PRIMARY_COLOR.GLOSSY){
+            int color ;
 
+            color = ColorHelper.GetDominantColor
+                    (drawableToBitmap(ContextCompat.getDrawable(this, R.drawable.ic_batman_1)));
 
             d = new GradientDrawable(
                     GradientDrawable.Orientation.BR_TL,
@@ -675,6 +668,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             UtilityFun.restartApp();
             finish();
             return;
+        }else {
+            playerService = MyApp.getService();
         }
 
         if(adapter!=null) {

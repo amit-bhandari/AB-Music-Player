@@ -290,7 +290,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
     public void onClick(View view, final int position) {
         this.position=position;
         switch (view.getId()){
-            case R.id.trackItem:
+            case R.id.libraryItem:
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
                     return;
                 }

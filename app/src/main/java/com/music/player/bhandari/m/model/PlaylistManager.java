@@ -213,6 +213,7 @@ public class PlaylistManager {
 
     public  void AddSongToPlaylistNew(final String playlist_name_arg, final int[] song_ids){
 
+
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -224,9 +225,9 @@ public class PlaylistManager {
                 //check if song exists
                 if(song_ids.length==1) {
                     String where = DbHelperUserMusicData.KEY_ID + "= '" +song_ids[0] + "'"
-                            + " AND " + playlist_name + " != 0" ;
+                            + " AND \"" + playlist_name + "\" != 0" ;
                     if(db.query(DbHelperUserMusicData.TABLE_NAME
-                            , new String[]{playlist_name}, where, null, null, null, null)
+                            , new String[]{"\"" + playlist_name + "\""}, where, null, null, null, null)
                             .getCount()>0){
                         hand.post(new Runnable() {
                             @Override
@@ -593,6 +594,8 @@ public class PlaylistManager {
 
     private ArrayList<dataItem> GetUserPlaylist(String playlist_name){
 
+        playlist_name = "\"" + playlist_name + "\"";
+
         //DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
         SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
         dbHelperUserMusicData.onCreate(db);
@@ -601,8 +604,9 @@ public class PlaylistManager {
 
         Cursor c = db.query(DbHelperUserMusicData.TABLE_NAME, new String[]{DbHelperUserMusicData.KEY_ID}
                 , where, null
-                , null, null, playlist_name );
+                , null, null,  playlist_name );
         ArrayList<dataItem> tracklist=new ArrayList<>();
+
         while (c.moveToNext()) {
             for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks()) {
                 if (d.id == c.getInt(0)) {
