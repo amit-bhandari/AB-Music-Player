@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Interpolator;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -23,6 +24,7 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -37,6 +39,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.transition.ArcMotion;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -77,6 +80,8 @@ import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics;
+import com.music.player.bhandari.m.transition.MorphMiniToNowPlaying;
+import com.music.player.bhandari.m.transition.MorphNowPlayingToMini;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.customViews.CustomViewPager;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener;
@@ -389,6 +394,39 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
 
         InitializeControlsUI();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setupSharedElementTransitions();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setupSharedElementTransitions() {
+        ArcMotion arcMotion = new ArcMotion();
+        arcMotion.setMinimumHorizontalAngle(50f);
+        arcMotion.setMinimumVerticalAngle(50f);
+
+        android.view.animation.Interpolator easeInOut = AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in);
+
+        MorphMiniToNowPlaying sharedEnter = new MorphMiniToNowPlaying();
+        sharedEnter.setPathMotion(arcMotion);
+        sharedEnter.setInterpolator(easeInOut);
+
+        MorphNowPlayingToMini sharedExit = new MorphNowPlayingToMini();
+        sharedExit.setPathMotion(arcMotion);
+        sharedExit.setInterpolator(easeInOut);
+
+        /*if (second_card != null) {
+            sharedEnter.addTarget(second_card)
+            sharedReturn.addTarget(second_card)
+        }*/
+
+        getWindow().setSharedElementEnterTransition(sharedEnter);
+        getWindow().setSharedElementExitTransition(sharedExit);
+        postponeEnterTransition();
+        //getWindow().sharedElementEnterTransition = sharedEnter
+        //getWindow().sharedElementReturnTransition = sharedReturn
+
     }
 
     @Override
@@ -719,7 +757,12 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             startActivity(new Intent(this,ActivityMain.class));
             overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
         }
-        super.onBackPressed();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+        }else {
+            super.onBackPressed();
+        }
     }
 
     @Override

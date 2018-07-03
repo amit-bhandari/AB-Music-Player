@@ -372,4 +372,14 @@
 
     <dimen name="pw_timeText">56dp</dimen>
 
+
+    <!-- transition animation -->
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="dialog_margin">32dp</dimen>
+    <dimen name="dialog_corners">32dp</dimen>
+    <dimen name="dialog_elevation">6dp</dimen>
+
+    <dimen name="button_corners">30dp</dimen>
+
+
 </resources>

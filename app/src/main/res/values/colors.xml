@@ -6,6 +6,10 @@
     <color name="colorPrimaryDarkTransparent">#80004A4A</color>
     <color name="colorAccent">#1e1e1e</color>
 
+    <color name="fab_background_color">#000022e1</color>
+    <color name="dialog_background_color">#00d20d0d</color>
+    <color name="dialog_background_scrim">#99323232</color>
+
     <color name="miniPlayerColor">#7A7278</color>
 
     <color name="notification_color">#da202d</color>

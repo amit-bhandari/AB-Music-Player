@@ -12,6 +12,7 @@
         android:layout_height="250dp"
         android:layout_centerHorizontal="true"
         android:contentDescription="album_art"
-        card_view:ignore="HardcodedText" />
+        android:transitionName="@string/transition"
+        card_view:ignore="HardcodedText,UnusedAttribute" />
 
 </RelativeLayout>

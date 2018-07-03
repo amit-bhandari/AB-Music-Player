@@ -1,6 +1,7 @@
 package com.music.player.bhandari.m.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -150,6 +152,8 @@ public class ActivityMain extends AppCompatActivity
         implements ActionMode.Callback, NavigationView.OnNavigationItemSelectedListener, View.OnClickListener
         , SwipeRefreshLayout.OnRefreshListener , PopupMenu.OnMenuItemClickListener, GoogleApiClient.OnConnectionFailedListener{
 
+    private int RC_LOGIN = 100;
+
     final static String FB_URL = "http://www.facebook.com/abmusicoffline/";
     final static String WEBSITE = "http://www.thetechguru.in";
     final static String GITHUB = "https://github.com/amit-bhandari/AB-Music-Player";
@@ -175,6 +179,7 @@ public class ActivityMain extends AppCompatActivity
     private FloatingActionButton fab_right_side, fab_lock;
     private SeekBar seekBar;
     private View rootView;
+    private View miniPlayerWrapper;
 
 
     //bind player service
@@ -366,8 +371,10 @@ public class ActivityMain extends AppCompatActivity
         };
 
 
-        LinearLayout miniPlayer = (LinearLayout) findViewById(R.id.mini_player);
+        LinearLayout miniPlayer = findViewById(R.id.mini_player);
         miniPlayer.setOnClickListener(this);
+
+        miniPlayerWrapper = findViewById(R.id.album_art_mini_player_wrapper);
 
         buttonPlay= findViewById(R.id.play_pause_mini_player);
         buttonPlay.setOnClickListener(this);
@@ -813,8 +820,9 @@ public class ActivityMain extends AppCompatActivity
                                 }
                             })
                             .centerCrop()
-                            .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                            .override(100,100)
+                            //removed because of window transition flicker
+                            //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                            //.override(100,100)
                             .placeholder(R.drawable.ic_batman_1)
                             .crossFade()
                             .into(albumArt);
@@ -1664,12 +1672,20 @@ public class ActivityMain extends AppCompatActivity
         }
         switch (view.getId()){
             case R.id.mini_player:
+
                 Intent intent=new Intent(getApplicationContext(),ActivityNowPlaying.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                Log.v(Constants.TAG,"Launch now playing Jarvis");
 
+                ActivityOptions options;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    options = ActivityOptions.makeSceneTransitionAnimation(this, miniPlayerWrapper, getString(R.string.transition));
+                    ActivityCompat.startActivityForResult(this, intent, RC_LOGIN, options.toBundle());
+                }else {
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }
+
+                Log.v(Constants.TAG,"Launch now playing Jarvis");
                 break;
 
             case R.id.play_pause_mini_player:
