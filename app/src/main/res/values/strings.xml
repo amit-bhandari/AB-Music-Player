@@ -922,5 +922,6 @@ that this copyright notice remain intact.</string>
     <string name="hint_track">Track</string>
     <string name="title_remove_watermark">Remove Watermark</string>
     <string name="ad_serve_toast">One ad will be served for removing watermark. You can remove ads permanently from Settings.</string>
+    <string name="transition">transition</string>
 
 </resources>
