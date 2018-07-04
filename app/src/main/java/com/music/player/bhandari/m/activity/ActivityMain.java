@@ -76,7 +76,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.ads.AdRequest;
@@ -207,6 +206,8 @@ public class ActivityMain extends AppCompatActivity
 
     //rate dialog reward variables
     private static int RATE_REWARD_BONUS = 1000;
+
+    private boolean backPressedOnce = false;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -933,18 +934,29 @@ public class ActivityMain extends AppCompatActivity
         }else if(count>0) {
             findViewById(R.id.mini_player).setVisibility(View.VISIBLE);
             getSupportFragmentManager().popBackStack();
-        }//see if current fragment is folder fragmnet, if yes, override onBackPressed with fragments own action
+        }//see if current fragment is folder fragment, if yes, override onBackPressed with fragments own action
         else if(savedTabSeqInt[viewPager.getCurrentItem()]==Constants.TABS.FOLDER) {
             if (viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentFolderLibrary) {
                 Intent intent = new Intent(NOTIFY_BACK_PRESSED);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
             }
+        }else if(isSearchOpened){
+            handleSearch();
         }
         else {
-            Intent startMain = new Intent(Intent.ACTION_MAIN);
-            startMain.addCategory(Intent.CATEGORY_HOME);
-            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startMain);
+            if(backPressedOnce){
+                super.onBackPressed();
+                return;
+            }
+
+            backPressedOnce = true;
+            Toast.makeText(this, R.string.press_twice_exit, Toast.LENGTH_SHORT).show();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    backPressedOnce = false;
+                }
+            }, 2000);
         }
     }
 

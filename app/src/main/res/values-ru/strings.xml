@@ -351,5 +351,6 @@
     <string name="title_remove_watermark">Удалить водяной знак</string>
     <string name="ad_serve_toast">Для удаления водяного знака будет использовано одно объявление. Вы можете удалить объявления из настроек.</string>
 
+    <string name="press_twice_exit">Для выхода нажмите еще раз.</string>
 
 </resources>
