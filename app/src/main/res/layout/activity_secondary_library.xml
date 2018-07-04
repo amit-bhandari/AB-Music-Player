@@ -41,10 +41,11 @@
 
                 <ImageView
                     android:id="@+id/main.backdrop"
+                    android:transitionName="@string/secondary_transition"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    />
+                    tools:ignore="ContentDescription,UnusedAttribute" />
 
                 <View
                     android:layout_width="match_parent"
