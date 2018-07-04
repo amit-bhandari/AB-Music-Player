@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 >
 
+                <!--
                 <SeekBar
                     android:id="@+id/seekbar"
                     android:padding="0dp"
@@ -38,11 +39,11 @@
                     android:layout_below="@+id/toolbar"
                     android:progressDrawable="@drawable/progress_color"
                     android:layout_width="match_parent"
-                    android:layout_height="2dp" />
+                    android:layout_height="2dp" />-->
 
                 <LinearLayout
                     android:id="@+id/mini_player"
-                    android:layout_below="@id/seekbar"
+                    android:layout_below="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/abm_mini_player_height"
                     android:paddingLeft="@dimen/abm_mini_player_padd_left_right"
