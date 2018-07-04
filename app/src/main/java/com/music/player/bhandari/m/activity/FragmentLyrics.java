@@ -875,7 +875,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 }
 
                 fIsLyricUpdaterThreadRunning =true;
-                Log.v(Constants.L_TAG,"Lyric thread running");
+                //Log.v(Constants.L_TAG,"Lyric thread running");
 
                 if(getActivity()!=null ){
                     handler.post(new Runnable() {

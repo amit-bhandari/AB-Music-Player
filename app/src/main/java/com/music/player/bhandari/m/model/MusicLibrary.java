@@ -677,7 +677,7 @@ public class MusicLibrary{
     public Uri getAlbumArtUri(int album_id){
         Uri songCover = Uri.parse("content://media/external/audio/albumart");
         Uri uriSongCover = ContentUris.withAppendedId(songCover, album_id);
-        Log.d("MusicLibrary", "getAlbumArtUri: path " + new File(uriSongCover.getPath()).length());
+        //Log.d("MusicLibrary", "getAlbumArtUri: path " + new File(uriSongCover.getPath()).length());
         if(uriSongCover==null){
             //String packageName = context.getPackageName();
             //Uri uri = Uri.parse("android.resource://"+packageName+"/drawable/ic_batman_1");
