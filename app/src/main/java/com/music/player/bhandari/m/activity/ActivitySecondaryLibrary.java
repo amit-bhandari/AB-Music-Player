@@ -1,6 +1,7 @@
 package com.music.player.bhandari.m.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -115,6 +117,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     private Drawable batmanDrawable;
 
     PlayerService playerService;
+
+    private int RC_LOGIN = 100;
 
     public ActivitySecondaryLibrary(){}
 
@@ -429,13 +433,14 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             if (playerService != null) {
                 if (playerService.getCurrentTrack() != null) {
 
+                    //commented code for window transition flicker
                     Glide.with(getApplication())
                             .load(MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()))
-                            .asBitmap()
-                            .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                            //.asBitmap()
+                            //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .centerCrop()
                             .placeholder(batmanDrawable)
-                            .animate(R.anim.fade_in)
+                            //.animate(R.anim.fade_in)
                             .into(albumArtIv);
 
                     //albumArtIv.setImageBitmap(playerService.getAlbumArt());
@@ -471,10 +476,15 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             case R.id.mini_player:
                 Intent intent=new Intent(getApplicationContext(),ActivityNowPlaying.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
-                overridePendingTransition(R.anim.abc_slide_in_bottom, android.R.anim.fade_out);
+                ActivityOptions options;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    options = ActivityOptions.makeSceneTransitionAnimation(this, albumArtIv, getString(R.string.transition));
+                    ActivityCompat.startActivityForResult(this, intent, RC_LOGIN, options.toBundle());
+                }else {
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.abc_slide_in_bottom, android.R.anim.fade_out);
+                }
                 Log.v(Constants.TAG,"Launch now playing Jarvis");
-                //finish();
                 break;
 
             case R.id.play_pause_mini_player:
