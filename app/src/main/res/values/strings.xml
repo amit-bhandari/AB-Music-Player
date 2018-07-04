@@ -924,5 +924,6 @@ that this copyright notice remain intact.</string>
     <string name="ad_serve_toast">One ad will be served for removing watermark. You can remove ads permanently from Settings.</string>
     <string name="transition">transition</string>
     <string name="secondary_transition">sec_transition</string>
+    <string name="press_twice_exit">Press back again to exit.</string>
 
 </resources>
