@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -29,12 +30,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.ArcMotion;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -61,6 +64,8 @@ import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
+import com.music.player.bhandari.m.transition.MorphMiniToNowPlaying;
+import com.music.player.bhandari.m.transition.MorphNowPlayingToMini;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
@@ -180,6 +185,10 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
         setContentView(R.layout.activity_secondary_library);
         ButterKnife.bind(this);
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setupSharedElementTransitions();
+        }*/
 
         batmanDrawable = ContextCompat.getDrawable(this, R.drawable.ic_batman_1).mutate();
         //batmanDrawable.setColorFilter(ColorHelper.getPrimaryColor(), PorterDuff.Mode.OVERLAY);
@@ -346,14 +355,16 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 Glide
                         .with(getApplicationContext())
                         .load(url)
-                        .crossFade(500)
+                        //.crossFade(500)
                         .placeholder(R.drawable.ic_batman_1)
+                        .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(mainBackdrop);
             }else {
                 Glide.with(getApplicationContext())
                         .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
-                        .crossFade(500)
+                        //.crossFade(500)
+                        .centerCrop()
                         .placeholder(R.drawable.ic_batman_1)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(mainBackdrop);
@@ -395,6 +406,35 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             }
         });
         fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setupSharedElementTransitions() {
+        //ArcMotion arcMotion = new ArcMotion();
+        //arcMotion.setMinimumHorizontalAngle(50f);
+        //arcMotion.setMinimumVerticalAngle(50f);
+
+        android.view.animation.Interpolator easeInOut = AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in);
+
+        MorphMiniToNowPlaying sharedEnter = new MorphMiniToNowPlaying();
+        //sharedEnter.setPathMotion(arcMotion);
+        sharedEnter.setInterpolator(easeInOut);
+
+        MorphNowPlayingToMini sharedExit = new MorphNowPlayingToMini();
+        //sharedExit.setPathMotion(arcMotion);
+        sharedExit.setInterpolator(easeInOut);
+
+        if (mainBackdrop != null) {
+            sharedEnter.addTarget(mainBackdrop);
+            sharedExit.addTarget(mainBackdrop);
+        }
+
+        getWindow().setSharedElementEnterTransition(sharedEnter);
+        getWindow().setSharedElementExitTransition(sharedExit);
+        //postponeEnterTransition();
+        //getWindow().sharedElementEnterTransition = sharedEnter
+        //getWindow().sharedElementReturnTransition = sharedReturn
+
     }
 
     @OnClick(R.id.ad_close)

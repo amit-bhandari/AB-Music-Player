@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.adapter;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -161,7 +163,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
         Glide
                 .with(context)
                 .load(uri)
-                .crossFade(500)
+                //.crossFade(500)
                 .listener(new RequestListener<Uri, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -187,7 +189,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                         return false;
                     }
                 })
-                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                 .centerCrop()
                 .placeholder(batmanDrawable)
                 .into(holder.thumbnail);
@@ -222,8 +224,15 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                 intent.putExtra("status",Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT);
                 intent.putExtra("key",key);
                 intent.putExtra("title",title.trim());
-                context.startActivity(intent);
-                ((ActivityMain)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                /*ActivityOptions options;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    options = ActivityOptions.makeSceneTransitionAnimation((ActivityMain)context
+                            , view.findViewById(R.id.thumbnail), context.getString(R.string.secondary_transition));
+                    ActivityCompat.startActivityForResult((ActivityMain)context, intent, 100, options.toBundle());
+                }else {*/
+                    context.startActivity(intent);
+                    ((ActivityMain) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                //}
                 break;
 
             case R.id.overflow:
