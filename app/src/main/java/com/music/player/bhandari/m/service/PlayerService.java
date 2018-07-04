@@ -1467,6 +1467,7 @@ public class PlayerService extends Service implements
 
     private void restoreTracklist() {
         trackList.addAll(PlaylistManager.getInstance(getApplicationContext()).RestoreLastPlayingQueueNew());
+
         String id_string = MyApp.getPref().getString(Constants.PREFERENCES.STORED_SONG_ID,"");
         Log.d("PlayerService", "restoreTracklist: restored song id : " + id_string);
         int id = 0 ;
@@ -1507,6 +1508,9 @@ public class PlayerService extends Service implements
             } catch (Exception e) {
                 Log.e(Constants.TAG, Arrays.toString(e.getStackTrace()), e);
             }
+        }
+        if (MyApp.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE,false)){
+            shuffle(true);
         }
         FileInputStream file;
         try {
