@@ -20,7 +20,7 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 play {
-    track = 'alpha'
+    track = 'internal'
     serviceAccountEmail = keystoreProperties['serviceEmail']
     pk12File = file(keystoreProperties['p12keyFile'])
 }
