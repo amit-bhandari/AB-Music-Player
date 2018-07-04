@@ -177,7 +177,7 @@ public class ActivityMain extends AppCompatActivity
     private  TextView songNameMiniPlayer,artistNameMiniPlayer;
     private  NavigationView navigationView;
     private FloatingActionButton fab_right_side, fab_lock;
-    private SeekBar seekBar;
+    //private SeekBar seekBar;
     private View rootView;
     private View miniPlayerWrapper;
 
@@ -287,7 +287,7 @@ public class ActivityMain extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
-        seekBar = findViewById(R.id.seekbar);
+        /*seekBar = findViewById(R.id.seekbar);
         seekBar.setMax(100);
         seekBar.setPadding(0,0,0,0);
         seekBar.setOnTouchListener(new View.OnTouchListener() {
@@ -295,7 +295,7 @@ public class ActivityMain extends AppCompatActivity
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return true;
             }
-        });
+        });*/
 
         rootView = findViewById(R.id.root_view_main_activity);
 
@@ -842,11 +842,11 @@ public class ActivityMain extends AppCompatActivity
 
                 }
 
-                if (playerService.getStatus() == PlayerService.PLAYING) {
+                /*if (playerService.getStatus() == PlayerService.PLAYING) {
                     startUpdateTask();
                 } else {
                     stopUpdateTask();
-                }
+                }*/
 
             } else {
                 //this should not happen
@@ -1706,10 +1706,10 @@ public class ActivityMain extends AppCompatActivity
 
                 if (playerService.getStatus() == PlayerService.PLAYING) {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
-                    startUpdateTask();
+                    //startUpdateTask();
                 } else {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp));
-                    stopUpdateTask();
+                    //stopUpdateTask();
                 }
 
                 actionMode = startSupportActionMode(this);
@@ -1767,7 +1767,7 @@ public class ActivityMain extends AppCompatActivity
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mReceiverForMiniPLayerUpdate);
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mReceiverForLibraryRefresh);
         super.onPause();
-        stopUpdateTask();
+        //stopUpdateTask();
     }
 
     @Override
@@ -1788,8 +1788,8 @@ public class ActivityMain extends AppCompatActivity
                 ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiverForLibraryRefresh
                 ,new IntentFilter(Constants.ACTION.REFRESH_LIB));
-        seekBar.setProgress(UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress(), playerService.getCurrentTrackDuration()));
-        startUpdateTask();
+        //seekBar.setProgress(UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress(), playerService.getCurrentTrackDuration()));
+        //startUpdateTask();
     }
 
     @Override
@@ -2202,7 +2202,7 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
-    private void startUpdateTask(){
+    /*private void startUpdateTask(){
         if(!updateTimeTaskRunning && playerService.getStatus()==playerService.PLAYING ){
             stopProgressRunnable=false;
             updateTimeTaskRunning=true;
@@ -2216,7 +2216,7 @@ public class ActivityMain extends AppCompatActivity
     }
 
     //for seekbar on mini player top
-    private final Runnable mUpdateTimeTask = new Runnable() {
+    /*private final Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
             while (true) {
                 if (stopProgressRunnable) {
@@ -2240,5 +2240,5 @@ public class ActivityMain extends AppCompatActivity
             }
             updateTimeTaskRunning = false;
         }
-    };
+    };*/
 }

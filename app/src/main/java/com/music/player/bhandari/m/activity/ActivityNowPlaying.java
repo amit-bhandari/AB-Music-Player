@@ -753,10 +753,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             return;
         }
 
-        if(isTaskRoot()){
+        /*if(isTaskRoot()){
             startActivity(new Intent(this,ActivityMain.class));
             overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-        }
+        }*/
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
@@ -830,9 +830,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 break;
 
             case android.R.id.home:
-                startActivity(new Intent(this,ActivityMain.class));
-                overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-                //finish();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    finishAfterTransition();
+                }else {
+                    finish();
+                }
                 break;
 
             case R.id.action_settings:
