@@ -60,6 +60,7 @@
                         android:scaleType="centerCrop"
                         android:id="@+id/album_art_mini_player_wrapper"
                         android:shape="ring"
+                        android:transitionName="@string/transition"
                         android:thicknessRatio="1.9">
 
                         <ImageView
@@ -68,7 +69,6 @@
                             android:id="@+id/album_art_mini_player"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
-                            android:transitionName="@string/transition"
                             tools:ignore="ContentDescription">
                         </ImageView>
 

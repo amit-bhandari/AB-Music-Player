@@ -167,10 +167,12 @@
             <!--Icon of floating widget -->
             <ImageView
                 android:id="@+id/album_art_mini_player"
+                android:transitionName="@string/transition"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:src="@drawable/ic_batman_1"
-                android:scaleType="centerCrop">
+                android:scaleType="centerCrop"
+                tools:ignore="UnusedAttribute">
             </ImageView>
 
             <LinearLayout

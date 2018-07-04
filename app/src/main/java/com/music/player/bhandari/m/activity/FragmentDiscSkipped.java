@@ -186,7 +186,7 @@ public class FragmentDiscSkipped extends Fragment{
                     })
                     .placeholder(R.drawable.ic_batman_1)
                     .crossFade()
-                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                     .into(albumArt);
 
         }
