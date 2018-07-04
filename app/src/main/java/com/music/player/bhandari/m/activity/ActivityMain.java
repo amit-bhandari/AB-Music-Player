@@ -797,7 +797,7 @@ public class ActivityMain extends AppCompatActivity
                             .listener(new RequestListener<Uri, GlideDrawable>() {
                                 @Override
                                 public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    Log.d("AlbumLibraryAdapter", "onException: ");
+                                    //Log.d("AlbumLibraryAdapter", "onException: ");
                                     if(UtilityFun.isConnectedToInternet() &&
                                             !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                         final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());

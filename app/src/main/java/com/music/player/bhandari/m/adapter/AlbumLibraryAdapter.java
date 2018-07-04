@@ -167,7 +167,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                 .listener(new RequestListener<Uri, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        Log.d("AlbumLibraryAdapter", "onException: ");
+                        //Log.d("AlbumLibraryAdapter", "onException: ");
                         if(UtilityFun.isConnectedToInternet() &&
                                 !MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) {
                             Glide

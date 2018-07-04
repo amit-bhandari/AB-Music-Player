@@ -1494,7 +1494,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Log.d("FragmentDiscSkipped", "run: running");
+                //Log.d("FragmentDiscSkipped", "run: running");
             }
             updateTimeTaskRunning = false;
         }
