@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>developer_message</key>
+        <value>Hey there, this is AB here. \n\n
+            I am glad you are enjoying AB Music and it needs your help.
+            To reach global audience, AB Music needs to be translated to regional languages and if you happen to know one and can translate English to that, please contribute!
+            Write me to know more on how to get started with translations.
+            \n\n
+            If you like AB Music and want to thank me, there is nothing in this world which will make me happier than good review from you on play store. So do leave your feedback.
+        </value>
+    </entry>
+
+    <entry>
+        <key>link</key>
+        <value>https://github.com/amit-bhandari/AB-Music-Player</value>
+    </entry>
+
+</defaultsMap>

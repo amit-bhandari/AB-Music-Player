@@ -99,6 +99,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -1459,20 +1460,23 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void devMessageDialog(){
+        String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
+        final String link = FirebaseRemoteConfig.getInstance().getString("link");
+
         new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.nav_developers_message))
-                .content(getString(R.string.developers_message))
-                .neutralText(R.string.write_me)
-                .positiveText(getString(R.string.main_act_rate_dialog_pos))
-                .negativeText(getString(R.string.title_contribute))
-                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                .content(message)
+                //.neutralText(R.string.write_me)
+                .negativeText(getString(R.string.main_act_rate_dialog_pos))
+                .positiveText(getString(R.string.title_click_me))
+                /*.onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         feedbackEmail();
                     }
-                })
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                })*/
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
@@ -1483,10 +1487,10 @@ public class ActivityMain extends AppCompatActivity
                         }
                     }
                 })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        openUrl(Uri.parse(GITHUB));
+                        openUrl(Uri.parse(link));
                     }
                 })
                 .show();

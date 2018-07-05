@@ -22,14 +22,18 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.vending.billing.IInAppBillingService;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.appinvite.FirebaseAppInvite;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.fcm.CountryInfo;
@@ -176,10 +180,40 @@ public class ActivityPermissionSeek extends AppCompatActivity {
 
         new CountryInfo().start();
 
+        initializeRemoteConfig();
         //log selected font to know which font is used maximum
         //logFont();
     }
 
+    private void initializeRemoteConfig(){
+
+        final FirebaseRemoteConfig mRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings remoteConfigSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(true)
+                .build();
+        mRemoteConfig.setConfigSettings(remoteConfigSettings);
+        mRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+
+        // cache expiration in seconds
+        long cacheExpiration = 3600L;   //1 hour
+
+        //expire the cache immediately for development mode .
+        if (mRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+            cacheExpiration = 0;
+        }
+
+        // fetch
+        mRemoteConfig.fetch(cacheExpiration)
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("ActivityPermissionSeek", "onComplete: ");
+                        if(task.isSuccessful()){
+                            mRemoteConfig.activateFetched();
+                        }
+                    }
+                });
+    }
 
     private void checkForDeepLink(){
         FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())

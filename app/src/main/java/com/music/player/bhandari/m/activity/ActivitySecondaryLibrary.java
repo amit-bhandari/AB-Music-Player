@@ -14,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.audiofx.AudioEffect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -48,6 +49,9 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -474,13 +478,49 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 if (playerService.getCurrentTrack() != null) {
 
                     //commented code for window transition flicker
-                    Glide.with(getApplication())
+                    /*Glide.with(getApplication())
                             .load(MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()))
                             //.asBitmap()
                             //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                             .centerCrop()
                             .placeholder(batmanDrawable)
                             //.animate(R.anim.fade_in)
+                            .into(albumArtIv);*/
+
+                    Glide.with(this)
+                            .load(MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()))
+                            .listener(new RequestListener<Uri, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    //Log.d("AlbumLibraryAdapter", "onException: ");
+                                    if(UtilityFun.isConnectedToInternet() &&
+                                            !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
+                                        final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
+                                        Glide
+                                                .with(ActivitySecondaryLibrary.this)
+                                                .load(url)
+                                                .centerCrop()
+                                                .crossFade(500)
+                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                .override(100, 100)
+                                                .placeholder(R.drawable.ic_batman_1)
+                                                .into(albumArtIv);
+                                        return true;
+                                    }
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    return false;
+                                }
+                            })
+                            .centerCrop()
+                            //removed because of window transition flicker
+                            //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                            //.override(100,100)
+                            .placeholder(R.drawable.ic_batman_1)
+                            .crossFade()
                             .into(albumArtIv);
 
                     //albumArtIv.setImageBitmap(playerService.getAlbumArt());
