@@ -15,7 +15,7 @@ buildscript {
 apply plugin: 'com.github.triplet.play'
 
 // Load keystore
-def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystorePropertiesFile = rootProject.file("/opt/JetBrains/TeamCity/buildAgent/work/keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 

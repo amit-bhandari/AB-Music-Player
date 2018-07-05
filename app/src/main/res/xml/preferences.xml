@@ -42,7 +42,12 @@
             android:key="@string/pref_opening_tab">
         </Preference>
 
-         <CheckBoxPreference
+        <Preference
+            android:title="@string/title_album_lib_view"
+            android:key="@string/pref_album_lib_view">
+        </Preference>
+
+        <CheckBoxPreference
              android:title="@string/title_lock_screen_album_Art"
              android:defaultValue="true"
              android:key="@string/pref_lock_screen_album_Art">
