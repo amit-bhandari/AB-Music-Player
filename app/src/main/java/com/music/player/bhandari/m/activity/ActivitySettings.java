@@ -358,6 +358,9 @@ public class ActivitySettings extends AppCompatActivity {
         final String ASAP = "Asap (Recommended)";
         final String SYSTEM_DEFAULT = "System Default";
 
+        final String LIST = "List View";
+        final String GRID = "Grid View";
+
         private CheckBoxPreference instantLyricStatus;
 
         private ItemTouchHelper mItemTouchHelper;
@@ -611,6 +614,22 @@ public class ActivitySettings extends AppCompatActivity {
                         MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art),false).apply();
                         MyApp.getService().setMediaSessionMetadata(false);
                     }
+                    return true;
+                }
+            });
+
+            //prefer system equalizer
+            Preference albumLibView = findPreference(getString(R.string.pref_album_lib_view));
+            if(MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view), true)){
+                albumLibView.setSummary(GRID);
+            }else {
+                albumLibView.setSummary(LIST);
+            }
+
+            albumLibView.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    albumViewDialog();
                     return true;
                 }
             });
@@ -980,6 +999,30 @@ public class ActivitySettings extends AppCompatActivity {
                     return true;
                 }
             });
+        }
+
+        private void albumViewDialog(){
+            new MaterialDialog.Builder(getActivity())
+                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                    .title(getString(R.string.title_album_lib_view))
+                    .items((CharSequence[]) new String[]{LIST, GRID})
+                    .itemsCallback(new MaterialDialog.ListCallback() {
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            switch (text.toString()){
+                                case LIST:
+                                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), false).apply();
+                                    findPreference(getString(R.string.pref_album_lib_view)).setSummary(LIST);
+                                    break;
+
+                                case GRID:
+                                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), true).apply();
+                                    findPreference(getString(R.string.pref_album_lib_view)).setSummary(GRID);
+                                    break;
+                            }
+                        }
+                    })
+                    .show();
         }
 
         private void mainLibBackDialog(){

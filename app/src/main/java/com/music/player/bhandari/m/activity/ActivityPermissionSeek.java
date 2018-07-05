@@ -307,11 +307,11 @@ public class ActivityPermissionSeek extends AppCompatActivity {
                     ,Constants.DISC_SIZE.MEDIUM).apply();
         }
 
-        if(!MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view)
+        /*if(!MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view)
                 ,false)){
             MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view)
                     ,true).apply();
-        }
+        }*/
     }
 
     private void bindService(){
