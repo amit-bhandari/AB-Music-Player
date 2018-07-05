@@ -330,7 +330,7 @@
         <string name="action_text_alignment">Text Alignment</string>
         <string name="nav_lyric_cards">Lyric Cards</string>
 
-        <string name="dialog_lyric_card_content">Now create awesome lyric cards by selecting lyric text and pressing image button on top right tool bar.</string>
+        <string name="dialog_lyric_card_content">Now create awesome lyric cards by selecting lyric text(by long pressing) and pressing image button on top right tool bar.</string>
         <string name="dialog_lyric_card_pos">Try now!</string>
 
         <string name="main_act_content_rate_reward_failed">You have already claimed reward points for rating AB Music in store!</string>

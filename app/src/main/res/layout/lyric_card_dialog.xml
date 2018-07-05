@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/wrapper"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+            android:layout_centerHorizontal="true">
+
+
+        <TextView
+            android:layout_margin="5dp"
+            android:textSize="10sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="Please wait while image loads..."
+            tools:ignore="HardcodedText,SmallSp" />
+
+        <ImageView
+            android:id="@+id/sample_album_card"
+            android:visibility="invisible"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:foregroundGravity="center"
+            tools:ignore="ContentDescription" />
+
+
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_below="@id/wrapper"
+        android:layout_margin="5dp"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/dialog_lyric_card_content"/>
+
+</RelativeLayout>

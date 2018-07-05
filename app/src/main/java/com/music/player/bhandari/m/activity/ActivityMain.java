@@ -74,6 +74,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.getkeepsafe.taptargetview.TapTarget;
@@ -1387,12 +1388,15 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void lyricCardDialog(){
-        new MaterialDialog.Builder(this)
+        final String link = FirebaseRemoteConfig.getInstance().getString("sample_lyric_card");
+
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.nav_lyric_cards))
-                .content(R.string.dialog_lyric_card_content)
+                .customView(R.layout.lyric_card_dialog, true)
+                //.content(R.string.dialog_lyric_card_content)
                 .positiveText(R.string.dialog_lyric_card_pos)
-                .neutralText(getString(R.string.cancel))
+                .negativeText(getString(R.string.cancel))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -1403,13 +1407,30 @@ public class ActivityMain extends AppCompatActivity
                         startActivity(searchLyricIntent);
                     }
                 })
-                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                     }
-                })
-                .show();
+                }).build();
+
+        if (dialog.getCustomView() != null) {
+            final ImageView iv = dialog.getCustomView().findViewById(R.id.sample_album_card);
+            Glide.with(this)
+                    .load(link)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+                    .into(new GlideDrawableImageViewTarget(iv) {
+                        @Override
+                        public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
+                            super.onResourceReady(drawable, anim);
+                            iv.setVisibility(View.VISIBLE);
+                        }
+                    });
+        }
+
+        dialog.show();
+
     }
 
     private void tryApp(){
@@ -1460,7 +1481,7 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void devMessageDialog(){
-        String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
+        final String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
         final String link = FirebaseRemoteConfig.getInstance().getString("link");
 
         new MaterialDialog.Builder(this)
