@@ -119,6 +119,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:15.0.1'
     implementation 'com.google.firebase:firebase-invites:15.0.1'
     implementation 'com.google.firebase:firebase-storage:15.0.2'
+    implementation 'com.google.firebase:firebase-config:15.0.0'
 
     //gson
     implementation 'com.google.code.gson:gson:2.8.2'
