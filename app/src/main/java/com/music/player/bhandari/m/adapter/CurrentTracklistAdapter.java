@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.MotionEventCompat;
@@ -145,14 +146,15 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
         }
     }
 
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final View view = inflater.inflate(R.layout.track_item_for_dragging, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final CurrentTracklistAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final CurrentTracklistAdapter.MyViewHolder holder, int position) {
 
         if(dataItems.get(position) == null) return;
         holder.title.setText(dataItems.get(position).title);

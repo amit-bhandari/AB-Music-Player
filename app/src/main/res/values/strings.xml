@@ -926,5 +926,6 @@ that this copyright notice remain intact.</string>
     <string name="transition">transition</string>
     <string name="secondary_transition">sec_transition</string>
     <string name="press_twice_exit">Press back again to exit.</string>
+    <string name="track_count">%1$s tracks</string>
 
 </resources>

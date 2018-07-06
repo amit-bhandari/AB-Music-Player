@@ -150,8 +150,9 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public FolderLibraryAdapter.MyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+    public FolderLibraryAdapter.MyViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.fragment_library_item, parent, false);
         viewParent = parent;
         //stub=((ViewStub)view.findViewById(R.id.stub_in_fragment_library_item)).inflate();
@@ -199,7 +200,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(FolderLibraryAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FolderLibraryAdapter.MyViewHolder holder, int position) {
 
         String fileName = filteredHeaders.get(position);
         File positionalFile = files.get(fileName);

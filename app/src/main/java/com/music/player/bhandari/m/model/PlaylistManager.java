@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.Executors;
 
 /**
@@ -46,10 +48,14 @@ public class PlaylistManager {
     private static DbHelperUserMusicData dbHelperUserMusicData;
     private static DbHelperListOfPlaylist dbHelperListOfPlaylist;
 
+    private static HashMap<String, Integer> trackCount;
+    private static HashMap<String,Long> listOfPlaylists = new HashMap<>();   //cache playlist list to avoid unnecessary db calls
+
     private PlaylistManager(Context context){
         this.context=context;
         dbHelperUserMusicData = new DbHelperUserMusicData(context);
         dbHelperListOfPlaylist  = new DbHelperListOfPlaylist(context);
+        GetPlaylistList(false);
     }
 
     public static PlaylistManager getInstance(Context context){
@@ -127,27 +133,30 @@ public class PlaylistManager {
      */
 
     public ArrayList<String> GetPlaylistList(boolean userAddable){
-        ArrayList<String> listOfPlaylist=new ArrayList<>();
-        SQLiteDatabase db = dbHelperListOfPlaylist.getReadableDatabase();
-        dbHelperListOfPlaylist.onCreate(db);
-        Cursor cursor=db.query(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST,null,null,null,null,null,null);
-        while (cursor.moveToNext()){
-            if(!userAddable) {
-                String s = cursor.getString(0).replace("_"," ");
-                listOfPlaylist.add(s);
-            }else {
-                //REMOVE LAST PLAYED,LAST ADDED AND MOST PLAYED FROM LIST AS USER CANNOT ADD SONG IN THIS
-                if(!cursor.getString(0).equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED)
-                        && !cursor.getString(0).equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)
-                        && !cursor.getString(0).equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED))
-                {
-                    String s = cursor.getString(0).replace("_"," ");
-                    listOfPlaylist.add(s);
-                }
+        if(listOfPlaylists.size()==0){
+            SQLiteDatabase db = dbHelperListOfPlaylist.getReadableDatabase();
+            dbHelperListOfPlaylist.onCreate(db);
+            Cursor cursor = db.query(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST, null, null, null, null, null, null);
+            while (cursor.moveToNext()) {
+                String s = cursor.getString(0).replace("_", " ");
+                listOfPlaylists.put(s, getTrackCount(s));
+            }
+            cursor.close();
+        }
+        Log.d("PlaylistManager", "GetPlaylistList: " + listOfPlaylists.keySet());
+
+        ArrayList<String> temp = new ArrayList<>();
+        for (String name : listOfPlaylists.keySet()) {
+            if (userAddable & !name.equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED)
+                    && !name.equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)
+                    && !name.equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED)) {
+                temp.add(name);
+            } else {
+                temp.add(name);
             }
         }
-        cursor.close();
-        return listOfPlaylist;
+
+        return temp;
     }
 
     public boolean CreatePlaylist(String playlist_name){
@@ -176,6 +185,9 @@ public class PlaylistManager {
             ContentValues c = new ContentValues();
             c.put(DbHelperListOfPlaylist.KEY_TITLE, playlist_name);
             db.insert(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST, null, c);
+
+            //invalidate playlist cache @todo can be better I guess
+            listOfPlaylists.clear(); //it will be populated automatically on next db call
             return true;
         }
         return false;
@@ -309,6 +321,7 @@ public class PlaylistManager {
     }
 
     public ArrayList<dataItem> GetPlaylist(String playlist_name){
+        Log.d("PlaylistManager", "GetPlaylist: " + playlist_name);
         playlist_name = playlist_name.replace(" ","_");
         ArrayList<dataItem> trackList;
         switch (playlist_name){
@@ -477,33 +490,61 @@ public class PlaylistManager {
         return tracklist;
     }
 
+    public boolean ClearPlaylist( String playlist_name){
 
-    private ArrayList<dataItem> GetMostPlayed(){
-        //   DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
-        SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
-        dbHelperUserMusicData.onCreate(db);
+        playlist_name = playlist_name.replace(" ","_");
 
-        ArrayList<dataItem> tracklist= new ArrayList<>();
-        String where = DbHelperUserMusicData.KEY_COUNT + " > 0 ";
+        switch (playlist_name){
+            case Constants.SYSTEM_PLAYLISTS.MOST_PLAYED:
+                playlist_name = DbHelperUserMusicData.KEY_COUNT;
+                break;
 
-        Cursor cursor = db.query(DbHelperUserMusicData.TABLE_NAME,new String[]{DbHelperUserMusicData.KEY_ID}
-                ,where,null,null,null,DbHelperUserMusicData.KEY_COUNT+" DESC",""+Constants.SYSTEM_PLAYLISTS.MOST_PLAYED_MAX);
+            case Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED:
+                playlist_name = DbHelperUserMusicData.KEY_TIME_STAMP;
+                break;
 
-        /*while (cursor.moveToNext()){
-            tracklist.add(cursor.getString(0));
-        }*/
+            case Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED:
+                return false;
 
-        while (cursor.moveToNext()) {
-            for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks()) {
-                if (d.id == cursor.getInt(0)) {
-                    tracklist.add(d);
-                    break;
-                }
-            }
+            default:
+                break;
         }
 
-        cursor.close();
-        return tracklist;
+        SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
+        dbHelperUserMusicData.onCreate(db);
+
+        String query = "UPDATE `" + DbHelperUserMusicData.TABLE_NAME +"` SET `" + playlist_name + "` = '0'";
+        try {
+            db.execSQL(query);
+        }catch (Exception e){
+            Log.d("PlaylistManager", "ClearPlaylist: error");
+            return false;
+        }
+        return true;
+    }
+
+    public long getTrackCountFromCache(String playlist_name){
+        String temp = playlist_name.replace(" ","_");
+        switch (temp){
+            case Constants.SYSTEM_PLAYLISTS.MOST_PLAYED:
+                return 0;
+
+            case Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED:
+                return 0;
+
+            case Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED:
+                return 0;
+
+            case Constants.SYSTEM_PLAYLISTS.MY_FAV:
+            default:
+                return listOfPlaylists.get(playlist_name);
+        }
+
+        /*if (listOfPlaylists.containsKey(playlist_name)){
+            return listOfPlaylists.get(playlist_name);
+        }else {
+            return 0;
+        }*/
     }
 
     //private methods
@@ -619,39 +660,49 @@ public class PlaylistManager {
         return tracklist;
     }
 
-    public boolean ClearPlaylist( String playlist_name){
-
-        playlist_name = playlist_name.replace(" ","_");
-
-        switch (playlist_name){
-            case Constants.SYSTEM_PLAYLISTS.MOST_PLAYED:
-                playlist_name = DbHelperUserMusicData.KEY_COUNT;
-                break;
-
-            case Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED:
-                playlist_name = DbHelperUserMusicData.KEY_TIME_STAMP;
-                break;
-
-            case Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED:
-                return false;
-
-            default:
-                break;
-        }
-
-        SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
+    private ArrayList<dataItem> GetMostPlayed(){
+        //   DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
+        SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
         dbHelperUserMusicData.onCreate(db);
 
-        String query = "UPDATE `" + DbHelperUserMusicData.TABLE_NAME +"` SET `" + playlist_name + "` = '0'";
-        try {
-            db.execSQL(query);
-        }catch (Exception e){
-            Log.d("PlaylistManager", "ClearPlaylist: error");
-            return false;
+        ArrayList<dataItem> tracklist= new ArrayList<>();
+        String where = DbHelperUserMusicData.KEY_COUNT + " > 0 ";
+
+        Cursor cursor = db.query(DbHelperUserMusicData.TABLE_NAME,new String[]{DbHelperUserMusicData.KEY_ID}
+                ,where,null,null,null,DbHelperUserMusicData.KEY_COUNT+" DESC",""+Constants.SYSTEM_PLAYLISTS.MOST_PLAYED_MAX);
+
+        /*while (cursor.moveToNext()){
+            tracklist.add(cursor.getString(0));
+        }*/
+
+        while (cursor.moveToNext()) {
+            for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks()) {
+                if (d.id == cursor.getInt(0)) {
+                    tracklist.add(d);
+                    break;
+                }
+            }
         }
-        return true;
+
+        cursor.close();
+        return tracklist;
     }
 
+    //get track count for playlist from db
+    private long getTrackCount(String playlist_name){
+        playlist_name = playlist_name.replace(" ","_");
+        playlist_name = "\"" + playlist_name + "\"";
+
+        //DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
+        SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
+        dbHelperUserMusicData.onCreate(db);
+
+        String where = playlist_name + " != 0";
+        long count = DatabaseUtils.queryNumEntries(db, DbHelperUserMusicData.TABLE_NAME, where);
+
+        Log.d("PlaylistManager", "getTrackCount: "+ playlist_name + " : " + count);
+        return count;
+    }
 
     //deprecated methods
 

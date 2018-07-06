@@ -99,6 +99,12 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
     public void onBindViewHolder(@NonNull PlaylistLibraryAdapter.MyViewHolder holder, int position) {
         holder.title.setText(headers.get(position));
         holder.title.setPadding(20,0,0,0);
+
+        Long count = PlaylistManager.getInstance(context).getTrackCountFromCache(headers.get(position));
+        if(count!=0) {
+            holder.count.setText(context.getString(R.string.track_count, count.toString()));
+            holder.count.setPadding(20, 0, 0, 0);
+        }
     }
 
     @Override
@@ -304,10 +310,12 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
+        TextView count;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.header);
+            count = itemView.findViewById(R.id.secondaryHeader);
             itemView.findViewById(R.id.album_art_wrapper).setVisibility(View.GONE);
             itemView.setOnClickListener(this);
             itemView.findViewById(R.id.menuPopup).setOnClickListener(this);
