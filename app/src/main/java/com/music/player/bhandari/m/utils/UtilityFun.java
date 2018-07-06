@@ -20,7 +20,6 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -122,7 +121,7 @@ public class UtilityFun {
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        PlaylistManager.getInstance(context).AddSongToPlaylistNew(text.toString(),song_titles);
+                        PlaylistManager.getInstance(context).AddSongToPlaylist(text.toString(),song_titles);
                     }
                 })
                 .show();
