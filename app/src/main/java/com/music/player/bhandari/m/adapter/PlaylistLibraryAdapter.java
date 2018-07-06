@@ -103,8 +103,10 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
         Long count = PlaylistManager.getInstance(context).getTrackCountFromCache(headers.get(position));
         if(count!=0) {
             holder.count.setText(context.getString(R.string.track_count, count.toString()));
-            holder.count.setPadding(20, 0, 0, 0);
+        }else {
+            holder.count.setText(context.getString(R.string.empty_playlist));
         }
+        holder.count.setPadding(20, 0, 0, 0);
     }
 
     @Override

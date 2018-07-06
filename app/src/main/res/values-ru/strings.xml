@@ -354,4 +354,8 @@
 
     <string name="press_twice_exit">Для выхода нажмите еще раз.</string>
 
+
+    <string name="track_count">%1$s треков</string>
+    <string name="empty_playlist">пустой плейлист</string>
+
 </resources>
