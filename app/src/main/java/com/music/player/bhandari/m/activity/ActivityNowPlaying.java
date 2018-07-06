@@ -1,7 +1,5 @@
 package com.music.player.bhandari.m.activity;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +8,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Interpolator;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -1002,7 +999,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                                         }
 
                                         PlaylistManager.getInstance(ActivityNowPlaying.this)
-                                                .AddSongToPlaylistNew(playlist_name,ids);
+                                                .AddSongToPlaylist(playlist_name,ids);
                                        // Toast.makeText(ActivityNowPlaying.this, "Playlist saved!", Toast.LENGTH_SHORT).show();
                                         Snackbar.make(rootView, getString(R.string.playlist_saved), Snackbar.LENGTH_LONG).show();
                                     }else {

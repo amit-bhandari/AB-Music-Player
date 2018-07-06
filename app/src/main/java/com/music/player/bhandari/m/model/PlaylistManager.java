@@ -42,7 +42,19 @@ import java.util.concurrent.Executors;
  limitations under the License.
  */
 
+
 public class PlaylistManager {
+
+    /**
+     * Attention
+     * One of the ugliest piece of code I have ever written in my life resides in this file.
+     * Please forgive me for this shit I have given to this world.
+     *
+     * Only way to make this code good is to rewrite it.
+     *
+     * In my defence, this is one of the very first coding project I have done in my life!
+     */
+
     private Context context;
     private static PlaylistManager playlistManager;
     private static DbHelperUserMusicData dbHelperUserMusicData;
@@ -219,12 +231,16 @@ public class PlaylistManager {
         db = dbHelperListOfPlaylist.getWritableDatabase();
         dbHelperListOfPlaylist.onCreate(db);
 
+        //invalidate playlist cache
+        listOfPlaylists.clear(); //it will be populated automatically on next db call
+
+
         return db.delete(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST
                 , DbHelperListOfPlaylist.KEY_TITLE + "= '" + playlist_name.replace("'", "''") + "'"
                 , null) != 0;
     }
 
-    public  void AddSongToPlaylistNew(final String playlist_name_arg, final int[] song_ids){
+    public  void AddSongToPlaylist(final String playlist_name_arg, final int[] song_ids){
 
 
         Executors.newSingleThreadExecutor().execute(new Runnable() {
@@ -264,6 +280,12 @@ public class PlaylistManager {
                     db.update(DbHelperUserMusicData.TABLE_NAME,c,DbHelperUserMusicData.KEY_ID + "= ?", new String[] {id+""});
                 }
 
+
+                String favPlayListName = playlist_name.replace("_", " ");
+                if(listOfPlaylists.containsKey(favPlayListName)){
+                    listOfPlaylists.put(favPlayListName, listOfPlaylists.get(favPlayListName)+1);
+                }
+
                 hand.post(new Runnable() {
                     @SuppressLint("ShowToast")
                     @Override
@@ -298,6 +320,11 @@ public class PlaylistManager {
         ContentValues c = new ContentValues();
         c.put(playlist_name, ++maxValue);
         db.update(DbHelperUserMusicData.TABLE_NAME,c,DbHelperUserMusicData.KEY_ID + "= ?", new String[] {id+""});
+
+        String favPlayListName = Constants.SYSTEM_PLAYLISTS.MY_FAV.replace("_", " ");
+        if(listOfPlaylists.containsKey(favPlayListName)){
+            listOfPlaylists.put(favPlayListName, listOfPlaylists.get(favPlayListName)+1);
+        }
     }
 
     public void RemoveSongFromPlaylistNew(String playlist_name, int id){
@@ -313,6 +340,11 @@ public class PlaylistManager {
                 ContentValues c = new ContentValues();
                 c.put(playlist_name, 0);
                 db.update(DbHelperUserMusicData.TABLE_NAME, c, where, null);
+
+                if(listOfPlaylists.containsKey(playlist_name.replace("_", " "))){
+                    listOfPlaylists.put(playlist_name.replace("_", " "),
+                            listOfPlaylists.get(playlist_name.replace("_", " "))-1);
+                }
 
                 Toast.makeText(context,context.getString(R.string.removed_from_playlist),Toast.LENGTH_SHORT).show();
             }catch (Exception e){
@@ -382,6 +414,10 @@ public class PlaylistManager {
             }
         });
 
+        String recentPlayListName = Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED.replace("_", " ");
+        if(listOfPlaylists.containsKey(recentPlayListName)){
+            listOfPlaylists.put(recentPlayListName, listOfPlaylists.get(recentPlayListName)+1);
+        }
 
         //thread for adding entry in recently played
         Executors.newSingleThreadExecutor().execute(new Runnable() {
@@ -429,6 +465,11 @@ public class PlaylistManager {
         ContentValues c = new ContentValues();
         c.put(DbHelperUserMusicData.KEY_FAV, 0);
         db.update(DbHelperUserMusicData.TABLE_NAME,c,DbHelperUserMusicData.KEY_ID + "= ?", new String[] {id+""});
+
+        String favPlayListName = Constants.SYSTEM_PLAYLISTS.MY_FAV.replace("_", " ");
+        if(listOfPlaylists.containsKey(favPlayListName)){
+            listOfPlaylists.put(favPlayListName, listOfPlaylists.get(favPlayListName)-1);
+        }
     }
 
     public void StoreLastPlayingQueueNew(final ArrayList<Integer> tracklist){
@@ -493,6 +534,10 @@ public class PlaylistManager {
 
     public boolean ClearPlaylist( String playlist_name){
 
+        if(listOfPlaylists.containsKey(playlist_name)){
+            listOfPlaylists.put(playlist_name,0L);
+        }
+
         playlist_name = playlist_name.replace(" ","_");
 
         switch (playlist_name){
@@ -525,27 +570,12 @@ public class PlaylistManager {
     }
 
     public long getTrackCountFromCache(String playlist_name){
-        String temp = playlist_name.replace(" ","_");
-        switch (temp){
-            case Constants.SYSTEM_PLAYLISTS.MOST_PLAYED:
-                return 0;
 
-            case Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED:
-                return 0;
-
-            case Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED:
-                return 0;
-
-            case Constants.SYSTEM_PLAYLISTS.MY_FAV:
-            default:
-                return listOfPlaylists.get(playlist_name);
-        }
-
-        /*if (listOfPlaylists.containsKey(playlist_name)){
+        if (listOfPlaylists.containsKey(playlist_name)){
             return listOfPlaylists.get(playlist_name);
         }else {
             return 0;
-        }*/
+        }
     }
 
     //private methods
@@ -692,218 +722,42 @@ public class PlaylistManager {
     //get track count for playlist from db
     private long getTrackCount(String playlist_name){
         playlist_name = playlist_name.replace(" ","_");
-        playlist_name = "\"" + playlist_name + "\"";
 
         //DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
         SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
         dbHelperUserMusicData.onCreate(db);
+
+        if(playlist_name.equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED)){
+            String where = DbHelperUserMusicData.KEY_COUNT + " > 0 ";
+
+            Cursor cursor = db.query(DbHelperUserMusicData.TABLE_NAME,new String[]{DbHelperUserMusicData.KEY_ID}
+                    ,where,null,null,null,DbHelperUserMusicData.KEY_COUNT+" DESC",""+Constants.SYSTEM_PLAYLISTS.MOST_PLAYED_MAX);
+            int count =  cursor.getCount();
+            cursor.close();
+            return count;
+        }
+
+        if(playlist_name.equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED)){
+            String where = DbHelperUserMusicData.KEY_TIME_STAMP + " > 0 ";
+            Cursor cursor = db.query(DbHelperUserMusicData.TABLE_NAME,new String[]{DbHelperUserMusicData.KEY_ID}
+                    ,where,null,null,null,DbHelperUserMusicData.KEY_TIME_STAMP+" DESC",""+Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED_MAX);
+
+            int count =  cursor.getCount();
+            cursor.close();
+            return count;
+        }
+
+        if(playlist_name.equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)){
+            return 50;  //very ugly
+        }
+
+        playlist_name = "\"" + playlist_name + "\"";
 
         String where = playlist_name + " != 0";
         long count = DatabaseUtils.queryNumEntries(db, DbHelperUserMusicData.TABLE_NAME, where);
 
         Log.d("PlaylistManager", "getTrackCount: "+ playlist_name + " : " + count);
         return count;
-    }
-
-    //deprecated methods
-
-    public ArrayList<String> RestoreLastPlayingQueue(){
-//        DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
-        SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
-        dbHelperUserMusicData.onCreate(db);
-
-        String where = DbHelperUserMusicData.KEY_LAST_PLAYING_QUEUE + " = 1";
-        Cursor c = db.query(DbHelperUserMusicData.TABLE_NAME, new String[]{DbHelperUserMusicData.KEY_TITLE}
-                , where, null
-                , null, null, null);
-        ArrayList<String> tracklist=new ArrayList<>();
-        while (c.moveToNext()) {
-            tracklist.add(c.getString(0));
-        }
-        c.close();
-        return tracklist;
-    }
-
-    public void StoreLastPlayingQueue(final ArrayList<String> tracklist){
-
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
-                dbHelperUserMusicData.onCreate(db);
-
-                //clear column first
-                ContentValues c = new ContentValues();
-                c.put(DbHelperUserMusicData.KEY_LAST_PLAYING_QUEUE, 0);
-                db.update(DbHelperUserMusicData.TABLE_NAME,c,null,null);
-
-                try {
-                    for (String song_title : tracklist) {
-                        c = new ContentValues();
-                        c.put(DbHelperUserMusicData.KEY_LAST_PLAYING_QUEUE, 1);
-                        db.update(DbHelperUserMusicData.TABLE_NAME, c, DbHelperUserMusicData.KEY_TITLE + "= ?", new String[]{song_title});
-                    }
-                }catch (ConcurrentModificationException ignored){
-                    //other instance of this thread started, ignore this exception
-                    //let other thread save the queue, exit this thread
-                }
-            }
-        });
-
-    }
-
-    public  void AddSongToPlaylist(String playlist_name_arg, final String[] song_titles){
-
-        final String playlist_name =  playlist_name_arg.replace(" ","_");
-        final Handler hand = new Handler();
-        SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
-        dbHelperUserMusicData.onCreate(db);
-
-        //check if song exists
-        if(song_titles.length==1) {
-            String where = DbHelperUserMusicData.KEY_TITLE + "= '" +song_titles[0].replace("'", "''") + "'"
-                    + " AND " + playlist_name + " != 0" ;
-            if(db.query(DbHelperUserMusicData.TABLE_NAME
-                    , new String[]{playlist_name}, where, null, null, null, null)
-                    .getCount()>0){
-                hand.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, context.getString(R.string.song_already_exists_in) + playlist_name, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                return;
-            }
-        }
-
-        String max = "MAX(" + playlist_name + ")";
-        Cursor cursor = db.query(DbHelperUserMusicData.TABLE_NAME, new String [] {max}, null, null, null, null, null);
-        cursor.moveToFirst();
-        int maxValue = cursor.getInt(0);
-        cursor.close();
-
-        for (String song:song_titles) {
-            ContentValues c = new ContentValues();
-            c.put(playlist_name, ++maxValue);
-            db.update(DbHelperUserMusicData.TABLE_NAME,c,DbHelperUserMusicData.KEY_TITLE + "= ?", new String[] {song});
-        }
-
-        hand.post(new Runnable() {
-            @SuppressLint("ShowToast")
-            @Override
-            public void run() {
-
-                if(playlist_name.equals(Constants.SYSTEM_PLAYLISTS.MY_FAV)){
-                    return;
-                }
-
-                Toast toast;
-                toast = Toast.makeText(context, context.getString(R.string.songs_added_in) + playlist_name.replace("_", " "), Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-            }
-        });
-    }
-
-    public void AddToRecentlyPlayedAndUpdateCount(final String title){
-
-        //thread for updating play numberOfTracks
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-
-
-                //DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
-                SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
-                dbHelperUserMusicData.onCreate(db);
-                try {
-                    String getCurrentCountQuery = "SELECT " + DbHelperUserMusicData.KEY_COUNT
-                            + " FROM " + DbHelperUserMusicData.TABLE_NAME + " WHERE "
-                            + DbHelperUserMusicData.KEY_TITLE + " = '" + title.replace("'", "''") + "'";
-                    Cursor getCurrentCountCursor = db.rawQuery(getCurrentCountQuery, null);
-                    getCurrentCountCursor.moveToFirst();
-                    int currentCount = getCurrentCountCursor.getInt
-                            (getCurrentCountCursor.getColumnIndex(DbHelperUserMusicData.KEY_COUNT));
-                    getCurrentCountCursor.close();
-
-                    ContentValues c = new ContentValues();
-                    c.put(DbHelperUserMusicData.KEY_COUNT, currentCount + 1);
-                    db.update(DbHelperUserMusicData.TABLE_NAME, c, DbHelperUserMusicData.KEY_TITLE + "= ?", new String[]{title});
-
-                }
-                catch (Exception e){
-                    Log.v("Serious","Error" + e.getStackTrace().toString());
-                }
-            }
-        });
-
-        //thread for adding entry in recently played
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                //DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
-                SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
-                dbHelperUserMusicData.onCreate(db);
-
-                ContentValues c = new ContentValues();
-                c.put(DbHelperUserMusicData.KEY_TIME_STAMP, System.currentTimeMillis());
-                db.update(DbHelperUserMusicData.TABLE_NAME,c,DbHelperUserMusicData.KEY_TITLE + "= ?", new String[] {title});
-
-            }
-        });
-    }
-
-    public void RemoveSongFromPlaylist(String playlist_name, String song_title){
-        playlist_name = playlist_name.replace(" ","_");
-        {
-            //user playlist
-            //DbHelperUserMusicData dbHelperMusicData
-            //      = new DbHelperUserMusicData(context);
-            SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
-            dbHelperUserMusicData.onCreate(db);
-            try {
-                String where = DbHelperUserMusicData.KEY_TITLE + "='" + song_title.replace("'","''") + "'";
-                ContentValues c = new ContentValues();
-                c.put(playlist_name, 0);
-                db.update(DbHelperUserMusicData.TABLE_NAME, c, where, null);
-
-                Toast.makeText(context,context.getString(R.string.removed_from_playlist),Toast.LENGTH_SHORT).show();
-            }catch (Exception e){
-                Toast.makeText(context,context.getString(R.string.error_removing),Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    public void RemoveFromFav(final String title){
-        SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
-        dbHelperUserMusicData.onCreate(db);
-
-        ContentValues c = new ContentValues();
-        c.put(DbHelperUserMusicData.KEY_FAV, 0);
-        db.update(DbHelperUserMusicData.TABLE_NAME,c,DbHelperUserMusicData.KEY_TITLE + "= ?", new String[] {title});
-    }
-
-    public boolean isFav(String title){
-
-        boolean returnValue=false;
-
-        //DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
-        SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
-        dbHelperUserMusicData.onCreate(db);
-
-        String where = DbHelperUserMusicData.KEY_TITLE + "= '" + title.replace("'","''") +"'" ;
-        Cursor cursor = db.query(DbHelperUserMusicData.TABLE_NAME
-                ,new String[]{DbHelperUserMusicData.KEY_FAV},where,null,null,null
-                ,null,null);
-
-        if(cursor.getCount()!=0){
-            cursor.moveToFirst();
-            if(cursor.getInt(cursor.getColumnIndex(DbHelperUserMusicData.KEY_FAV))>0){
-                returnValue =true;
-            }
-        }
-        cursor.close();
-        return  returnValue;
     }
 }
 
