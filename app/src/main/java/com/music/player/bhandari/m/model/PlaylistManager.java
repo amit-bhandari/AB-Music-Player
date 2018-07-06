@@ -147,10 +147,11 @@ public class PlaylistManager {
 
         ArrayList<String> temp = new ArrayList<>();
         for (String name : listOfPlaylists.keySet()) {
-            if (userAddable & !name.equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED)
-                    && !name.equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)
-                    && !name.equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED)) {
-                temp.add(name);
+            if (userAddable) {
+                if(!name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED)
+                        && !name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)
+                        && !name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED))
+                    temp.add(name);
             } else {
                 temp.add(name);
             }
