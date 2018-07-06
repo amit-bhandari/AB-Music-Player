@@ -416,7 +416,8 @@ public class PlaylistManager {
 
         String recentPlayListName = Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED.replace("_", " ");
         if(listOfPlaylists.containsKey(recentPlayListName)){
-            listOfPlaylists.put(recentPlayListName, listOfPlaylists.get(recentPlayListName)+1);
+            if(listOfPlaylists.get(recentPlayListName)< Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED_MAX)
+                listOfPlaylists.put(recentPlayListName, listOfPlaylists.get(recentPlayListName)+1);
         }
 
         //thread for adding entry in recently played
