@@ -26,6 +26,12 @@
             android:key="@string/pref_main_library_back">
         </Preference>
 
+        <Preference
+            android:title="@string/title_nav_back"
+            android:key="@string/pref_nav_library_back">
+        </Preference>
+
+
     </PreferenceCategory>
 
     <PreferenceCategory

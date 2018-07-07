@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -77,6 +79,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.StringSignature;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.ads.AdRequest;
@@ -177,6 +180,7 @@ public class ActivityMain extends AppCompatActivity
     private ImageView albumArt;
     private  TextView songNameMiniPlayer,artistNameMiniPlayer;
     private  NavigationView navigationView;
+    private  ImageView navViewBack;
     private FloatingActionButton fab_right_side, fab_lock;
     //private SeekBar seekBar;
     private View rootView;
@@ -329,10 +333,12 @@ public class ActivityMain extends AppCompatActivity
                 }
         }
 
+        navViewBack = findViewById(R.id.drawer_bg);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        disableNavigationViewScrollbars();
 
-        navigationView.setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
+        //navigationView.setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
 
         findViewById(R.id.app_bar_layout).setBackgroundColor(ColorHelper.getPrimaryColor());
         findViewById(R.id.tabs).setBackgroundColor(ColorHelper.getPrimaryColor());
@@ -417,10 +423,18 @@ public class ActivityMain extends AppCompatActivity
                 break;
 
             case 1:
-                setBlurryBackground(getMainLibBackBitmap());
+                setBlurryBackgroundForMainLib(getMainLibBackBitmap());
                 break;
         }
 
+        // 0 - System default   1 - custom
+        int navLbBackground = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back),0);
+
+        switch (navLbBackground){
+            case 1:
+                setBlurryBackgroundForNav();
+                break;
+        }
 
         setupViewPager(viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -521,6 +535,15 @@ public class ActivityMain extends AppCompatActivity
         Log.d("ActivityMain", "onCreate: reward point count is :" + RewardPoints.getRewardPointsCount());
     }
 
+    private void disableNavigationViewScrollbars() {
+        if (navigationView != null) {
+            NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
+            if (navigationMenuView != null) {
+                navigationMenuView.setVerticalScrollBarEnabled(false);
+            }
+        }
+    }
+
     private Bitmap getMainLibBackBitmap(){
         if(mainLibBackBitmap !=null){
             return mainLibBackBitmap;
@@ -543,20 +566,52 @@ public class ActivityMain extends AppCompatActivity
         return mainLibBackBitmap;
     }
 
+    private Bitmap getNavBackBitmap(){
+        Bitmap b = null;
+        String  picPath = MyApp.getContext().getFilesDir() + getString(R.string.nav_back_custom_image);
+        Log.d(Constants.TAG, "UpdateUI: setBlurryBackgroundCustomImage: " + picPath);
+
+        try {
+            b = UtilityFun.decodeUri(this, Uri.fromFile(new File(picPath)), 1000);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return b;
+    }
+
     private void setSystemDefaultBackground() {
         findViewById(R.id.image_view_view_pager).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
     }
 
-    public void setBlurryBackground(Bitmap b){
+    public void setBlurryBackgroundForMainLib(Bitmap b){
 
-        Animation fadeIn = AnimationUtils.loadAnimation(ActivityMain.this, R.anim.fade_in);
+        /*Animation fadeIn = AnimationUtils.loadAnimation(ActivityMain.this, R.anim.fade_in);
         fadeIn.setDuration(2000);
         findViewById(R.id.image_view_view_pager).startAnimation(fadeIn);
 
         Blurry.with(this).radius(1)
                 .color(Color.argb(120
                 , 0, 0, 0)).from(b)
+                .into(((ImageView) findViewById(R.id.image_view_view_pager)));*/
+        Glide.with(this)
+                .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image))))
+                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                .crossFade()
+                //.placeholder(R.drawable.back2)
+                //.centerCrop()
                 .into(((ImageView) findViewById(R.id.image_view_view_pager)));
+    }
+
+    public void setBlurryBackgroundForNav(){
+        Glide.with(this)
+                .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.nav_back_custom_image))))
+                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                .placeholder(R.drawable.back2)
+                //.centerCrop()
+                .into(navViewBack);
     }
 
     @Override
