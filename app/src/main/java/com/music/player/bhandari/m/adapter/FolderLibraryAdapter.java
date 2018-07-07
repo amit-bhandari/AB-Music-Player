@@ -564,7 +564,9 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             super(itemView);
             title = itemView.findViewById(R.id.header);
             secondary = itemView.findViewById(R.id.secondaryHeader);
-            image= itemView.findViewById(R.id.imageVIewForStubAlbumArt);
+            itemView.findViewById(R.id.album_art_wrapper).setVisibility(View.INVISIBLE);
+            image= itemView.findViewById(R.id.imageVIewForFolderLib);
+            image.setVisibility(View.VISIBLE);
             itemView.setOnClickListener(this);
             itemView.findViewById(R.id.menuPopup).setOnClickListener(this);
         }
