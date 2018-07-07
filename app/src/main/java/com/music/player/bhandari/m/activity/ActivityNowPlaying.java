@@ -375,8 +375,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         viewPager.setOffscreenPageLimit(2);
         setupViewPager(viewPager);
         //set cuurent item to disc
-        viewPager.setCurrentItem(MyApp.getPref()
-                .getInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.DISC_FRAG), true);
+        viewPager.setCurrentItem(Constants.EXIT_NOW_PLAYING_AT.DISC_FRAG, true);
 
         //display current play queue header
         if(playerService!=null && playerService.getTrackList()!=null) {
@@ -523,7 +522,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         mHandler.removeCallbacksAndMessages(null);
 
         //save exit status so than we can open corresponding frag next time
-        switch (viewPager.getCurrentItem()){
+        /*switch (viewPager.getCurrentItem()){
             case 2:
                 MyApp.getPref().edit()
                         .putInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.LYRICS_FRAG).apply();
@@ -539,7 +538,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 MyApp.getPref().edit()
                         .putInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.DISC_FRAG).apply();
                 break;
-        }
+        }*/
 
         if(mWakeLock!=null && mWakeLock.isHeld()){
             mWakeLock.release();
@@ -750,10 +749,12 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             return;
         }
 
-        /*if(isTaskRoot()){
+        if(isTaskRoot()){
             startActivity(new Intent(this,ActivityMain.class));
             overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-        }*/
+            finish();
+            return;
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
@@ -827,7 +828,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 break;
 
             case android.R.id.home:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if(isTaskRoot()){
+                    startActivity(new Intent(this,ActivityMain.class));
+                    overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                    finish();
+                }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     finishAfterTransition();
                 }else {
                     finish();

@@ -599,7 +599,6 @@ public class ActivityMain extends AppCompatActivity
         Glide.with(this)
                 .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image))))
                 .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                .crossFade()
                 //.placeholder(R.drawable.back2)
                 //.centerCrop()
                 .into(((ImageView) findViewById(R.id.image_view_view_pager)));
