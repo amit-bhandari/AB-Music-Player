@@ -477,6 +477,7 @@
         <string name="title_theme_color">Primary Color</string>
         <string name="title_now_playing_back">Now Playing Background</string>
         <string name="title_main_library_back">Main Library Background</string>
+        <string name="title_nav_back">Side Navigation Background</string>
         <string name="title_shake_action">Shake will</string>
         <string name="title_shake">Shake Control</string>
         <string name="title_shake_main">Shake</string>
@@ -518,6 +519,11 @@
             <item>System default</item>
             <item>Custom</item>
         </string-array>
+
+    <string-array name="nav_back_pref_array">
+        <item>System default</item>
+        <item>Custom</item>
+    </string-array>
 
         <string-array name="colors">
             <item>#000000</item>
@@ -659,6 +665,7 @@
     <!-- now playing back file -->
         <string name="now_playing_back_custom_image">//now_playing_back_custom_image</string>
         <string name="main_lib_back_custom_image">//main_lib_back_custom_image</string>
+    <string name="nav_back_custom_image">//nav_back_custom_image</string>
 
     <!-- strings for shared preferences -->
         <string name="pref_disc_rotation">pref_disc_rotation</string>
@@ -688,6 +695,7 @@
         <string name="pref_theme_color">primary_color</string>
         <string name="pref_now_playing_back">pref_now_playing_back</string>
         <string name="pref_main_library_back">pref_main_library_back</string>
+        <string name="pref_nav_library_back">pref_nav_back</string>
         <string name="pref_random_theme_current_color">random_theme_current</string>
         <string name="pref_support_dev">support_dev</string>
         <string name="pref_hide_tracks_starting_with">hide_tracks_starting_with</string>

@@ -102,6 +102,12 @@ public class ActivitySettings extends AppCompatActivity {
     //false = now playing
     private static boolean isMainLibraryBackground;
 
+    private static final int MAIN_LIB = 0;
+    private static final int NOW_PLAYING = 1;
+    private static final int NAVIGATION_DRAWER = 2;
+
+    private static int backgroundSelectionStatus = -1;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState)
     {
@@ -270,23 +276,40 @@ public class ActivitySettings extends AppCompatActivity {
                 File fromFile = new File(resultUri.getPath());
 
                 String savePath;
-                if(isMainLibraryBackground){
-                    savePath = MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image);
-                }else {
-                    savePath = MyApp.getContext().getFilesDir() + getString(R.string.now_playing_back_custom_image);
+                switch (backgroundSelectionStatus){
+                    case MAIN_LIB:
+                        savePath = MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image);
+                        break;
+
+                    case NOW_PLAYING:
+                        savePath = MyApp.getContext().getFilesDir() + getString(R.string.now_playing_back_custom_image);
+                        break;
+
+                    case NAVIGATION_DRAWER:
+                    default:
+                        savePath = MyApp.getContext().getFilesDir() + getString(R.string.nav_back_custom_image);
+                        break;
                 }
 
                 File toFile = new File(savePath);
                 boolean b = fromFile.renameTo(toFile);
                 Log.d(Constants.TAG, "onActivityResult: saved custom image size : " + toFile.length()/(1024));
 
+
                 if(b){
-                    if(isMainLibraryBackground){
-                        //1 - custom image
-                        MyApp.getPref().edit().putInt(getString(R.string.pref_main_library_back),1).apply();
-                    }else {
-                        //3 - custom image
-                        MyApp.getPref().edit().putInt(getString(R.string.pref_now_playing_back),3).apply();
+                    switch (backgroundSelectionStatus){
+                        case MAIN_LIB:
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_main_library_back),1).apply();
+                            break;
+
+                        case NOW_PLAYING:
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_now_playing_back),3).apply();
+                            break;
+
+                        case NAVIGATION_DRAWER:
+                        default:
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_nav_library_back),1).apply();
+                            break;
                     }
 
                     Toast.makeText(this, "Background successfully updated!", Toast.LENGTH_SHORT).show();
@@ -297,7 +320,6 @@ public class ActivitySettings extends AppCompatActivity {
                 Log.d(Constants.TAG, "onActivityResult: "+result.toString());
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Toast.makeText(this, "Failed to select image, try again!", Toast.LENGTH_SHORT).show();
-                Exception error = result.getError();
             }
         }
     }
@@ -558,6 +580,16 @@ public class ActivitySettings extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     mainLibBackDialog();
+                    return true;
+                }
+            });
+
+            //Main library back
+            final Preference navLibBackPref = findPreference(getString(R.string.pref_nav_library_back));
+            navLibBackPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    navBackDialog();
                     return true;
                 }
             });
@@ -1025,6 +1057,50 @@ public class ActivitySettings extends AppCompatActivity {
                     .show();
         }
 
+        private void navBackDialog(){
+            ///get current setting
+            // 0 - System default   2 - custom
+            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back),0);
+
+            new MaterialDialog.Builder(getActivity())
+                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                    .title(R.string.title_nav_back)
+                    .items(R.array.nav_back_pref_array)
+                    .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            /**
+                             * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
+                             * returning false here won't allow the newly selected radio button to actually be selected.
+                             **/
+
+
+                            switch (which){
+                                //for 0, change the pref and move on, no need to confirm anything
+                                case 0:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_nav_library_back),which).apply();
+                                    break;
+
+                                //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                                case 1:
+                                    backgroundSelectionStatus = NAVIGATION_DRAWER;
+                                    CropImage.activity()
+                                            .setGuidelines(CropImageView.Guidelines.ON)
+                                            .setAspectRatio(11,16)
+                                            .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                                            //.setOutputCompressQuality(50)
+                                            .start(getActivity());
+                                    dialog.dismiss();
+                                    break;
+
+                            }
+                            return true;
+                        }
+                    })
+                    .positiveText(R.string.okay)
+                    .show();
+        }
+
         private void mainLibBackDialog(){
             ///get current setting
             // 0 - System default   2 - custom
@@ -1044,17 +1120,17 @@ public class ActivitySettings extends AppCompatActivity {
 
 
                             switch (which){
-                                //for 0 and 1 and 2, change the pref and move on, no need to confirm anything
+                                //for 0, change the pref and move on, no need to confirm anything
                                 case 0:
                                     MyApp.getPref().edit().putInt(getString(R.string.pref_main_library_back),which).apply();
                                     break;
 
                                 //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
                                 case 1:
-                                    isMainLibraryBackground = true;
+                                    backgroundSelectionStatus = MAIN_LIB;
                                     CropImage.activity()
                                             .setGuidelines(CropImageView.Guidelines.ON)
-                                            .setAspectRatio(9,16)
+                                            .setAspectRatio(11,16)
                                             .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                                             .setOutputCompressQuality(50)
                                             .start(getActivity());
@@ -1098,7 +1174,7 @@ public class ActivitySettings extends AppCompatActivity {
 
                                 //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
                                 case 3:
-                                    isMainLibraryBackground = false;
+                                    backgroundSelectionStatus = NOW_PLAYING;
                                     CropImage.activity()
                                             .setGuidelines(CropImageView.Guidelines.ON)
                                             .setAspectRatio(9,16)
