@@ -12,7 +12,7 @@
 
 
         <TextView
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:textSize="10sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,6 +26,7 @@
             android:visibility="invisible"
             android:layout_width="300dp"
             android:layout_height="300dp"
+            android:scaleType="centerInside"
             android:foregroundGravity="center"
             tools:ignore="ContentDescription" />
 

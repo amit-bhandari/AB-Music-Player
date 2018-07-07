@@ -5,6 +5,12 @@
         android:id="@+id/grp2"
         android:checkableBehavior="none">
 
+
+        <item
+            android:id="@+id/nav_lyric_card"
+            android:icon="@drawable/ic_photo_black_24dp"
+            android:title="@string/nav_lyric_cards" />
+
         <item
             android:id="@+id/nav_try_new_app"
             android:icon="@drawable/ic_star_black_24dp"
@@ -26,10 +32,6 @@
             android:icon="@drawable/ic_explore_black_24dp"
             android:title="@string/nav_explore_lyrics" />
 
-        <item
-            android:id="@+id/nav_lyric_card"
-            android:icon="@drawable/ic_photo_black_24dp"
-            android:title="@string/nav_lyric_cards" />
 
         <item
             android:id="@+id/nav_share"

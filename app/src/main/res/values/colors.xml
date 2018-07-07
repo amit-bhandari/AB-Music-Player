@@ -49,7 +49,7 @@
     <color name="nowPlayingText">#ebebec</color>
 
     <color name="reward_points_count">#da202d</color>
-
+    <color name="new_feature">#f73232</color>
 
     <!-- play widget custom view  -->
     <color name="pw_primary">#3F51B5</color>

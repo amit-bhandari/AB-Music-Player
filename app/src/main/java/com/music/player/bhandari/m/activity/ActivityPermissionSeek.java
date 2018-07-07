@@ -210,6 +210,14 @@ public class ActivityPermissionSeek extends AppCompatActivity {
                         Log.d("ActivityPermissionSeek", "onComplete: ");
                         if(task.isSuccessful()){
                             mRemoteConfig.activateFetched();
+
+                            final String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
+
+                            //new developer message, update UI
+                            if(!MyApp.getPref().getString("developer_message", "").equals(message)) {
+                                MyApp.getPref().edit().putString("developer_message", message).apply();
+                                MyApp.getPref().edit().putBoolean("new_dev_message", true).apply();
+                            }
                         }
                     }
                 });
