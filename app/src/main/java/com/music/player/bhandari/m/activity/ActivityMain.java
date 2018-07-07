@@ -12,8 +12,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
@@ -56,12 +54,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -133,7 +133,6 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
-import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -1447,7 +1446,7 @@ public class ActivityMain extends AppCompatActivity
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.nav_lyric_cards))
-                .customView(R.layout.lyric_card_dialog, true)
+                .customView(R.layout.lyric_card_dialog, false)
                 //.content(R.string.dialog_lyric_card_content)
                 .positiveText(R.string.dialog_lyric_card_pos)
                 .negativeText(getString(R.string.cancel))
@@ -1470,6 +1469,20 @@ public class ActivityMain extends AppCompatActivity
 
         if (dialog.getCustomView() != null) {
             final ImageView iv = dialog.getCustomView().findViewById(R.id.sample_album_card);
+
+            iv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    Log.d("Tag", "lyricCardDialog: width " + iv.getMeasuredWidth());
+                    ViewGroup.LayoutParams params = iv.getLayoutParams();
+                    params.width = iv.getMeasuredWidth();
+                    params.height = iv.getMeasuredWidth();
+                    // existing height is ok as is, no need to edit it
+                    iv.setLayoutParams(params);
+                    iv.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            });
+
             Glide.with(this)
                     .load(link)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -1535,6 +1548,12 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void devMessageDialog(){
+
+        if(MyApp.getPref().getBoolean("new_dev_message", false)) {
+            MyApp.getPref().edit().putBoolean("new_dev_message", false).apply();
+            updateNewDevMessageDot(false);
+        }
+
         final String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
         final String link = FirebaseRemoteConfig.getInstance().getString("link");
 
@@ -2195,12 +2214,27 @@ public class ActivityMain extends AppCompatActivity
             //navigationView.getMenu().removeItem(R.id.nav_remove_ads_free);
         }
 
+        //set red dot if new developer message arrives
+        if(MyApp.getPref().getBoolean("new_dev_message", false)) {
+            updateNewDevMessageDot(true);
+        }
+
+        navigationView.getMenu().findItem(R.id.nav_lyric_card).setActionView(R.layout.nav_item_lyric_card);
+
         //add upload image button
         if(BuildConfig.DEBUG){
             navigationView.getMenu().add(R.id.grp2, 192, 10,"Upload");
         }
 
         //updateNavigationMenuItems();
+    }
+
+    private void updateNewDevMessageDot(boolean set) {
+        if(set) {
+            navigationView.getMenu().findItem(R.id.nav_dev_message).setActionView(R.layout.nav_item_dev_message);
+        }else {
+            navigationView.getMenu().findItem(R.id.nav_dev_message).setActionView(null);
+        }
     }
 
     @Override
