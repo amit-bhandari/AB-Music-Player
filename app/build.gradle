@@ -34,7 +34,7 @@ android {
         applicationId 'com.bhandari.music'
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 157
+        versionCode 158
         versionName "Version 8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
