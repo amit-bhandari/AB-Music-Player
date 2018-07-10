@@ -1554,7 +1554,9 @@ public class ActivityMain extends AppCompatActivity
             updateNewDevMessageDot(false);
         }
 
-        final String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
+        String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
+        message = message.replace("$$", "\n\n");
+
         final String link = FirebaseRemoteConfig.getInstance().getString("link");
 
         new MaterialDialog.Builder(this)
