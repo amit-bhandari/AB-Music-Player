@@ -850,10 +850,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 break;
 
             case R.id.action_settings:
-                finish();
+                //finish();
                 startActivity(new Intent(this,ActivitySettings.class)
                         .putExtra("launchedFrom",Constants.PREF_LAUNCHED_FROM.NOW_PLAYING)
                         .putExtra("ad",true));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
             case R.id.action_go_to_artist:

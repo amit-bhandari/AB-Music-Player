@@ -1059,10 +1059,11 @@ public class ActivityMain extends AppCompatActivity
 
         switch (item.getItemId()){
             case R.id.action_settings:
-                finish();
+                //finish();
                 startActivity(new Intent(this,ActivitySettings.class)
                         .putExtra("launchedFrom",Constants.PREF_LAUNCHED_FROM.MAIN)
                         .putExtra("ad",true));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
             case R.id.action_sleep_timer:
@@ -1300,10 +1301,10 @@ public class ActivityMain extends AppCompatActivity
         int id = item.getItemId();
 
         if(id==R.id.nav_settings){
-            finish();
             startActivity(new Intent(this,ActivitySettings.class)
                     .putExtra("launchedFrom",Constants.PREF_LAUNCHED_FROM.DRAWER)
                     .putExtra("ad",true));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else  if (id == R.id.nav_remove_ads){
             startActivity(new Intent(this, ActivityRemoveAds.class));
             //finish();

@@ -208,6 +208,7 @@ public class ActivitySettings extends AppCompatActivity {
                 startActivity(new Intent(this, ActivityMain.class));
                 break;
         }
+        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
         super.onBackPressed();
     }
 
