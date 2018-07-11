@@ -197,8 +197,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         batmanDrawable = ContextCompat.getDrawable(this, R.drawable.ic_batman_1).mutate();
         //batmanDrawable.setColorFilter(ColorHelper.getPrimaryColor(), PorterDuff.Mode.OVERLAY);
 
-        if(/*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved()
-                &&AppLaunchCountManager.isEligibleForBannerAds()) {
+        if(false/*AppLaunchCountManager.isEligibleForInterstialAd() && !UtilityFun.isAdsRemoved()
+                &&AppLaunchCountManager.isEligibleForBannerAds()*/) {
             MobileAds.initialize(getApplicationContext(), getString(R.string.banner_secondary_activity));
             if (UtilityFun.isConnectedToInternet()) {
                 AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")

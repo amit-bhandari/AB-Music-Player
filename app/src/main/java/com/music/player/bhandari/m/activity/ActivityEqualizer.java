@@ -305,8 +305,8 @@ public class ActivityEqualizer extends AppCompatActivity {
     }
 
     private void showAdIfApplicable() {
-        if(/*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved()
-                &&AppLaunchCountManager.isEligibleForBannerAds() ) {
+        if(false /*AppLaunchCountManager.isEligibleForInterstialAd() && !UtilityFun.isAdsRemoved()
+                &&AppLaunchCountManager.isEligibleForBannerAds()*/ ) {
             MobileAds.initialize(this, getString(R.string.banner_about_us_activity));
 
             if (UtilityFun.isConnectedToInternet()) {

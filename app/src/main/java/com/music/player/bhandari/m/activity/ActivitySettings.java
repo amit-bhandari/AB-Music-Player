@@ -141,8 +141,8 @@ public class ActivitySettings extends AppCompatActivity {
         launchedFrom = getIntent().getIntExtra("launchedFrom",0);
         setContentView(R.layout.acitivty_settings);
 
-        if(/*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved()
-                && AppLaunchCountManager.isEligibleForBannerAds()) {
+        if(false/*AppLaunchCountManager.isEligibleForInterstialAd() && !UtilityFun.isAdsRemoved()
+                && AppLaunchCountManager.isEligibleForBannerAds()*/) {
 
             //banner ad
             MobileAds.initialize(getApplicationContext(), getString(R.string.banner_settings_activity));
