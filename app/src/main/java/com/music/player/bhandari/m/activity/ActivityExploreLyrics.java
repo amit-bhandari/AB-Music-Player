@@ -410,7 +410,11 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
             }
         });
 
-        builder.build().show();
+        MaterialDialog dialog = builder.build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 
     @Override

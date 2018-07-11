@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.Levenshtein;
@@ -247,7 +248,7 @@ public class ViewLyrics {
             @Override
             public void run() {
                 dialog[0].dismiss();
-                builder
+                MaterialDialog mDialog = builder
                         .title("Choose any one")
                         .items(resultTrackTitles)
                         .itemsCallback(new MaterialDialog.ListCallback() {
@@ -323,7 +324,11 @@ public class ViewLyrics {
                                 });
                             }
                         })
-                        .show();
+                        .build();
+
+                mDialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+                mDialog.show();
             }
         });
     }

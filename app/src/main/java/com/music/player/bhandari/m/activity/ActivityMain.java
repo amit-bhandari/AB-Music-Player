@@ -641,7 +641,7 @@ public class ActivityMain extends AppCompatActivity
         if(verCode!=0 && MyApp.getPref().getInt(getString(R.string.pref_version_code),-1) < verCode ) {
 
             MyApp.getPref().edit().putString(getString(R.string.pref_card_image_links),"").apply();
-            new MaterialDialog.Builder(this)
+            MaterialDialog dialog = new MaterialDialog.Builder(this)
                     .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                     .title(getString(R.string.main_act_whats_new_title))
                     .content(getString(R.string.whats_new))
@@ -659,7 +659,11 @@ public class ActivityMain extends AppCompatActivity
                             Toast.makeText(getApplicationContext(), "Artist Information local sync started in background.", Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
 
             int baseThemePref = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
             if(baseThemePref == Constants.PRIMARY_COLOR.LIGHT){
@@ -1496,6 +1500,8 @@ public class ActivityMain extends AppCompatActivity
                     });
         }
 
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
         dialog.show();
 
     }
@@ -1559,7 +1565,7 @@ public class ActivityMain extends AppCompatActivity
 
         final String link = FirebaseRemoteConfig.getInstance().getString("link");
 
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.nav_developers_message))
                 .content(message)
@@ -1588,8 +1594,11 @@ public class ActivityMain extends AppCompatActivity
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         openUrl(Uri.parse(link));
                     }
-                })
-                .show();
+                }).build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 
     private void setRateDialog(){
@@ -1617,7 +1626,7 @@ public class ActivityMain extends AppCompatActivity
         linear.addView(text);
         linear.addView(ratingWrap);
 
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_rate_dialog_title))
                // .content(getString(R.string.lyric_art_info_content))
@@ -1641,7 +1650,11 @@ public class ActivityMain extends AppCompatActivity
                     }
                 })
                 .customView(linear,true)
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
 
     }
 
@@ -1704,7 +1717,7 @@ public class ActivityMain extends AppCompatActivity
         linear.addView(seek);
         linear.addView(text);
 
-        builder
+        MaterialDialog dialog = builder
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(context.getString(R.string.main_act_sleep_timer_title))
                 .positiveText(context.getString(R.string.okay))
@@ -1724,7 +1737,11 @@ public class ActivityMain extends AppCompatActivity
                     }
                 })
                 .customView(linear,true)
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
     @Override
     protected void onStart() {
@@ -2035,7 +2052,7 @@ public class ActivityMain extends AppCompatActivity
             return;
         }
 
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_lock_info_title))
                 .content(getString(R.string.main_act_lock_info_content))
@@ -2057,7 +2074,11 @@ public class ActivityMain extends AppCompatActivity
                         MyApp.getPref().edit().putBoolean(getString(R.string.pref_show_lock_info_dialog),false).apply();
                     }
                 })
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
 
     }
 
@@ -2073,7 +2094,7 @@ public class ActivityMain extends AppCompatActivity
             }
         }, 200);
 
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_create_play_list_title))
                 .positiveText(getString(R.string.okay))
@@ -2109,7 +2130,11 @@ public class ActivityMain extends AppCompatActivity
                     }
                 })
                 .customView(input,true)
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 
     private void signIn() {

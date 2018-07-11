@@ -114,7 +114,7 @@ public class UtilityFun {
     }
 
     public static void AddToPlaylist(final Context context, final int[] song_titles){
-        new MaterialDialog.Builder(context)
+        MaterialDialog dialog = new MaterialDialog.Builder(context)
                 .typeface(TypeFaceHelper.getTypeFace(context),TypeFaceHelper.getTypeFace(context))
                 .title(context.getString(R.string.select_playlist_title))
                 .items(PlaylistManager.getInstance(context).GetPlaylistList(true))
@@ -124,7 +124,11 @@ public class UtilityFun {
                         PlaylistManager.getInstance(context).AddSongToPlaylist(text.toString(),song_titles);
                     }
                 })
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
 
     }
 
@@ -215,7 +219,7 @@ public class UtilityFun {
 
     public static void SetRingtone(final Context context, final String filePath , final int id){
         if(!checkSystemWritePermission(context)){
-            new MaterialDialog.Builder(context)
+            MaterialDialog dialog = new MaterialDialog.Builder(context)
                     .typeface(TypeFaceHelper.getTypeFace(context),TypeFaceHelper.getTypeFace(context))
                     .title(context.getString(R.string.write_setting_perm_title))
                     .content(context.getString(R.string.write_setting_perm_content))
@@ -227,7 +231,11 @@ public class UtilityFun {
                             openAndroidPermissionsMenu(context);
                         }
                     })
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
 
         }else {
 

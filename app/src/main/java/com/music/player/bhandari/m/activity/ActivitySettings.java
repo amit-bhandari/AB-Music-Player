@@ -753,7 +753,7 @@ public class ActivitySettings extends AppCompatActivity {
                         pos_text = getString(R.string.turn_off);
                     }
 
-                    new MaterialDialog.Builder(getActivity())
+                    MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                             .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                             .title(R.string.title_continous_playback)
                             .content(R.string.cont_playback_content)
@@ -771,7 +771,11 @@ public class ActivitySettings extends AppCompatActivity {
                                     }
                                 }
                             })
-                            .show();
+                            .build();
+
+                    dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+                    dialog.show();
 
                     return false;
                 }
@@ -788,7 +792,7 @@ public class ActivitySettings extends AppCompatActivity {
                         pos_text = getString(R.string.turn_off);
                     }
 
-                    new MaterialDialog.Builder(getActivity())
+                    MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                             .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                             .title(R.string.title_data_Saver)
                             .content(R.string.data_saver_content)
@@ -806,7 +810,11 @@ public class ActivitySettings extends AppCompatActivity {
                                     }
                                 }
                             })
-                            .show();
+                            .build();
+
+                    dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+                    dialog.show();
 
                     return false;
                 }
@@ -826,7 +834,7 @@ public class ActivitySettings extends AppCompatActivity {
                             pos_text = getString(R.string.turn_off);
                         }
 
-                        new MaterialDialog.Builder(getActivity())
+                        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                                 .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                                 .title(R.string.instant_lyrics_title)
                                 .content(R.string.instant_lyrics_content)
@@ -846,7 +854,11 @@ public class ActivitySettings extends AppCompatActivity {
                                         }
                                     }
                                 })
-                                .show();
+                                .build();
+
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+                        dialog.show();
 
                         return false;
                     }
@@ -1034,7 +1046,7 @@ public class ActivitySettings extends AppCompatActivity {
         }
 
         private void albumViewDialog(){
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_album_lib_view))
                     .items((CharSequence[]) new String[]{LIST, GRID})
@@ -1054,7 +1066,11 @@ public class ActivitySettings extends AppCompatActivity {
                             }
                         }
                     })
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void navBackDialog(){
@@ -1062,7 +1078,7 @@ public class ActivitySettings extends AppCompatActivity {
             // 0 - System default   2 - custom
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back),0);
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog =new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(R.string.title_nav_back)
                     .items(R.array.nav_back_pref_array)
@@ -1098,7 +1114,11 @@ public class ActivitySettings extends AppCompatActivity {
                         }
                     })
                     .positiveText(R.string.okay)
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void mainLibBackDialog(){
@@ -1106,7 +1126,7 @@ public class ActivitySettings extends AppCompatActivity {
             // 0 - System default   2 - custom
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_main_library_back),0);
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(R.string.title_main_library_back)
                     .items(R.array.main_lib_back_pref_array)
@@ -1142,7 +1162,11 @@ public class ActivitySettings extends AppCompatActivity {
                         }
                     })
                     .positiveText(R.string.okay)
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void nowPlayingBackDialog(){
@@ -1151,7 +1175,7 @@ public class ActivitySettings extends AppCompatActivity {
             // 0 - System default   1 - artist image  2 - album art 3 - custom  4- custom (if Artist image unavailable)
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back),1);
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(R.string.title_now_playing_back)
                     .items(R.array.now_playing_back_pref_array)
@@ -1188,14 +1212,18 @@ public class ActivitySettings extends AppCompatActivity {
                         }
                     })
                     .positiveText(R.string.okay)
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void displayExcludedFolders(){
             String excludedFoldersString = MyApp.getPref().getString(getString(R.string.pref_excluded_folders),"");
             String[] excludedFolders = excludedFoldersString.split(",");
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .title(R.string.title_excluded_folders)
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .items(excludedFolders)
@@ -1221,7 +1249,11 @@ public class ActivitySettings extends AppCompatActivity {
                             Toast.makeText(getActivity(), "Excluded folders reset, refreshing Music Library..", Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
 
         }
 
@@ -1237,7 +1269,7 @@ public class ActivitySettings extends AppCompatActivity {
             mItemTouchHelper = new ItemTouchHelper(callback);
             mItemTouchHelper.attachToRecyclerView(rv);
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.setting_tab_seqe_title))
                     .customView(dialogView,false)
@@ -1252,7 +1284,11 @@ public class ActivitySettings extends AppCompatActivity {
                             MyApp.getPref().edit().putString(getString(R.string.pref_tab_seq), str.toString()).apply();
                         }
                     })
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
 
         }
 
@@ -1318,7 +1354,7 @@ public class ActivitySettings extends AppCompatActivity {
             linear.addView(seek);
             linear.addView(text);
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_hide_short_clips))
                     // .content(getString(R.string.lyric_art_info_content))
@@ -1331,7 +1367,11 @@ public class ActivitySettings extends AppCompatActivity {
                         }
                     })
                     .customView(linear,false)
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void hideByStartDialog(){
@@ -1379,7 +1419,7 @@ public class ActivitySettings extends AppCompatActivity {
             linear.setOrientation(LinearLayout.VERTICAL);
 
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_hide_tracks_starting_with))
                     // .content(getString(R.string.lyric_art_info_content))
@@ -1403,12 +1443,16 @@ public class ActivitySettings extends AppCompatActivity {
                         }
                     })
                     .customView(linear,true)
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void ShakeActionDialog(){
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_shake_action))
                     .items((CharSequence[]) new String[]{NEXT,PLAY_PAUSE,PREVIOUS})
@@ -1437,11 +1481,15 @@ public class ActivitySettings extends AppCompatActivity {
                             }
                         }
                     })
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void BaseThemeSelectionDialog(){
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_theme))
                     .items((CharSequence[]) new String[]{DARK,GLOSSY})
@@ -1472,12 +1520,16 @@ public class ActivitySettings extends AppCompatActivity {
                             restartSettingsActivity();
                         }
                     })
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void PrimarySelectionDialog(){
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_theme_color))
                     .items((CharSequence[]) new String[]{MANUAL_INPUT,BLACK, GUNMETAL, HALAYA_UBE, INTERNATIONAL_ORANGE
@@ -1653,7 +1705,7 @@ public class ActivitySettings extends AppCompatActivity {
                                     if(current_color!=-1) {
                                         pre_fill_text = String.format("#%06X", (0xFFFFFF & current_color));
                                     }
-                                    new MaterialDialog.Builder(getActivity())
+                                    MaterialDialog mDialog = new MaterialDialog.Builder(getActivity())
                                             .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                                             .title(R.string.manual_color_title)
                                             .content(R.string.manual_color_content)
@@ -1675,7 +1727,11 @@ public class ActivitySettings extends AppCompatActivity {
                                                     dialog.dismiss();
                                                     restartSettingsActivity();
                                                 }
-                                            }).show();
+                                            }).build();
+
+                                    mDialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+                                    mDialog.show();
                                     break;
 
                             }
@@ -1687,12 +1743,16 @@ public class ActivitySettings extends AppCompatActivity {
 
 
                     })
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void resetPrefDialog(){
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_reset_pref) + " ?")
                     // .content(getString(R.string.lyric_art_info_content))
@@ -1748,12 +1808,16 @@ public class ActivitySettings extends AppCompatActivity {
                         }
                     })
                    // .customView(linear,false)
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void fontPrefSelectionDialog(){
 
-            new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_text_font))
                     .items((CharSequence[]) new String[]{ ASAP, MONOSPACE, SOFIA, RISQUE, SYSTEM_DEFAULT})
@@ -1797,7 +1861,11 @@ public class ActivitySettings extends AppCompatActivity {
                             restartSettingsActivity();
                         }
                     })
-                    .show();
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
 
         private void restartSettingsActivity() {
