@@ -447,17 +447,28 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     private void startLyricUpdater() {
         if(!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && playerService.getStatus()== PlayerService.PLAYING){
+            Log.d("FragmentLyrics", "startLyricUpdater: starting lyric updater");
             fLyricUpdaterThreadCancelled =false;
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
+        }
+        try {
             scrollLyricsToCurrentLocation();
+        }catch (Exception e){
+            Log.d("FragmentLyrics", "startLyricUpdater: unable to scroll lyrics to latest position");
         }
     }
 
     private void scrollLyricsToCurrentLocation() {
         adapter.changeCurrent(playerService.getCurrentTrackProgress());
-        int index = adapter.getCurrentTimeIndex();
+        final int index = adapter.getCurrentTimeIndex();
         if(index!=-1){
-            recyclerView.smoothScrollToPosition(index);
+            // without delay lyrics wont scroll to latest position when called from onResume for some reason
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.smoothScrollToPosition(index);
+                }
+            }, 100);
         }
         Log.d("FragmentLyrics", "scrollLyricsToCurrentLocation: index " + index);
         adapter.notifyDataSetChanged();
@@ -478,6 +489,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     @Override
     public void onPause() {
 
+        Log.d("FragmentLyrics", "onPause: stopping lyric updater threads");
         if(actionMode!=null){
             actionMode.finish();
             actionMode = null;
@@ -875,7 +887,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 }
 
                 fIsLyricUpdaterThreadRunning =true;
-                //Log.v(Constants.L_TAG,"Lyric thread running");
+                //Log.v("FragmentLyrics","Lyric thread running");
 
                 if(getActivity()!=null ){
                     handler.post(new Runnable() {
@@ -900,7 +912,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             }
 
             fIsLyricUpdaterThreadRunning = false;
-            Log.v(Constants.L_TAG,"Lyric thread stopped");
+            Log.v("FragmentLyrics","Lyric thread stopped");
         }
     };
 }
