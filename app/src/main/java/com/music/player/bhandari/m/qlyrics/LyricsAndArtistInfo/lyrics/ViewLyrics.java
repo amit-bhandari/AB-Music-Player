@@ -116,10 +116,9 @@ public class ViewLyrics {
             }
         }
 
+        //lrcIndex = 0;
 
-        lrcIndex = 0;
-
-        for(int i=0;i<results.size();i++) {
+        /*for(int i=0;i<results.size();i++) {
             Log.v("ViewLyrics", "Lyrics " + i + " : " + results.get(i).getOriginalTrack() + " : " + results.get(i).getOriginalTrack());
             Log.v("ViewLyrics", "Lyrics " + i + " : " + results.get(i).getURL());
         }
