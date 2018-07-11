@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.InflateException;
@@ -143,11 +144,12 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
         line = dictionary.get(mTimes.get(position));
         if(line!=null) {
             holder.line.setText(line);
-
+            Log.d("LyricsViewAdapter", "onBindViewHolder: current time " + mCurrentTime);
             //when lyrics are searched through explore, no need of running lyrics
             if(mLyrics.isLRC() && !noDynamicLyrics) {
                 int color = mTimes.get(position) <= mCurrentTime ? Color.YELLOW : Color.WHITE;
                 holder.line.setTextColor(color);
+                Log.d("LyricsViewAdapter", "onBindViewHolder: setting color " + color);
             }
 
         }else {

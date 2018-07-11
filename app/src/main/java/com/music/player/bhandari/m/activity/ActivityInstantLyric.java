@@ -388,6 +388,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         }
 
         if(!fIsStaticLyrics){
+            Log.d("ActivityInstantLyric", "onResume: scrolling lyrics to current location");
             acquireWindowPowerLock(true);
             scrollLyricsToCurrentLocation();
         }
@@ -696,10 +697,17 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         long startTime = currentMusicInfo.getLong("startTime", System.currentTimeMillis());
         long distance = System.currentTimeMillis() - startTime;
         adapter.changeCurrent(distance);
-        int index = adapter.getCurrentTimeIndex();
+        final int index = adapter.getCurrentTimeIndex();
 
+        Log.d("ActivityInstantLyric", "scrollLyricsToCurrentLocation: index " + index);
         if(index!=-1){
-            recyclerView.smoothScrollToPosition(index);
+            // without delay lyrics wont scroll to latest position when called from onResume for some reason
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.smoothScrollToPosition(index);
+                }
+            }, 100);
         }
         adapter.notifyDataSetChanged();
     }
