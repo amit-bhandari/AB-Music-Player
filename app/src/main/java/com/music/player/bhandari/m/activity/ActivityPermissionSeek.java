@@ -284,7 +284,14 @@ public class ActivityPermissionSeek extends AppCompatActivity {
                         "Playback Notification",
                         NotificationManager.IMPORTANCE_LOW);
                 channel.setSound(null, null);
+
+                NotificationChannel channel2 = new NotificationChannel("channel_02",
+                        "Instant Lyrics",
+                        NotificationManager.IMPORTANCE_LOW);
+                channel.setSound(null, null);
+
                 ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+                ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel2);
             }
         }catch (Exception ignored){}
     }

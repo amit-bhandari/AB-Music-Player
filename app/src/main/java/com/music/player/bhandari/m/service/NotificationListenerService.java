@@ -272,12 +272,12 @@ public class NotificationListenerService extends android.service.notification.No
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     /* Create or update. */
-                    NotificationChannel channel = new NotificationChannel("channel_01",
-                            "Playback Notification",
+                    /*NotificationChannel channel = new NotificationChannel("channel_02",
+                            "Instant Lyrics",
                             NotificationManager.IMPORTANCE_LOW);
                     channel.setSound(null, null);
-                    mNotificationManager.createNotificationChannel(channel);
-                    builder.setChannelId("channel_01");
+                    mNotificationManager.createNotificationChannel(channel);*/
+                    builder.setChannelId("channel_02");
                 }
 
                 Notification notification = builder.build();
