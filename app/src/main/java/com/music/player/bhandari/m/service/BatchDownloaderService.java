@@ -133,11 +133,11 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     /* Create or update. */
-            NotificationChannel channel = new NotificationChannel("channel_01",
+            /*NotificationChannel channel = new NotificationChannel("channel_01",
                     "Playback Notification",
                     NotificationManager.IMPORTANCE_HIGH);
             channel.setSound(null, null);
-            mNotificationManager.createNotificationChannel(channel);
+            mNotificationManager.createNotificationChannel(channel);*/
             mBuilder.setChannelId("channel_01");
         }
 
