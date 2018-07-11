@@ -752,8 +752,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         if(isTaskRoot()){
             startActivity(new Intent(this,ActivityMain.class));
             overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-            finish();
-            return;
+            //finish();
+            //return;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -831,8 +831,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 if(isTaskRoot()){
                     startActivity(new Intent(this,ActivityMain.class));
                     overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
-                    finish();
-                }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    //finish();
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     finishAfterTransition();
                 }else {
                     finish();
