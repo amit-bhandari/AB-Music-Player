@@ -445,7 +445,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     }
 
     private void showDisclaimerDialog(){
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.lyrics_disclaimer_title))
                 .content(getString(R.string.lyrics_disclaimer_content))
@@ -458,11 +458,15 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         ((FragmentLyrics)viewPagerAdapter.getItem(2)).disclaimerAccepted();
                     }
                 })
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 
     private void showInfoDialog(){
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new  MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.lyric_art_info_title))
                 .content(getString(R.string.lyric_art_info_content))
@@ -474,7 +478,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         MyApp.getPref().edit().putBoolean(getString(R.string.pref_swipe_right_shown),true).apply();
                     }
                 })
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -987,7 +995,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 final EditText input = new EditText(this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
 
-                new MaterialDialog.Builder(this)
+                MaterialDialog dialog = new MaterialDialog.Builder(this)
                         .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                         .title(getString(R.string.main_act_create_play_list_title))
                         .positiveText(getString(R.string.okay))
@@ -1017,7 +1025,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                             }
                         })
                         .customView(input,true)
-                        .show();
+                        .build();
+
+                dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+                dialog.show();
                 break;
 
             /*case R.id.login_to_remove_ads:
@@ -1146,7 +1158,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         linear.addView(seek);
         linear.addView(text);
 
-        builder
+        MaterialDialog dialog = builder
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(context.getString(R.string.main_act_sleep_timer_title))
                 .positiveText(getString(R.string.okay))
@@ -1166,7 +1178,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     }
                 })
                 .customView(linear,true)
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 
     private boolean ValidatePlaylistName(String playlist_name){

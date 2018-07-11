@@ -167,7 +167,7 @@ public class ActivityRemoveAds extends AppCompatActivity {
         }
 
 
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.nav_remove_ads))
                 .content(R.string.remove_ads_content)
@@ -215,7 +215,11 @@ public class ActivityRemoveAds extends AppCompatActivity {
                         }
                     }
                 })
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 
 

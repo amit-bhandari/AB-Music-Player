@@ -67,7 +67,7 @@ public class AppLaunchCountManager {
 
     private static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
 
-        new MaterialDialog.Builder(mContext)
+        MaterialDialog dialog = new MaterialDialog.Builder(mContext)
                 .typeface(TypeFaceHelper.getTypeFace(mContext),TypeFaceHelper.getTypeFace(mContext))
                 .title("Hello there!")
                 .content("This is Amit AB (developer of AB Music) and I hope you" +
@@ -97,7 +97,11 @@ public class AppLaunchCountManager {
                         }
                     }
                 })
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
 
 
     }

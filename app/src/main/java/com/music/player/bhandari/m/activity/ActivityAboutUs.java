@@ -264,7 +264,7 @@ public class ActivityAboutUs extends AppCompatActivity {
     }
 
     private void callForHelpDialog(){
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title("AB Music needs your help!")
                 .content("As AB Music grows bigger and reach more audience, its language support also needs to be widened. \n\n As Catelyn of House Stark once said, " +
@@ -283,7 +283,11 @@ public class ActivityAboutUs extends AppCompatActivity {
                         }
                     }
                 })
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 
     @Override
@@ -293,7 +297,7 @@ public class ActivityAboutUs extends AppCompatActivity {
 
     private void selectDonateDialog() {
 
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.about_us_support_dev_title))
                 .content(getString(R.string.about_us_support_dev_content))
@@ -323,11 +327,15 @@ public class ActivityAboutUs extends AppCompatActivity {
                         startActivity(intent);
                     }
                 })
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 
     private void showDisclaimerDialog(){
-        new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title(getString(R.string.lyrics_disclaimer_title))
                 .content(getString(R.string.lyrics_disclaimer_content))
                 .positiveText(getString(R.string.lyrics_disclaimer_title_pos))
@@ -343,6 +351,10 @@ public class ActivityAboutUs extends AppCompatActivity {
                 MyApp.getPref().edit().putBoolean(getString(R.string.pref_disclaimer_accepted),false).apply();
             }
         })
-                .show();
+                .build();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+        dialog.show();
     }
 }
