@@ -173,7 +173,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
     }
 
     private void showAdIfApplicable(){
-        if( /*AppLaunchCountManager.isEligibleForInterstialAd() &&*/AppLaunchCountManager.isEligibleForBannerAds() && !UtilityFun.isAdsRemoved() ) {
+        if( false /*AppLaunchCountManager.isEligibleForInterstialAd() &&AppLaunchCountManager.isEligibleForBannerAds() && !UtilityFun.isAdsRemoved()*/ ) {
             MobileAds.initialize(getApplicationContext(), getString(R.string.banner_tag_editor));
             mAdView = findViewById(R.id.adView);
             if (UtilityFun.isConnectedToInternet()) {

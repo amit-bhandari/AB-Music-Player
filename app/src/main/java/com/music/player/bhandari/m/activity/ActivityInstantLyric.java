@@ -153,7 +153,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     private boolean actionModeActive = false;
     private GestureDetectorCompat gestureDetector;
 
-    private static final int LAUNCH_COUNT_BEFORE_POPUP=5;
+    private static final int LAUNCH_COUNT_BEFORE_POPUP=7;
     private InterstitialAd mInterstitialAd;
 
     private Handler handler;
@@ -326,7 +326,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 requestNewInterstitial();
             }
 
-            if (UtilityFun.isConnectedToInternet() ) {
+            /*if (UtilityFun.isConnectedToInternet() ) {
                 AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
                         .build();
                 Log.d("ActivityInstantLyric", "showAdIfApplicable: adview is null " + (mAdView==null));
@@ -342,7 +342,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                     mAdView.setVisibility(View.GONE);
                     adViewWrapper.setVisibility(View.GONE);
                 }
-            }
+            }*/
         }
     }
 
