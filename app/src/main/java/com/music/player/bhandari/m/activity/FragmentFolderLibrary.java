@@ -21,6 +21,7 @@ import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.FastScroller;
 import com.music.player.bhandari.m.adapter.FolderLibraryAdapter;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
@@ -47,9 +48,10 @@ import java.util.concurrent.Executors;
 public class FragmentFolderLibrary extends Fragment implements SwipeRefreshLayout.OnRefreshListener
         /*ActionMode.Callback*/{
 
-    private  FastScrollRecyclerView mRecyclerView;
+    private  RecyclerView mRecyclerView;
     private  FolderLibraryAdapter adapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    //private SwipeRefreshLayout swipeRefreshLayout;
+    private FastScroller fastScroller;
 
     /*overwrite back button for this fragment as we will be using same recycler view for
         walking into directory
@@ -76,7 +78,7 @@ public class FragmentFolderLibrary extends Fragment implements SwipeRefreshLayou
                     @Override
                     public void run() {
                         mRecyclerView.setAdapter(adapter);
-                        swipeRefreshLayout.setRefreshing(false);
+                        //swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -128,12 +130,15 @@ public class FragmentFolderLibrary extends Fragment implements SwipeRefreshLayou
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_library, container, false);
-        swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        /*swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(this);*/
         mRecyclerView = layout.findViewById(R.id.recyclerviewList);
-        mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
+
+        fastScroller = layout.findViewById(R.id.fastscroller);
+        fastScroller.setRecyclerView(mRecyclerView);
+        /*mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
         mRecyclerView.setThumbColor(ColorHelper.getAccentColor());
-        mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());
+        mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/
         mRecyclerView.setLayoutManager(new FragmentFolderLibrary.WrapContentLinearLayoutManager(getContext()));
         float offsetPx = getResources().getDimension(R.dimen.bottom_offset_dp);
         BottomOffsetDecoration bottomOffsetDecoration = new BottomOffsetDecoration((int) offsetPx);

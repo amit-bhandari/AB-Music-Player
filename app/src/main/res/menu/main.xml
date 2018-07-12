@@ -33,6 +33,12 @@
 
 
     <item
+        android:id="@+id/action_refresh"
+        app:showAsAction="never"
+        android:title="@string/action_refresh_library" />
+
+
+    <item
         android:id="@+id/action_search"
         android:title="@string/menu_search"
         android:orderInCategory="200"

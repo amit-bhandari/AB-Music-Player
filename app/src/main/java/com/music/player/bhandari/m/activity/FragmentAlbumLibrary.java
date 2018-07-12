@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.FastScroller;
 import com.music.player.bhandari.m.adapter.AlbumLibraryAdapter;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
@@ -48,9 +49,10 @@ import java.util.concurrent.Executors;
 
 public class FragmentAlbumLibrary extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
-    private FastScrollRecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
+    private FastScroller fastScroller;
     private AlbumLibraryAdapter albumLibraryAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    //private SwipeRefreshLayout swipeRefreshLayout;
     private BroadcastReceiver mRefreshLibraryReceiver;
 
     public FragmentAlbumLibrary() {
@@ -64,7 +66,7 @@ public class FragmentAlbumLibrary extends Fragment implements SwipeRefreshLayout
             public void onReceive(Context context, Intent intent) {
                 albumLibraryAdapter = new AlbumLibraryAdapter(getContext(), MusicLibrary.getInstance().getDataItemsForAlbums());
                 mRecyclerView.setAdapter(albumLibraryAdapter);
-                swipeRefreshLayout.setRefreshing(false);
+                //swipeRefreshLayout.setRefreshing(false);
             }
         };
     }
@@ -114,15 +116,17 @@ public class FragmentAlbumLibrary extends Fragment implements SwipeRefreshLayout
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_library, container, false);
-        swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        //swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
+        //swipeRefreshLayout.setOnRefreshListener(this);
 
 
         mRecyclerView = layout.findViewById(R.id.recyclerviewList);
+        fastScroller = layout.findViewById(R.id.fastscroller);
+        fastScroller.setRecyclerView(mRecyclerView);
 
-        mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
+        /*mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
         mRecyclerView.setThumbColor(ColorHelper.getAccentColor());
-        mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());
+        mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/
 
         albumLibraryAdapter = new AlbumLibraryAdapter(getContext(), MusicLibrary.getInstance().getDataItemsForAlbums());
         albumLibraryAdapter.sort(MyApp.getPref().getInt(getString(R.string.pref_album_sort_by),Constants.SORT_BY.NAME));

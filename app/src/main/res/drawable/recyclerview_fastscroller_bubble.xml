@@ -8,7 +8,7 @@
         android:bottomLeftRadius="44dp"
         android:bottomRightRadius="0px"/>
 
-    <solid android:color="#FF0288D1"/>
+    <solid android:color="@color/fab_Colors_lyric_view"/>
     <size
         android:height="88dp"
         android:width="88dp"/>
