@@ -32,6 +32,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityMain;
@@ -71,7 +72,7 @@ import java.util.concurrent.Executors;
  */
 
 public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.MyViewHolder>
-        implements PopupMenu.OnMenuItemClickListener, FastScrollRecyclerView.SectionedAdapter {
+        implements PopupMenu.OnMenuItemClickListener, FastScrollRecyclerView.SectionedAdapter, BubbleTextGetter {
 
     private Context context;
     private LayoutInflater inflater;
@@ -919,6 +920,11 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
             items.add(selectedItems.keyAt(i));
         }
         return items;
+    }
+
+    @Override
+    public String getTextToShowInBubble(int pos) {
+        return filteredDataItems.get(pos).title.substring(0,1).toUpperCase();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

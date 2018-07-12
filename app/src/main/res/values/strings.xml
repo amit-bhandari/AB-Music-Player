@@ -940,5 +940,6 @@ that this copyright notice remain intact.</string>
     <string name="press_twice_exit">Press back again to exit.</string>
     <string name="track_count">%1$s tracks</string>
     <string name="empty_playlist">empty playlist</string>
+    <string name="refreshing_library">Refreshing music library</string>
 
 </resources>

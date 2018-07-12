@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.Constants;
@@ -57,7 +58,7 @@ import java.util.LinkedHashMap;
  */
 
 public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdapter.MyViewHolder>
-        implements PopupMenu.OnMenuItemClickListener, FastScrollRecyclerView.SectionedAdapter{
+        implements PopupMenu.OnMenuItemClickListener, FastScrollRecyclerView.SectionedAdapter, BubbleTextGetter{
 
     private LinkedHashMap<String,File> files =new LinkedHashMap<>();   //for getting file from inflated list string value
     private ArrayList<String> headers=new ArrayList<>();   //for inflating list
@@ -553,6 +554,11 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
     @Override
     public String getSectionName(int position) {
         return filteredHeaders.get(position).substring(0,1).toUpperCase();
+    }
+
+    @Override
+    public String getTextToShowInBubble(int pos) {
+        return filteredHeaders.get(pos).substring(0,1).toUpperCase();
     }
 
 

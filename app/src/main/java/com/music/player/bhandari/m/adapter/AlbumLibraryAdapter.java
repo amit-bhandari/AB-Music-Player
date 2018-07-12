@@ -30,6 +30,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
 import com.music.player.bhandari.m.activity.ActivityMain;
 import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary;
 import com.music.player.bhandari.m.model.Constants;
@@ -63,7 +64,7 @@ import java.util.Comparator;
  */
 
 public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapter.MyViewHolder>
-        implements PopupMenu.OnMenuItemClickListener, FastScrollRecyclerView.SectionedAdapter {
+        implements PopupMenu.OnMenuItemClickListener, FastScrollRecyclerView.SectionedAdapter, BubbleTextGetter {
 
     private Context context;
     private LayoutInflater inflater;
@@ -394,6 +395,11 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
     @Override
     public String getSectionName(int position) {
         return filteredDataItems.get(position).albumName.substring(0,1).toUpperCase();
+    }
+
+    @Override
+    public String getTextToShowInBubble(int pos) {
+        return filteredDataItems.get(pos).albumName.substring(0,1).toUpperCase();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

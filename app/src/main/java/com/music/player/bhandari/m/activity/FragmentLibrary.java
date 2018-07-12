@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.FastScroller;
 import com.music.player.bhandari.m.adapter.MainLibraryAdapter;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
@@ -45,8 +46,9 @@ public class FragmentLibrary extends Fragment implements
         , ActionMode.Callback,  View.OnClickListener */{
     private int status;
     private MainLibraryAdapter cursoradapter;
-    private FastScrollRecyclerView mRecyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView mRecyclerView;
+    private FastScroller fastScroller;
+    //private SwipeRefreshLayout swipeRefreshLayout;
     private BroadcastReceiver mRefreshLibraryReceiver;
 
     /*private GestureDetectorCompat gestureDetector;
@@ -99,7 +101,7 @@ public class FragmentLibrary extends Fragment implements
 
                 notifyDataSetChanges();
                 mRecyclerView.setAdapter(cursoradapter);
-                swipeRefreshLayout.setRefreshing(false);
+                //swipeRefreshLayout.setRefreshing(false);
             }
         };
 
@@ -162,12 +164,16 @@ public class FragmentLibrary extends Fragment implements
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_library, container, false);
-        swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        //swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
+        //swipeRefreshLayout.setOnRefreshListener(this);
         mRecyclerView = layout.findViewById(R.id.recyclerviewList);
-            mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
+            /*mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
             mRecyclerView.setThumbColor(ColorHelper.getAccentColor());
-            mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());
+            mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/
+
+        fastScroller = layout.findViewById(R.id.fastscroller);
+        fastScroller.setRecyclerView(mRecyclerView);
+
         initializeAdapter(status);
         Log.v(Constants.TAG,"STARTED");
 

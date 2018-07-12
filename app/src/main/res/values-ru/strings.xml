@@ -358,4 +358,5 @@
     <string name="track_count">%1$s треков</string>
     <string name="empty_playlist">пустой плейлист</string>
 
+    <string name="refreshing_library">Обновление музыкальной библиотеки</string>
 </resources>

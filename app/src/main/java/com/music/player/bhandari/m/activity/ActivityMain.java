@@ -1066,6 +1066,11 @@ public class ActivityMain extends AppCompatActivity
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
+            case R.id.action_refresh:
+                Toast.makeText(this, R.string.refreshing_library, Toast.LENGTH_SHORT).show();
+                MusicLibrary.getInstance().RefreshLibrary();
+                break;
+
             case R.id.action_sleep_timer:
                 setSleepTimerDialog(this);
                 break;

@@ -50,13 +50,13 @@ public class FragmentPlaylistLibrary extends Fragment{
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_library, container, false);
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setEnabled(false);
+        /*SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setEnabled(false);*/
         //swipeRefreshLayout.setOnRefreshListener(this);
 
-        //layout.findViewById(R.id.fastScroller).setVisibility(View.GONE);
+        layout.findViewById(R.id.fastscroller).setVisibility(View.GONE);
 
-        FastScrollRecyclerView mRecyclerView = layout.findViewById(R.id.recyclerviewList);
+        RecyclerView mRecyclerView = layout.findViewById(R.id.recyclerviewList);
         adapter=new PlaylistLibraryAdapter(getContext());
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new FragmentPlaylistLibrary.WrapContentLinearLayoutManager(getContext()));
