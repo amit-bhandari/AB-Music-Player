@@ -1059,11 +1059,11 @@ public class ActivityMain extends AppCompatActivity
 
         switch (item.getItemId()){
             case R.id.action_settings:
-                //finish();
                 startActivity(new Intent(this,ActivitySettings.class)
                         .putExtra("launchedFrom",Constants.PREF_LAUNCHED_FROM.MAIN)
                         .putExtra("ad",true));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                finish();
                 break;
 
             case R.id.action_refresh:
@@ -1310,6 +1310,7 @@ public class ActivityMain extends AppCompatActivity
                     .putExtra("launchedFrom",Constants.PREF_LAUNCHED_FROM.DRAWER)
                     .putExtra("ad",true));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            finish();
         } else  if (id == R.id.nav_remove_ads){
             startActivity(new Intent(this, ActivityRemoveAds.class));
             //finish();

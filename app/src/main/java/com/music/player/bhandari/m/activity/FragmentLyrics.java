@@ -865,6 +865,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         }
 
         public void onLongPress(MotionEvent e) {
+            if(!isAdded() || getActivity()==null) return;
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
             if (actionModeActive) {
                 return;
