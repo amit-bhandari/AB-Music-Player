@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -69,6 +70,16 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
         headers = PlaylistManager.getInstance(context).GetPlaylistList(false);
         playerService = MyApp.getService();
         setHasStableIds(true);
+
+        Log.d("PlaylistLibraryAdapter", "PlaylistLibraryAdapter: System list " );
+        for (String name:(PlaylistManager.getInstance(context).getSystemPlaylistsList())) {
+            Log.d("PlaylistLibraryAdapter", "PlaylistLibraryAdapter: " + name);
+        }
+
+        Log.d("PlaylistLibraryAdapter", "PlaylistLibraryAdapter: User list " );
+        for (String name:(PlaylistManager.getInstance(context).getUserCreatedPlaylistList())) {
+            Log.d("PlaylistLibraryAdapter", "PlaylistLibraryAdapter: " + name);
+        }
     }
 
     public void clear(){
@@ -287,7 +298,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
                 intent.putExtra("status",Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT);
                 intent.putExtra("title",headers.get(position).trim());
                 context.startActivity(intent);
-                ((ActivityMain)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                ((ActivityMain) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
             case R.id.menuPopup:
