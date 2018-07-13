@@ -338,8 +338,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             intent.putExtra("key",key);
                             intent.putExtra("title",title.trim());
                             context.startActivity(intent);
-                            ((ActivityMain)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                            //Toast.makeText(context, "Open secondary library", Toast.LENGTH_SHORT).show();
+                            ((ActivityMain) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                     }
                 });

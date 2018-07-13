@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
@@ -27,6 +28,7 @@ import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
+import com.music.player.bhandari.m.activity.ActivityMain;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.service.PlayerService;
@@ -73,6 +75,8 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
     private View viewParent;
 
     private PlayerService playerService;
+    
+    private boolean backPressedOnce = false;
 
     public FolderLibraryAdapter(Context context){
         //create first page for folder fragment
@@ -189,10 +193,23 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
     public void onStepBack(){
 
         if(isHomeFolder){
-            Intent intent = new Intent(Intent.ACTION_MAIN);
+            /*Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            context.startActivity(intent);*/
+            if(backPressedOnce){
+                ((ActivityMain) context).finish();
+                return;
+            }
+
+            backPressedOnce = true;
+            Toast.makeText(context, R.string.press_twice_exit, Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    backPressedOnce = false;
+                }
+            }, 2000);
             return;
         }
 

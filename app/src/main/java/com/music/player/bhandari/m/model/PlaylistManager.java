@@ -172,6 +172,57 @@ public class PlaylistManager {
         return temp;
     }
 
+
+    public ArrayList<String> getSystemPlaylistsList(){
+        if(listOfPlaylists.size()==0){
+            SQLiteDatabase db = dbHelperListOfPlaylist.getReadableDatabase();
+            dbHelperListOfPlaylist.onCreate(db);
+            Cursor cursor = db.query(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST, null, null, null, null, null, null);
+            while (cursor.moveToNext()) {
+                String s = cursor.getString(0).replace("_", " ");
+                listOfPlaylists.put(s, getTrackCount(s));
+            }
+            cursor.close();
+        }
+        Log.d("PlaylistManager", "GetPlaylistList: " + listOfPlaylists.keySet());
+
+        ArrayList<String> temp = new ArrayList<>();
+        for (String name : listOfPlaylists.keySet()) {
+            if(name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED)
+                    || name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)
+                    || name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED)
+                    || name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.MY_FAV))
+                temp.add(name);
+        }
+
+        return temp;
+    }
+
+    public ArrayList<String> getUserCreatedPlaylistList(){
+        if(listOfPlaylists.size()==0){
+            SQLiteDatabase db = dbHelperListOfPlaylist.getReadableDatabase();
+            dbHelperListOfPlaylist.onCreate(db);
+            Cursor cursor = db.query(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST, null, null, null, null, null, null);
+            while (cursor.moveToNext()) {
+                String s = cursor.getString(0).replace("_", " ");
+                listOfPlaylists.put(s, getTrackCount(s));
+            }
+            cursor.close();
+        }
+        Log.d("PlaylistManager", "GetPlaylistList: " + listOfPlaylists.keySet());
+
+        ArrayList<String> temp = new ArrayList<>();
+        for (String name : listOfPlaylists.keySet()) {
+            if(!name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED)
+                    && !name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)
+                    && !name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED)
+                    && !name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.MY_FAV))
+                temp.add(name);
+        }
+
+        return temp;
+    }
+
     public boolean CreatePlaylist(String playlist_name){
 
         playlist_name = playlist_name.replace(" ","_");
