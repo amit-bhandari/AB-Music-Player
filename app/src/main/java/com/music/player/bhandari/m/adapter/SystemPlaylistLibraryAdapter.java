@@ -11,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -51,10 +50,10 @@ import java.util.ArrayList;
  limitations under the License.
  */
 
-public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibraryAdapter.MyViewHolder>
+public class SystemPlaylistLibraryAdapter extends RecyclerView.Adapter<SystemPlaylistLibraryAdapter.MyViewHolder>
         implements PopupMenu.OnMenuItemClickListener{
 
-    private ArrayList<String> headers=new ArrayList<>();
+    private ArrayList<String> headers;
     private Context context;
     private LayoutInflater inflater;
     private int position=0;
@@ -62,40 +61,30 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
     private View viewParent;
 
 
-    public PlaylistLibraryAdapter(Context context){
+    public SystemPlaylistLibraryAdapter(Context context){
         //create first page for folder fragment
         this.context=context;
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         inflater=LayoutInflater.from(context);
-        headers = PlaylistManager.getInstance(context).GetPlaylistList(false);
+        headers = PlaylistManager.getInstance(context).getSystemPlaylistsList();
         playerService = MyApp.getService();
         setHasStableIds(true);
-
-        Log.d("PlaylistLibraryAdapter", "PlaylistLibraryAdapter: System list " );
-        for (String name:(PlaylistManager.getInstance(context).getSystemPlaylistsList())) {
-            Log.d("PlaylistLibraryAdapter", "PlaylistLibraryAdapter: " + name);
-        }
-
-        Log.d("PlaylistLibraryAdapter", "PlaylistLibraryAdapter: User list " );
-        for (String name:(PlaylistManager.getInstance(context).getUserCreatedPlaylistList())) {
-            Log.d("PlaylistLibraryAdapter", "PlaylistLibraryAdapter: " + name);
-        }
     }
 
     public void clear(){
     }
 
     public void refreshPlaylistList(){
-        headers = PlaylistManager.getInstance(context).GetPlaylistList(false);
+        headers = PlaylistManager.getInstance(context).getSystemPlaylistsList();
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public PlaylistLibraryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.fragment_library_item, parent, false);
+    public SystemPlaylistLibraryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = inflater.inflate(R.layout.fragment_playlist_item, parent, false);
         viewParent = parent;
-        final PlaylistLibraryAdapter.MyViewHolder holder=new PlaylistLibraryAdapter.MyViewHolder (view);
+        final SystemPlaylistLibraryAdapter.MyViewHolder holder=new SystemPlaylistLibraryAdapter.MyViewHolder (view);
         int color = ColorHelper.getBaseThemeTextColor() ;
         ((TextView)(view.findViewById(R.id.header))).setTextColor(color);
         ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(color);
@@ -107,7 +96,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlaylistLibraryAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SystemPlaylistLibraryAdapter.MyViewHolder holder, int position) {
         holder.title.setText(headers.get(position));
         holder.title.setPadding(20,0,0,0);
 
@@ -304,7 +293,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
             case R.id.menuPopup:
                 PopupMenu popup = new PopupMenu(context, view);
                 MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.playlist_menu, popup.getMenu());
+                inflater.inflate(R.menu.system_playlist_menu, popup.getMenu());
                 popup.show();
                 popup.setOnMenuItemClickListener(this);
                 break;
@@ -336,7 +325,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
 
         @Override
         public void onClick(View view) {
-            PlaylistLibraryAdapter.this.onClick(view,getLayoutPosition());
+            SystemPlaylistLibraryAdapter.this.onClick(view,getLayoutPosition());
         }
     }
 }
