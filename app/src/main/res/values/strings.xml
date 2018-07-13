@@ -941,5 +941,8 @@ that this copyright notice remain intact.</string>
     <string name="track_count">%1$s tracks</string>
     <string name="empty_playlist">empty playlist</string>
     <string name="refreshing_library">Refreshing music library</string>
+    <string name="share_playlist">Share tracks</string>
+    <string name="user_playlists">User playlists</string>
+    <string name="system_playlists">System playlists</string>
 
 </resources>

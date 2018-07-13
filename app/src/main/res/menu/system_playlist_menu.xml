@@ -16,16 +16,12 @@
 
     <item
         android:id="@+id/action_share"
-        android:title="@string/action_share_file"/>
+        android:title="@string/share_playlist"/>
 
     <item
         android:id="@+id/action_clear_playlist"
         android:title="@string/title_clear_playlist"
         />
 
-    <item
-        android:id="@+id/action_delete"
-        android:title="@string/action_delete"
-        />
 
 </menu>
