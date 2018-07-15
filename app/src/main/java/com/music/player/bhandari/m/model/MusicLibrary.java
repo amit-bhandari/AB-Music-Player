@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -68,7 +69,7 @@ public class MusicLibrary{
     private ArrayList<String> foldersList=new ArrayList<>();
 
     //data for all frgaments
-    private ArrayList<dataItem> dataItemsForTracks = new ArrayList<>();
+    private LinkedHashMap<Integer, dataItem> dataItemsForTracks = new LinkedHashMap<>();
     private ArrayList<dataItem> dataItemsForAlbums = new ArrayList<>();
     private ArrayList<dataItem> dataItemsForGenres = new ArrayList<>();
     private ArrayList<dataItem> dataItemsForArtists = new ArrayList<>();
@@ -133,7 +134,7 @@ public class MusicLibrary{
             public void run() {
                 try {
                     foldersList.clear();
-                    for (dataItem item : dataItemsForTracks) {
+                    for (dataItem item : dataItemsForTracks.values()) {
                         String path = item.file_path;
                         path = path.substring(0, path.lastIndexOf("/"));
 
@@ -168,7 +169,7 @@ public class MusicLibrary{
         ArrayList<Integer> tracklist = new ArrayList<>();
         try {
             if (dataItemsForTracks != null) {
-                for (dataItem item : dataItemsForTracks) {
+                for (dataItem item : dataItemsForTracks.values()) {
                     tracklist.add(item.id);
                 }
             }
@@ -233,7 +234,8 @@ public class MusicLibrary{
                         }
 
                         if (cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) > SHORT_CLIPS_TIME_IN_MS) {
-                            dataItemsForTracks.add(new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
+                            dataItemsForTracks.put(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
+                                    new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
                                     ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
                                     ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
                                     ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
@@ -390,13 +392,12 @@ public class MusicLibrary{
     }
 
     public dataItem updateTrackNew(int id, String... param){
-        for(dataItem d : getDataItemsForTracks()){
-            if(d.id == id){
-                d.title = param[0];
-                d.artist_name = param[1];
-                d.albumName = param[2];
-                return d;
-            }
+        dataItem d = dataItemsForTracks.get(id);
+        if(d!=null){
+            d.title = param[0];
+            d.artist_name = param[1];
+            d.albumName = param[2];
+            return d;
         }
         return null;
     }
@@ -409,7 +410,7 @@ public class MusicLibrary{
         return dataItemsForArtists;
     }
 
-    public ArrayList<dataItem> getDataItemsForTracks(){
+    public HashMap<Integer, dataItem> getDataItemsForTracks(){
         return dataItemsForTracks;
     }
 

@@ -23,7 +23,10 @@ import com.music.player.bhandari.m.adapter.MainLibraryAdapter;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
+import com.music.player.bhandari.m.model.dataItem;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
+
+import java.util.ArrayList;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -76,7 +79,7 @@ public class FragmentLibrary extends Fragment implements
                 switch (status){
                     case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
                         cursoradapter=new MainLibraryAdapter(FragmentLibrary.this, getContext()
-                                ,MusicLibrary.getInstance().getDataItemsForTracks());
+                                ,new ArrayList<>(MusicLibrary.getInstance().getDataItemsForTracks().values()));
                         cursoradapter.sort(MyApp.getPref().getInt(getString(R.string.pref_tracks_sort_by),Constants.SORT_BY.NAME));
                         break;
 
@@ -224,7 +227,7 @@ public class FragmentLibrary extends Fragment implements
         switch (status){
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
                 cursoradapter=new MainLibraryAdapter(FragmentLibrary.this, getContext()
-                        ,MusicLibrary.getInstance().getDataItemsForTracks());
+                        ,new ArrayList<>(MusicLibrary.getInstance().getDataItemsForTracks().values()));
                 cursoradapter.sort(MyApp.getPref().getInt(getString(R.string.pref_tracks_sort_by),Constants.SORT_BY.NAME));
                 break;
 

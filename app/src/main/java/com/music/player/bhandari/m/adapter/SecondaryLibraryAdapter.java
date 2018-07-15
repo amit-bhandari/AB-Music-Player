@@ -72,10 +72,17 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         this.context=context;
         inflater=LayoutInflater.from(context);
 
-        for (dataItem d: MusicLibrary.getInstance().getDataItemsForTracks()){
+        for (Integer id : data){
+            dataItem d= MusicLibrary.getInstance().getDataItemsForTracks().get(id);
+            if(d!=null){
+                dataItems.add(d);
+            }
+        }
+
+        /*for (dataItem d: MusicLibrary.getInstance().getDataItemsForTracks()){
             if(data.contains(d.id))
                 dataItems.add(d);
-        }
+        }*/
 
         /*
         Collections.sort(dataItems, new Comparator<dataItem>() {

@@ -152,7 +152,7 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ArrayList<dataItem> dataItems = MusicLibrary.getInstance().getDataItemsForTracks();
+                ArrayList<dataItem> dataItems = new ArrayList<>(MusicLibrary.getInstance().getDataItemsForTracks().values());
                 int size = dataItems.size();
                 for(int i = 0; i<size;i++){
                     dataItem currentItem;

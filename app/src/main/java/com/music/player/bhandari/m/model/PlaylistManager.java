@@ -86,8 +86,8 @@ public class PlaylistManager {
                     //DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
                     SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
                     Cursor cur;
-                    ArrayList<dataItem> dataItems = MusicLibrary.getInstance().getDataItemsForTracks();
-                    for (dataItem item : dataItems) {
+                    //ArrayList<dataItem> dataItems = MusicLibrary.getInstance().getDataItemsForTracks();
+                    for (dataItem item : MusicLibrary.getInstance().getDataItemsForTracks().values()) {
                         //check if song already contains in db, if no, add it
                         String where = DbHelperUserMusicData.KEY_ID + " = "
                                 + item.id;
@@ -644,7 +644,7 @@ public class PlaylistManager {
                 , null, null, DbHelperUserMusicData.KEY_FAV  );
         ArrayList<dataItem> tracklist=new ArrayList<>();
         while (c.moveToNext()) {
-            for (dataItem d: MusicLibrary.getInstance().getDataItemsForTracks()){
+            for (dataItem d: MusicLibrary.getInstance().getDataItemsForTracks().values()){
                 if(d.id == c.getInt(0)) {
                     tracklist.add(d);
                     break;
@@ -666,7 +666,7 @@ public class PlaylistManager {
                 ,where,null,null,null,DbHelperUserMusicData.KEY_TIME_STAMP+" DESC",""+Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED_MAX);
 
         while (cursor.moveToNext()) {
-            for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks()) {
+            for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks().values()) {
                 if (d.id ==  cursor.getInt(0)) {
                     tracklist.add(d);
                     break;
@@ -681,7 +681,7 @@ public class PlaylistManager {
     private ArrayList<dataItem> GetRecentlyAdded(){
         HashMap<String, Integer> pathToId=new HashMap<>();
         ArrayList<File> musicFiles=new ArrayList<>();
-        for (dataItem item:MusicLibrary.getInstance().getDataItemsForTracks()){
+        for (dataItem item:MusicLibrary.getInstance().getDataItemsForTracks().values()){
             musicFiles.add(new File(item.file_path));
             pathToId.put(item.file_path
                     ,item.id);
@@ -706,7 +706,7 @@ public class PlaylistManager {
         int lessThanCount = musicFiles.size()>50?50:musicFiles.size();
 
         for(int i=0;i<lessThanCount;i++){
-            for (dataItem d: MusicLibrary.getInstance().getDataItemsForTracks()){
+            for (dataItem d: MusicLibrary.getInstance().getDataItemsForTracks().values()){
                 if(d.id == pathToId.get(musicFiles.get(i).getAbsolutePath())) {
                     tracklist.add(d);
                     break;
@@ -732,7 +732,7 @@ public class PlaylistManager {
         ArrayList<dataItem> tracklist=new ArrayList<>();
 
         while (c.moveToNext()) {
-            for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks()) {
+            for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks().values()) {
                 if (d.id == c.getInt(0)) {
                     tracklist.add(d);
                     break;
@@ -759,7 +759,7 @@ public class PlaylistManager {
         }*/
 
         while (cursor.moveToNext()) {
-            for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks()) {
+            for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks().values()) {
                 if (d.id == cursor.getInt(0)) {
                     tracklist.add(d);
                     break;
