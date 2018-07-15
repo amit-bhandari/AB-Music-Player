@@ -715,7 +715,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mUIUpdateReceiver
                 ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
         AppLaunchCountManager.nowPlayingLaunched();
-        UpdateCurrentTracklistAdapter();
+        //UpdateCurrentTracklistAdapter();
 
         setSeekbarAndTime();
         startUpdateTask();

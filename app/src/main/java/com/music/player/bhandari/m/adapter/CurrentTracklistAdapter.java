@@ -44,6 +44,7 @@ import com.music.player.bhandari.m.utils.UtilityFun;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 
 /**
@@ -87,21 +88,32 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
         handler = new Handler(Looper.getMainLooper());
 
+        fillData();
+
+
+        position = playerService.getCurrentTrackPosition();
+        this.context=context;
+        inflater=LayoutInflater.from(context);
+                //setHasStableIds(true);
+    }
+
+    //very badly written code
+    public void fillData(){
+        if(playerService==null) return;
         dataItems.clear();
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 ArrayList<Integer> temp = playerService.getTrackList();
-                ArrayList<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
+                //HashMap<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
                 try {
                     for (int id:temp){
-                        for (dataItem d:data){
-                            if(d.id==id){
-                                dataItems.add(d);
-                                break;
-                            }
+                        dataItem d = MusicLibrary.getInstance().getDataItemsForTracks().get(id);
+                        if(d!=null){
+                            dataItems.add(d);
                         }
                     }
+                    Log.d("CurrentTrack", "run: queue ready");
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -114,36 +126,6 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 }
             }
         });
-
-
-        position = playerService.getCurrentTrackPosition();
-        this.context=context;
-        inflater=LayoutInflater.from(context);
-                //setHasStableIds(true);
-    }
-
-    public void fillData(){
-        if(playerService==null) return;
-        dataItems.clear();
-        ArrayList<Integer> temp = playerService.getTrackList();
-        ArrayList<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
-        try {
-            for (int id:temp){
-                for (dataItem d:data){
-                    if(d.id ==  id){
-                        dataItems.add(d);
-                        break;
-                    }
-                }
-            }
-
-            position = playerService.getCurrentTrackPosition();
-
-            notifyDataSetChanged();
-        }catch (Exception ignored){
-            //ignore for now
-            Log.e("Notify","notify");
-        }
     }
 
     @NonNull
