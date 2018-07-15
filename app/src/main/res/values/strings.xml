@@ -586,12 +586,13 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020 * You can change album tab to list view now. \n\n
+    <string name="whats_new"><![CDATA[ \u0020 * Reduced advertising! \n\n
+                                              * You can change album tab to list view now. \n\n
                                               * Playlist will show number of tracks. \n\n
                                               * You can now change background of side navigation drawer. \n\n
                                               * Been playing around animations lately, you may feel some of those in app. \n\n
                                               * We will be in touch via developer message. \n\n
-                                              * I want to thank you guys for giving me all the love in the form of good reviews and ratings \n\n
+                                              * I want to thank you guys for giving me all the love in the form of good reviews and ratings
 ]]></string>
 
     <!-- Request notification access-->

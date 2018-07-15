@@ -359,4 +359,7 @@
     <string name="empty_playlist">пустой плейлист</string>
 
     <string name="refreshing_library">Обновление музыкальной библиотеки</string>
+    <string name="share_playlist">Поделиться дорожками</string>
+    <string name="user_playlists">Плейлисты пользователя</string>
+    <string name="system_playlists">Системные плейлисты</string>
 </resources>
