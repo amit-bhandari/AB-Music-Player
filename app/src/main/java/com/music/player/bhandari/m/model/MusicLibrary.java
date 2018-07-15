@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.music.player.bhandari.m.BuildConfig;
 import com.music.player.bhandari.m.R;
@@ -73,6 +74,11 @@ public class MusicLibrary{
     private ArrayList<dataItem> dataItemsForAlbums = new ArrayList<>();
     private ArrayList<dataItem> dataItemsForGenres = new ArrayList<>();
     private ArrayList<dataItem> dataItemsForArtists = new ArrayList<>();
+
+
+    //track id to track name hashmap
+    //used for shuffling tracks using track name in now playing
+    private SparseArray<String> trackMap= new SparseArray<>();
 
     private MusicLibrary(){
         this.context= MyApp.getContext();
@@ -245,6 +251,9 @@ public class MusicLibrary{
                                     ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
                                     ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)))
                             );
+
+                            trackMap.put(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
+                                    , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
                         }
                     }
                 }
@@ -416,6 +425,10 @@ public class MusicLibrary{
 
     public ArrayList<dataItem> getDataItemsForGenres(){
         return dataItemsForGenres;
+    }
+
+    public SparseArray<String> getTrackMap() {
+        return trackMap;
     }
 
     public ArrayList<Integer> getSongListFromArtistIdNew(int artist_id, int sort){

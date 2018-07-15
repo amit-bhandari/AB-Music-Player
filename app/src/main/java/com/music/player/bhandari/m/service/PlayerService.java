@@ -76,6 +76,7 @@ import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -898,7 +899,15 @@ public class PlayerService extends Service implements
                 trackList.add(0, currentSongPlaying);
                 currentTrackPosition = 0;
             } else {
-                Collections.sort(trackList);
+                long time = System.currentTimeMillis();
+                Collections.sort(trackList, new Comparator<Integer>() {
+                    @Override
+                    public int compare(Integer integer, Integer t1) {
+                        return MusicLibrary.getInstance().getTrackMap().get(integer)
+                                .compareToIgnoreCase(MusicLibrary.getInstance().getTrackMap().get(t1));
+                    }
+                });
+                Log.d(TAG, "shuffle: sorted in " + (System.currentTimeMillis()-time));
                 currentTrackPosition = trackList.indexOf(currentSongPlaying);
             }
         }
