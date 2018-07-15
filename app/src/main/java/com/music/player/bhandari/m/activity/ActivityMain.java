@@ -153,7 +153,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActivityMain extends AppCompatActivity
         implements ActionMode.Callback, NavigationView.OnNavigationItemSelectedListener, View.OnClickListener
-        , SwipeRefreshLayout.OnRefreshListener , PopupMenu.OnMenuItemClickListener, GoogleApiClient.OnConnectionFailedListener{
+        , PopupMenu.OnMenuItemClickListener, GoogleApiClient.OnConnectionFailedListener{
 
     private int RC_LOGIN = 100;
 
@@ -1193,10 +1193,6 @@ public class ActivityMain extends AppCompatActivity
         popupMenu.show();
     }
 
-    public void refreshLibrary(){
-        MusicLibrary.getInstance().RefreshLibrary();
-    }
-
     protected void handleSearch(){
         if(isSearchOpened){ //test if the search is open
             if (getSupportActionBar() != null){
@@ -1983,11 +1979,6 @@ public class ActivityMain extends AppCompatActivity
         }
 
         return false;
-    }
-
-    @Override
-    public void onRefresh() {
-        refreshLibrary();
     }
 
     @Override
