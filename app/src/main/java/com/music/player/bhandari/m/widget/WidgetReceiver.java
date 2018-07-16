@@ -7,6 +7,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -65,7 +67,7 @@ public class WidgetReceiver extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         Log.v(TAG,"Intent "+ intent.getAction());
         this.context = context;
         action=intent.getAction();
@@ -74,37 +76,50 @@ public class WidgetReceiver extends AppWidgetProvider {
             //launch player
             if(MyApp.getService()==null){
                 MusicLibrary.getInstance();
-                context.startService(new Intent(context,PlayerService.class)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(new Intent(context, PlayerService.class).setAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET));
+                } else {
+                    context.startService(new Intent(context,PlayerService.class)
                         .setAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET));
+                }
+
             }else {
                 //permission seek activity is used here to show splash screen
                 context.startActivity(new Intent(context, ActivityPermissionSeek.class).addFlags(FLAG_ACTIVITY_NEW_TASK));
             }
         }else {
-
             if(MyApp.getService()==null){
                 Log.v(TAG,"Widget "+ "Service is null");
-                context.startService(new Intent(context,PlayerService.class));
-                try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(new Intent(context, PlayerService.class).setAction(intent.getAction()));
+                } else {
+                    context.startService(new Intent(context,PlayerService.class));
+                }
+
+                /*try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
-                IBinder service = peekService(context, new Intent(context, PlayerService.class));
+                }*/
 
-                if (service != null){
-                    PlayerService.PlayerBinder playerBinder = (PlayerService.PlayerBinder) service;
-                    PlayerService playerService = playerBinder.getService();
-                    MyApp.setService(playerService);
-                    context.startService(new Intent(context, PlayerService.class)
-                            .setAction(action));
-                    Log.v(TAG,"Widget "+ action);
-                    Log.v(TAG,"Widget "+ "Service started");
-                }else {
-                    Log.v(TAG,"Widget "+ "Service null");
-                }
+                /*new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        IBinder service = peekService(context, new Intent(context, PlayerService.class));
 
-
+                        if (service != null){
+                            PlayerService.PlayerBinder playerBinder = (PlayerService.PlayerBinder) service;
+                            PlayerService playerService = playerBinder.getService();
+                            MyApp.setService(playerService);
+                            context.startService(new Intent(context, PlayerService.class)
+                                    .setAction(action));
+                            Log.v(TAG,"Widget "+ action);
+                            Log.v(TAG,"Widget "+ "Service started");
+                        }else {
+                            Log.v(TAG,"Widget "+ "Service null");
+                        }
+                    }
+                }, 500);*/
             }else {
                 context.startService(new Intent(context, PlayerService.class)
                         .setAction(intent.getAction()));
