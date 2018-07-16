@@ -173,6 +173,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         //if player service not running, kill the app
         if(MyApp.getService()==null){
             UtilityFun.restartApp();
+            finish();
+            return;
         }
 
         playerService = MyApp.getService();
