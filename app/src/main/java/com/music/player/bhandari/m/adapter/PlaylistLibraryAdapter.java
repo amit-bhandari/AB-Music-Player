@@ -50,7 +50,7 @@ import java.util.ArrayList;
  limitations under the License.
  */
 
-public class SystemPlaylistLibraryAdapter extends RecyclerView.Adapter<SystemPlaylistLibraryAdapter.MyViewHolder>
+public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibraryAdapter.MyViewHolder>
         implements PopupMenu.OnMenuItemClickListener{
 
     private ArrayList<String> headers;
@@ -61,12 +61,13 @@ public class SystemPlaylistLibraryAdapter extends RecyclerView.Adapter<SystemPla
     private View viewParent;
 
 
-    public SystemPlaylistLibraryAdapter(Context context){
+    public PlaylistLibraryAdapter(Context context){
         //create first page for folder fragment
         this.context=context;
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         inflater=LayoutInflater.from(context);
         headers = PlaylistManager.getInstance(context).getSystemPlaylistsList();
+        headers.addAll(PlaylistManager.getInstance(context).getUserCreatedPlaylistList());
         playerService = MyApp.getService();
         setHasStableIds(true);
     }
@@ -81,10 +82,10 @@ public class SystemPlaylistLibraryAdapter extends RecyclerView.Adapter<SystemPla
 
     @NonNull
     @Override
-    public SystemPlaylistLibraryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PlaylistLibraryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.fragment_playlist_item, parent, false);
         viewParent = parent;
-        final SystemPlaylistLibraryAdapter.MyViewHolder holder=new SystemPlaylistLibraryAdapter.MyViewHolder (view);
+        final PlaylistLibraryAdapter.MyViewHolder holder=new PlaylistLibraryAdapter.MyViewHolder (view);
         int color = ColorHelper.getBaseThemeTextColor() ;
         ((TextView)(view.findViewById(R.id.header))).setTextColor(color);
         ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(color);
@@ -96,7 +97,7 @@ public class SystemPlaylistLibraryAdapter extends RecyclerView.Adapter<SystemPla
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SystemPlaylistLibraryAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PlaylistLibraryAdapter.MyViewHolder holder, int position) {
         holder.title.setText(headers.get(position));
         holder.title.setPadding(20,0,0,0);
 
@@ -325,7 +326,7 @@ public class SystemPlaylistLibraryAdapter extends RecyclerView.Adapter<SystemPla
 
         @Override
         public void onClick(View view) {
-            SystemPlaylistLibraryAdapter.this.onClick(view,getLayoutPosition());
+            PlaylistLibraryAdapter.this.onClick(view,getLayoutPosition());
         }
     }
 }

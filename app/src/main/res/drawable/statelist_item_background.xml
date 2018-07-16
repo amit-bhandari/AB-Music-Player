@@ -2,6 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_activated="true" android:drawable="@color/pw_circle_color" />
+    <item android:state_activated="false" android:drawable="@android:color/transparent" />
     <item android:drawable="@android:color/transparent" />
 
 </selector>
