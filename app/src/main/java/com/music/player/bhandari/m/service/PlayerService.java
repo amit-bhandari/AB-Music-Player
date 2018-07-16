@@ -290,7 +290,21 @@ public class PlayerService extends Service implements
         }
         if(intent!=null && intent.getAction()!=null) {
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+            Log.d("PlayerService", "onStartCommand: " + intent.getAction());
+        }else {
+            Log.d("PlayerService", "onStartCommand: null intent or no action in intent");
         }
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.notification_channel))
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText("AB Music")
+                    .setAutoCancel(true);
+
+            Notification notification = builder.build();
+            startForeground(1, notification);
+
+        }*/
         return START_STICKY;
     }
 
@@ -981,7 +995,7 @@ public class PlayerService extends Service implements
                 b = UtilityFun.decodeUri(this
                         , MusicLibrary.getInstance().getAlbumArtUri(getCurrentTrack().getAlbumId()),200);
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             if(b!=null) {
                 views.setImageViewBitmap(R.id.widget_album_art, b);
@@ -1469,6 +1483,7 @@ public class PlayerService extends Service implements
         try {
             MyApp.getPref().edit().putString(Constants.PREFERENCES.STORED_SONG_ID,currentTrack.getId()+"").apply();
             MyApp.getPref().edit().putInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION,getCurrentTrackProgress()).apply();
+            Log.d("PlayerService", "storeTracklist: " + currentTrack.getId());
         }catch (Exception ignored){
 
         }
@@ -1486,8 +1501,10 @@ public class PlayerService extends Service implements
 
         //here
         if(trackList.isEmpty() || !trackList.contains(id)){
+
             //this should not happen.
             //but if does, handle it by loading default tracklist
+            Log.d("PlayerService", "restoreTracklist: load default list");
             trackList.clear();
             try {
                 trackList.addAll(MusicLibrary.getInstance().getDefaultTracklistNew());
@@ -1517,6 +1534,7 @@ public class PlayerService extends Service implements
             } catch (Exception e) {
                 Log.e(Constants.TAG, Arrays.toString(e.getStackTrace()), e);
             }
+            Log.d("PlayerService", "restoreTracklist: " + currentTrack.getTitle());
         }
         if (MyApp.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE,false)){
             shuffle(true);
@@ -1538,6 +1556,7 @@ public class PlayerService extends Service implements
             e.printStackTrace();
         } catch (Exception ignored){
         }
+        Log.d("PlayerService", "restoreTracklist: restored track item : " + currentTrack.getId());
     }
 
     @Override
