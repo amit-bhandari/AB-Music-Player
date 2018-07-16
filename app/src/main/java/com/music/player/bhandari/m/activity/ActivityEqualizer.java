@@ -341,7 +341,9 @@ public class ActivityEqualizer extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mAdView.destroy();
+        if(mAdView!=null) {
+            mAdView.destroy();
+        }
     }
 
     @NonNull
