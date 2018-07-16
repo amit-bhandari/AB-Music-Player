@@ -746,7 +746,9 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     @Override
     public void onDestroy() {
         mRecyclerView=null;
-        mAdView.destroy();
+        if(mAdView!=null) {
+            mAdView.destroy();
+        }
         super.onDestroy(); //get search icon back on action bar
     }
 
