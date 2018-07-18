@@ -4,13 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,33 +16,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.music.player.bhandari.m.R;
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
-
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -139,42 +124,26 @@ public class FragmentDiscSkipped extends Fragment{
         if(currentNowPlayingBackPref==2){
             albumArt.setImageBitmap(null);
         }else {
-            /*
-            Bitmap b = null;
-            try {
-                b = UtilityFun.decodeUri(getContext()
-                        , MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()), 500);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (b != null) {
-                albumArt.setImageBitmap(b);
-            } else {
-                albumArt.setImageDrawable(getResources().getDrawable(R.drawable.ic_batman_1));
-            }*/
+
+            final DrawableRequestBuilder<Uri> request = Glide.with(this)
+                    .load(MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()))
+                    .centerCrop()
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL);
+
             int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
             switch (defaultAlbumArtSetting){
                 case 0:
-                    Glide.with(this)
-                            .load( MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()))
-                            .listener(new RequestListener<Uri, GlideDrawable>() {
+                    request.listener(new RequestListener<Uri, GlideDrawable>() {
                                 @Override
                                 public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
                                     //Log.d("AlbumLibraryAdapter", "onException: ");
                                     if(UtilityFun.isConnectedToInternet() &&
                                             !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                         final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                        Glide
-                                                .with(FragmentDiscSkipped.this)
-                                                .load(url)
-                                                .centerCrop()
-                                                .crossFade(500)
-                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                .override(100, 100)
-                                                .placeholder(R.drawable.ic_batman_1)
-                                                .into(albumArt);
+                                        if(url!=null)
+                                            request.load(Uri.parse(url))
+                                                    .into(albumArt);
                                         return true;
                                     }
                                     return false;
@@ -185,35 +154,20 @@ public class FragmentDiscSkipped extends Fragment{
                                     return false;
                                 }
                             })
-                            .centerCrop()
-                            //removed because of window transition flicker
-                            //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                            //.override(100,100)
-                            .placeholder(R.drawable.ic_batman_1)
-                            .crossFade()
-                            .into(albumArt);
+                            .placeholder(R.drawable.ic_batman_1);
                     break;
 
                 case 1:
-                    Glide.with(this)
-                            .load( MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()))
-                            .listener(new RequestListener<Uri, GlideDrawable>() {
+                   request.listener(new RequestListener<Uri, GlideDrawable>() {
                                 @Override
                                 public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
                                     //Log.d("AlbumLibraryAdapter", "onException: ");
                                     if(UtilityFun.isConnectedToInternet() &&
                                             !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                         final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                        Glide
-                                                .with(FragmentDiscSkipped.this)
-                                                .load(url)
-                                                .centerCrop()
-                                                .crossFade(500)
-                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                .override(100, 100)
-                                                .placeholder(UtilityFun.getDrawableFromFilePath(MyApp.getContext().getFilesDir()
-                                                        + getString(R.string.def_album_art_custom_image)))
-                                                .into(albumArt);
+                                        if(url!=null)
+                                            request.load(Uri.parse(url))
+                                                    .into(albumArt);
                                         return true;
                                     }
                                     return false;
@@ -224,16 +178,12 @@ public class FragmentDiscSkipped extends Fragment{
                                     return false;
                                 }
                             })
-                            .centerCrop()
-                            //removed because of window transition flicker
-                            //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                            //.override(100,100)
-                            .placeholder(UtilityFun.getDrawableFromFilePath(MyApp.getContext().getFilesDir()
-                                    + getString(R.string.def_album_art_custom_image)))
-                            .crossFade().diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(albumArt);
+                            .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
+
                     break;
             }
+
+            request.into(albumArt);
 
         }
     }

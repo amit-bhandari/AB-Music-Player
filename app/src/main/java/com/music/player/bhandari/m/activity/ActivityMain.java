@@ -32,7 +32,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.PopupMenu;
 import android.text.Editable;
@@ -61,7 +60,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -71,6 +69,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.DrawableRequestBuilder;
+import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -848,13 +848,18 @@ public class ActivityMain extends AppCompatActivity
         try {
             if (playerService != null) {
                 if (playerService.getCurrentTrack() != null) {
-                    Uri uri = MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId());
+                    final Uri uri = MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId());
+
+                    final DrawableRequestBuilder<Uri> request = Glide.with(this)
+                            .load(uri)
+                            .centerCrop()
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL);
 
                     int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
                     switch (defaultAlbumArtSetting){
                         case 0:
-                            Glide.with(this)
-                                    .load(uri)
+                            request
                                     .listener(new RequestListener<Uri, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -862,15 +867,9 @@ public class ActivityMain extends AppCompatActivity
                                             if(UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                Glide
-                                                        .with(ActivityMain.this)
-                                                        .load(url)
-                                                        .centerCrop()
-                                                        .crossFade(500)
-                                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                        .override(100, 100)
-                                                        .placeholder(R.drawable.ic_batman_1)
-                                                        .into(albumArt);
+                                                if(url!=null)
+                                                    request.load(Uri.parse(url))
+                                                            .into(albumArt);
                                                 return true;
                                             }
                                             return false;
@@ -881,18 +880,11 @@ public class ActivityMain extends AppCompatActivity
                                             return false;
                                         }
                                     })
-                                    .centerCrop()
-                                    //removed because of window transition flicker
-                                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                                    //.override(100,100)
-                                    .placeholder(R.drawable.ic_batman_1)
-                                    .crossFade()
-                                    .into(albumArt);
+                                    .placeholder(R.drawable.ic_batman_1);
                             break;
 
                         case 1:
-                            Glide.with(this)
-                                    .load(uri)
+                            request
                                     .listener(new RequestListener<Uri, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -900,16 +892,9 @@ public class ActivityMain extends AppCompatActivity
                                             if(UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                Glide
-                                                        .with(ActivityMain.this)
-                                                        .load(url)
-                                                        .centerCrop()
-                                                        .crossFade(500)
-                                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                        .override(100, 100)
-                                                        .placeholder(UtilityFun.getDrawableFromFilePath(MyApp.getContext().getFilesDir()
-                                                                + getString(R.string.def_album_art_custom_image)))
-                                                        .into(albumArt);
+                                                if(url!=null)
+                                                    request.load(Uri.parse(url))
+                                                            .into(albumArt);
                                                 return true;
                                             }
                                             return false;
@@ -920,17 +905,11 @@ public class ActivityMain extends AppCompatActivity
                                             return false;
                                         }
                                     })
-                                    .centerCrop()
-                                    //removed because of window transition flicker
-                                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                                    //.override(100,100)
-                                    .placeholder(UtilityFun.getDrawableFromFilePath(MyApp.getContext().getFilesDir()
-                                            + getString(R.string.def_album_art_custom_image)))
-                                    .crossFade()
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .into(albumArt);
+                                    .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
                             break;
                     }
+
+                    request.into(albumArt);
 
                     if (playerService.getStatus() == PlayerService.PLAYING) {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
@@ -2267,7 +2246,16 @@ public class ActivityMain extends AppCompatActivity
                         }
                     });
         }else {
-            imageView.setImageResource(R.drawable.ic_batman_1);
+            int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+            switch (defaultAlbumArtSetting){
+                case 0:
+                    imageView.setImageResource(R.drawable.ic_batman_1);
+                    break;
+
+                case 1:
+                    imageView.setImageDrawable(UtilityFun.getDefaultAlbumArtDrawable());
+                    break;
+            }
         }
 
         navigationView.getMenu().clear(); //clear old inflated items.

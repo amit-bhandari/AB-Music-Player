@@ -511,7 +511,8 @@ public class UtilityFun {
         MyApp.getContext().startActivity(intent);
     }
 
-    public static Drawable getDrawableFromFilePath(String path){
-        return Drawable.createFromPath(path);
+    public static Drawable getDefaultAlbumArtDrawable(){
+        return Drawable.createFromPath(MyApp.getContext().getFilesDir()
+                + MyApp.getContext().getString(R.string.def_album_art_custom_image));
     }
 }
