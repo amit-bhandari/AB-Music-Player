@@ -100,7 +100,16 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         this.dataItems = data;
         filteredDataItems.addAll(dataItems);
         playerService = MyApp.getService();
-        batmanDrawable = ContextCompat.getDrawable(context, R.drawable.ic_batman_1).mutate();
+        int defaultAlbumArtSetting = MyApp.getPref().getInt(context.getString(R.string.pref_default_album_art), 0);
+        switch (defaultAlbumArtSetting) {
+            case 0:
+                batmanDrawable = ContextCompat.getDrawable(context, R.drawable.ic_batman_1);
+                break;
+
+            case 1:
+                batmanDrawable = UtilityFun.getDefaultAlbumArtDrawable();
+                break;
+        }
         setHasStableIds(true);
     }
 

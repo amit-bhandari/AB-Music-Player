@@ -30,9 +30,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -46,7 +43,6 @@ import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.dataItem;
-import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.io.File;
@@ -230,8 +226,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
                         .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
                         .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                         .animate(AnimationUtils.loadAnimation(this, R.anim.fade_in))
-                        .placeholder(UtilityFun.getDrawableFromFilePath(MyApp.getContext().getFilesDir()
-                                + getString(R.string.def_album_art_custom_image))).diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(UtilityFun.getDefaultAlbumArtDrawable()).diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(album_art);
                 break;
         }
@@ -407,7 +402,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         startActivityForResult(intent, 1);
     }
 
-    private void deletePhoto(){
+    /*private void deletePhoto(){
         if(album_art!=null){
             album_art.setImageDrawable(getResources().getDrawable(R.drawable.ic_batman_1));
         }
@@ -424,7 +419,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
 
             }
         }
-    }
+    }*/
 
     public static void dumpIntent(Intent i){
 
