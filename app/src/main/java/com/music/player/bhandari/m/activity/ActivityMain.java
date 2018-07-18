@@ -842,51 +842,95 @@ public class ActivityMain extends AppCompatActivity
     }
 
     //boolean to to let function know if expand is needed for mini player or not
-    //in case of resuming activty, no need to expand mini player
-    //even when presed back from secondary activity, no need to expand
+    //in case of resuming activity, no need to expand mini player
+    //even when pressed back from secondary activity, no need to expand
     private void updateUI(boolean expandNeeded){
         try {
             if (playerService != null) {
                 if (playerService.getCurrentTrack() != null) {
                     Uri uri = MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId());
 
-                    //albumArt.setImageDrawable(getResources().getDrawable(R.drawable.ic_batman_1));
-                    Glide.with(this)
-                            .load(uri)
-                            .listener(new RequestListener<Uri, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    //Log.d("AlbumLibraryAdapter", "onException: ");
-                                    if(UtilityFun.isConnectedToInternet() &&
-                                            !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                        final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                        Glide
-                                                .with(ActivityMain.this)
-                                                .load(url)
-                                                .centerCrop()
-                                                .crossFade(500)
-                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                .override(100, 100)
-                                                .placeholder(R.drawable.ic_batman_1)
-                                                .into(albumArt);
-                                        return true;
-                                    }
-                                    return false;
-                                }
+                    int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+                    switch (defaultAlbumArtSetting){
+                        case 0:
+                            Glide.with(this)
+                                    .load(uri)
+                                    .listener(new RequestListener<Uri, GlideDrawable>() {
+                                        @Override
+                                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                            //Log.d("AlbumLibraryAdapter", "onException: ");
+                                            if(UtilityFun.isConnectedToInternet() &&
+                                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
+                                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
+                                                Glide
+                                                        .with(ActivityMain.this)
+                                                        .load(url)
+                                                        .centerCrop()
+                                                        .crossFade(500)
+                                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                        .override(100, 100)
+                                                        .placeholder(R.drawable.ic_batman_1)
+                                                        .into(albumArt);
+                                                return true;
+                                            }
+                                            return false;
+                                        }
 
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    return false;
-                                }
-                            })
-                            .centerCrop()
-                            //removed because of window transition flicker
-                            //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                            //.override(100,100)
-                            .placeholder(R.drawable.ic_batman_1)
-                            .crossFade()
-                            .into(albumArt);
+                                        @Override
+                                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                            return false;
+                                        }
+                                    })
+                                    .centerCrop()
+                                    //removed because of window transition flicker
+                                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                                    //.override(100,100)
+                                    .placeholder(R.drawable.ic_batman_1)
+                                    .crossFade()
+                                    .into(albumArt);
+                            break;
 
+                        case 1:
+                            Glide.with(this)
+                                    .load(uri)
+                                    .listener(new RequestListener<Uri, GlideDrawable>() {
+                                        @Override
+                                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                            //Log.d("AlbumLibraryAdapter", "onException: ");
+                                            if(UtilityFun.isConnectedToInternet() &&
+                                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
+                                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
+                                                Glide
+                                                        .with(ActivityMain.this)
+                                                        .load(url)
+                                                        .centerCrop()
+                                                        .crossFade(500)
+                                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                        .override(100, 100)
+                                                        .placeholder(UtilityFun.getDrawableFromFilePath(MyApp.getContext().getFilesDir()
+                                                                + getString(R.string.def_album_art_custom_image)))
+                                                        .into(albumArt);
+                                                return true;
+                                            }
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                            return false;
+                                        }
+                                    })
+                                    .centerCrop()
+                                    //removed because of window transition flicker
+                                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                                    //.override(100,100)
+                                    .placeholder(UtilityFun.getDrawableFromFilePath(MyApp.getContext().getFilesDir()
+                                            + getString(R.string.def_album_art_custom_image)))
+                                    .crossFade()
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(albumArt);
+                            break;
+                    }
 
                     if (playerService.getStatus() == PlayerService.PLAYING) {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));

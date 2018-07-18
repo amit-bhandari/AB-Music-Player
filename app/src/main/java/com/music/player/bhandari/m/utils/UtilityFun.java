@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -510,4 +511,7 @@ public class UtilityFun {
         MyApp.getContext().startActivity(intent);
     }
 
+    public static Drawable getDrawableFromFilePath(String path){
+        return Drawable.createFromPath(path);
+    }
 }
