@@ -123,7 +123,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
     int screenWidth, screenHeight;
     private InterstitialAd mInterstitialAd;
-    private static final int LAUNCH_COUNT_BEFORE_POPUP=7;
+    private static final int LAUNCH_COUNT_BEFORE_POPUP=15;
     private static final int RC_SIGN_IN = 7;
     private long mLastClickTime;
     private  boolean stopProgressRunnable = false;
