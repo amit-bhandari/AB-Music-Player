@@ -525,6 +525,12 @@
         <item>Custom</item>
     </string-array>
 
+
+    <string-array name="def_album_art_pref_array">
+        <item>System default</item>
+        <item>Custom</item>
+    </string-array>
+
         <string-array name="colors">
             <item>#000000</item>
             <item>#424242</item>
@@ -587,6 +593,7 @@
         </string-array>
 
     <string name="whats_new"><![CDATA[ \u0020 * Reduced advertising! \n\n
+                                              * You can change default album art! \n\n
                                               * You can change album tab to list view now. \n\n
                                               * Playlist will show number of tracks. \n\n
                                               * You can now change background of side navigation drawer. \n\n
@@ -670,7 +677,8 @@
     <!-- now playing back file -->
         <string name="now_playing_back_custom_image">//now_playing_back_custom_image</string>
         <string name="main_lib_back_custom_image">//main_lib_back_custom_image</string>
-    <string name="nav_back_custom_image">//nav_back_custom_image</string>
+        <string name="nav_back_custom_image">//nav_back_custom_image</string>
+        <string name="def_album_art_custom_image">//def_album_art_custom_image</string>
 
     <!-- strings for shared preferences -->
         <string name="pref_disc_rotation">pref_disc_rotation</string>
@@ -945,5 +953,7 @@ that this copyright notice remain intact.</string>
     <string name="share_playlist">Share tracks</string>
     <string name="user_playlists">User playlists</string>
     <string name="system_playlists">System playlists</string>
+    <string name="nav_default_album_art">Default Album Art</string>
+    <string name="pref_default_album_art">pef_default_album_art</string>
 
 </resources>

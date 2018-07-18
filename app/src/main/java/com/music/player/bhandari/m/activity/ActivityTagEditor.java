@@ -29,6 +29,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -210,12 +214,28 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         artist.setText(item.getArtist());
         original_artist = item.getArtist();
 
-        Glide.with(this)
-                .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
-                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                .animate(AnimationUtils.loadAnimation(this, R.anim.fade_in))
-                .placeholder(R.drawable.ic_batman_1)
-                .into(album_art);
+        int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+        switch (defaultAlbumArtSetting){
+            case 0:
+                Glide.with(this)
+                        .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
+                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                        .animate(AnimationUtils.loadAnimation(this, R.anim.fade_in))
+                        .placeholder(R.drawable.ic_batman_1)
+                        .into(album_art);
+                break;
+
+            case 1:
+                Glide.with(this)
+                        .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
+                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                        .animate(AnimationUtils.loadAnimation(this, R.anim.fade_in))
+                        .placeholder(UtilityFun.getDrawableFromFilePath(MyApp.getContext().getFilesDir()
+                                + getString(R.string.def_album_art_custom_image))).diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(album_art);
+                break;
+        }
+
     }
 
     @Override

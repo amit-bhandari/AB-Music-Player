@@ -197,8 +197,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         batmanDrawable = ContextCompat.getDrawable(this, R.drawable.ic_batman_1).mutate();
         //batmanDrawable.setColorFilter(ColorHelper.getPrimaryColor(), PorterDuff.Mode.OVERLAY);
 
-        if(false/*AppLaunchCountManager.isEligibleForInterstialAd() && !UtilityFun.isAdsRemoved()
-                &&AppLaunchCountManager.isEligibleForBannerAds()*/) {
+        if(/*AppLaunchCountManager.isEligibleForInterstialAd() && */ !UtilityFun.isAdsRemoved()
+                &&AppLaunchCountManager.isEligibleForBannerAds()) {
             MobileAds.initialize(getApplicationContext(), getString(R.string.banner_secondary_activity));
             if (UtilityFun.isConnectedToInternet()) {
                 AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
@@ -365,13 +365,35 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(mainBackdrop);
             }else {
-                Glide.with(getApplicationContext())
-                        .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
-                        //.crossFade(500)
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_batman_1)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(mainBackdrop);
+                int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+                switch (defaultAlbumArtSetting){
+                    case 0:
+                        Glide.with(this)
+                                .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
+                                .centerCrop()
+                                //removed because of window transition flicker
+                                //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                                //.override(100,100)
+                                .placeholder(R.drawable.ic_batman_1)
+                                .crossFade()
+                                .into(mainBackdrop);
+                        break;
+
+                    case 1:
+                        Glide.with(this)
+                                .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
+                                .centerCrop()
+                                //removed because of window transition flicker
+                                //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                                //.override(100,100)
+                                .placeholder(UtilityFun.getDrawableFromFilePath(MyApp.getContext().getFilesDir()
+                                        + getString(R.string.def_album_art_custom_image)))
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .crossFade().diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(mainBackdrop);
+                        break;
+                }
+
             }
         }
 

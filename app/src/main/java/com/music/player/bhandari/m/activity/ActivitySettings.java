@@ -105,6 +105,7 @@ public class ActivitySettings extends AppCompatActivity {
     private static final int MAIN_LIB = 0;
     private static final int NOW_PLAYING = 1;
     private static final int NAVIGATION_DRAWER = 2;
+    private static final int DEFAULT_ALBUM_ART = 3;
 
     private static int backgroundSelectionStatus = -1;
 
@@ -286,6 +287,10 @@ public class ActivitySettings extends AppCompatActivity {
                         savePath = MyApp.getContext().getFilesDir() + getString(R.string.now_playing_back_custom_image);
                         break;
 
+                    case DEFAULT_ALBUM_ART:
+                        savePath = MyApp.getContext().getFilesDir() + getString(R.string.def_album_art_custom_image);
+                        break;
+
                     case NAVIGATION_DRAWER:
                     default:
                         savePath = MyApp.getContext().getFilesDir() + getString(R.string.nav_back_custom_image);
@@ -305,6 +310,10 @@ public class ActivitySettings extends AppCompatActivity {
 
                         case NOW_PLAYING:
                             MyApp.getPref().edit().putInt(getString(R.string.pref_now_playing_back),3).apply();
+                            break;
+
+                        case DEFAULT_ALBUM_ART:
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_default_album_art),1).apply();
                             break;
 
                         case NAVIGATION_DRAWER:
@@ -591,6 +600,16 @@ public class ActivitySettings extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     navBackDialog();
+                    return true;
+                }
+            });
+
+            //Main library back
+            final Preference defAlbumArtPref = findPreference(getString(R.string.pref_default_album_art));
+            defAlbumArtPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    defAlbumArtDialog();
                     return true;
                 }
             });
@@ -1105,7 +1124,55 @@ public class ActivitySettings extends AppCompatActivity {
                                             .setGuidelines(CropImageView.Guidelines.ON)
                                             .setAspectRatio(11,16)
                                             .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                                            //.setOutputCompressQuality(50)
+                                            .setOutputCompressQuality(80)
+                                            .start(getActivity());
+                                    dialog.dismiss();
+                                    break;
+
+                            }
+                            return true;
+                        }
+                    })
+                    .positiveText(R.string.okay)
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
+        }
+
+        private void defAlbumArtDialog(){
+            ///get current setting
+            // 0 - System default   2 - custom
+            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_default_album_art),0);
+
+            MaterialDialog dialog =new MaterialDialog.Builder(getActivity())
+                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                    .title(R.string.nav_default_album_art)
+                    .items(R.array.def_album_art_pref_array)
+                    .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            /**
+                             * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
+                             * returning false here won't allow the newly selected radio button to actually be selected.
+                             **/
+
+
+                            switch (which){
+                                //for 0, change the pref and move on, no need to confirm anything
+                                case 0:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_default_album_art),which).apply();
+                                    break;
+
+                                //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                                case 1:
+                                    backgroundSelectionStatus = DEFAULT_ALBUM_ART;
+                                    CropImage.activity()
+                                            .setGuidelines(CropImageView.Guidelines.ON)
+                                            .setAspectRatio(1,1)
+                                            .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                                            .setOutputCompressQuality(80)
                                             .start(getActivity());
                                     dialog.dismiss();
                                     break;
