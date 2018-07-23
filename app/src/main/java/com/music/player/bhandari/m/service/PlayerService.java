@@ -22,6 +22,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -64,6 +65,7 @@ import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
+import com.music.player.bhandari.m.utils.BluetoothReceiver;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.music.player.bhandari.m.widget.WidgetReceiver;
 import com.squareup.seismic.ShakeDetector;
@@ -128,6 +130,9 @@ public class PlayerService extends Service implements
 
     //equlizer helper
     EqualizerHelper mEqualizerHelper;
+
+    //Bluetooth callback receivers
+    BroadcastReceiver bluetoothReceiver = new BluetoothReceiver();
 
     @Override
     public void onCreate() {
@@ -281,6 +286,12 @@ public class PlayerService extends Service implements
         }catch (IllegalArgumentException e){
             e.printStackTrace();
         }
+
+        //bluetooth callback receiver
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(bluetoothReceiver, filter);
     }
 
     @Override
@@ -1472,6 +1483,9 @@ public class PlayerService extends Service implements
         }
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mReceiver);
         mAudioManager.abandonAudioFocus(this);
+
+        unregisterReceiver(bluetoothReceiver);
+
         MyApp.setService(null);
         super.onDestroy();
     }
