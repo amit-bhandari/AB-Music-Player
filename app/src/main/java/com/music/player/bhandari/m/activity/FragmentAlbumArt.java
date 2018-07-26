@@ -105,7 +105,7 @@ public class FragmentAlbumArt extends Fragment{
                             int newy = (y/2) + (albumArt.getHeight()/2);
                             Log.d("FragmentAlbumArt", "onGlobalLayout: newy " + newy);
 
-                            albumArt.setTop(900);
+                            albumArt.setY(200);
                         }
                     });
 
