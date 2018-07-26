@@ -7,7 +7,7 @@
     android:id="@+id/root_view_now_playing"
     android:layout_height="match_parent">
 
-<com.sothree.slidinguppanel.SlidingUpPanelLayout
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
@@ -20,286 +20,287 @@
     sothree:umanoShadowHeight="4dp"
     sothree:umanoParallaxOffset ="200dp">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/root_view_test"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:fitsSystemWindows="false">
-
-        <FrameLayout
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/root_view_test"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:theme="@style/AppTheme.AppBarOverlay"
             android:fitsSystemWindows="false">
-            <!-- full screen image view -->
 
-
-            <ImageView
-                android:id="@+id/full_screen_iv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/now_playing_back"
-                android:scaleType="centerCrop"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/secondary_image_gradient"/>
-
-
-        </FrameLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <!-- toolbar -->
-            <android.support.v7.widget.Toolbar
-                android:fitsSystemWindows="true"
-                android:minHeight="@dimen/action_bar_size"
-                app:contentInsetStartWithNavigation="0dp"
-                android:id="@+id/toolbar_"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-
-                <!-- VIEWPAGER-->
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="false">
+                <!-- full screen image view -->
 
-                <com.sackcentury.shinebuttonlib.ShineButton
-                    android:id="@+id/shineButton"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="32dp"
-                    android:clickable="false"
-                    android:src="@android:color/darker_gray"
-                    app:allow_random_color="true"
-                    app:big_shine_color="#FF6666"
-                    app:btn_color="@color/colorTransparent"
-                    app:btn_fill_color="@color/colorTransparent"
-                    app:click_animation_duration="200"
-                    app:enable_flashing="true"
-                    app:shine_animation_duration="1500"
-                    app:shine_turn_angle="10"
-                    app:siShape="@raw/heart"
-                    app:small_shine_color="#CC9999"
-                    app:small_shine_offset_angle="20" />
 
-                <com.music.player.bhandari.m.customViews.CustomViewPager
-                    android:id="@+id/view_pager_now_playing"
+                <ImageView
+                    android:id="@+id/full_screen_iv"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:src="@drawable/now_playing_back"
+                    android:scaleType="centerCrop"
+                    card_view:ignore="ContentDescription" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/secondary_image_gradient"/>
+
 
             </FrameLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:paddingBottom="30dp"
-            android:orientation="vertical">
-
             <LinearLayout
-                android:id="@+id/seekbarWrapper"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/pw_runningTime"
-                    android:layout_width="wrap_content"
+                <!-- toolbar -->
+                <android.support.v7.widget.Toolbar
+                    android:fitsSystemWindows="true"
+                    android:minHeight="@dimen/action_bar_size"
+                    app:contentInsetStartWithNavigation="0dp"
+                    android:id="@+id/toolbar_"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="right"
-                    android:textSize="15sp"
-                    android:textColor="@color/colorwhite"
-                    android:layout_weight="1"
-                    android:text="00:00"
-                    card_view:ignore="HardcodedText" />
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-                <SeekBar
-                    android:id="@+id/seekbar_now_playing"
-                    android:layout_margin="5dp"
-                    android:thumb="@drawable/thumb"
-                    android:layout_width="wrap_content"
-                    android:progress="10"
-                    android:layout_weight="7"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/pw_totalTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="15sp"
-                    android:textColor="@color/colorwhite"
-                    android:layout_weight="1"
-                    android:text="00:00"
-                    card_view:ignore="HardcodedText" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/controls"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                >
-
-                <ImageView
-                    android:id="@id/pw_ivShuffle"
-                    android:layout_width="@dimen/pw_image_item_size"
-                    android:layout_height="@dimen/pw_image_item_size"
-                    android:background="@drawable/pw_bg_iv_black"
-                    android:scaleType="centerInside"
-                    android:layout_weight="1"
-                    android:src="@drawable/pw_ic_shuffle_black"
-                    card_view:ignore="ContentDescription" />
-
-                <ImageView
-                    android:id="@id/pw_ivSkipPrevious"
-                    android:layout_weight="1"
-                    android:layout_width="@dimen/pw_image_item_size"
-                    android:layout_height="@dimen/pw_image_item_size"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/pw_bg_iv_white"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/pw_ic_skip_previous"
-                    card_view:ignore="ContentDescription" />
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@id/pw_playButton"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_weight="1"
-                    android:scaleType="center"
-                    android:src="@drawable/pw_play"
-                    app:backgroundTint="@color/pw_accent"
-                    app:borderWidth="0dp"
-                    app:elevation="@dimen/pw_small_fab_default_elevation"
-                    app:fabSize="normal"
-                    app:pressedTranslationZ="6dp"
-                    />
-
-                <ImageView
-                    android:id="@id/pw_ivSkipNext"
-                    android:layout_width="@dimen/pw_image_item_size"
-                    android:layout_height="@dimen/pw_image_item_size"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/pw_bg_iv_white"
-                    android:gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/pw_ic_skip_next"
-                    card_view:ignore="ContentDescription" />
-
+                    <!-- VIEWPAGER-->
                 <FrameLayout
-                    android:layout_weight="1"
-                    android:layout_width="@dimen/pw_image_item_size"
-                    android:layout_height="@dimen/pw_image_item_size"
-                    android:layout_gravity="center"
-                    >
-                    <ImageView
-                        android:id="@id/pw_ivRepeat"
-                        android:layout_gravity="center"
-                        android:background="@drawable/pw_bg_iv_black"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/pw_ic_repeat_black"
-                        card_view:ignore="ContentDescription"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/text_in_repeat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="10sp"
-                        android:gravity="center"
-                        android:textStyle="bold"
+                    <com.sackcentury.shinebuttonlib.ShineButton
+                        android:id="@+id/shineButton"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        card_view:ignore="SmallSp" />
+                        android:layout_margin="32dp"
+                        android:clickable="false"
+                        android:src="@android:color/darker_gray"
+                        app:allow_random_color="true"
+                        app:big_shine_color="#FF6666"
+                        app:btn_color="@color/colorTransparent"
+                        app:btn_fill_color="@color/colorTransparent"
+                        app:click_animation_duration="200"
+                        app:enable_flashing="true"
+                        app:shine_animation_duration="1500"
+                        app:shine_turn_angle="10"
+                        app:siShape="@raw/heart"
+                        app:small_shine_color="#CC9999"
+                        app:small_shine_offset_angle="20" />
+
+                    <com.music.player.bhandari.m.customViews.CustomViewPager
+                        android:id="@+id/view_pager_now_playing"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
                 </FrameLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-
-    </android.support.design.widget.CoordinatorLayout>
-
-    <RelativeLayout
-        android:id="@+id/root_view_current_playlist"
-        android:gravity="center|top"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:id="@+id/play_queue_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-            <ImageView
-                android:id="@+id/handle_current_queue"
+            <LinearLayout
+                android:id="@+id/controls_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_drag_handle_black_24dp"
-                android:background="@color/colorBlack"
-            />
+                android:layout_gravity="bottom|center"
+                android:paddingBottom="30dp"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/save_queue_button"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/action_bar_size"
-                android:layout_gravity="center"
-                android:background="@color/blackTransparent"
-                android:backgroundTint="@color/blackTransparent"
-                android:textColor="@color/colorwhite"
-                android:textSize="@dimen/np_play_queu" />
+                <LinearLayout
+                    android:id="@+id/seekbarWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/pw_runningTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="right"
+                        android:textSize="15sp"
+                        android:textColor="@color/colorwhite"
+                        android:layout_weight="1"
+                        android:text="00:00"
+                        card_view:ignore="HardcodedText" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewForCurrentTracklist"
-            android:layout_below="@+id/play_queue_title"
-            android:layout_above="@+id/adView"
+                    <SeekBar
+                        android:id="@+id/seekbar_now_playing"
+                        android:layout_margin="5dp"
+                        android:thumb="@drawable/thumb"
+                        android:layout_width="wrap_content"
+                        android:progress="10"
+                        android:layout_weight="7"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/pw_totalTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="15sp"
+                        android:textColor="@color/colorwhite"
+                        android:layout_weight="1"
+                        android:text="00:00"
+                        card_view:ignore="HardcodedText" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/controls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    >
+
+                    <ImageView
+                        android:id="@id/pw_ivShuffle"
+                        android:layout_width="@dimen/pw_image_item_size"
+                        android:layout_height="@dimen/pw_image_item_size"
+                        android:background="@drawable/pw_bg_iv_black"
+                        android:scaleType="centerInside"
+                        android:layout_weight="1"
+                        android:src="@drawable/pw_ic_shuffle_black"
+                        card_view:ignore="ContentDescription" />
+
+                    <ImageView
+                        android:id="@id/pw_ivSkipPrevious"
+                        android:layout_weight="1"
+                        android:layout_width="@dimen/pw_image_item_size"
+                        android:layout_height="@dimen/pw_image_item_size"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/pw_bg_iv_white"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/pw_ic_skip_previous"
+                        card_view:ignore="ContentDescription" />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@id/pw_playButton"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_weight="1"
+                        android:scaleType="center"
+                        android:src="@drawable/pw_play"
+                        app:backgroundTint="@color/pw_accent"
+                        app:borderWidth="0dp"
+                        app:elevation="@dimen/pw_small_fab_default_elevation"
+                        app:fabSize="normal"
+                        app:pressedTranslationZ="6dp"
+                        />
+
+                    <ImageView
+                        android:id="@id/pw_ivSkipNext"
+                        android:layout_width="@dimen/pw_image_item_size"
+                        android:layout_height="@dimen/pw_image_item_size"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/pw_bg_iv_white"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/pw_ic_skip_next"
+                        card_view:ignore="ContentDescription" />
+
+                    <FrameLayout
+                        android:layout_weight="1"
+                        android:layout_width="@dimen/pw_image_item_size"
+                        android:layout_height="@dimen/pw_image_item_size"
+                        android:layout_gravity="center"
+                        >
+                        <ImageView
+                            android:id="@id/pw_ivRepeat"
+                            android:layout_gravity="center"
+                            android:background="@drawable/pw_bg_iv_black"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/pw_ic_repeat_black"
+                            card_view:ignore="ContentDescription"
+                            android:layout_height="match_parent"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/text_in_repeat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="10sp"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            card_view:ignore="SmallSp" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <RelativeLayout
+            android:id="@+id/root_view_current_playlist"
+            android:gravity="center|top"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            />
+            android:orientation="vertical"
+            >
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_play_queue"
-            android:layout_gravity="bottom">
-        </com.google.android.gms.ads.AdView>
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/play_queue_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
 
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/handle_current_queue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_drag_handle_black_24dp"
+                    android:background="@color/colorBlack"
+                />
 
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+                <Button
+                    android:id="@+id/save_queue_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/action_bar_size"
+                    android:layout_gravity="center"
+                    android:background="@color/blackTransparent"
+                    android:backgroundTint="@color/blackTransparent"
+                    android:textColor="@color/colorwhite"
+                    android:textSize="@dimen/np_play_queu" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewForCurrentTracklist"
+                android:layout_below="@+id/play_queue_title"
+                android:layout_above="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_play_queue"
+                android:layout_gravity="bottom">
+            </com.google.android.gms.ads.AdView>
+
+        </RelativeLayout>
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>
