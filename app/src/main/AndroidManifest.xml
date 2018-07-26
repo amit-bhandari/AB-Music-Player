@@ -275,13 +275,13 @@
                 android:resource="@xml/appwidget_info" />
         </receiver>
 
-        <!-- Bluetooth playback receivers testing-->
+        <!-- Bluetooth playback receivers testing
         <receiver android:name=".utils.BluetoothReceiver"  android:exported="true">
             <intent-filter>
                 <action android:name="android.bluetooth.device.action.ACL_CONNECTED"/>
                 <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
             </intent-filter>
-        </receiver>
+        </receiver>g-->
 
         <provider
             android:name=".utils.GenericFileProvider"
