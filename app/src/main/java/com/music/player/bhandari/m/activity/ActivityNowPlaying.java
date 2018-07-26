@@ -142,6 +142,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     @BindView(R.id.view_pager_now_playing)  CustomViewPager viewPager;
     @BindView(R.id.shineButton)  ShineButton shineButton;
     @BindView(R.id.toolbar_)  Toolbar toolbar;
+    @BindView(R.id.controls_wrapper) View controlsWrapper;
 
     private SharedPreferences pref;
 
@@ -165,6 +166,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     Bitmap nowPlayingCustomBackBitmap;
 
     private int selectedPageIndex;
+
+    //location of controls wrapper
+    int[] location = new int[2];
+    int[] locationToolbar = new int[2];
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -195,6 +200,38 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
         setContentView(R.layout.activity_now_playing);
         ButterKnife.bind(this);
+
+        slidingUpPanelLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            slidingUpPanelLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        } else {
+                            slidingUpPanelLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        }
+
+                        controlsWrapper.getLocationOnScreen(location);
+                        toolbar.getLocationOnScreen(locationToolbar);
+                        Log.d("ActivityNowPlaying", "onGlobalLayout: location " + location[0] + " : " + location[1]);
+                        Log.d("ActivityNowPlaying", "onGlobalLayout: locationToolbar " + locationToolbar[0] + " : " + locationToolbar[1]);
+                    }
+        });
+
+        /*toolbar.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        } else {
+                            toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        }
+
+                        toolbar.getLocationOnScreen(locationToolbar);
+                        Log.d("ActivityNowPlaying", "onGlobalLayout: locationToolbar " + locationToolbar[0] + " : " + locationToolbar[1]);
+                    }
+                });*/
 
         if(!MyApp.getPref().getBoolean("never_show_button_again", false)){
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -376,7 +413,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         });
         viewPager.setOffscreenPageLimit(2);
         setupViewPager(viewPager);
-        //set cuurent item to disc
+        //set current item to disc
         viewPager.setCurrentItem(Constants.EXIT_NOW_PLAYING_AT.DISC_FRAG, true);
 
         //display current play queue header
@@ -494,8 +531,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         FragmentArtistInfo artistInfo = new FragmentArtistInfo();
         viewPagerAdapter.addFragment(artistInfo,"Artist Bio");
 
-        FragmentDiscSkipped fragmentDiscSkipped=new FragmentDiscSkipped();
-        viewPagerAdapter.addFragment(fragmentDiscSkipped, "Disc");
+        FragmentAlbumArt fragmentAlbumArt =new FragmentAlbumArt();
+        viewPagerAdapter.addFragment(fragmentAlbumArt, "Disc");
 
         FragmentLyrics fragmentLyric=new FragmentLyrics();
         viewPagerAdapter.addFragment(fragmentLyric, "Lyrics");
@@ -1517,7 +1554,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                //Log.d("FragmentDiscSkipped", "run: running");
+                //Log.d("FragmentAlbumArt", "run: running");
             }
             updateTimeTaskRunning = false;
         }

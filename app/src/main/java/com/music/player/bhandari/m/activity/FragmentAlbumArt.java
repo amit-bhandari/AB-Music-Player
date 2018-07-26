@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.bumptech.glide.DrawableRequestBuilder;
@@ -49,18 +50,18 @@ import butterknife.ButterKnife;
  limitations under the License.
  */
 
-public class FragmentDiscSkipped extends Fragment{
+public class FragmentAlbumArt extends Fragment{
 
     private PlayerService playerService;
     private BroadcastReceiver mUIUpdate;
     @BindView(R.id.album_art_now_playing) ImageView albumArt;
 
-    public FragmentDiscSkipped(){}
+    public FragmentAlbumArt(){}
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View layout = inflater.inflate(R.layout.fragment_disc_skipped, container, false);
+        final View layout = inflater.inflate(R.layout.fragment_album_art, container, false);
 
         ButterKnife.bind(this, layout);
 
@@ -80,10 +81,34 @@ public class FragmentDiscSkipped extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if(isAdded() && getActivity()!=null){
+        if(isAdded() && getActivity()!=null){
+            //exit animation
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getActivity().startPostponedEnterTransition();
             }
+
+            //place album art view properly in center
+            albumArt.getViewTreeObserver().addOnGlobalLayoutListener(
+                    new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                albumArt.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            } else {
+                                albumArt.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            }
+
+                            int y = ((ActivityNowPlaying)getActivity()).location[1];
+                            Log.d("FragmentAlbumArt", "onViewCreated: location " + y);
+                            Log.d("FragmentAlbumArt", "onViewCreated: measured height " + albumArt.getMeasuredHeight());
+
+                            int newy = (y/2) + (albumArt.getHeight()/2);
+                            Log.d("FragmentAlbumArt", "onGlobalLayout: newy " + newy);
+
+                            albumArt.setTop(900);
+                        }
+                    });
+
         }
     }
 
