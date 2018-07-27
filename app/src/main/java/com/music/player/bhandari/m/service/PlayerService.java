@@ -296,6 +296,10 @@ public class PlayerService extends Service implements
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         this.registerReceiver(bluetoothReceiver, filter);
+
+        if(UtilityFun.isBluetoothHeadsetConnected()){
+            doesMusicNeedsToBePaused = true;
+        }
     }
 
     @Override
@@ -1053,6 +1057,7 @@ public class PlayerService extends Service implements
         switch (s){
             case PLAYING:
                 Log.d("PlayerService", "setStatus: Playing");
+                //if(BluetoothDevice)
                 break;
 
             case PAUSED:
@@ -1722,9 +1727,7 @@ public class PlayerService extends Service implements
                     case BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED:
                         switch (intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, BluetoothAdapter.STATE_DISCONNECTED)){
                             case BluetoothAdapter.STATE_CONNECTED:
-                                if(status==PLAYING){
-                                    doesMusicNeedsToBePaused = true;
-                                }
+                                doesMusicNeedsToBePaused = true;
                                 break;
 
                             case BluetoothAdapter.STATE_DISCONNECTED:
@@ -1733,6 +1736,7 @@ public class PlayerService extends Service implements
                                     notifyUI();
                                     Log.d(TAG, "onReceive: pausing music");
                                 }
+                                doesMusicNeedsToBePaused = false;
                                 break;
                         }
                         break;
