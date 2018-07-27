@@ -347,6 +347,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         }
 
         if(layout!=null && getActivity()!=null && artistInfo.getArtistContent()!=null){
+            Log.d("onArtInfoDownloaded", "onArtInfoDownloaded: " + artistInfo.getCorrectedArtist());
             String content = artistInfo.getArtistContent();
             int index = content.indexOf("Read more");
             SpannableString ss = new SpannableString(content);
