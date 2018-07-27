@@ -66,7 +66,6 @@ import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
-import com.music.player.bhandari.m.utils.BluetoothReceiver;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.music.player.bhandari.m.widget.WidgetReceiver;
 import com.squareup.seismic.ShakeDetector;
@@ -134,6 +133,10 @@ public class PlayerService extends Service implements
 
     //Bluetooth callback receivers
     BroadcastReceiver bluetoothReceiver = new BluetoothReceiver();
+
+    //boolean which decides weather to stop playback when either bluetooth is turned off or
+    //bluetooth device is disconnected.
+    Boolean doesMusicNeedsToBePaused;
 
     @Override
     public void onCreate() {
@@ -290,9 +293,8 @@ public class PlayerService extends Service implements
 
         //bluetooth callback receiver
         IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         this.registerReceiver(bluetoothReceiver, filter);
     }
 
@@ -1692,6 +1694,47 @@ public class PlayerService extends Service implements
 
                     case 1:
                         Log.d(getClass().toString(), "Headset plugged");
+                        break;
+                }
+            }
+        }
+    }
+
+    //receiver which handles pausing music upon bluetooth disconnection
+    private class BluetoothReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction()!=null) {
+                Log.d("BluetoothReceiver", "onReceive: " + intent.getAction());
+                switch (intent.getAction()){
+                    case BluetoothAdapter.ACTION_STATE_CHANGED:
+                        switch (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF)){
+                            case BluetoothAdapter.STATE_OFF:
+                                if(doesMusicNeedsToBePaused && status==PLAYING){
+                                    pause();
+                                    notifyUI();
+                                    Log.d(TAG, "onReceive: pausing music");
+                                }
+                                break;
+                        }
+                        break;
+
+                    case BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED:
+                        switch (intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, BluetoothAdapter.STATE_DISCONNECTED)){
+                            case BluetoothAdapter.STATE_CONNECTED:
+                                if(status==PLAYING){
+                                    doesMusicNeedsToBePaused = true;
+                                }
+                                break;
+
+                            case BluetoothAdapter.STATE_DISCONNECTED:
+                                if(doesMusicNeedsToBePaused && status==PLAYING){
+                                    pause();
+                                    notifyUI();
+                                    Log.d(TAG, "onReceive: pausing music");
+                                }
+                                break;
+                        }
                         break;
                 }
             }
