@@ -168,7 +168,7 @@ public class OfflineStorageArtistBio {
                 trackItem.setArtist_id(item.artist_id);
 
                 ArtistInfo artistInfo = OfflineStorageArtistBio.getArtistBioFromTrackItem(trackItem);
-                if(artistInfo!=null){
+                if(artistInfo!=null && !artistInfo.getCorrectedArtist().equals("[unknown]")){
                     map.put(artistInfo.getOriginalArtist(), artistInfo.getImageUrl());
                 }
             }
