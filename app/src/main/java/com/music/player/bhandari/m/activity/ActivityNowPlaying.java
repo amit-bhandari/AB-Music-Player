@@ -168,8 +168,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     private int selectedPageIndex;
 
     //location of controls wrapper
-    int[] location = new int[2];
-    int[] locationToolbar = new int[2];
+    float yControl;
+    float toolbarHeight;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -211,10 +211,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                             slidingUpPanelLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         }
 
-                        controlsWrapper.getLocationOnScreen(location);
-                        toolbar.getLocationOnScreen(locationToolbar);
-                        Log.d("ActivityNowPlaying", "onGlobalLayout: location " + location[0] + " : " + location[1]);
-                        Log.d("ActivityNowPlaying", "onGlobalLayout: locationToolbar " + locationToolbar[0] + " : " + locationToolbar[1]);
+                        yControl = controlsWrapper.getY();
+                        toolbarHeight = toolbar.getHeight();
+                        Log.d("ActivityNowPlaying", "onGlobalLayout: yControl " + yControl);
+                        Log.d("ActivityNowPlaying", "onGlobalLayout: toolbarHeight " + toolbarHeight);
                     }
         });
 

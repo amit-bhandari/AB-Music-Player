@@ -98,14 +98,16 @@ public class FragmentAlbumArt extends Fragment{
                                 albumArt.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                             }
 
-                            int y = ((ActivityNowPlaying)getActivity()).location[1];
-                            Log.d("FragmentAlbumArt", "onViewCreated: location " + y);
-                            Log.d("FragmentAlbumArt", "onViewCreated: measured height " + albumArt.getMeasuredHeight());
+                            //y position of control buttons
+                            float yControl = ((ActivityNowPlaying)getActivity()).yControl;
 
-                            int newy = (y/2) + (albumArt.getHeight()/2);
-                            Log.d("FragmentAlbumArt", "onGlobalLayout: newy " + newy);
+                            //height of toolbar
+                            float toolbarHeight =  ((ActivityNowPlaying)getActivity()).toolbarHeight;
 
-                            albumArt.setY(200);
+                            if(toolbarHeight!=0 || yControl!=0) {
+                                //centre the album art
+                                albumArt.setY(((yControl - toolbarHeight) / 2) - albumArt.getHeight() / 2);
+                            }
                         }
                     });
 
