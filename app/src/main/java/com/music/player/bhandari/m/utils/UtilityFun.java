@@ -1,6 +1,8 @@
 package com.music.player.bhandari.m.utils;
 
 import android.annotation.TargetApi;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothHeadset;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -514,5 +516,11 @@ public class UtilityFun {
     public static Drawable getDefaultAlbumArtDrawable(){
         return Drawable.createFromPath(MyApp.getContext().getFilesDir()
                 + MyApp.getContext().getString(R.string.def_album_art_custom_image));
+    }
+
+    public static boolean isBluetoothHeadsetConnected() {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
+                && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED;
     }
 }
