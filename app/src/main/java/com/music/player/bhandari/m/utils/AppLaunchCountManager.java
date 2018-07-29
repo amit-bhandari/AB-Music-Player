@@ -33,8 +33,8 @@ public class AppLaunchCountManager {
 
 
     private final static int DAYS_UNTIL_PROMPT = 1;//Min number of days
-    private final static int HOURS_UNTIL_INTER_AD = 0; //hours
-    private final static int HOURS_UNTIL_BANNER_ADS = 0;
+    private final static int HOURS_UNTIL_INTER_AD = 24; //hours
+    private final static int HOURS_UNTIL_BANNER_ADS = 24;
     private final static int DAYS_UNTIL_RATE_ASK = 1;
 
     public static void app_launched(Context mContext) {
@@ -70,7 +70,7 @@ public class AppLaunchCountManager {
         MaterialDialog dialog = new MaterialDialog.Builder(mContext)
                 .typeface(TypeFaceHelper.getTypeFace(mContext),TypeFaceHelper.getTypeFace(mContext))
                 .title("Hello there!")
-                .content("This is Amit AB (developer of AB Music) and I hope you" +
+                .content("This is AB (developer of AB Music) and I hope you" +
                         " are enjoying AB Music as much as I enjoyed developing it. Please consider rating and leaving review for "
                         + mContext.getString(R.string.app_name)
                         + " on store, you will bring smile on my face. Thank you in advance!")
