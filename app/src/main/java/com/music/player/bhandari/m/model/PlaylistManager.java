@@ -553,9 +553,6 @@ public class PlaylistManager {
                 }catch (Exception ignored){
 
                 }
-
-                Log.d("PlaylistManager", "StorePlayingQue: restored list count : " + tracklist.size());
-                Log.d("PlaylistManager", "StorePlayingQue: restored queue count : " + count);
             }
         });
 
