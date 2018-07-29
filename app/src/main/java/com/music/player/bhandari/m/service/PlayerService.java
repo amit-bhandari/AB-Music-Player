@@ -40,8 +40,10 @@ import android.media.audiofx.PresetReverb;
 import android.media.session.MediaSession;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -136,7 +138,7 @@ public class PlayerService extends Service implements
 
     //boolean which decides weather to stop playback when either bluetooth is turned off or
     //bluetooth device is disconnected.
-    Boolean doesMusicNeedsToBePaused;
+    static Boolean doesMusicNeedsToBePaused = false;
 
     @Override
     public void onCreate() {
@@ -521,40 +523,67 @@ public class PlayerService extends Service implements
 
             public void onPause() {
                 Log.d(TAG, "onPause called (media button pressed)");
-                if(!MyApp.isAppVisible) {
+                //if(!MyApp.isAppVisible) {
                     onPlayPauseButtonClicked();
-                }
+                //}
                 super.onPause();
+            }
+
+            @Override
+            public void onFastForward() {
+                Log.d(TAG, "onFastForward: called");
+                super.onFastForward();
+            }
+
+            @Override
+            public void onCommand(String command, Bundle extras, ResultReceiver cb) {
+                Log.d(TAG, "onCommand: " + command);
+                super.onCommand(command, extras, cb);
+            }
+
+            @Override
+            public void onSeekTo(long pos) {
+                Log.d(TAG, "onSeekTo: called");
+                super.onSeekTo(pos);
+            }
+
+            @Override
+            public void onRewind() {
+                Log.d(TAG, "onRewind: called");
+                super.onRewind();
             }
 
             public void onSkipToPrevious(){
                 Log.d(TAG, "onskiptoPrevious called (media button pressed)");
-                if(!MyApp.isAppVisible) {
+                //if(!MyApp.isAppVisible) {
                     prevTrack();
-                }
+                notifyUI();
+                //}
                 super.onSkipToPrevious();
             }
 
             public void onSkipToNext() {
                 Log.d(TAG, "onskiptonext called (media button pressed)");
-                if(!MyApp.isAppVisible) {
+                //if(!MyApp.isAppVisible) {
                     nextTrack();
-                }
+                notifyUI();
+                //}
                 super.onSkipToNext();
             }
 
             public void onPlay() {
                 Log.d(TAG, "onPlay called (media button pressed)");
-                if(!MyApp.isAppVisible) {
+                //if(!MyApp.isAppVisible) {
                     onPlayPauseButtonClicked();
-                }
+                //}
                 super.onPlay();
             }
 
             public void onStop() {
-                if(!MyApp.isAppVisible) {
+                //if(!MyApp.isAppVisible) {
                     stop();
-                }
+                    notifyUI();
+                //}
                 Log.d(TAG, "onStop called (media button pressed)");
                 super.onStop();
             }
@@ -567,11 +596,13 @@ public class PlayerService extends Service implements
                 if(currentTime - lastTimePlayPauseClicked < 500){
                     Log.d(TAG, "onPlay: nextTrack on multiple play pause click");
                     nextTrack();
+                    notifyUI();
                     return;
                 }
 
                 lastTimePlayPauseClicked = System.currentTimeMillis();
                 play();
+                notifyUI();
             }
         });
         mMediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
