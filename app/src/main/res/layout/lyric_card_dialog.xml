@@ -11,14 +11,13 @@
             android:layout_centerHorizontal="true">
 
 
-        <TextView
+        <ProgressBar
             android:layout_margin="10dp"
             android:textSize="10sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="center"
-            android:text="Please wait while image loads..."
             tools:ignore="HardcodedText,SmallSp" />
 
         <ImageView
@@ -26,7 +25,7 @@
             android:visibility="invisible"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:scaleType="centerInside"
+            android:scaleType="fitCenter"
             android:foregroundGravity="center"
             tools:ignore="ContentDescription" />
 

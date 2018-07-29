@@ -161,6 +161,7 @@ public class ActivityMain extends AppCompatActivity
     final static String WEBSITE = "http://www.thetechguru.in";
     final static String GITHUB = "https://github.com/amit-bhandari/AB-Music-Player";
     final static String INSTA_WEBSITE = "https://www.instagram.com/_amit_bhandari/?hl=en";
+    final static String LYRIC_CARD_GIF = "https://media.giphy.com/media/2w6JlMibDu9ZL9xVuB/giphy.gif";
     final static String AB_REMOTE_WALL_URL = "https://play.google.com/store/apps/details?id=in.thetechguru.walle.remote.abremotewallpaperchanger&hl=en";
 
     private long mLastClickTime = 0;
@@ -1480,6 +1481,13 @@ public class ActivityMain extends AppCompatActivity
                 //.content(R.string.dialog_lyric_card_content)
                 .positiveText(R.string.dialog_lyric_card_pos)
                 .negativeText(getString(R.string.cancel))
+                .neutralText("Know more")
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        openUrl(Uri.parse(LYRIC_CARD_GIF));
+                    }
+                })
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -1516,7 +1524,7 @@ public class ActivityMain extends AppCompatActivity
             Glide.with(this)
                     .load(link)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .centerCrop()
+                    //.centerCrop()
                     .into(new GlideDrawableImageViewTarget(iv) {
                         @Override
                         public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
