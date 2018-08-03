@@ -35,7 +35,7 @@ As stated above, the sole purpose why data or information are collected when usi
 
 ### Personal Data
 
-Personal information in form of your email address login may be required when the signup button on the app is clicked. However, the developer doesn't have access to this personally identifiable data while the software is being utilized. This sign up function is not imposed on you by the developer hence you can sign in or out at any time.
+Personal information in form of your email address login may be required when the signup button on the app is clicked. Email address upon successful sign up is stored securely on AB Music server which may be used for communication regarding app features and future updates. This data is not shared with any third party service and malicious parties. This sign up function is not imposed on you by the developer hence you can sign in or out at any time.
 
 ### Usage Data
 
@@ -45,7 +45,7 @@ Certain usage data may be collected when certain pages are viewed or when certai
     
 With the enablement of the phone permission, the software and not the developer has the power to 
 
-- Read phone status and identity. This allows the appt to access the phone features of the device. This permission allows the app to determine the phone number and device IDs, whether a call is active and the remote number connected by a call.
+- Read phone status and identity. This allows the appt to access the phone features of the device. This permission allows the app to determine the phone number and device IDs, whether a call is active and the remote number connected by a call. (This permission is primarly used to control music playback duing calls)
 
 When the storage permission is enabled, the software is able to
  
@@ -71,10 +71,10 @@ Links to other websites or services in AB-Music-Player software are located in t
 
 These are found when the following buttons on the menu are clicked;
 
-- Developer's Message
-- Rate in store
-- DM on Instagram
-- Sign Up
+- Developer's Message (for user feedback and promotional link)
+- Rate in store 
+- DM on Instagram (for user feedback)
+- Sign Up (creating communication channel between user and developer)
 
 The developer has no control over and assumes no responsibility for the content, privacy policies or practices of any third party sites or services. <hr>
 
@@ -92,5 +92,5 @@ AB-Music-Player app is designed with many extra functionalities than your basic 
 AB-Music-Player is a budding project and will be greater with contributions from the open source community. You can contribute to this project either by pulling requests of your proposed changes, bug fixes, development upgrades. You can also open [issues](https://github.com/amit-bhandari/AB-Music-Player/issues) for features/ enhancements requests or bug reports.
 Please before opening an issue search to see if it hasn't been reported before.
 
-For further inquiry regarding this privacy policy or any other issue, please contact the developer directly via [email](amit.bhandari@outlook.in) or visit the developer's [website](http://thetechguru.in/)
+For further inquiry regarding this privacy policy or any other issue, please contact the developer directly via [email](amit.bhandari.c@gmail.com) or visit the developer's [website](http://thetechguru.in/)
 
