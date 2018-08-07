@@ -189,12 +189,12 @@ public class ActivityMain extends AppCompatActivity
 
     //bind player service
     private PlayerService playerService;
-    //search box relaated things
+    //search box related things
     private  MenuItem mSearchAction;
     private  boolean isSearchOpened = false;
     private  EditText editSearch;
     private  String searchQuery="";
-    private  Handler mHandler;
+    private  Handler mHandler = new Handler();
     private InputMethodManager imm;
 
     private  boolean stopProgressRunnable = false;
@@ -352,7 +352,7 @@ public class ActivityMain extends AppCompatActivity
         setTitle(getString(R.string.abm_title));
 
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        mHandler = new Handler();
+        //mHandler = new Handler();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         try {
