@@ -1815,13 +1815,15 @@ public class ActivityMain extends AppCompatActivity
     @Override
     protected void onDestroy() {
         Log.v("TAG","Main activity getting destroyed");
-        mHandler.removeCallbacksAndMessages(null);
-        viewPager.clearOnPageChangeListeners();
-        viewPager = null;
-        viewPagerAdapter = null;
-        navigationView.setNavigationItemSelectedListener(null);
-        if (mAdView != null) {
+        try {
+            mHandler.removeCallbacksAndMessages(null);
+            viewPager.clearOnPageChangeListeners();
+            viewPager = null;
+            viewPagerAdapter = null;
+            navigationView.setNavigationItemSelectedListener(null);
             mAdView.destroy();
+        }catch (NullPointerException e){
+            Log.d("TAG", "onDestroy: destroy called because of null player service");
         }
         super.onDestroy();
     }
