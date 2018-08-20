@@ -129,7 +129,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     private  boolean stopProgressRunnable = false;
     private boolean updateTimeTaskRunning = false;
 
-    private PowerManager.WakeLock mWakeLock;
     @BindView(R.id.root_view_now_playing) View rootView;
     @BindView(R.id.pw_ivShuffle)  ImageView shuffle;
     @BindView(R.id.pw_ivRepeat)  ImageView repeat;
@@ -377,10 +376,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         };
 
 
-        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        /*final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (pm != null) {
             this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        }
+        }*/
 
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -470,9 +469,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     }
 
     private void acquireWindowPowerLock(boolean acquire){
-        if(acquire) {
+        /*if(acquire) {
             if (mWakeLock != null && !mWakeLock.isHeld()) {
-                this.mWakeLock.acquire(10*60*1000L /*10 minutes*/);
+                this.mWakeLock.acquire(10*60*1000L); //10 minutes
             }
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }else {
@@ -480,7 +479,14 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 this.mWakeLock.release();
             }
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }*/
+
+        if (acquire) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+
     }
 
     private void showDisclaimerDialog(){
@@ -587,9 +593,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 break;
         }*/
 
-        if(mWakeLock!=null && mWakeLock.isHeld()){
+        /*if(mWakeLock!=null && mWakeLock.isHeld()){
             mWakeLock.release();
-        }
+        }*/
 
         super.onDestroy();
     }
@@ -1131,7 +1137,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         LocalBroadcastManager.getInstance(getApplicationContext())
                 .sendBroadcast(new Intent(Constants.ACTION.DISC_UPDATE));
         ((FragmentLyrics) viewPagerAdapter.getItem(2)).runLyricThread();
-        if(playerService.getStatus()==PlayerService.PLAYING) {
+        if(viewPager.getCurrentItem()==2 &&  playerService.getStatus()==PlayerService.PLAYING) {
             acquireWindowPowerLock(true);
         }else {
             acquireWindowPowerLock(false);
