@@ -160,7 +160,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
     @BindView(R.id.adView) AdView mAdView;
 
-    private PowerManager.WakeLock mWakeLock;
+    //private PowerManager.WakeLock mWakeLock;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -224,10 +224,10 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             showDisclaimerDialog();
         }
 
-        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        /*final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (pm != null) {
             this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        }
+        }*/
 
         try {
             Bundle bundle = new Bundle();
@@ -410,15 +410,21 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     }
 
     private void acquireWindowPowerLock(boolean acquire){
-        if(acquire) {
+        /*if(acquire) {
             if (mWakeLock != null && !mWakeLock.isHeld()) {
-                this.mWakeLock.acquire(10*60*1000L /*10 minutes*/);
+                this.mWakeLock.acquire(10*60*1000L); // /*10 minutes
             }
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }else {
             if(mWakeLock!=null && mWakeLock.isHeld()) {
                 this.mWakeLock.release();
             }
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }*/
+
+        if (acquire) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
