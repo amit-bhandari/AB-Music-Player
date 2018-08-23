@@ -8,8 +8,8 @@
     <ImageView
         android:id="@+id/album_art_now_playing"
         android:layout_marginTop="50dp"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_centerHorizontal="true"
         android:contentDescription="album_art"
         android:transitionName="@string/transition"
