@@ -45,13 +45,13 @@ public class SignUp extends AsyncTask<String, String, String> {
             name = params[1];
         }
 
-        String urlString = "https://www.thetechguru.in/?es=subscribe";
+        String urlString = "https://thetechguru.in/wp-admin/admin-ajax.php?action=es_add_subscriber&es=subscribe";
 
-        String queryPart1 = "es_email=" + email;
+        String queryPart1 = "esfpx_es_txt_email=" + email;
 
-        String queryPart2 = "&es_name=" + name;
+        String queryPart2 = "&esfpx_es_txt_name=" + name;
 
-        String query = queryPart1 + queryPart2 + "&es_group=abmusic&timestamp=&action=0.597592245452881&es_from=abmusic";
+        String query = queryPart1 + queryPart2 + "&esfpx_es_txt_group=abmusic&esfpx_es-subscribe=ce72472f59";
 
         String resultToDisplay = "";
 
