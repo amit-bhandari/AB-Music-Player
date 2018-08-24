@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaMetadata;
@@ -901,7 +902,8 @@ public class PlayerService extends Service implements
                 if(b!=null) {
                     builder.setLargeIcon(b);
                 }else {
-                    builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+                    //builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.back2));
+                    builder.setColor(getResources().getColor(R.color.notification_color_for_no_album_art));
                 }
 
                 builder.addAction(new NotificationCompat.Action(R.drawable.ic_skip_previous_black_24dp, "Prev", ppreviousIntent ));
