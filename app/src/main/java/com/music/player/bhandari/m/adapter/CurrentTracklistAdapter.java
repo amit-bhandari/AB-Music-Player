@@ -37,6 +37,7 @@ import com.music.player.bhandari.m.model.dataItem;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.ItemTouchHelperAdapter;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener;
+import com.music.player.bhandari.m.ringtoneCutter.RingdroidEditActivity;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.utils.UtilityFun;
@@ -247,6 +248,13 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
             case R.id.action_search_youtube:
                 UtilityFun.LaunchYoutube(context,dataItems.get(position).artist_name + " - "
                         +dataItems.get(position).title);
+
+            case R.id.action_ringtone_cutter:
+                Intent intent = new Intent(context.getApplicationContext(), RingdroidEditActivity.class);
+                intent.putExtra("file_path", dataItems.get(position).file_path);
+                intent.putExtra("was_get_content_intent", false);
+                context.startActivity(intent);
+                break;
         }
         return true;
     }

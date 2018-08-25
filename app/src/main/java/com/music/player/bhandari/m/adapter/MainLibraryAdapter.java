@@ -433,11 +433,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case R.id.action_ringtone_cutter:
-                //Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filteredDataItems.get(position).file_path));
-                //Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filename));
-                //intent.putExtra("was_get_content_intent", false);
-                //intent.setClassName( "com.ringdroid", "com.ringdroid.RingdroidEditActivity");
-                //context.startActivity(intent);
                 Intent intent = new Intent(context.getApplicationContext(), RingdroidEditActivity.class);
                 intent.putExtra("file_path", filteredDataItems.get(position).file_path);
                 intent.putExtra("was_get_content_intent", false);

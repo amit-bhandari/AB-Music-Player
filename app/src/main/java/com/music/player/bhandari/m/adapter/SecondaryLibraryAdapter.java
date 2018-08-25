@@ -28,6 +28,7 @@ import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.dataItem;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.TrackItem;
+import com.music.player.bhandari.m.ringtoneCutter.RingdroidEditActivity;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
@@ -305,6 +306,14 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                 }
                 UtilityFun.SetRingtone(context, tempItem.getFilePath()
                         ,tempItem.getId());
+                break;
+
+            case R.id.action_ringtone_cutter:
+                TrackItem trackItem = MusicLibrary.getInstance().getTrackItemFromId(dataItems.get(position).id);
+                Intent intent = new Intent(context.getApplicationContext(), RingdroidEditActivity.class);
+                intent.putExtra("file_path", trackItem.getFilePath());
+                intent.putExtra("was_get_content_intent", false);
+                context.startActivity(intent);
                 break;
         }
         if (item.getTitle().equals(REMOVE)) {

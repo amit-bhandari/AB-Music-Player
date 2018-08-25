@@ -61,7 +61,7 @@
             android:background="?android:selectableItemBackground"
             android:padding="5dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_skip_previous_black_24dp" />
+            android:src="@drawable/pw_ic_skip_previous" />
 
 
         <ImageView
@@ -71,7 +71,7 @@
             android:padding="5dp"
             android:layout_height="@dimen/ne_button_height"
             android:background="?android:selectableItemBackground"
-            android:src="@drawable/ic_play_arrow_black_24dp"
+            android:src="@drawable/pw_play"
             android:id="@+id/widget_Play"
             android:layout_gravity="center" />
 
@@ -85,7 +85,7 @@
             android:padding="5dp"
             android:layout_height="@dimen/ne_button_height"
             android:background="?android:selectableItemBackground"
-            android:src="@drawable/ic_skip_next_black_24dp"/>
+            android:src="@drawable/pw_ic_skip_next"/>
 
 
         <FrameLayout

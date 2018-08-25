@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -94,7 +95,7 @@ public class RingdroidEditActivity extends AppCompatActivity
     private MarkerView mEndMarker;
     private TextView mStartText;
     private TextView mEndText;
-    private TextView mInfo;
+    //private TextView mInfo;
     private String mInfoContent;
     private ImageButton mPlayButton;
     private ImageButton mRewindButton;
@@ -292,7 +293,7 @@ public class RingdroidEditActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.edit_options, menu);
+        inflater.inflate(R.menu.ringtone_cutter_edit_options, menu);
 
         return true;
     }
@@ -319,6 +320,9 @@ public class RingdroidEditActivity extends AppCompatActivity
             return true;
         case R.id.action_about:
             onAbout(this);
+            return true;
+        case android.R.id.home:
+            finish();
             return true;
         default:
             return false;
@@ -560,7 +564,10 @@ public class RingdroidEditActivity extends AppCompatActivity
      */
     private void loadGui() {
         // Inflate our UI from its XML layout description.
-        setContentView(R.layout.editor);
+        setContentView(R.layout.ringtone_cutter_editor);
+
+        findViewById(R.id.playback_buttons).setBackgroundColor(ColorHelper.getBrightPrimaryColor());
+        findViewById(R.id.times).setBackgroundColor(ColorHelper.getBrightPrimaryColor());
 
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
@@ -610,8 +617,8 @@ public class RingdroidEditActivity extends AppCompatActivity
         mWaveformView = (WaveformView)findViewById(R.id.waveform);
         mWaveformView.setListener(this);
 
-        mInfo = (TextView)findViewById(R.id.info);
-        mInfo.setText(mCaption);
+        //mInfo = (TextView)findViewById(R.id.info);
+        //mInfo.setText(mCaption);
 
         mMaxPos = 0;
         mLastDisplayedStartPos = -1;
@@ -716,11 +723,11 @@ public class RingdroidEditActivity extends AppCompatActivity
                     mProgressDialog.dismiss();
                     e.printStackTrace();
                     mInfoContent = e.toString();
-                    runOnUiThread(new Runnable() {
+                    /*runOnUiThread(new Runnable() {
                         public void run() {
                             mInfo.setText(mInfoContent);
                         }
-                    });
+                    });*/
 
                     Runnable runnable = new Runnable() {
                         public void run() {
@@ -822,11 +829,11 @@ public class RingdroidEditActivity extends AppCompatActivity
                     mAlertDialog.dismiss();
                     e.printStackTrace();
                     mInfoContent = e.toString();
-                    runOnUiThread(new Runnable() {
+                    /*runOnUiThread(new Runnable() {
                         public void run() {
                             mInfo.setText(mInfoContent);
                         }
-                    });
+                    });*/
 
                     Runnable runnable = new Runnable() {
                         public void run() {
@@ -875,7 +882,7 @@ public class RingdroidEditActivity extends AppCompatActivity
             mSoundFile.getAvgBitrateKbps() + " kbps, " +
             formatTime(mMaxPos) + " " +
             getResources().getString(R.string.time_seconds);
-        mInfo.setText(mCaption);
+        //mInfo.setText(mCaption);
 
         updateDisplay();
     }
@@ -1324,11 +1331,11 @@ public class RingdroidEditActivity extends AppCompatActivity
                             outFile.delete();
                         }
                         mInfoContent = e.toString();
-                        runOnUiThread(new Runnable() {
+                        /*runOnUiThread(new Runnable() {
                             public void run() {
                                 mInfo.setText(mInfoContent);
                             }
-                        });
+                        });*/
 
                         CharSequence errorMessage;
                         if (e.getMessage() != null
@@ -1367,11 +1374,11 @@ public class RingdroidEditActivity extends AppCompatActivity
                     mProgressDialog.dismiss();
                     e.printStackTrace();
                     mInfoContent = e.toString();
-                    runOnUiThread(new Runnable() {
+                    /*runOnUiThread(new Runnable() {
                         public void run() {
                             mInfo.setText(mInfoContent);
                         }
-                    });
+                    });*/
 
                     Runnable runnable = new Runnable() {
                         public void run() {

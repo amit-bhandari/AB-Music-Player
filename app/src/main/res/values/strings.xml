@@ -61,6 +61,7 @@
         <string name="action_track_info">Track info</string>
         <string name="action_share_file">Share music file</string>
         <string name="action_delete">Delete</string>
+        <string name="action_ringtone_cutter">Ringtone Cutter</string>
         <string name="action_go_to_artist">Go to Artist</string>
         <string name="action_go_to_album">Go to Album</string>
         <string name="action_fav">Fav</string>
@@ -1111,8 +1112,6 @@ that this copyright notice remain intact.</string>
     <string name="system_playlists">System playlists</string>
     <string name="nav_default_album_art">Default Album Art</string>
     <string name="pref_default_album_art">pef_default_album_art</string>
-
-
 
 
 </resources>
