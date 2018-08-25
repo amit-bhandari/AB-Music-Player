@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.adapter;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,6 +44,7 @@ import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.model.dataItem;
 import com.music.player.bhandari.m.model.MusicLibrary;
+import com.music.player.bhandari.m.ringtoneCutter.RingdroidEditActivity;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.utils.UtilityFun;
@@ -428,6 +430,18 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
             case R.id.action_search_youtube:
                 UtilityFun.LaunchYoutube(context,filteredDataItems.get(position).artist_name + " - "
                         +filteredDataItems.get(position).title );
+                break;
+
+            case R.id.action_ringtone_cutter:
+                //Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filteredDataItems.get(position).file_path));
+                //Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filename));
+                //intent.putExtra("was_get_content_intent", false);
+                //intent.setClassName( "com.ringdroid", "com.ringdroid.RingdroidEditActivity");
+                //context.startActivity(intent);
+                Intent intent = new Intent(context.getApplicationContext(), RingdroidEditActivity.class);
+                intent.putExtra("file_path", filteredDataItems.get(position).file_path);
+                intent.putExtra("was_get_content_intent", false);
+                context.startActivity(intent);
                 break;
         }
         return true;

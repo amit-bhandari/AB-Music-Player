@@ -54,7 +54,10 @@
         android:title="@string/action_delete"
         />
 
-
+    <item
+        android:id="@+id/action_ringtone_cutter"
+        android:title="Ringtone Cutter"
+        />
 
 
 </menu>
