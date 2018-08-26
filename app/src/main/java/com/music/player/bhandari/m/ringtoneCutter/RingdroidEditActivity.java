@@ -1524,9 +1524,9 @@ public class RingdroidEditActivity extends AppCompatActivity
                             .show();
                         finish();
                         break;
-                    case R.id.button_choose_contact:
+                    /*case R.id.button_choose_contact:
                         chooseContactForRingtone(newUri);
-                        break;
+                        break;*/
                     default:
                     case R.id.button_do_nothing:
                         finish();
