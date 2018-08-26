@@ -38,6 +38,7 @@ import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.model.TrackItem;
+import com.music.player.bhandari.m.ringtoneCutter.RingdroidEditActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -242,84 +243,106 @@ public class UtilityFun {
 
         }else {
 
-            final TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
-            if(item==null) return;
-
-            Executors.newSingleThreadExecutor().execute(new Runnable() {
-                @Override
-                public void run() {
-                    File k = new File(filePath);
-
-                    File newFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES)
-                            .getAbsolutePath()
-                            + "/AB_Music_tone.mp3");
-                    try
-                    {
-                        newFile.createNewFile();
-                        copy(k,newFile);
-                    }
-                    catch (IOException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-
-                    if(!k.canRead()){
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Unable to set ringtone: " + item.getTitle(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                        return;
-                    }
-                    ContentValues values = new ContentValues();
-                    values.put(MediaStore.MediaColumns.DATA, newFile.getAbsolutePath());
-                    values.put(MediaStore.MediaColumns.TITLE, item.getTitle()+" Tone");
-                    values.put(MediaStore.MediaColumns.SIZE, k.length());
-                    values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
-                    values.put(MediaStore.Audio.Media.DURATION, 230);
-                    values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
-                    values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
-                    values.put(MediaStore.Audio.Media.IS_ALARM, true);
-                    values.put(MediaStore.Audio.Media.IS_MUSIC, false);
-
-                    //Insert it into the database
-                    Uri uri1 = MediaStore.Audio.Media.getContentUriForPath(newFile.getAbsolutePath());
-                    context.getContentResolver().delete(uri1, MediaStore.MediaColumns.DATA + "=\"" + newFile.getAbsolutePath() + "\"",
-                            null);
-                    Uri newUri = context.getContentResolver().insert(uri1, values);
-
-                    try {
-                        RingtoneManager.setActualDefaultRingtoneUri(
-                                context,
-                                RingtoneManager.TYPE_RINGTONE,
-                                newUri
-                        );
-                    }catch (SecurityException e){
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Error setting ringtone.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        return;
-                    }
-
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+            MaterialDialog dialog = new MaterialDialog.Builder(context)
+                    .typeface(TypeFaceHelper.getTypeFace(context),TypeFaceHelper.getTypeFace(context))
+                    .title(context.getString(R.string.action_set_as_ringtone))
+                    .content("Would you like to use Ringtone Cutter first?")
+                    .positiveText("Ringtone Cutter")
+                    .negativeText("Set Directly")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
-                        public void run() {
-                            Toast.makeText(context, "Ringtone set: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            //launch ringtone cutter
+                            Intent intent = new Intent(context.getApplicationContext(), RingdroidEditActivity.class);
+                            intent.putExtra("file_path", filePath);
+                            intent.putExtra("was_get_content_intent", false);
+                            context.startActivity(intent);
                         }
-                    });
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            final TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
+                            if(item==null) return;
 
-                }
-            });
+                            Executors.newSingleThreadExecutor().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    File k = new File(filePath);
+
+                                    File newFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES)
+                                            .getAbsolutePath()
+                                            + "/" + item.getTitle() + "_tone");
+                                    try
+                                    {
+                                        newFile.createNewFile();
+                                        copy(k,newFile);
+                                    }
+                                    catch (IOException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
 
 
+                                    if(!k.canRead()){
+                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(context, "Unable to set ringtone: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
 
+                                        return;
+                                    }
+                                    ContentValues values = new ContentValues();
+                                    values.put(MediaStore.MediaColumns.DATA, newFile.getAbsolutePath());
+                                    values.put(MediaStore.MediaColumns.TITLE, item.getTitle()+" Tone");
+                                    values.put(MediaStore.MediaColumns.SIZE, k.length());
+                                    values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
+                                    values.put(MediaStore.Audio.Media.DURATION, 230);
+                                    values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+                                    values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
+                                    values.put(MediaStore.Audio.Media.IS_ALARM, true);
+                                    values.put(MediaStore.Audio.Media.IS_MUSIC, false);
+
+                                    //Insert it into the database
+                                    Uri uri1 = MediaStore.Audio.Media.getContentUriForPath(newFile.getAbsolutePath());
+                                    context.getContentResolver().delete(uri1, MediaStore.MediaColumns.DATA + "=\"" + newFile.getAbsolutePath() + "\"",
+                                            null);
+                                    Uri newUri = context.getContentResolver().insert(uri1, values);
+
+                                    try {
+                                        RingtoneManager.setActualDefaultRingtoneUri(
+                                                context,
+                                                RingtoneManager.TYPE_RINGTONE,
+                                                newUri
+                                        );
+                                    }catch (SecurityException e){
+                                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(context, "Error setting ringtone.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                        return;
+                                    }
+
+                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(context, "Ringtone set: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                                }
+                            });
+                        }
+                    })
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
         }
     }
 
