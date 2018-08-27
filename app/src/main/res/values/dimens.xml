@@ -117,6 +117,10 @@
     <dimen name="abm_title_and_art_padd">3dp</dimen>
     <dimen name="abm_play_next_padd">3dp</dimen>
 
+    <!-- widget -->
+    <dimen name="widget_track_title">18sp</dimen>
+    <dimen name="widget_track_artist">15sp</dimen>
+
     <!-- content main -->
     <dimen name="cm_tab_width_min">100dp</dimen>
 
