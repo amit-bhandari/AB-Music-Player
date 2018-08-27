@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.lyricCard;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -78,6 +79,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  /**
@@ -184,6 +186,11 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         initiateToolbar();
         fillFonts();
         initiateUI();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     private void setTheme() {

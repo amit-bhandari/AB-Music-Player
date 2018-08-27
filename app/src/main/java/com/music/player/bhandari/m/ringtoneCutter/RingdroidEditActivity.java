@@ -210,6 +210,12 @@ public class RingdroidEditActivity extends AppCompatActivity
         }
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
     private void closeThread(Thread thread) {
         if (thread != null && thread.isAlive()) {
             try {

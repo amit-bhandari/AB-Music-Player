@@ -336,6 +336,7 @@ public class ActivityAboutUs extends AppCompatActivity {
 
     private void showDisclaimerDialog(){
         MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.lyrics_disclaimer_title))
                 .content(getString(R.string.lyrics_disclaimer_content))
                 .positiveText(getString(R.string.lyrics_disclaimer_title_pos))
