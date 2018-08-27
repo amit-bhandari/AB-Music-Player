@@ -613,7 +613,7 @@ public class ActivitySettings extends AppCompatActivity {
 
             //text font
             Preference fontPref = findPreference(getString(R.string.pref_text_font));
-            int textFontPref = MyApp.getPref().getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP);
+            int textFontPref = MyApp.getPref().getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE);
             switch (textFontPref){
 
                 case Constants.TYPEFACE.MONOSPACE:
