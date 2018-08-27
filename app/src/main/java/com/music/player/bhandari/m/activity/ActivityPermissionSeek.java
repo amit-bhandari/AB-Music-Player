@@ -417,8 +417,8 @@ public class ActivityPermissionSeek extends AppCompatActivity {
                     fontString = "SYSTEM_DEFAULT";
                     break;
 
-                case Constants.TYPEFACE.RISQUE:
-                    fontString = "RISQUE";
+                case Constants.TYPEFACE.MANROPE:
+                    fontString = "MANROPE";
                     break;
 
                 case Constants.TYPEFACE.ASAP:

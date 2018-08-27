@@ -35,8 +35,8 @@ public class TypeFaceHelper {
                     typeface = Typeface.createFromAsset(context.getAssets(), "fonts/sofia.ttf");
                     break;
 
-                case Constants.TYPEFACE.RISQUE:
-                    typeface = Typeface.createFromAsset(context.getAssets(), "fonts/risque.ttf");
+                case Constants.TYPEFACE.MANROPE:
+                    typeface = Typeface.createFromAsset(context.getAssets(), "fonts/manrope.ttf");
                     break;
 
                 case Constants.TYPEFACE.SYSTEM_DEFAULT:
@@ -65,8 +65,8 @@ public class TypeFaceHelper {
                 typefacePath = "fonts/sofia.ttf";
                 break;
 
-            case Constants.TYPEFACE.RISQUE:
-                typefacePath = "fonts/risque.ttf";
+            case Constants.TYPEFACE.MANROPE:
+                typefacePath = "fonts/manrope.ttf";
                 break;
 
             case Constants.TYPEFACE.SYSTEM_DEFAULT:

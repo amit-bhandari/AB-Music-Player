@@ -172,7 +172,7 @@ public class Constants {
     public interface TYPEFACE {
         int MONOSPACE = 0;
         int SOFIA = 1;
-        int RISQUE = 2;
+        int MANROPE = 2;
         int ASAP = 3;
         int SYSTEM_DEFAULT = 4;
         int ACME = 5;

@@ -1,8 +1,6 @@
 package com.music.player.bhandari.m.activity;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -60,7 +58,6 @@ import com.music.player.bhandari.m.service.NotificationListenerService;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.ItemTouchHelperAdapter;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener;
@@ -386,8 +383,8 @@ public class ActivitySettings extends AppCompatActivity {
 
         final String MONOSPACE = "Monospace";
         final String SOFIA = "Sofia";
-        final String RISQUE = "Risque";
-        final String ASAP = "Asap (Recommended)";
+        final String MANROPE = "Manrope (Recommended)";
+        final String ASAP = "Asap";
         final String SYSTEM_DEFAULT = "System Default";
 
         final String LIST = "List View";
@@ -631,8 +628,8 @@ public class ActivitySettings extends AppCompatActivity {
                     findPreference(getString(R.string.pref_text_font)).setSummary(SYSTEM_DEFAULT);
                     break;
 
-                case Constants.TYPEFACE.RISQUE:
-                    findPreference(getString(R.string.pref_text_font)).setSummary(RISQUE);
+                case Constants.TYPEFACE.MANROPE:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(MANROPE);
                     break;
 
                 case Constants.TYPEFACE.ASAP:
@@ -1888,7 +1885,7 @@ public class ActivitySettings extends AppCompatActivity {
             MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                     .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .title(getString(R.string.title_text_font))
-                    .items((CharSequence[]) new String[]{ ASAP, MONOSPACE, SOFIA, RISQUE, SYSTEM_DEFAULT})
+                    .items((CharSequence[]) new String[]{ MANROPE, ASAP, MONOSPACE, SOFIA, SYSTEM_DEFAULT})
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -1903,9 +1900,9 @@ public class ActivitySettings extends AppCompatActivity {
                                     findPreference(getString(R.string.pref_text_font)).setSummary(SOFIA);
                                     break;
 
-                                case RISQUE:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.RISQUE).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(RISQUE);
+                                case MANROPE:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(MANROPE);
                                     break;
 
                                 case ASAP:
