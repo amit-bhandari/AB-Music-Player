@@ -70,7 +70,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.DrawableRequestBuilder;
-import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -133,6 +132,9 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
+import butterknife.BindInt;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -165,7 +167,7 @@ public class ActivityMain extends AppCompatActivity
     final static String AB_REMOTE_WALL_URL = "https://play.google.com/store/apps/details?id=in.thetechguru.walle.remote.abremotewallpaperchanger&hl=en";
 
     private long mLastClickTime = 0;
-    private AdView mAdView;
+    @BindView(R.id.adView) AdView mAdView;
 
     //to receive broadcast to update mini player
     private  BroadcastReceiver mReceiverForMiniPLayerUpdate;
@@ -174,17 +176,24 @@ public class ActivityMain extends AppCompatActivity
 
     public static final String NOTIFY_BACK_PRESSED="BACK_PRESSED";
 
-    private  ViewPager viewPager;
+    @BindView(R.id.viewpager)  ViewPager viewPager;
     private  ViewPagerAdapter viewPagerAdapter;
-    private  ImageView buttonPlay;
-    private ImageView albumArt;
-    private  TextView songNameMiniPlayer,artistNameMiniPlayer;
-    private  NavigationView navigationView;
-    private  ImageView navViewBack;
-    private FloatingActionButton fab_right_side, fab_lock;
+    @BindView(R.id.play_pause_mini_player)  ImageView buttonPlay;
+    @BindView(R.id.next_mini_plaayrer)  ImageView buttonNext;
+    @BindView(R.id.album_art_mini_player)  ImageView albumArt;
+    @BindView(R.id.song_name_mini_player)   TextView songNameMiniPlayer;
+    @BindView(R.id.artist_mini_player)   TextView artistNameMiniPlayer;
+    @BindView(R.id.mini_player) View miniPlayer;
+    @BindView(R.id.nav_view)  NavigationView navigationView;
+    @BindView(R.id.drawer_bg)  ImageView navViewBack;
+    @BindView(R.id.fab_right_side) FloatingActionButton fab_right_side;
+    @BindView(R.id.fab_lock) FloatingActionButton fab_lock;
     //private SeekBar seekBar;
-    private View rootView;
-    private View miniPlayerWrapper;
+    @BindView(R.id.root_view_main_activity) View rootView;
+    @BindView(R.id.album_art_mini_player_wrapper)  View miniPlayerWrapper;
+    @BindView(R.id.overlay_for_gradient) View gradientOverlay;
+    @BindView(R.id.overlay_for_custom_background) View customBackOverlay;
+
 
 
     //bind player service
@@ -197,9 +206,6 @@ public class ActivityMain extends AppCompatActivity
     private  Handler mHandler = new Handler();
     private InputMethodManager imm;
 
-    private  boolean stopProgressRunnable = false;
-    private boolean updateTimeTaskRunning = false;
-
     private String currentPageSort = ""; //holds the value for pref id for current page sort by
 
     private GoogleApiClient mGoogleApiClient;
@@ -207,11 +213,6 @@ public class ActivityMain extends AppCompatActivity
 
     //tab sequence
     int[] savedTabSeqInt = {0,1,2,3,4,5};
-
-    private Bitmap mainLibBackBitmap;
-
-    //rate dialog reward variables
-    private static int RATE_REWARD_BONUS = 1000;
 
     private boolean backPressedOnce = false;
 
@@ -294,6 +295,8 @@ public class ActivityMain extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
+
         /*seekBar = findViewById(R.id.seekbar);
         seekBar.setMax(100);
         seekBar.setPadding(0,0,0,0);
@@ -303,8 +306,6 @@ public class ActivityMain extends AppCompatActivity
                 return true;
             }
         });*/
-
-        rootView = findViewById(R.id.root_view_main_activity);
 
 
         // Obtain the Firebase Analytics instance.
@@ -318,7 +319,6 @@ public class ActivityMain extends AppCompatActivity
 
         if( /*AppLaunchCountManager.isEligibleForInterstialAd() &&*/AppLaunchCountManager.isEligibleForBannerAds() && !UtilityFun.isAdsRemoved() ) {
                 MobileAds.initialize(getApplicationContext(), getString(R.string.banner_main_activity));
-                mAdView = findViewById(R.id.adView);
                 if (UtilityFun.isConnectedToInternet()) {
                     AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
                             .build();
@@ -333,8 +333,6 @@ public class ActivityMain extends AppCompatActivity
                 }
         }
 
-        navViewBack = findViewById(R.id.drawer_bg);
-        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         disableNavigationViewScrollbars();
 
@@ -383,23 +381,10 @@ public class ActivityMain extends AppCompatActivity
             }
         };
 
-
-        LinearLayout miniPlayer = findViewById(R.id.mini_player);
         miniPlayer.setOnClickListener(this);
 
-        miniPlayerWrapper = findViewById(R.id.album_art_mini_player_wrapper);
-
-        buttonPlay= findViewById(R.id.play_pause_mini_player);
         buttonPlay.setOnClickListener(this);
-
-        ImageView buttonNext = findViewById(R.id.next_mini_plaayrer);
         buttonNext.setOnClickListener(this);
-
-        songNameMiniPlayer= findViewById(R.id.song_name_mini_player);
-
-        artistNameMiniPlayer= findViewById(R.id.artist_mini_player);
-
-        albumArt = findViewById(R.id.album_art_mini_player);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -416,8 +401,6 @@ public class ActivityMain extends AppCompatActivity
             savedTabSeqInt[i] = Integer.parseInt(st.nextToken());
         }
 
-        viewPager = findViewById(R.id.viewpager);
-
         // 0 - System default   1 - custom
         int currentMainLbBackground = MyApp.getPref().getInt(getString(R.string.pref_main_library_back),0);
 
@@ -427,7 +410,7 @@ public class ActivityMain extends AppCompatActivity
                 break;
 
             case 1:
-                setBlurryBackgroundForMainLib(getMainLibBackBitmap());
+                setBlurryBackgroundForMainLib();
                 break;
         }
 
@@ -504,11 +487,9 @@ public class ActivityMain extends AppCompatActivity
             }
         }
 
-        fab_right_side = findViewById(R.id.fab_right_side);
         fab_right_side.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
         fab_right_side.setOnClickListener(this);
 
-        fab_lock = findViewById(R.id.fab_lock);
         fab_lock.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
         fab_lock.setOnClickListener(this);
 
@@ -548,62 +529,15 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
-    private Bitmap getMainLibBackBitmap(){
-        if(mainLibBackBitmap !=null){
-            return mainLibBackBitmap;
-        }
-
-        String  picPath = MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image);
-        Log.d(Constants.TAG, "UpdateUI: setBlurryBackgroundCustomImage: " + picPath);
-        /*BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        mainLibBackBitmap = BitmapFactory.decodeFile(picPath, options);*/
-
-        try {
-            mainLibBackBitmap = UtilityFun.decodeUri(this, Uri.fromFile(new File(picPath)), 500);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return mainLibBackBitmap;
-    }
-
-    private Bitmap getNavBackBitmap(){
-        Bitmap b = null;
-        String  picPath = MyApp.getContext().getFilesDir() + getString(R.string.nav_back_custom_image);
-        Log.d(Constants.TAG, "UpdateUI: setBlurryBackgroundCustomImage: " + picPath);
-
-        try {
-            b = UtilityFun.decodeUri(this, Uri.fromFile(new File(picPath)), 1000);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return b;
-    }
-
     private void setSystemDefaultBackground() {
         //findViewById(R.id.image_view_view_pager).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
-        findViewById(R.id.overlay_for_gradient).setVisibility(View.VISIBLE);
+        gradientOverlay.setVisibility(View.VISIBLE);
         findViewById(R.id.image_view_view_pager)
                 .setBackgroundDrawable(ColorHelper.GetGradientDrawableDark(UtilityFun.getCurrentThemeId()));
     }
 
-    public void setBlurryBackgroundForMainLib(Bitmap b){
-
-        /*Animation fadeIn = AnimationUtils.loadAnimation(ActivityMain.this, R.anim.fade_in);
-        fadeIn.setDuration(2000);
-        findViewById(R.id.image_view_view_pager).startAnimation(fadeIn);
-
-        Blurry.with(this).radius(1)
-                .color(Color.argb(120
-                , 0, 0, 0)).from(b)
-                .into(((ImageView) findViewById(R.id.image_view_view_pager)));*/
-        findViewById(R.id.black_overlay).setVisibility(View.VISIBLE);
+    public void setBlurryBackgroundForMainLib(){
+        customBackOverlay.setVisibility(View.VISIBLE);
         Glide.with(this)
                 .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image))))
                 .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
@@ -2401,44 +2335,4 @@ public class ActivityMain extends AppCompatActivity
             }
         }
     }
-
-    /*private void startUpdateTask(){
-        if(!updateTimeTaskRunning && playerService.getStatus()==playerService.PLAYING ){
-            stopProgressRunnable=false;
-            updateTimeTaskRunning=true;
-            Executors.newSingleThreadExecutor().execute(mUpdateTimeTask);
-        }
-    }
-
-    private void stopUpdateTask(){
-        stopProgressRunnable=true;
-        updateTimeTaskRunning=false;
-    }
-
-    //for seekbar on mini player top
-    /*private final Runnable mUpdateTimeTask = new Runnable() {
-        public void run() {
-            while (true) {
-                if (stopProgressRunnable) {
-                    break;
-                }
-                updateTimeTaskRunning=true;
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int totalDur = playerService.getCurrentTrackDuration();
-                        int curDur = playerService.getCurrentTrackProgress();
-                        seekBar.setProgress(UtilityFun.getProgressPercentage(curDur,totalDur));
-                        Log.v("update task","update");
-                    }
-                });
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            updateTimeTaskRunning = false;
-        }
-    };*/
 }

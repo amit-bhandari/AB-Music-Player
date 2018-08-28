@@ -44,7 +44,7 @@
 
 
         <View
-            android:id="@+id/black_overlay"
+            android:id="@+id/overlay_for_custom_background"
             android:background="@drawable/black_overlay"
             android:layout_width="match_parent"
             android:visibility="gone"
