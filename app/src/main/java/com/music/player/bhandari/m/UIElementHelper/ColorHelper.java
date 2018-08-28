@@ -182,6 +182,26 @@ public class ColorHelper {
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[] {getColor(R.color.theme3_color1),getColor(R.color.theme3_color2)});
 
+            case 4:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme4_color1),getColor(R.color.theme4_color2)});
+
+            case 5:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme5_color1),getColor(R.color.theme5_color2)});
+
+            case 6:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme6_color1),getColor(R.color.theme6_color2)});
+
+            case 7:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme7_color1),getColor(R.color.theme7_color2)});
+
             default:
                 return new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
@@ -205,6 +225,26 @@ public class ColorHelper {
                 return new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[] {getColor(R.color.theme3_color1),getColor(R.color.theme3_color2)});
+
+            case 4:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme4_color1),getColor(R.color.theme4_color2)});
+
+            case 5:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme5_color1),getColor(R.color.theme5_color2)});
+
+            case 6:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme6_color1),getColor(R.color.theme6_color2)});
+
+            case 7:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme7_color1),getColor(R.color.theme7_color2)});
 
             default:
                 return new GradientDrawable(
@@ -230,6 +270,26 @@ public class ColorHelper {
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[] {getColor(R.color.theme3_color1_dark),getColor(R.color.theme3_color2_dark)});
 
+            case 4:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme4_color1_dark),getColor(R.color.theme4_color2_dark)});
+
+            case 5:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme5_color1_dark),getColor(R.color.theme5_color2_dark)});
+
+            case 6:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme6_color1_dark),getColor(R.color.theme6_color2_dark)});
+
+            case 7:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme7_color1_dark),getColor(R.color.theme7_color2_dark)});
+
             default:
                 return new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
@@ -254,6 +314,26 @@ public class ColorHelper {
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[] {getColor(R.color.theme3_color1),getColor(R.color.theme3_color2)});
 
+            case 4:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme4_color1),getColor(R.color.theme4_color2)});
+
+            case 5:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme5_color1),getColor(R.color.theme5_color2)});
+
+            case 6:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme6_color1),getColor(R.color.theme6_color2)});
+
+            case 7:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme7_color1),getColor(R.color.theme7_color2)});
+
             default:
                 return new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
@@ -272,6 +352,18 @@ public class ColorHelper {
             case 3:
                 return getColor(R.color.theme3_color1);
 
+            case 4:
+                return getColor(R.color.theme4_color1);
+
+            case 5:
+                return getColor(R.color.theme5_color1);
+
+            case 6:
+                return getColor(R.color.theme6_color1);
+
+            case 7:
+                return getColor(R.color.theme7_color1);
+
             default:
                 return getColor(R.color.theme0_color1);
         }
@@ -288,13 +380,25 @@ public class ColorHelper {
             case 3:
                 return getColor(R.color.theme3_color2_widget);
 
+            case 4:
+                return getColor(R.color.theme4_color2_widget);
+
+            case 5:
+                return getColor(R.color.theme5_color2_widget);
+
+            case 6:
+                return getColor(R.color.theme6_color2_widget);
+
+            case 7:
+                return getColor(R.color.theme7_color2_widget);
+
             default:
                 return getColor(R.color.theme0_color2);
         }
     }
 
     public static int GetNumberOfThemes(){
-        return 4;
+        return 8;
     }
 
 
