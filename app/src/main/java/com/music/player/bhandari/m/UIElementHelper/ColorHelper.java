@@ -245,6 +245,10 @@ public class ColorHelper {
         }
     }
 
+    public static int GetNumberOfThemes(){
+        return 4;
+    }
+
 
     //private
 

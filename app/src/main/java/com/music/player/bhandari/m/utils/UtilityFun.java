@@ -548,6 +548,7 @@ public class UtilityFun {
     }
 
     public static int getCurrentThemeId(){
-        return 3;
+        //@todo do this in my app maybe, avoid lookup of mypref every time
+        return MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_theme_id), 0);
     }
 }

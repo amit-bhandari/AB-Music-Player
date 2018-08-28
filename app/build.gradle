@@ -138,6 +138,9 @@ dependencies {
 
     //font
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+
+    //flow layout
+    implementation 'com.google.android:flexbox:1.0.0'
 }
 
 repositories {

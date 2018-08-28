@@ -18,6 +18,7 @@ import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -43,6 +44,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -424,7 +428,7 @@ public class ActivitySettings extends AppCompatActivity {
 
 
             //base Theme
-            Preference baseTheme = findPreference(getString(R.string.pref_theme));
+            /*Preference baseTheme = findPreference(getString(R.string.pref_theme));
             int baseThemePref = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
             switch (baseThemePref){
 
@@ -446,11 +450,11 @@ public class ActivitySettings extends AppCompatActivity {
                     BaseThemeSelectionDialog();
                     return true;
                 }
-            });
+            });*/
 
             //Theme color
             Preference primaryColorPref = findPreference(getString(R.string.pref_theme_color));
-            int themePrefRead = MyApp.getPref().getInt(getString(R.string.pref_theme_color), Constants.PRIMARY_COLOR.BLACK);
+            /*int themePrefRead = MyApp.getPref().getInt(getString(R.string.pref_theme_color), Constants.PRIMARY_COLOR.BLACK);
             switch (themePrefRead){
 
                 case Constants.PRIMARY_COLOR.BLACK:
@@ -562,11 +566,12 @@ public class ActivitySettings extends AppCompatActivity {
                 default:
                     findPreference(getString(R.string.pref_theme_color)).setSummary(MANUAL_INPUT);
 
-            }
+            }*/
             primaryColorPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     //open browser or intent here
-                    PrimarySelectionDialog();
+                    //PrimarySelectionDialog();
+                    themeSelectionDialog();
                     return true;
                 }
             });
@@ -1357,6 +1362,44 @@ public class ActivitySettings extends AppCompatActivity {
 
         }
 
+        private void themeSelectionDialog(){
+
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.theme_selector_dialog, null);
+            RecyclerView rv = dialogView.findViewById(R.id.rv_for_theme_selector);
+            final ThemeSelectorAdapter tsa = new ThemeSelectorAdapter();
+            rv.setAdapter(tsa);
+            FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getActivity());
+            layoutManager.setFlexDirection(FlexDirection.ROW);
+            layoutManager.setJustifyContent(JustifyContent.CENTER);
+            rv.setLayoutManager(layoutManager);
+            //rv.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                    .title("Select theme")
+                    .customView(dialogView,false)
+                    .dismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            //@todo do something yo
+                        }
+                    })
+                    .positiveText("Apply")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            restartSettingsActivity();
+                        }
+                    })
+                    .build();
+
+            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+
+            dialog.show();
+
+        }
+
         private void RescanLibrary(){
             MusicLibrary.getInstance().RefreshLibrary();
             final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
@@ -2044,6 +2087,60 @@ public class ActivitySettings extends AppCompatActivity {
                 //title.setTypeface(TypeFaceHelper.getTypeFace());
 
                 handle = itemView.findViewById(R.id.handle_for_drag);
+            }
+        }
+    }
+
+    private static class ThemeSelectorAdapter extends RecyclerView.Adapter<ThemeSelectorAdapter.MyViewHolder>{
+
+        private LayoutInflater inflater;
+        private int currentSelectedItem;
+
+        ThemeSelectorAdapter(){
+            currentSelectedItem = MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_theme_id),0);
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            inflater=LayoutInflater.from(MyApp.getContext());
+            final View view = inflater.inflate(R.layout.theme_selection_item, parent, false);
+            return new ThemeSelectorAdapter.MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+            holder.view.setBackgroundDrawable(ColorHelper.GetGradientDrawable(position));
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    currentSelectedItem = holder.getAdapterPosition();
+                    MyApp.getPref()
+                            .edit()
+                            .putInt(MyApp.getContext().getString(R.string.pref_theme_id), holder.getAdapterPosition()).apply();
+                    notifyDataSetChanged();
+                }
+            });
+            if(currentSelectedItem==position){
+                holder.tick.setVisibility(View.VISIBLE);
+            }else {
+                holder.tick.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return ColorHelper.GetNumberOfThemes();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder{
+            View view;
+            View tick;
+
+            MyViewHolder(View itemView) {
+                super(itemView);
+                view = itemView.findViewById(R.id.themeView);
+                tick = itemView.findViewById(R.id.tick);
             }
         }
     }

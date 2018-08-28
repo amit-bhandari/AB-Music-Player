@@ -5,11 +5,11 @@
         android:title="@string/title_theme_category"
         android:key="pref_key_theme_cat">
 
-        <Preference
+        <!--<Preference
             android:title="@string/title_theme"
             android:summary="Light"
             android:key="@string/pref_theme">
-        </Preference>
+        </Preference> -->
 
         <Preference
             android:title="@string/title_theme_color"
