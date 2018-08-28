@@ -54,6 +54,26 @@
 
     <color name="notification_color_for_no_album_art">#162029</color>
 
+    <!-- gradient themes -->
+
+    <color name="theme0_color1">#000000</color>  <!--default one. Maybe black -->
+    <color name="theme0_color2">#000000</color>
+
+    <color name="theme1_color1">#80f794a4</color>
+    <color name="theme1_color2">#80fdd6bd</color>
+    <color name="theme1_color1_dark">#30f794a4</color>
+    <color name="theme1_color2_dark">#30fdd6bd</color>
+
+    <color name="theme2_color1">#8064b3f4</color>
+    <color name="theme2_color2">#80c2e59c</color>
+    <color name="theme2_color1_dark">#3064b3f4</color>
+    <color name="theme2_color2_dark">#30c2e59c</color>
+
+    <color name="theme3_color1">#80cc208e</color>
+    <color name="theme3_color2">#806713d2</color>
+    <color name="theme3_color1_dark">#20cc208e</color>
+    <color name="theme3_color2_dark">#206713d2</color>
+
     <!-- play widget custom view  -->
     <color name="pw_primary">#3F51B5</color>
     <color name="pw_primary_dark">#303F9F</color>

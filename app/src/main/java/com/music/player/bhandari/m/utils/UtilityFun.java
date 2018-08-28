@@ -546,4 +546,8 @@ public class UtilityFun {
         return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
                 && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED;
     }
+
+    public static int getCurrentThemeId(){
+        return 3;
+    }
 }

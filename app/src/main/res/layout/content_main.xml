@@ -12,7 +12,7 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorTransparent"
         app:tabMode="scrollable"
         app:tabGravity="center"
         app:tabMinWidth="@dimen/cm_tab_width_min"
@@ -27,6 +27,14 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/tabs">
 
+
+        <View
+            android:id="@+id/overlay_for_gradient"
+            android:visibility="gone"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <ImageView
             android:id="@+id/image_view_view_pager"
             android:scaleType="center"
@@ -36,9 +44,12 @@
 
 
         <View
+            android:id="@+id/black_overlay"
             android:background="@drawable/black_overlay"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="match_parent"/>
+
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
@@ -55,7 +66,7 @@
         android:layout_width="match_parent"
         android:background="@drawable/border_2dp"
         android:layout_height="match_parent"
-        android:orientation="horizontal"></LinearLayout>
+        android:orientation="horizontal" />
 
 
 

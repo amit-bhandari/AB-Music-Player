@@ -164,7 +164,76 @@ public class ColorHelper {
         return color;
     }
 
-    public static boolean isWhiteColor(int color) {
+    //gradient theme getter
+    public static Drawable GetGradientDrawable(int id){
+        switch (id){
+            case 1:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme1_color1),getColor(R.color.theme1_color2)});
+
+            case 2:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme2_color1),getColor(R.color.theme2_color2)});
+
+            case 3:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme3_color1),getColor(R.color.theme3_color2)});
+
+            default:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme0_color1),getColor(R.color.theme0_color2)});
+        }
+    }
+
+    public static Drawable GetGradientDrawableDark(int id){
+        switch (id){
+            case 1:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme1_color1_dark),getColor(R.color.theme1_color2_dark)});
+
+            case 2:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme2_color1_dark),getColor(R.color.theme2_color2_dark)});
+
+            case 3:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme3_color1_dark),getColor(R.color.theme3_color2_dark)});
+
+            default:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme0_color1),getColor(R.color.theme0_color2)});
+        }
+    }
+
+    public static int GetStatusBarColor(int id){
+        switch (id){
+            case 1:
+                return getColor(R.color.theme1_color1);
+
+            case 2:
+                return getColor(R.color.theme2_color1);
+
+            case 3:
+                return getColor(R.color.theme3_color1);
+
+            default:
+                return getColor(R.color.theme0_color1);
+        }
+    }
+
+
+
+    //private
+
+    private static boolean isWhiteColor(int color) {
         if (android.R.color.transparent == color)
             return true;
         boolean rtnValue = false;
@@ -176,7 +245,7 @@ public class ColorHelper {
         return rtnValue;
     }
 
-    public static boolean isColorDark(int color){
+    private static boolean isColorDark(int color){
         double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
         if(darkness<0.5){
             return false; // It's a light color
@@ -185,14 +254,14 @@ public class ColorHelper {
         }
     }
 
-    public static int getDarkColor(int color) {
+    private static int getDarkColor(int color) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
         hsv[2] *= 0.8f; // value component
         return Color.HSVToColor(hsv);
     }
 
-    public static int getBrightColor(int color) {
+    private static int getBrightColor(int color) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
         hsv[2] = 1.0f - 0.8f * (1.0f - hsv[2]);; // value component

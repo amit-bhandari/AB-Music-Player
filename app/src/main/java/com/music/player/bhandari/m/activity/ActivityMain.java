@@ -340,13 +340,17 @@ public class ActivityMain extends AppCompatActivity
 
         //navigationView.setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
 
-        findViewById(R.id.app_bar_layout).setBackgroundColor(ColorHelper.getPrimaryColor());
-        findViewById(R.id.tabs).setBackgroundColor(ColorHelper.getPrimaryColor());
+        //findViewById(R.id.app_bar_layout).setBackgroundColor(ColorHelper.getPrimaryColor());
+        //findViewById(R.id.tabs).setBackgroundColor(ColorHelper.getPrimaryColor());
+
+        findViewById(R.id.gradientBackGroundView)
+                .setBackgroundDrawable(ColorHelper.GetGradientDrawable(UtilityFun.getCurrentThemeId()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
+            //window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
+            window.setStatusBarColor(ColorHelper.GetStatusBarColor(UtilityFun.getCurrentThemeId()));
         }
 
         setTitle(getString(R.string.abm_title));
@@ -583,7 +587,10 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void setSystemDefaultBackground() {
-        findViewById(R.id.image_view_view_pager).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
+        //findViewById(R.id.image_view_view_pager).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
+        findViewById(R.id.overlay_for_gradient).setVisibility(View.VISIBLE);
+        findViewById(R.id.image_view_view_pager)
+                .setBackgroundDrawable(ColorHelper.GetGradientDrawableDark(UtilityFun.getCurrentThemeId()));
     }
 
     public void setBlurryBackgroundForMainLib(Bitmap b){
@@ -596,6 +603,7 @@ public class ActivityMain extends AppCompatActivity
                 .color(Color.argb(120
                 , 0, 0, 0)).from(b)
                 .into(((ImageView) findViewById(R.id.image_view_view_pager)));*/
+        findViewById(R.id.black_overlay).setVisibility(View.VISIBLE);
         Glide.with(this)
                 .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image))))
                 .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
