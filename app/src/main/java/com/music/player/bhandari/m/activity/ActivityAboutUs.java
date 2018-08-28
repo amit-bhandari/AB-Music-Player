@@ -113,7 +113,7 @@ public class ActivityAboutUs extends AppCompatActivity {
         site_link.setText(spanWebsite);
         site_link.setMovementMethod(LinkMovementMethod.getInstance());
 
-        findViewById(R.id.root_view_about_us).setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
+        findViewById(R.id.root_view_about_us).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         PackageInfo pInfo;
         try {
@@ -129,7 +129,7 @@ public class ActivityAboutUs extends AppCompatActivity {
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ColorHelper.getPrimaryColor()));
+            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -137,7 +137,7 @@ public class ActivityAboutUs extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
+            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }
         setTitle(getString(R.string.title_about_us));
 

@@ -163,14 +163,14 @@ public class ActivitySettings extends AppCompatActivity {
             }
         }
 
-        findViewById(R.id.root_view_settings).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
+        findViewById(R.id.root_view_settings).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ColorHelper.getPrimaryColor()));
+            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -178,7 +178,7 @@ public class ActivitySettings extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
+            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }
 
         setTitle("Settings");
@@ -2097,7 +2097,7 @@ public class ActivitySettings extends AppCompatActivity {
         private int currentSelectedItem;
 
         ThemeSelectorAdapter(){
-            currentSelectedItem = MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_theme_id),0);
+            currentSelectedItem = MyApp.getSelectedThemeId();
         }
 
         @NonNull
@@ -2115,9 +2115,7 @@ public class ActivitySettings extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     currentSelectedItem = holder.getAdapterPosition();
-                    MyApp.getPref()
-                            .edit()
-                            .putInt(MyApp.getContext().getString(R.string.pref_theme_id), holder.getAdapterPosition()).apply();
+                    MyApp.setSelectedThemeId(holder.getAdapterPosition());
                     notifyDataSetChanged();
                 }
             });

@@ -68,7 +68,7 @@ public class ActivityRequestNotificationAccess extends AppCompatActivity impleme
         setContentView(R.layout.activity_request_notification_access);
         ButterKnife.bind(this);
 
-        findViewById(R.id.root_view_request_notification_access).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
+        findViewById(R.id.root_view_request_notification_access).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         findViewById(R.id.request_button).setOnClickListener(this);
         skip.setOnClickListener(this);

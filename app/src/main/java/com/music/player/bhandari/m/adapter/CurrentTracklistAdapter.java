@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityTagEditor;
 import com.music.player.bhandari.m.activity.ActivityNowPlaying;
@@ -155,7 +156,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
             }
         });
         if(playerService!=null && position==playerService.getCurrentTrackPosition()) {
-            holder.cv.setCardBackgroundColor(context.getResources().getColor(R.color.pw_circle_color_translucent));
+            holder.cv.setCardBackgroundColor(ColorHelper.GetWidgetColor());
             if (playerService.getStatus()==PlayerService.PLAYING){
                 holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
             }else {

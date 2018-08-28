@@ -127,21 +127,21 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
         // add back ar
         // row to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ColorHelper.getPrimaryColor()));
+            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        rootView.setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
+        rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
         swipeRefreshLayout.setOnRefreshListener(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
+            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }
 
-        fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
+        fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
         fab.setOnClickListener(this);
 
         try {

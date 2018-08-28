@@ -103,6 +103,7 @@ public class RingdroidEditActivity extends AppCompatActivity
     private ImageButton mPlayButton;
     private ImageButton mRewindButton;
     private ImageButton mFfwdButton;
+    private View rootView;
     private boolean mKeyDown;
     private String mCaption = "";
     private int mWidth;
@@ -575,15 +576,16 @@ public class RingdroidEditActivity extends AppCompatActivity
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.ringtone_cutter_editor);
 
-        findViewById(R.id.playback_buttons).setBackgroundColor(ColorHelper.getBrightPrimaryColor());
-        findViewById(R.id.times).setBackgroundColor(ColorHelper.getBrightPrimaryColor());
+
+        //findViewById(R.id.playback_buttons).setBackgroundColor(ColorHelper.getBrightPrimaryColor());
+        //findViewById(R.id.times).setBackgroundColor(ColorHelper.getBrightPrimaryColor());
 
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ColorHelper.getPrimaryColor()));
+            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -591,7 +593,7 @@ public class RingdroidEditActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
+            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }
         setTitle(getString(R.string.title_about_us));
 
@@ -615,6 +617,9 @@ public class RingdroidEditActivity extends AppCompatActivity
         mRewindButton.setOnClickListener(mRewindListener);
         mFfwdButton = (ImageButton)findViewById(R.id.ffwd);
         mFfwdButton.setOnClickListener(mFfwdListener);
+
+        rootView = findViewById(R.id.root_view_ringtone_cutter);
+        rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         TextView markStartButton = (TextView) findViewById(R.id.mark_start);
         markStartButton.setOnClickListener(mMarkStartListener);

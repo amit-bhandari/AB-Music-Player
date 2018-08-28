@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -1385,6 +1386,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }else {
             mPlayButton.setImageResource(R.drawable.pw_play);
         }
+
+        mPlayButton.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
 
         seekBar.setMax(100);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

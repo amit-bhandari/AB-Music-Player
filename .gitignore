@@ -12,3 +12,4 @@ signing.properties
 app/google-services.json
 .idea/modules.xml
 keystore.properties
+app/release/app-release.apk

@@ -165,6 +165,30 @@ public class ColorHelper {
     }
 
     //gradient theme getter
+    public static Drawable GetGradientDrawable(){
+        switch (MyApp.getSelectedThemeId()){
+            case 1:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme1_color1),getColor(R.color.theme1_color2)});
+
+            case 2:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme2_color1),getColor(R.color.theme2_color2)});
+
+            case 3:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme3_color1),getColor(R.color.theme3_color2)});
+
+            default:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme0_color1),getColor(R.color.theme0_color2)});
+        }
+    }
+
     public static Drawable GetGradientDrawable(int id){
         switch (id){
             case 1:
@@ -189,8 +213,8 @@ public class ColorHelper {
         }
     }
 
-    public static Drawable GetGradientDrawableDark(int id){
-        switch (id){
+    public static Drawable GetGradientDrawableDark(){
+        switch (MyApp.getSelectedThemeId()){
             case 1:
                 return new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
@@ -213,8 +237,32 @@ public class ColorHelper {
         }
     }
 
-    public static int GetStatusBarColor(int id){
-        switch (id){
+    public static Drawable GetGradientDrawableToolbar(){
+        switch (MyApp.getSelectedThemeId()){
+            case 1:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme1_color1),getColor(R.color.theme1_color2)});
+
+            case 2:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme2_color1),getColor(R.color.theme2_color2)});
+
+            case 3:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme3_color1),getColor(R.color.theme3_color2)});
+
+            default:
+                return new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[] {getColor(R.color.theme0_color1),getColor(R.color.theme0_color2)});
+        }
+    }
+
+    public static int GetStatusBarColor(){
+        switch (MyApp.getSelectedThemeId()){
             case 1:
                 return getColor(R.color.theme1_color1);
 
@@ -229,8 +277,8 @@ public class ColorHelper {
         }
     }
 
-    public static int GetWidgetColor(int id){
-        switch (id){
+    public static int GetWidgetColor(){
+        switch (MyApp.getSelectedThemeId()){
             case 1:
                 return getColor(R.color.theme1_color2_widget);
 

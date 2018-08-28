@@ -70,10 +70,6 @@ import java.util.concurrent.Executors;
 
 public class UtilityFun {
 
-    public static String secondsToString(int pTime) {
-        return String.format("%02d:%02d", pTime / 60, pTime % 60);
-    }
-
     public static int getProgressPercentage(int currentDuration, int totalDuration){
         Double percentage;
 
@@ -470,45 +466,6 @@ public class UtilityFun {
         return artist;
     }
 
-
-    //delete cache if more than 50mb
-    //delete only if file is more than 2 day old
-    public static void deleteCache(){
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Log.v("Amit AB","deleting cache");
-                    int daysBack = 2;
-
-                    File CACHE = MyApp.getContext().getCacheDir();
-                    // Get length of file in bytes
-                    long fileSizeInBytes = CACHE.length();
-                    long fileSizeInKB = fileSizeInBytes / 1024;
-                    long fileSizeInMB = fileSizeInKB / 1024;
-
-                    Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.DAY_OF_MONTH, daysBack * -1);
-                    long purgeTime = cal.getTimeInMillis();
-
-                    Log.v("Amit AB","cache size " + fileSizeInBytes);
-                    Log.v("Amit AB","cache directory " + CACHE.getAbsolutePath());
-                    //if (fileSizeInMB > 1) {
-                        for (File listFile : CACHE.listFiles()) {
-
-                            //if (listFile.lastModified() < purgeTime) {
-                                listFile.delete();
-                                Log.v("Amit AB","deleting "+listFile.getName() );
-                            //}
-                        }
-                    //}
-                }catch (Exception ignored){
-                    Log.v("Amit AB","Error deleting cache");
-                }
-            }
-        });
-    }
-
     public static boolean isAdsRemoved(){
         //boolean hideAdsTemp = MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_temp),false);
         return MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_after_payment),false);
@@ -547,8 +504,8 @@ public class UtilityFun {
                 && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED;
     }
 
-    public static int getCurrentThemeId(){
+    /*public static int getCurrentThemeId(){
         //@todo do this in my app maybe, avoid lookup of mypref every time
         return MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_theme_id), 0);
-    }
+    }*/
 }

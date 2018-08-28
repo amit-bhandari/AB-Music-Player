@@ -342,13 +342,13 @@ public class ActivityMain extends AppCompatActivity
         //findViewById(R.id.tabs).setBackgroundColor(ColorHelper.getPrimaryColor());
 
         findViewById(R.id.gradientBackGroundView)
-                .setBackgroundDrawable(ColorHelper.GetGradientDrawable(UtilityFun.getCurrentThemeId()));
+                .setBackgroundDrawable(ColorHelper.GetGradientDrawable());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             //window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
-            window.setStatusBarColor(ColorHelper.GetStatusBarColor(UtilityFun.getCurrentThemeId()));
+            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }
 
         setTitle(getString(R.string.abm_title));
@@ -428,7 +428,7 @@ public class ActivityMain extends AppCompatActivity
 
         switch (navLbBackground){
             case 0:
-                navViewBack.setBackgroundDrawable(ColorHelper.GetGradientDrawable(UtilityFun.getCurrentThemeId()));
+                navViewBack.setBackgroundDrawable(ColorHelper.GetGradientDrawable());
                 break;
 
             case 1:
@@ -500,10 +500,10 @@ public class ActivityMain extends AppCompatActivity
             }
         }
 
-        fab_right_side.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor(UtilityFun.getCurrentThemeId())));
+        fab_right_side.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
         fab_right_side.setOnClickListener(this);
 
-        fab_lock.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor(UtilityFun.getCurrentThemeId())));
+        fab_lock.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
         fab_lock.setOnClickListener(this);
 
         if(MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button),false)){
@@ -546,7 +546,7 @@ public class ActivityMain extends AppCompatActivity
         //findViewById(R.id.image_view_view_pager).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
         gradientOverlay.setVisibility(View.VISIBLE);
         findViewById(R.id.image_view_view_pager)
-                .setBackgroundDrawable(ColorHelper.GetGradientDrawableDark(UtilityFun.getCurrentThemeId()));
+                .setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
     }
 
     public void setBlurryBackgroundForMainLib(){

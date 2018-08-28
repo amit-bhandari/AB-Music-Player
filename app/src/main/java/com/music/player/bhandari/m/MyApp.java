@@ -46,10 +46,15 @@ public class MyApp extends Application {
     //user signed in or not status flag
     public static boolean hasUserSignedIn=false;
 
+    //current selected theme id
+    private static int selectedThemeId=0;
+
     @Override
     public void onCreate() {
         instance = this;
         pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        selectedThemeId = pref.getInt(getString(R.string.pref_theme_id), 0);
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
@@ -107,5 +112,16 @@ public class MyApp extends Application {
     public static boolean isLocked(){return isLocked;}
 
     public static void setLocked(boolean lock){isLocked = lock;}
+
+    public static int getSelectedThemeId() {
+        return selectedThemeId;
+    }
+
+    public static void setSelectedThemeId(int selectedThemeId) {
+        pref.edit()
+                .putInt(MyApp.getContext().getString(R.string.pref_theme_id), selectedThemeId).apply();
+
+        MyApp.selectedThemeId = selectedThemeId;
+    }
 
 }

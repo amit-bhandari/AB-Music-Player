@@ -385,7 +385,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             }
         }
 
-        final Drawable d;
+        /*final Drawable d;
         if(MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY) == Constants.PRIMARY_COLOR.GLOSSY){
             int color ;
 
@@ -397,13 +397,13 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     new int[] {color,0xFF131313});
         }else {
             d = ColorHelper.getBaseThemeDrawable();
-        }
+        }*/
 
 
-        rootView.setBackgroundDrawable(d);
+        rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
-        miniPlayer.setBackgroundColor(ColorHelper.getPrimaryColor());
-        collapsingToolbarLayout.setContentScrimColor(ColorHelper.getPrimaryColor());
+        miniPlayer.setBackgroundColor(ColorHelper.GetWidgetColor());
+        collapsingToolbarLayout.setContentScrimColor(ColorHelper.GetStatusBarColor());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -419,7 +419,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 }
             }
         });
-        fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
+        fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

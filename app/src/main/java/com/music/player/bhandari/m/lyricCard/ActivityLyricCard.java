@@ -120,6 +120,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     @BindView(R.id.brightnessSeekBar) SeekBar brightnessSeekBar;
     @BindView(R.id.overImageLayer) View overImageLayer;
     @BindView(R.id.watermark) View watermark;
+    @BindView(R.id.root_view_lyric_card) View rootView;
 
     float dx;   //for dragging text views
     float dy;
@@ -143,7 +144,6 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme();
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_lyric_card);
         ButterKnife.bind(this);
 
@@ -221,6 +221,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
+            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -228,13 +229,15 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.getColor(R.color.colorBlack));
+            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }
 
         setTitle("Lyric Card");
     }
 
     private void initiateUI(){
+        rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+
         recyclerViewColors.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewColors.setAdapter(new ColorAdapter());
 

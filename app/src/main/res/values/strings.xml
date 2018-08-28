@@ -1107,6 +1107,7 @@ that this copyright notice remain intact.</string>
     <string name="nav_default_album_art">Default Album Art</string>
     <string name="pref_default_album_art">pef_default_album_art</string>
     <string name="pref_theme_id">selected_theme_id</string>
+    <string name="summary_pref_theme">Tap to choose theme</string>
 
 
 </resources>

@@ -62,14 +62,14 @@ public class ActivityLicenses extends AppCompatActivity {
         setContentView(R.layout.activity_licenses);
 
 
-        findViewById(R.id.root_view_licenses).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
+        findViewById(R.id.root_view_licenses).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ColorHelper.getPrimaryColor()));
+            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -77,7 +77,7 @@ public class ActivityLicenses extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
+            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }
         setTitle(getString(R.string.licenses));
 

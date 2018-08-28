@@ -13,7 +13,8 @@
 
         <Preference
             android:title="@string/title_theme_color"
-            android:key="@string/pref_theme_color">
+            android:key="@string/pref_theme_color"
+            android:summary="@string/summary_pref_theme">
         </Preference>
 
         <Preference
