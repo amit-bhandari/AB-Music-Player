@@ -386,9 +386,18 @@ public class ActivityMain extends AppCompatActivity
         buttonPlay.setOnClickListener(this);
         buttonNext.setOnClickListener(this);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                Log.d("onDrawerSlide", "onDrawerSlide: " + slideOffset/2);
+                rootView.setTranslationX(slideOffset/2 * drawerView.getWidth());
+                drawer.bringChildToFront(drawerView);
+                drawer.requestLayout();
+            }
+        };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
