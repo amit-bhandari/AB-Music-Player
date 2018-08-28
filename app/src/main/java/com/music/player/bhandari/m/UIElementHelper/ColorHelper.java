@@ -229,6 +229,21 @@ public class ColorHelper {
         }
     }
 
+    public static int GetWidgetColor(int id){
+        switch (id){
+            case 1:
+                return getColor(R.color.theme1_color2_widget);
+
+            case 2:
+                return getColor(R.color.theme2_color2_widget);
+
+            case 3:
+                return getColor(R.color.theme3_color2_widget);
+
+            default:
+                return getColor(R.color.theme0_color2);
+        }
+    }
 
 
     //private

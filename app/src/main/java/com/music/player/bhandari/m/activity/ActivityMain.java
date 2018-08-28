@@ -418,6 +418,10 @@ public class ActivityMain extends AppCompatActivity
         int navLbBackground = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back),0);
 
         switch (navLbBackground){
+            case 0:
+                navViewBack.setBackgroundDrawable(ColorHelper.GetGradientDrawable(UtilityFun.getCurrentThemeId()));
+                break;
+
             case 1:
                 setBlurryBackgroundForNav();
                 break;
@@ -487,10 +491,10 @@ public class ActivityMain extends AppCompatActivity
             }
         }
 
-        fab_right_side.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
+        fab_right_side.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor(UtilityFun.getCurrentThemeId())));
         fab_right_side.setOnClickListener(this);
 
-        fab_lock.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
+        fab_lock.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor(UtilityFun.getCurrentThemeId())));
         fab_lock.setOnClickListener(this);
 
         if(MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button),false)){
