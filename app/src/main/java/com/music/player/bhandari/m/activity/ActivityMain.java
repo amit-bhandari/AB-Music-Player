@@ -112,6 +112,7 @@ import com.google.firebase.storage.UploadTask;
 import com.music.player.bhandari.m.BuildConfig;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialog;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.customViews.RoundedImageView;
 import com.music.player.bhandari.m.model.Constants;
@@ -1623,7 +1624,7 @@ public class ActivityMain extends AppCompatActivity
         linear.addView(text);
         linear.addView(ratingWrap);
 
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MyDialog.Builder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_rate_dialog_title))
                // .content(getString(R.string.lyric_art_info_content))
