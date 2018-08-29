@@ -101,6 +101,8 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
             startActivity(intent);
         }
 
+        ColorHelper.setStatusBarGradiant(this);
+
         super.onCreate(savedInstanceState);
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
@@ -125,7 +127,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
 
         ALBUM_ART_PATH = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+getString(R.string.album_art_dir_name);
 
-        findViewById(R.id.root_view_tag_editor).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+        //findViewById(R.id.root_view_tag_editor).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -145,16 +147,16 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
+            //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }
+        }*/
         setTitle(getString(R.string.title_tag_editor));
 
         album_art.setOnClickListener(this);

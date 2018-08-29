@@ -1,11 +1,16 @@
 package com.music.player.bhandari.m.UIElementHelper;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 
 
 import com.music.player.bhandari.m.R;
@@ -162,6 +167,21 @@ public class ColorHelper {
 
 
         return color;
+    }
+
+    /**
+     * set gradient drawable to activity
+     * @param activity
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void setStatusBarGradiant(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(activity.getResources().getColor(android.R.color.transparent));
+            window.setNavigationBarColor(activity.getResources().getColor(android.R.color.transparent));
+            window.setBackgroundDrawable(ColorHelper.GetGradientDrawable());
+        }
     }
 
     //gradient theme getter
@@ -379,7 +399,7 @@ public class ColorHelper {
      */
     private static Drawable getGradient(int colorId1, int colorId2){
         return new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
+                GradientDrawable.Orientation.RIGHT_LEFT,
                 new int[] {getColor(colorId1),getColor(colorId2)});
     }
 

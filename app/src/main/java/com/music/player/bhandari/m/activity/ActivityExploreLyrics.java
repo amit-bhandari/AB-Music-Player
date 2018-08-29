@@ -99,6 +99,8 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ColorHelper.setStatusBarGradiant(this);
+
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
             case Constants.PRIMARY_COLOR.DARK:
@@ -127,19 +129,19 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
         // add back ar
         // row to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
+            //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+        //rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }
+        }*/
 
         fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
         fab.setOnClickListener(this);

@@ -242,6 +242,14 @@
             android:hardwareAccelerated="true">
         </activity>
 
+        <activity android:name=".activity.SampleActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:hardwareAccelerated="true">
+        </activity>
+
         <service android:name="com.music.player.bhandari.m.service.PlayerService"  >
         </service>
 

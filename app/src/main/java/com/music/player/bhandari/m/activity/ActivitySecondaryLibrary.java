@@ -169,6 +169,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
         playerService = MyApp.getService();
 
+        ColorHelper.setStatusBarGradiant(this);
+
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
             case Constants.PRIMARY_COLOR.DARK:
@@ -400,7 +402,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }*/
 
 
-        rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+        //rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         miniPlayer.setBackgroundColor(ColorHelper.GetWidgetColor());
         collapsingToolbarLayout.setContentScrimColor(ColorHelper.GetStatusBarColor());

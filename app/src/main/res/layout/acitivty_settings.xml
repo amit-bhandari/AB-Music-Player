@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.AppBarLayout android:id="@+id/root_view_settings"
+<RelativeLayout android:id="@+id/root_view_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/AppTheme.AppBarOverlay"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorTransparent"
     xmlns:ads="http://schemas.android.com/tools">
 
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/toolbar_wrapper"
+            android:background="@color/colorTransparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/action_bar_size"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="@dimen/action_bar_size"/>
 
         </android.support.design.widget.AppBarLayout>
 
 
         <RelativeLayout
+            android:layout_below="@id/toolbar_wrapper"
             android:layout_width="match_parent"
             xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:background="@color/blackOverlay"
             android:layout_height="match_parent">
 
                 <LinearLayout
@@ -49,5 +52,5 @@
 
         </RelativeLayout>
 
-</android.support.design.widget.AppBarLayout>
+</RelativeLayout>
 

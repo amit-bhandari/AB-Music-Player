@@ -44,6 +44,9 @@ public class ActivityLicenses extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState)
     {
+
+        ColorHelper.setStatusBarGradiant(this);
+
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
             case Constants.PRIMARY_COLOR.DARK:
@@ -62,23 +65,23 @@ public class ActivityLicenses extends AppCompatActivity {
         setContentView(R.layout.activity_licenses);
 
 
-        findViewById(R.id.root_view_licenses).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+        //findViewById(R.id.root_view_licenses).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
+            //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }
+        }*/
         setTitle(getString(R.string.licenses));
 
 

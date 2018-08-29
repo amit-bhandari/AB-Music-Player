@@ -8,6 +8,7 @@
     android:fitsSystemWindows="true"
     android:theme="@style/AppTheme.AppBarOverlay"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorTransparent"
     xmlns:ads="http://schemas.android.com/apk/res-auto">
 
 
@@ -28,8 +29,6 @@
             app:expandedTitleMarginStart="@dimen/sl_expanded_title_margin_start"
             app:expandedTitleMarginEnd="@dimen/sl_expanded_title_margin_end"
             android:persistentDrawingCache="none"
-            app:contentScrim="@color/colorPrimary"
-            android:background="@color/colorTransparent"
             android:fitsSystemWindows="true"
             >
 
@@ -80,6 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
+        android:background="@color/blackOverlay"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView

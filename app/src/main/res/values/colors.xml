@@ -37,6 +37,7 @@
     <color name="dark_text">#ffffff</color>
 
     <color name="colorTransparent">#00ffffff</color>
+    <color name="blackOverlay">#a0000000</color>
     <color name="blackTransparent">#77000000</color>
     <color name="blackTransparentLight">#10000000</color>
     <color name="blackTransparentLighter">#50000000</color>

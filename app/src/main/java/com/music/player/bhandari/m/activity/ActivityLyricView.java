@@ -206,14 +206,14 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     private void initializeListeners(){
         lyricStatus.setOnClickListener(this);
-        saveLyrics.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
+        saveLyrics.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
         saveLyrics.setOnClickListener(this);
-        watchVideo.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
+        watchVideo.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
         watchVideo.setOnClickListener(this);
         watchVideo.setVisibility(View.VISIBLE);
 
         growShrinkAnimate();
-        viewArtInfoFab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
+        viewArtInfoFab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
         viewArtInfoFab.setOnClickListener(this);
         rootView.setBackgroundColor(ColorHelper.getColor(R.color.blackTransparent));
     }

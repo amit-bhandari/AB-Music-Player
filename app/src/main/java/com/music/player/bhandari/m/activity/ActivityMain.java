@@ -1,6 +1,8 @@
 package com.music.player.bhandari.m.activity;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -12,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
@@ -260,6 +263,10 @@ public class ActivityMain extends AppCompatActivity
 
         super.onNewIntent(intent);
     }
+
+
+
+
     @SuppressLint({"RestrictedApi", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -268,6 +275,7 @@ public class ActivityMain extends AppCompatActivity
         //bind music service
         //startService(new Intent(this,playerService.class));
 
+        ColorHelper.setStatusBarGradiant(this);
         //if player service not running, kill the app
         playerService = MyApp.getService();
         if(playerService==null){
@@ -341,15 +349,15 @@ public class ActivityMain extends AppCompatActivity
         //findViewById(R.id.app_bar_layout).setBackgroundColor(ColorHelper.getPrimaryColor());
         //findViewById(R.id.tabs).setBackgroundColor(ColorHelper.getPrimaryColor());
 
-        findViewById(R.id.gradientBackGroundView)
-                .setBackgroundDrawable(ColorHelper.GetGradientDrawable());
+        //findViewById(R.id.gradientBackGroundView)
+          //      .setBackgroundDrawable(ColorHelper.GetGradientDrawable());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             //window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
-            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }
+            //window.setStatusBarColor(ColorHelper.GetStatusBarColor());
+        }*/
 
         setTitle(getString(R.string.abm_title));
 
