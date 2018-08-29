@@ -574,6 +574,7 @@ public class RingdroidEditActivity extends AppCompatActivity
      */
     private void loadGui() {
         // Inflate our UI from its XML layout description.
+        ColorHelper.setStatusBarGradiant(this);
         setContentView(R.layout.ringtone_cutter_editor);
 
 
@@ -585,16 +586,16 @@ public class RingdroidEditActivity extends AppCompatActivity
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
+            //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }
+        }*/
         setTitle(getString(R.string.title_about_us));
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -619,7 +620,7 @@ public class RingdroidEditActivity extends AppCompatActivity
         mFfwdButton.setOnClickListener(mFfwdListener);
 
         rootView = findViewById(R.id.root_view_ringtone_cutter);
-        rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+        //rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         TextView markStartButton = (TextView) findViewById(R.id.mark_start);
         markStartButton.setOnClickListener(mMarkStartListener);

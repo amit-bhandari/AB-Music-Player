@@ -142,6 +142,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ColorHelper.setStatusBarGradiant(this);
         setTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lyric_card);
@@ -221,16 +222,16 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
+            //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }
+        }*/
 
         setTitle("Lyric Card");
     }

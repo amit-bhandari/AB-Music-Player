@@ -1374,7 +1374,7 @@ public class ActivitySettings extends AppCompatActivity {
             rv.setAdapter(tsa);
             FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getActivity());
             layoutManager.setFlexDirection(FlexDirection.ROW);
-            layoutManager.setJustifyContent(JustifyContent.CENTER);
+            layoutManager.setJustifyContent(JustifyContent.FLEX_START);
             rv.setLayoutManager(layoutManager);
             //rv.setLayoutManager(new GridLayoutManager(getActivity(), 4));
 

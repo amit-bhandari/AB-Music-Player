@@ -95,6 +95,8 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
             UtilityFun.restartApp();
         }
 
+        ColorHelper.setStatusBarGradiant(this);
+
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
             case Constants.PRIMARY_COLOR.DARK:
@@ -115,23 +117,23 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
         handler = new Handler(getMainLooper());
         adapter = new SentInvitationAdapter();
 
-        findViewById(R.id.root_view_invite).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+        //findViewById(R.id.root_view_invite).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
-            getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
+            //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }
+        }*/
 
         List<InvitationItem> items = GetInvitedItems();
         if(items!=null && items.size()!=0){

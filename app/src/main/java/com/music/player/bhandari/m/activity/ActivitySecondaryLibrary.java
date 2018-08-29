@@ -405,7 +405,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         //rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         miniPlayer.setBackgroundColor(ColorHelper.GetWidgetColor());
-        collapsingToolbarLayout.setContentScrimColor(ColorHelper.GetStatusBarColor());
+        //collapsingToolbarLayout.setContentScrimColor(ColorHelper.GetStatusBarColor());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
