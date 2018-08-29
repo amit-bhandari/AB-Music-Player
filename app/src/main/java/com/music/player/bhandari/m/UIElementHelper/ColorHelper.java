@@ -168,135 +168,97 @@ public class ColorHelper {
     public static Drawable GetGradientDrawable(){
         switch (MyApp.getSelectedThemeId()){
             case 1:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme1_color1),getColor(R.color.theme1_color2)});
+                return getGradient(R.color.theme1_color1, R.color.theme1_color2);
 
             case 2:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme2_color1),getColor(R.color.theme2_color2)});
+                return getGradient(R.color.theme2_color1, R.color.theme2_color2);
 
             case 3:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme3_color1),getColor(R.color.theme3_color2)});
+                return getGradient(R.color.theme3_color1, R.color.theme3_color2);
 
             case 4:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme4_color1),getColor(R.color.theme4_color2)});
+                return getGradient(R.color.theme4_color1, R.color.theme4_color2);
 
             case 5:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme5_color1),getColor(R.color.theme5_color2)});
+                return getGradient(R.color.theme5_color1, R.color.theme5_color2);
 
             case 6:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme6_color1),getColor(R.color.theme6_color2)});
+                return getGradient(R.color.theme6_color1, R.color.theme6_color2);
 
             case 7:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme7_color1),getColor(R.color.theme7_color2)});
+                return getGradient(R.color.theme7_color1, R.color.theme7_color2);
 
             default:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme0_color1),getColor(R.color.theme0_color2)});
+                return getGradient(R.color.theme0_color1, R.color.theme0_color2);
         }
     }
 
+    /**
+     * overloaded version for getting gradient drawable for particular theme id
+     * This is used in setting screens to show all gradients together for user to choose from
+     * @param id
+     * @return
+     */
     public static Drawable GetGradientDrawable(int id){
         switch (id){
             case 1:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme1_color1),getColor(R.color.theme1_color2)});
+                return getGradient(R.color.theme1_color1, R.color.theme1_color2);
 
             case 2:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme2_color1),getColor(R.color.theme2_color2)});
+                return getGradient(R.color.theme2_color1, R.color.theme2_color2);
 
             case 3:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme3_color1),getColor(R.color.theme3_color2)});
+                return getGradient(R.color.theme3_color1, R.color.theme3_color2);
 
             case 4:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme4_color1),getColor(R.color.theme4_color2)});
+                return getGradient(R.color.theme4_color1, R.color.theme4_color2);
 
             case 5:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme5_color1),getColor(R.color.theme5_color2)});
+                return getGradient(R.color.theme5_color1, R.color.theme5_color2);
 
             case 6:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme6_color1),getColor(R.color.theme6_color2)});
+                return getGradient(R.color.theme6_color1, R.color.theme6_color2);
 
             case 7:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme7_color1),getColor(R.color.theme7_color2)});
+                return getGradient(R.color.theme7_color1, R.color.theme7_color2);
 
             default:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme0_color1),getColor(R.color.theme0_color2)});
+                return getGradient(R.color.theme0_color1, R.color.theme0_color2);
         }
     }
 
     public static Drawable GetGradientDrawableDark(){
         switch (MyApp.getSelectedThemeId()){
             case 1:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme1_color1_dark),getColor(R.color.theme1_color2_dark)});
+                return getGradient(R.color.theme1_color1_dark, R.color.theme1_color2_dark);
 
             case 2:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme2_color1_dark),getColor(R.color.theme2_color2_dark)});
+                return getGradient(R.color.theme2_color1_dark, R.color.theme2_color2_dark);
 
             case 3:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme3_color1_dark),getColor(R.color.theme3_color2_dark)});
+                return getGradient(R.color.theme3_color1_dark, R.color.theme3_color2_dark);
 
             case 4:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme4_color1_dark),getColor(R.color.theme4_color2_dark)});
+                return getGradient(R.color.theme4_color1_dark, R.color.theme4_color2_dark);
 
             case 5:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme5_color1_dark),getColor(R.color.theme5_color2_dark)});
+                return getGradient(R.color.theme5_color1_dark, R.color.theme5_color2_dark);
 
             case 6:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme6_color1_dark),getColor(R.color.theme6_color2_dark)});
+                return getGradient(R.color.theme6_color1_dark, R.color.theme6_color2_dark);
 
             case 7:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme7_color1_dark),getColor(R.color.theme7_color2_dark)});
+                return getGradient(R.color.theme7_color1_dark, R.color.theme7_color2_dark);
 
             default:
-                return new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[] {getColor(R.color.theme0_color1),getColor(R.color.theme0_color2)});
+                return getGradient(R.color.theme0_color1, R.color.theme0_color2);
         }
     }
 
+    /**
+     * most probably this is going to be deprecated, no need to refactor
+     * @return
+     */
     public static Drawable GetGradientDrawableToolbar(){
         switch (MyApp.getSelectedThemeId()){
             case 1:
@@ -369,6 +331,10 @@ public class ColorHelper {
         }
     }
 
+    /**
+     * get color for fabs and stuff
+     * @return
+     */
     public static int GetWidgetColor(){
         switch (MyApp.getSelectedThemeId()){
             case 1:
@@ -397,8 +363,24 @@ public class ColorHelper {
         }
     }
 
+    /**
+     * hardcoded number of themes
+     * @return
+     */
     public static int GetNumberOfThemes(){
         return 8;
+    }
+
+    /**
+     * given 2 color resource id, this returns gradient drawable
+     * @param colorId1
+     * @param colorId2
+     * @return
+     */
+    private static Drawable getGradient(int colorId1, int colorId2){
+        return new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[] {getColor(colorId1),getColor(colorId2)});
     }
 
 
