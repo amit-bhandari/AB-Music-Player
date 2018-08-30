@@ -317,7 +317,7 @@ public class ColorHelper {
 
 
             default:
-                return getGradient(R.color.theme0_color1, R.color.theme0_color2);
+                return getGradient(getColor(R.color.theme0_color1), getColor(R.color.theme0_color2));
         }
     }
 

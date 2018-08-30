@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
+import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -54,7 +55,7 @@ public class MyApp extends Application {
         instance = this;
         pref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        selectedThemeId = pref.getInt(getString(R.string.pref_theme_id), 0);
+        selectedThemeId = pref.getInt(getString(R.string.pref_theme_id), Constants.DEFAULT_THEME_ID);
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
