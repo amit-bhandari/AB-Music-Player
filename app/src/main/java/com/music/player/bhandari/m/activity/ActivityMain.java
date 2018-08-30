@@ -1,8 +1,6 @@
 package com.music.player.bhandari.m.activity;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -14,7 +12,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
@@ -57,8 +54,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -112,7 +107,7 @@ import com.google.firebase.storage.UploadTask;
 import com.music.player.bhandari.m.BuildConfig;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
-import com.music.player.bhandari.m.UIElementHelper.MyDialog;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.customViews.RoundedImageView;
 import com.music.player.bhandari.m.model.Constants;
@@ -127,7 +122,6 @@ import com.music.player.bhandari.m.utils.UtilityFun;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -136,7 +130,6 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
-import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -554,8 +547,8 @@ public class ActivityMain extends AppCompatActivity
     private void setSystemDefaultBackground() {
         //findViewById(R.id.image_view_view_pager).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
         gradientOverlay.setVisibility(View.VISIBLE);
-        findViewById(R.id.image_view_view_pager)
-                .setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+        /*findViewById(R.id.image_view_view_pager)
+                .setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());*/
     }
 
     public void setBlurryBackgroundForMainLib(){
@@ -606,7 +599,7 @@ public class ActivityMain extends AppCompatActivity
         if(verCode!=0 && MyApp.getPref().getInt(getString(R.string.pref_version_code),-1) < verCode ) {
 
             MyApp.getPref().edit().putString(getString(R.string.pref_card_image_links),"").apply();
-            MaterialDialog dialog = new MaterialDialog.Builder(this)
+            MaterialDialog dialog = new MyDialogBuilder(this)
                     .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                     .title(getString(R.string.main_act_whats_new_title))
                     .content(getString(R.string.whats_new))
@@ -1060,7 +1053,7 @@ public class ActivityMain extends AppCompatActivity
                 break;
 
             case R.id.action_sleep_timer:
-                setSleepTimerDialog(this);
+                setSleepTimerDialog();
                 break;
 
             case R.id.action_search:
@@ -1438,7 +1431,7 @@ public class ActivityMain extends AppCompatActivity
     private void lyricCardDialog(){
         final String link = FirebaseRemoteConfig.getInstance().getString("sample_lyric_card");
 
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.nav_lyric_cards))
                 .customView(R.layout.lyric_card_dialog, false)
@@ -1498,7 +1491,7 @@ public class ActivityMain extends AppCompatActivity
                     });
         }
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
 
@@ -1563,7 +1556,7 @@ public class ActivityMain extends AppCompatActivity
 
         final String link = FirebaseRemoteConfig.getInstance().getString("link");
 
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.nav_developers_message))
                 .content(message)
@@ -1624,7 +1617,7 @@ public class ActivityMain extends AppCompatActivity
         linear.addView(text);
         linear.addView(ratingWrap);
 
-        MaterialDialog dialog = new MyDialog.Builder(this)
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_rate_dialog_title))
                // .content(getString(R.string.lyric_art_info_content))
@@ -1650,39 +1643,39 @@ public class ActivityMain extends AppCompatActivity
                 .customView(linear,true)
                 .build();
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
 
     }
 
-    public void setSleepTimerDialog(final Context context){
+    public void setSleepTimerDialog(){
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+        MyDialogBuilder builder = new MyDialogBuilder(this);
 
-        LinearLayout linear = new LinearLayout(context);
+        LinearLayout linear = new LinearLayout(this);
         linear.setOrientation(LinearLayout.VERTICAL);
-        final TextView text = new TextView(context);
+        final TextView text = new TextView(this);
 
-        int timer = MyApp.getPref().getInt(context.getString(R.string.pref_sleep_timer),0);
+        int timer = MyApp.getPref().getInt(this.getString(R.string.pref_sleep_timer),0);
         if(timer==0) {
-            String tempString = "0 "+context.getString(R.string.main_act_sleep_timer_status_minutes);
+            String tempString = "0 "+this.getString(R.string.main_act_sleep_timer_status_minutes);
             text.setText(tempString);
         }else {
-            String stringTemp = context.getString(R.string.main_act_sleep_timer_status_part1) +
+            String stringTemp = this.getString(R.string.main_act_sleep_timer_status_part1) +
                     timer +
-                    context.getString(R.string.main_act_sleep_timer_status_part2);
+                    this.getString(R.string.main_act_sleep_timer_status_part2);
 
             text.setText(stringTemp);
 
-            builder.neutralText(context.getString(R.string.main_act_sleep_timer_neu))
+            builder.neutralText(this.getString(R.string.main_act_sleep_timer_neu))
                     .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),0).apply();
+                        MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer),0).apply();
                         playerService.setSleepTimer(0, false);
-                        //Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-                        Snackbar.make(rootView,context.getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_LONG).show();
+                        //Toast.makeText(this, "Sleep timer discarded", Toast.LENGTH_LONG).show();
+                        Snackbar.make(rootView,getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_LONG).show();
                     }
             });
         }
@@ -1690,7 +1683,7 @@ public class ActivityMain extends AppCompatActivity
         text.setGravity(Gravity.CENTER);
         text.setTypeface(TypeFaceHelper.getTypeFace(this));
 
-        final SeekBar seek = new SeekBar(context);
+        final SeekBar seek = new SeekBar(this);
         seek.setPadding(40,10,40,10);
         seek.setMax(100);
         seek.setProgress(0);
@@ -1698,7 +1691,7 @@ public class ActivityMain extends AppCompatActivity
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                String tempString = progress+context.getString(R.string.main_act_sleep_timer_status_minutes);
+                String tempString = progress+getString(R.string.main_act_sleep_timer_status_minutes);
                 text.setText(tempString);
             }
 
@@ -1717,19 +1710,19 @@ public class ActivityMain extends AppCompatActivity
 
         MaterialDialog dialog = builder
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                .title(context.getString(R.string.main_act_sleep_timer_title))
-                .positiveText(context.getString(R.string.okay))
-                .negativeText(context.getString(R.string.cancel))
+                .title(this.getString(R.string.main_act_sleep_timer_title))
+                .positiveText(this.getString(R.string.okay))
+                .negativeText(this.getString(R.string.cancel))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if(seek.getProgress()!=0) {
-                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),seek.getProgress()).apply();
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer),seek.getProgress()).apply();
                             playerService.setSleepTimer(seek.getProgress(), true);
-                            String temp = context.getString(R.string.sleep_timer_successfully_set)
+                            String temp = getString(R.string.sleep_timer_successfully_set)
                                     + seek.getProgress()
-                                    + context.getString(R.string.main_act_sleep_timer_status_minutes);
-                            //Toast.makeText(context, temp, Toast.LENGTH_LONG).show();
+                                    + getString(R.string.main_act_sleep_timer_status_minutes);
+                            //Toast.makeText(this, temp, Toast.LENGTH_LONG).show();
                             Snackbar.make(rootView, temp, Snackbar.LENGTH_LONG).show();
                         }
                     }
@@ -2047,7 +2040,7 @@ public class ActivityMain extends AppCompatActivity
             return;
         }
 
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_lock_info_title))
                 .content(getString(R.string.main_act_lock_info_content))
@@ -2089,7 +2082,7 @@ public class ActivityMain extends AppCompatActivity
             }
         }, 200);
 
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_create_play_list_title))
                 .positiveText(getString(R.string.okay))

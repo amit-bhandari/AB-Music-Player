@@ -63,76 +63,76 @@
     <color name="theme1_color1">#80FF0099</color>
     <color name="theme1_color2">#80493240</color>
     <color name="theme1_color2_widget">#493240</color>
-    <color name="theme1_color1_dark">#30FF0099</color>
-    <color name="theme1_color2_dark">#30493240</color>
+    <color name="theme1_color1_dark">#c0FF0099</color>
+    <color name="theme1_color2_dark">#c0493240</color>
 
     <color name="theme2_color1">#8064b3f4</color>
     <color name="theme2_color2">#80c2e59c</color>
     <color name="theme2_color1_widget">#64b3f4</color>
     <color name="theme2_color2_widget">#c2e59c</color>
-    <color name="theme2_color1_dark">#3064b3f4</color>
-    <color name="theme2_color2_dark">#30c2e59c</color>
+    <color name="theme2_color1_dark">#c064b3f4</color>
+    <color name="theme2_color2_dark">#c0c2e59c</color>
 
     <color name="theme3_color1">#80283c86</color>
     <color name="theme3_color2">#8045a247</color>
     <color name="theme3_color2_widget">#45a247</color>
-    <color name="theme3_color1_dark">#20283c86</color>
-    <color name="theme3_color2_dark">#2045a247</color>
+    <color name="theme3_color1_dark">#c0283c86</color>
+    <color name="theme3_color2_dark">#c045a247</color>
 
 
     <color name="theme4_color1">#80c94b4b</color>
     <color name="theme4_color2">#804b134f</color>
     <color name="theme4_color2_widget">#4b134f</color>
-    <color name="theme4_color1_dark">#20c94b4b</color>
-    <color name="theme4_color2_dark">#204b134f</color>
+    <color name="theme4_color1_dark">#c0c94b4b</color>
+    <color name="theme4_color2_dark">#c04b134f</color>
 
 
     <color name="theme5_color1">#8000b09b</color>
     <color name="theme5_color2">#8096c93d</color>
     <color name="theme5_color1_widget">#8000b09b</color>
     <color name="theme5_color2_widget">#96c93d</color>
-    <color name="theme5_color1_dark">#2000b09b</color>
-    <color name="theme5_color2_dark">#2096c93d</color>
+    <color name="theme5_color1_dark">#c000b09b</color>
+    <color name="theme5_color2_dark">#c096c93d</color>
 
 
     <color name="theme6_color1">#80000000</color>
     <color name="theme6_color2">#80EB5757</color>
     <color name="theme6_color2_widget">#EB5757</color>
-    <color name="theme6_color1_dark">#20000000</color>
-    <color name="theme6_color2_dark">#20EB5757</color>
+    <color name="theme6_color1_dark">#c0000000</color>
+    <color name="theme6_color2_dark">#c0EB5757</color>
 
 
     <color name="theme7_color1">#8034e89e</color>
     <color name="theme7_color2">#800f3443</color>
     <color name="theme7_color2_widget">#0f3443</color>
-    <color name="theme7_color1_dark">#2034e89e</color>
-    <color name="theme7_color2_dark">#200f3443</color>
+    <color name="theme7_color1_dark">#c034e89e</color>
+    <color name="theme7_color2_dark">#c00f3443</color>
 
     <color name="theme8_color1">#8000416A</color>
     <color name="theme8_color2">#80ffa000</color>
     <color name="theme8_color2_widget">#ffa000</color>
-    <color name="theme8_color1_dark">#2000416A</color>
-    <color name="theme8_color2_dark">#20ffa000</color>
+    <color name="theme8_color1_dark">#c000416A</color>
+    <color name="theme8_color2_dark">#c0ffa000</color>
 
     <color name="theme9_color1">#80000046</color>
     <color name="theme9_color2">#801CB5E0</color>
     <color name="theme9_color2_widget">#1CB5E0</color>
-    <color name="theme9_color1_dark">#20000046</color>
-    <color name="theme9_color2_dark">#201CB5E0</color>
+    <color name="theme9_color1_dark">#c0000046</color>
+    <color name="theme9_color2_dark">#c01CB5E0</color>
 
 
     <color name="theme10_color1">#802c3e50</color>
     <color name="theme10_color2">#80bdc3c7</color>
     <color name="theme10_color2_widget">#bdc3c7</color>
-    <color name="theme10_color1_dark">#202c3e50</color>
-    <color name="theme10_color2_dark">#20bdc3c7</color>
+    <color name="theme10_color1_dark">#c02c3e50</color>
+    <color name="theme10_color2_dark">#c0bdc3c7</color>
 
 
     <color name="theme11_color1">#80ff4b1f</color>
     <color name="theme11_color2">#801fddff</color>
     <color name="theme11_color2_widget">#1fddff</color>
-    <color name="theme11_color1_dark">#20ff4b1f</color>
-    <color name="theme11_color2_dark">#201fddff</color>
+    <color name="theme11_color1_dark">#c0ff4b1f</color>
+    <color name="theme11_color2_dark">#c01fddff</color>
 
     <!-- play widget custom view  -->
     <color name="pw_primary">#3F51B5</color>

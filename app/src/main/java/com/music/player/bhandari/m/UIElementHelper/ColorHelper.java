@@ -239,37 +239,48 @@ public class ColorHelper {
     public static Drawable GetGradientDrawableDark(){
         switch (MyApp.getSelectedThemeId()){
             case 1:
-                return getGradient(R.color.theme1_color1_dark, R.color.theme1_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme1_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme1_color2_dark), 0.5f), true );
 
             case 2:
-                return getGradient(R.color.theme2_color1_dark, R.color.theme2_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme2_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme2_color2_dark), 0.5f), true );
 
             case 3:
-                return getGradient(R.color.theme3_color1_dark, R.color.theme3_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme3_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme3_color2_dark), 0.5f), true );
 
             case 4:
-                return getGradient(R.color.theme4_color1_dark, R.color.theme4_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme4_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme4_color2_dark), 0.5f), true );
 
             case 5:
-                return getGradient(R.color.theme5_color1_dark, R.color.theme5_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme5_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme5_color2_dark), 0.5f), true );
 
             case 6:
-                return getGradient(R.color.theme6_color1_dark, R.color.theme6_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme6_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme6_color2_dark), 0.5f), true );
 
             case 7:
-                return getGradient(R.color.theme7_color1_dark, R.color.theme7_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme7_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme7_color2_dark), 0.5f), true );
 
             case 8:
-                return getGradient(R.color.theme8_color1_dark, R.color.theme8_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme8_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme8_color2_dark), 0.5f), true );
 
             case 9:
-                return getGradient(R.color.theme9_color1_dark, R.color.theme9_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme9_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme9_color2_dark), 0.5f), true );
 
             case 10:
-                return getGradient(R.color.theme10_color1_dark, R.color.theme10_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme10_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme10_color2_dark), 0.5f), true );
 
             case 11:
-                return getGradient(R.color.theme11_color1_dark, R.color.theme11_color2_dark);
+                return getGradient(getDarkColor(getColor(R.color.theme11_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme11_color2_dark), 0.5f), true );
 
             default:
                 return getGradient(R.color.theme0_color1, R.color.theme0_color2);
@@ -332,12 +343,19 @@ public class ColorHelper {
      * given 2 color resource id, this returns gradient drawable
      * @param colorId1
      * @param colorId2
+     * @param isArgumentColors true means argument provided are actual colors, not color ids
      * @return
      */
-    private static Drawable getGradient(int colorId1, int colorId2){
-        return new GradientDrawable(
-                GradientDrawable.Orientation.TL_BR,
-                new int[] {getColor(colorId1),getColor(colorId2)});
+    private static Drawable getGradient(int colorId1, int colorId2, boolean... isArgumentColors){
+        if((isArgumentColors.length >= 1) && isArgumentColors[0]) {
+            return new GradientDrawable(
+                    GradientDrawable.Orientation.TL_BR,
+                    new int[]{colorId1, colorId2});
+        }else {
+            return new GradientDrawable(
+                    GradientDrawable.Orientation.TL_BR,
+                    new int[]{getColor(colorId1), getColor(colorId2)});
+        }
     }
 
 

@@ -33,13 +33,13 @@
 
     </FrameLayout>
 
-    <TextView
+    <!-- <TextView
         android:layout_below="@id/wrapper"
         android:layout_margin="5dp"
         android:textSize="18sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/dialog_lyric_card_content"/>
+        android:text="@string/dialog_lyric_card_content"/> -->
 
 </RelativeLayout>

@@ -237,7 +237,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     }
 
     private void initiateUI(){
-        rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+        //rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         recyclerViewColors.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewColors.setAdapter(new ColorAdapter());

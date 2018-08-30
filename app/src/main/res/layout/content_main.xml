@@ -31,7 +31,7 @@
         <View
             android:id="@+id/overlay_for_gradient"
             android:visibility="gone"
-            android:background="@color/colorPrimary"
+            android:background="@color/blackOverlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
