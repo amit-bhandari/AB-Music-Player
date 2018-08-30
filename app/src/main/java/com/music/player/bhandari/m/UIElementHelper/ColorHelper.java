@@ -198,41 +198,53 @@ public class ColorHelper {
     public static Drawable GetGradientDrawable(int id){
         switch (id){
             case 1:
-                return getGradient(R.color.theme1_color1, R.color.theme1_color2);
+                return getGradient(getColor(R.color.theme1_color1), getColor(R.color.theme1_color2));
 
             case 2:
-                return getGradient(R.color.theme2_color1, R.color.theme2_color2);
+                return getGradient(getColor(R.color.theme2_color1), getColor(R.color.theme2_color2));
 
             case 3:
-                return getGradient(R.color.theme3_color1, R.color.theme3_color2);
+                return getGradient(getColor(R.color.theme3_color1), getColor(R.color.theme3_color2));
 
             case 4:
-                return getGradient(R.color.theme4_color1, R.color.theme4_color2);
+                return getGradient(getColor(R.color.theme4_color1), getColor(R.color.theme4_color2));
 
             case 5:
-                return getGradient(R.color.theme5_color1, R.color.theme5_color2);
+                return getGradient(getColor(R.color.theme5_color1), getColor(R.color.theme5_color2));
 
             case 6:
-                return getGradient(R.color.theme6_color1, R.color.theme6_color2);
+                return getGradient(getColor(R.color.theme6_color1), getColor(R.color.theme6_color2));
 
             case 7:
-                return getGradient(R.color.theme7_color1, R.color.theme7_color2);
+                return getGradient(getColor(R.color.theme7_color1), getColor(R.color.theme7_color2));
 
             case 8:
-                return getGradient(R.color.theme8_color1, R.color.theme8_color2);
+                return getGradient(getColor(R.color.theme8_color1), getColor(R.color.theme8_color2));
 
             case 9:
-                return getGradient(R.color.theme9_color1, R.color.theme9_color2);
+                return getGradient(getColor(R.color.theme9_color1), getColor(R.color.theme9_color2));
 
             case 10:
-                return getGradient(R.color.theme10_color1, R.color.theme10_color2);
+                return getGradient(getColor(R.color.theme10_color1), getColor(R.color.theme10_color2));
 
             case 11:
-                return getGradient(R.color.theme11_color1, R.color.theme11_color2);
+                return getGradient(getColor(R.color.theme11_color1), getColor(R.color.theme11_color2));
+
+            case 12:
+                return getGradient(getColor(R.color.theme12_color1), getColor(R.color.theme12_color2), getColor(R.color.theme12_color3));
+
+            case 13:
+                return getGradient(getColor(R.color.theme13_color1), getColor(R.color.theme13_color2), getColor(R.color.theme13_color3));
+
+            case 14:
+                return getGradient(getColor(R.color.theme14_color1), getColor(R.color.theme14_color2), getColor(R.color.theme14_color3));
+
+            case 15:
+                return getGradient(getColor(R.color.theme15_color1), getColor(R.color.theme15_color2), getColor(R.color.theme15_color3));
 
 
             default:
-                return getGradient(R.color.theme0_color1, R.color.theme0_color2);
+                return getGradient(getColor(R.color.theme0_color1), getColor(R.color.theme0_color2));
         }
     }
 
@@ -240,47 +252,69 @@ public class ColorHelper {
         switch (MyApp.getSelectedThemeId()){
             case 1:
                 return getGradient(getDarkColor(getColor(R.color.theme1_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme1_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme1_color2_dark), 0.5f));
 
             case 2:
                 return getGradient(getDarkColor(getColor(R.color.theme2_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme2_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme2_color2_dark), 0.5f));
 
             case 3:
                 return getGradient(getDarkColor(getColor(R.color.theme3_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme3_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme3_color2_dark), 0.5f));
 
             case 4:
                 return getGradient(getDarkColor(getColor(R.color.theme4_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme4_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme4_color2_dark), 0.5f));
 
             case 5:
                 return getGradient(getDarkColor(getColor(R.color.theme5_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme5_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme5_color2_dark), 0.5f));
 
             case 6:
                 return getGradient(getDarkColor(getColor(R.color.theme6_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme6_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme6_color2_dark), 0.5f));
 
             case 7:
                 return getGradient(getDarkColor(getColor(R.color.theme7_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme7_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme7_color2_dark), 0.5f));
 
             case 8:
                 return getGradient(getDarkColor(getColor(R.color.theme8_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme8_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme8_color2_dark), 0.5f));
 
             case 9:
                 return getGradient(getDarkColor(getColor(R.color.theme9_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme9_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme9_color2_dark), 0.5f));
 
             case 10:
                 return getGradient(getDarkColor(getColor(R.color.theme10_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme10_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme10_color2_dark), 0.5f));
 
             case 11:
                 return getGradient(getDarkColor(getColor(R.color.theme11_color1_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme11_color2_dark), 0.5f), true );
+                        ,getDarkColor(getColor(R.color.theme11_color2_dark), 0.5f));
+
+            case 12:
+                return getGradient(getDarkColor(getColor(R.color.theme12_color1_dark), 0.5f)
+                            ,getDarkColor(getColor(R.color.theme12_color2_dark), 0.5f)
+                            ,getDarkColor(getColor(R.color.theme12_color3_dark), 0.5f));
+
+            case 13:
+                return getGradient(getDarkColor(getColor(R.color.theme13_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme13_color2_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme13_color3_dark), 0.5f));
+
+            case 14:
+                return getGradient(getDarkColor(getColor(R.color.theme14_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme14_color2_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme14_color3_dark), 0.5f));
+
+
+            case 15:
+                return getGradient(getDarkColor(getColor(R.color.theme15_color1_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme15_color2_dark), 0.5f)
+                        ,getDarkColor(getColor(R.color.theme15_color3_dark), 0.5f));
+
 
             default:
                 return getGradient(R.color.theme0_color1, R.color.theme0_color2);
@@ -326,49 +360,20 @@ public class ColorHelper {
             case 11:
                 return getDarkColor(getColor(R.color.theme11_color2_widget), 0.5f);
 
+            case 12:
+                return getDarkColor(getColor(R.color.theme12_color2_widget), 0.5f);
+
+            case 13:
+                return getDarkColor(getColor(R.color.theme13_color2_widget), 0.5f);
+
+            case 14:
+                return getDarkColor(getColor(R.color.theme14_color2_widget), 0.5f);
+
+            case 15:
+                return getDarkColor(getColor(R.color.theme15_color2_widget), 0.5f);
+
             default:
                 return getDarkColor(Color.YELLOW, 0.6f);
-        }
-    }
-
-
-    public static int GetLyricHighlightColor(){
-        switch (MyApp.getSelectedThemeId()){
-            case 1:
-                return getBrightColor(getColor(R.color.theme1_color2_widget));
-
-            case 2:
-                return getBrightColor(getColor(R.color.theme2_color2_widget));
-
-            case 3:
-                return getBrightColor(getColor(R.color.theme3_color2_widget));
-
-            case 4:
-                return getBrightColor(getColor(R.color.theme4_color2_widget));
-
-            case 5:
-                return getBrightColor(getColor(R.color.theme5_color2_widget));
-
-            case 6:
-                return getBrightColor(getColor(R.color.theme6_color2_widget));
-
-            case 7:
-                return getBrightColor(getColor(R.color.theme7_color2_widget));
-
-            case 8:
-                return getBrightColor(getColor(R.color.theme8_color2_widget));
-
-            case 9:
-                return getBrightColor(getColor(R.color.theme9_color2_widget));
-
-            case 10:
-                return getBrightColor(getColor(R.color.theme10_color2_widget));
-
-            case 11:
-                return getBrightColor(getColor(R.color.theme11_color2_widget));
-
-            default:
-                return Color.YELLOW;
         }
     }
 
@@ -377,26 +382,15 @@ public class ColorHelper {
      * @return
      */
     public static int GetNumberOfThemes(){
-        return 12;
+        return 16;
     }
 
-    /**
-     * given 2 color resource id, this returns gradient drawable
-     * @param colorId1
-     * @param colorId2
-     * @param isArgumentColors true means argument provided are actual colors, not color ids
-     * @return
-     */
-    private static Drawable getGradient(int colorId1, int colorId2, boolean... isArgumentColors){
-        if((isArgumentColors.length >= 1) && isArgumentColors[0]) {
-            return new GradientDrawable(
+    private static Drawable getGradient(int... colors){
+        if(colors.length<2) throw new IllegalStateException("Need at least 2 colors");
+
+        return new GradientDrawable(
                     GradientDrawable.Orientation.TL_BR,
-                    new int[]{colorId1, colorId2});
-        }else {
-            return new GradientDrawable(
-                    GradientDrawable.Orientation.TL_BR,
-                    new int[]{getColor(colorId1), getColor(colorId2)});
-        }
+                    colors);
     }
 
 
