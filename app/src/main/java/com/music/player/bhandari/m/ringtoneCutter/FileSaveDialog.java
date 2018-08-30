@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 
 import java.util.ArrayList;
 
@@ -115,6 +116,11 @@ public class FileSaveDialog extends Dialog {
         Button cancel = (Button)findViewById(R.id.cancel);
         cancel.setOnClickListener(cancelListener);
         mResponse = response;
+
+        if(getWindow()!=null){
+            getWindow().setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+            getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        }
     }
 
     private void setFilenameEditBoxFromName(boolean onlyIfNotEdited) {

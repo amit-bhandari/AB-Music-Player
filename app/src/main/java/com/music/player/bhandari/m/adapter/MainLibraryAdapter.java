@@ -26,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -35,6 +37,7 @@ import com.bumptech.glide.signature.StringSignature;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityMain;
 import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary;
@@ -551,8 +554,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
     }
 
     private void setTrackInfoDialog(){
-        final AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        alert.setTitle(context.getString(R.string.track_info_title));
         LinearLayout linear = new LinearLayout(context);
         linear.setOrientation(LinearLayout.VERTICAL);
         final TextView text = new TextView(context);
@@ -565,12 +566,12 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         //text.setGravity(Gravity.CENTER);
 
         linear.addView(text);
-        alert.setView(linear);
-        alert.setPositiveButton(context.getString(R.string.okay), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
-        });
-        alert.show();
+
+        new MyDialogBuilder(context)
+                .title(context.getString(R.string.track_info_title))
+                .customView(linear, true)
+                .positiveText(R.string.okay)
+                .show();
     }
 
     private void Play(){
@@ -764,11 +765,13 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
     private void DeleteDialog(){
 
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
+        new MyDialogBuilder(context)
+                .title(context.getString(R.string.are_u_sure))
+                .positiveText(R.string.yes)
+                .negativeText(R.string.no)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         ArrayList<File> files = new ArrayList<>();
                         ArrayList<Integer> ids = new ArrayList<>();
                         ArrayList<Integer> tracklist;
@@ -854,29 +857,18 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                                 }
                                 break;
                         }
-                        //Yes button clicked
-                        break;
+                    }
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
-                        break;
-                }
-            }
-
-            private void deleteSuccess() {
-                Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems.get(position).title, Snackbar.LENGTH_LONG).show();
-                playerService.removeTrack((Integer)filteredDataItems.get(position).id);
-                dataItems.remove(dataItems.get(position));
-                filteredDataItems.remove(filteredDataItems.get(position));
-                notifyItemRemoved(position);
-                //notifyDataSetChanged();
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(R.string.are_u_sure))
-                .setPositiveButton(context.getString(R.string.yes), dialogClickListener)
-                .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();
+                    private void deleteSuccess() {
+                        Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems.get(position).title, Snackbar.LENGTH_LONG).show();
+                        playerService.removeTrack((Integer)filteredDataItems.get(position).id);
+                        dataItems.remove(dataItems.get(position));
+                        filteredDataItems.remove(filteredDataItems.get(position));
+                        notifyItemRemoved(position);
+                        //notifyDataSetChanged();
+                    }
+                })
+                .show();
     }
 
     public void updateItem(int position, String ... param){

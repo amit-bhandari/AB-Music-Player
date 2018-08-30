@@ -19,9 +19,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityMain;
 import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary;
 import com.music.player.bhandari.m.model.Constants;
@@ -30,9 +35,11 @@ import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
+import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -235,12 +242,13 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
 
     private void Delete(){
 
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        //if tried deleting system playlist, give error
+        new MyDialogBuilder(context)
+                .title(context.getString(R.string.are_u_sure))
+                .positiveText(R.string.yes)
+                .negativeText(R.string.no)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if(headers.get(position).equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)
                                 || headers.get(position).equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED)
                                 || headers.get(position).equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED)
@@ -259,20 +267,9 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
                             //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
                             Snackbar.make(viewParent, context.getString(R.string.cannot_del)+headers.get(position), Snackbar.LENGTH_LONG).show();
                         }
-                        //Yes button clicked
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
-                        break;
-                }
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(R.string.are_u_sure))
-                .setPositiveButton(context.getString(R.string.yes), dialogClickListener)
-                .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();
+                    }
+                })
+                .show();
     }
     @Override
     public int getItemCount() {

@@ -35,6 +35,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -55,9 +56,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.ringtoneCutter.soundfile.SoundFile;
 
@@ -85,7 +90,7 @@ public class RingdroidEditActivity extends AppCompatActivity
     private boolean mFinishActivity;
     private TextView mTimerTextView;
     private AlertDialog mAlertDialog;
-    private ProgressDialog mProgressDialog;
+    private MaterialDialog mProgressDialog;
     private SoundFile mSoundFile;
     private File mFile;
     private String mFilename;
@@ -556,12 +561,20 @@ public class RingdroidEditActivity extends AppCompatActivity
         } catch (PackageManager.NameNotFoundException e) {
             versionName = "unknown";
         }
-        new AlertDialog.Builder(activity)
+        /*new AlertDialog.Builder(activity)
             .setTitle(R.string.about_title)
             .setMessage(activity.getString(R.string.about_text, versionName))
             .setPositiveButton(R.string.alert_ok_button, null)
             .setCancelable(false)
-            .show();
+            .show();*/
+
+        new MyDialogBuilder(activity)
+               .title(activity.getString(R.string.about_title))
+                .content(activity.getString(R.string.about_text, versionName))
+                .positiveText(R.string.okay)
+                .cancelable(false)
+                .show();
+
     }
 
     //
@@ -679,7 +692,7 @@ public class RingdroidEditActivity extends AppCompatActivity
         mLoadingLastUpdateTime = getCurrentTime();
         mLoadingKeepGoing = true;
         mFinishActivity = false;
-        mProgressDialog = new ProgressDialog(RingdroidEditActivity.this);
+        /*mProgressDialog = new ProgressDialog(RingdroidEditActivity.this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setTitle(R.string.progress_dialog_loading);
         mProgressDialog.setCancelable(true);
@@ -690,7 +703,21 @@ public class RingdroidEditActivity extends AppCompatActivity
                     mFinishActivity = true;
                 }
             });
+        mProgressDialog.show();*/
+
+        mProgressDialog = new MyDialogBuilder(this)
+                .title(R.string.progress_dialog_loading)
+                .progress(false, 100, true)
+                .dismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        mLoadingKeepGoing = false;
+                        mFinishActivity = true;
+                    }
+                })
+                .build();
         mProgressDialog.show();
+
 
         final SoundFile.ProgressListener listener =
             new SoundFile.ProgressListener() {
@@ -698,7 +725,7 @@ public class RingdroidEditActivity extends AppCompatActivity
                     long now = getCurrentTime();
                     if (now - mLoadingLastUpdateTime > 100) {
                         mProgressDialog.setProgress(
-                                (int) (mProgressDialog.getMax() * fractionComplete));
+                                (int) (mProgressDialog.getMaxProgress() * fractionComplete));
                         mLoadingLastUpdateTime = now;
                     }
                     return mLoadingKeepGoing;
@@ -799,6 +826,7 @@ public class RingdroidEditActivity extends AppCompatActivity
         // On the other hand, if the text is big enough, this is good enough.
         adBuilder.setView(getLayoutInflater().inflate(R.layout.record_audio, null));
         mAlertDialog = adBuilder.show();
+
         mTimerTextView = (TextView)mAlertDialog.findViewById(R.id.record_audio_timer);
 
         final SoundFile.ProgressListener listener =
@@ -1192,7 +1220,7 @@ public class RingdroidEditActivity extends AppCompatActivity
             title = getResources().getText(R.string.alert_title_success);
         }
 
-        new AlertDialog.Builder(RingdroidEditActivity.this)
+        /*new AlertDialog.Builder(RingdroidEditActivity.this)
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton(
@@ -1204,7 +1232,16 @@ public class RingdroidEditActivity extends AppCompatActivity
                     }
                 })
             .setCancelable(false)
-            .show();
+            .show();*/
+
+
+        new MyDialogBuilder(this)
+                .title(title)
+                .content(message)
+                .positiveText(R.string.okay)
+                .cancelable(false)
+                .show();
+
     }
 
     private void showFinalAlert(Exception e, int messageResourceId) {
@@ -1284,11 +1321,18 @@ public class RingdroidEditActivity extends AppCompatActivity
         final int duration = (int)(endTime - startTime + 0.5);
 
         // Create an indeterminate progress dialog
-        mProgressDialog = new ProgressDialog(this);
+        /*mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setTitle(R.string.progress_dialog_saving);
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setCancelable(false);
+        mProgressDialog.show();*/
+
+        mProgressDialog = new MyDialogBuilder(this)
+                .title(R.string.progress_dialog_saving)
+                .progress(true, 0)
+                .cancelable(false)
+                .build();
         mProgressDialog.show();
 
         // Save the sound file in a background thread
@@ -1427,12 +1471,19 @@ public class RingdroidEditActivity extends AppCompatActivity
         long fileSize = outFile.length();
         if (fileSize <= 512) {
             outFile.delete();
-            new AlertDialog.Builder(this)
+            /*new AlertDialog.Builder(this)
                 .setTitle(R.string.alert_title_failure)
                 .setMessage(R.string.too_small_error)
                 .setPositiveButton(R.string.alert_ok_button, null)
                 .setCancelable(false)
-                .show();
+                .show();*/
+
+            new MyDialogBuilder(this)
+                    .title(R.string.alert_title_failure)
+                    .content(R.string.too_small_error)
+                    .positiveText(R.string.okay)
+                    .cancelable(false)
+                    .show();
             return;
         }
 
@@ -1493,7 +1544,7 @@ public class RingdroidEditActivity extends AppCompatActivity
         // If it's a notification, give the user the option of making
         // this their default notification.  If they say no, we're finished.
         if (mNewFileKind == FileSaveDialog.FILE_KIND_NOTIFICATION) {
-            new AlertDialog.Builder(RingdroidEditActivity.this)
+            /*new AlertDialog.Builder(RingdroidEditActivity.this)
                 .setTitle(R.string.alert_title_success)
                 .setMessage(R.string.set_default_notification)
                 .setPositiveButton(R.string.alert_yes_button,
@@ -1515,7 +1566,26 @@ public class RingdroidEditActivity extends AppCompatActivity
                         }
                     })
                 .setCancelable(false)
-                .show();
+                .show();*/
+
+            new MyDialogBuilder(this)
+                    .title(R.string.alert_title_success)
+                    .content(R.string.set_default_notification)
+                    .positiveText(R.string.alert_yes_button)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            RingtoneManager.setActualDefaultRingtoneUri(
+                                    RingdroidEditActivity.this,
+                                    RingtoneManager.TYPE_NOTIFICATION,
+                                    newUri);
+                            finish();
+                        }
+                    })
+                    .negativeText(R.string.alert_no_button)
+                    .cancelable(false)
+                    .show();
+
             return;
         }
 

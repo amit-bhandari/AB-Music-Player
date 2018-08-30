@@ -32,6 +32,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityPermissionSeek;
 import com.music.player.bhandari.m.model.Constants;
@@ -114,8 +115,7 @@ public class UtilityFun {
     }
 
     public static void AddToPlaylist(final Context context, final int[] song_titles){
-        MaterialDialog dialog = new MaterialDialog.Builder(context)
-                .typeface(TypeFaceHelper.getTypeFace(context),TypeFaceHelper.getTypeFace(context))
+        MaterialDialog dialog = new MyDialogBuilder(context)
                 .title(context.getString(R.string.select_playlist_title))
                 .items(PlaylistManager.getInstance(context).GetPlaylistList(true))
                 .itemsCallback(new MaterialDialog.ListCallback() {
@@ -219,8 +219,7 @@ public class UtilityFun {
 
     public static void SetRingtone(final Context context, final String filePath , final int id){
         if(!checkSystemWritePermission(context)){
-            MaterialDialog dialog = new MaterialDialog.Builder(context)
-                    .typeface(TypeFaceHelper.getTypeFace(context),TypeFaceHelper.getTypeFace(context))
+            MaterialDialog dialog = new MyDialogBuilder(context)
                     .title(context.getString(R.string.write_setting_perm_title))
                     .content(context.getString(R.string.write_setting_perm_content))
                     .positiveText(context.getString(R.string.okay))
@@ -239,8 +238,7 @@ public class UtilityFun {
 
         }else {
 
-            MaterialDialog dialog = new MaterialDialog.Builder(context)
-                    .typeface(TypeFaceHelper.getTypeFace(context),TypeFaceHelper.getTypeFace(context))
+            MaterialDialog dialog = new MyDialogBuilder(context)
                     .title(context.getString(R.string.action_set_as_ringtone))
                     .content("Would you like to use Ringtone Cutter first?")
                     .positiveText("Ringtone Cutter")

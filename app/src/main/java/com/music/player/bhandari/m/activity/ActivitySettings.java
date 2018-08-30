@@ -53,6 +53,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.BulkArtInfoGrabber;
 import com.music.player.bhandari.m.model.Constants;
@@ -718,8 +719,7 @@ public class ActivitySettings extends AppCompatActivity {
                     } else {
                         pos_text = getString(R.string.turn_off);
                     }
-                    new MaterialDialog.Builder(getActivity())
-                            .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                    new MyDialogBuilder(getActivity())
                             .title(R.string.notifications_title)
                             .content(R.string.notification_content)
                             .positiveText(pos_text)
@@ -778,8 +778,7 @@ public class ActivitySettings extends AppCompatActivity {
                         pos_text = getString(R.string.turn_off);
                     }
 
-                    MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                            .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                    MaterialDialog dialog = new MyDialogBuilder(getActivity())
                             .title(R.string.title_continous_playback)
                             .content(R.string.cont_playback_content)
                             .positiveText(pos_text)
@@ -817,8 +816,7 @@ public class ActivitySettings extends AppCompatActivity {
                         pos_text = getString(R.string.turn_off);
                     }
 
-                    MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                            .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                    MaterialDialog dialog = new MyDialogBuilder(getActivity())
                             .title(R.string.title_data_Saver)
                             .content(R.string.data_saver_content)
                             .positiveText(pos_text)
@@ -859,8 +857,7 @@ public class ActivitySettings extends AppCompatActivity {
                             pos_text = getString(R.string.turn_off);
                         }
 
-                        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                                .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                        MaterialDialog dialog = new MyDialogBuilder(getActivity())
                                 .title(R.string.instant_lyrics_title)
                                 .content(R.string.instant_lyrics_content)
                                 .positiveText(pos_text)
@@ -1009,8 +1006,7 @@ public class ActivitySettings extends AppCompatActivity {
                         int numberOfTracks = MusicLibrary.getInstance().getDataItemsForTracks().size();
                         int rewardPoints = RewardPoints.getRewardPointsCount();
                         if(rewardPoints<numberOfTracks) {
-                            new MaterialDialog.Builder(getActivity())
-                                    .typeface(TypeFaceHelper.getTypeFace(getActivity()), TypeFaceHelper.getTypeFace(getActivity()))
+                            new MyDialogBuilder(getActivity())
                                     .title(R.string.title_not_enough_reward_points)
                                     .content(String.format(getString(R.string.not_enough_reward_points_for_batch_lyrics)
                                             ,rewardPoints, numberOfTracks))
@@ -1071,8 +1067,7 @@ public class ActivitySettings extends AppCompatActivity {
         }
 
         private void albumViewDialog(){
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_album_lib_view))
                     .items((CharSequence[]) new String[]{LIST, GRID})
                     .itemsCallback(new MaterialDialog.ListCallback() {
@@ -1103,8 +1098,7 @@ public class ActivitySettings extends AppCompatActivity {
             // 0 - System default   2 - custom
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back),0);
 
-            MaterialDialog dialog =new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog =new MyDialogBuilder(getActivity())
                     .title(R.string.title_nav_back)
                     .items(R.array.nav_back_pref_array)
                     .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
@@ -1151,8 +1145,7 @@ public class ActivitySettings extends AppCompatActivity {
             // 0 - System default   2 - custom
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_default_album_art),0);
 
-            MaterialDialog dialog =new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog =new MyDialogBuilder(getActivity())
                     .title(R.string.nav_default_album_art)
                     .items(R.array.def_album_art_pref_array)
                     .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
@@ -1199,8 +1192,7 @@ public class ActivitySettings extends AppCompatActivity {
             // 0 - System default   2 - custom
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_main_library_back),0);
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(R.string.title_main_library_back)
                     .items(R.array.main_lib_back_pref_array)
                     .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
@@ -1248,8 +1240,7 @@ public class ActivitySettings extends AppCompatActivity {
             // 0 - System default   1 - artist image  2 - album art 3 - custom  4- custom (if Artist image unavailable)
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back),1);
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(R.string.title_now_playing_back)
                     .items(R.array.now_playing_back_pref_array)
                     .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
@@ -1296,17 +1287,15 @@ public class ActivitySettings extends AppCompatActivity {
             String excludedFoldersString = MyApp.getPref().getString(getString(R.string.pref_excluded_folders),"");
             String[] excludedFolders = excludedFoldersString.split(",");
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(R.string.title_excluded_folders)
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
                     .items(excludedFolders)
                     .positiveText(getString(R.string.add))
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             dialog.dismiss();
-                            new MaterialDialog.Builder(getActivity())
-                                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                            new MyDialogBuilder(getActivity())
                                     .title(getString(R.string.title_how_to_add))
                                     .content(getString(R.string.content_how_to_add))
                                     .positiveText(getString(R.string.pos_how_to_add))
@@ -1342,8 +1331,7 @@ public class ActivitySettings extends AppCompatActivity {
             mItemTouchHelper = new ItemTouchHelper(callback);
             mItemTouchHelper.attachToRecyclerView(rv);
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.setting_tab_seqe_title))
                     .customView(dialogView,false)
                     .dismissListener(new DialogInterface.OnDismissListener() {
@@ -1378,8 +1366,7 @@ public class ActivitySettings extends AppCompatActivity {
             rv.setLayoutManager(layoutManager);
             //rv.setLayoutManager(new GridLayoutManager(getActivity(), 4));
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title("Select theme")
                     .customView(dialogView,false)
                     .dismissListener(new DialogInterface.OnDismissListener() {
@@ -1465,8 +1452,7 @@ public class ActivitySettings extends AppCompatActivity {
             linear.addView(seek);
             linear.addView(text);
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_hide_short_clips))
                     // .content(getString(R.string.lyric_art_info_content))
                     .positiveText(getString(R.string.okay))
@@ -1530,8 +1516,7 @@ public class ActivitySettings extends AppCompatActivity {
             linear.setOrientation(LinearLayout.VERTICAL);
 
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_hide_tracks_starting_with))
                     // .content(getString(R.string.lyric_art_info_content))
                     .positiveText(getString(R.string.okay))
@@ -1563,8 +1548,7 @@ public class ActivitySettings extends AppCompatActivity {
 
         private void ShakeActionDialog(){
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_shake_action))
                     .items((CharSequence[]) new String[]{NEXT,PLAY_PAUSE,PREVIOUS})
                     .itemsCallback(new MaterialDialog.ListCallback() {
@@ -1600,8 +1584,7 @@ public class ActivitySettings extends AppCompatActivity {
         }
 
         private void BaseThemeSelectionDialog(){
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_theme))
                     .items((CharSequence[]) new String[]{DARK,GLOSSY})
                     .itemsCallback(new MaterialDialog.ListCallback() {
@@ -1640,8 +1623,7 @@ public class ActivitySettings extends AppCompatActivity {
 
         private void PrimarySelectionDialog(){
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_theme_color))
                     .items((CharSequence[]) new String[]{MANUAL_INPUT,BLACK, GUNMETAL, HALAYA_UBE, INTERNATIONAL_ORANGE
                             , JACARTA, JAPANESE_VIOLET, MAGENTA, MAASTRICHT_BLUE
@@ -1816,8 +1798,7 @@ public class ActivitySettings extends AppCompatActivity {
                                     if(current_color!=-1) {
                                         pre_fill_text = String.format("#%06X", (0xFFFFFF & current_color));
                                     }
-                                    MaterialDialog mDialog = new MaterialDialog.Builder(getActivity())
-                                            .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+                                    MaterialDialog mDialog = new MyDialogBuilder(getActivity())
                                             .title(R.string.manual_color_title)
                                             .content(R.string.manual_color_content)
                                             .inputType(InputType.TYPE_CLASS_TEXT)
@@ -1863,8 +1844,7 @@ public class ActivitySettings extends AppCompatActivity {
 
         private void resetPrefDialog(){
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_reset_pref) + " ?")
                     // .content(getString(R.string.lyric_art_info_content))
                     .positiveText(getString(R.string.yes))
@@ -1928,8 +1908,7 @@ public class ActivitySettings extends AppCompatActivity {
 
         private void fontPrefSelectionDialog(){
 
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                    .typeface(TypeFaceHelper.getTypeFace(MyApp.getContext()),TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_text_font))
                     .items((CharSequence[]) new String[]{ MANROPE, ASAP, MONOSPACE, SOFIA, SYSTEM_DEFAULT})
                     .itemsCallback(new MaterialDialog.ListCallback() {

@@ -600,7 +600,6 @@ public class ActivityMain extends AppCompatActivity
 
             MyApp.getPref().edit().putString(getString(R.string.pref_card_image_links),"").apply();
             MaterialDialog dialog = new MyDialogBuilder(this)
-                    .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                     .title(getString(R.string.main_act_whats_new_title))
                     .content(getString(R.string.whats_new))
                     .positiveText(getString(R.string.okay))
@@ -630,28 +629,6 @@ public class ActivityMain extends AppCompatActivity
             }
 
         }
-
-        /*
-        if(MyApp.getPref().getInt(getString(R.string.pref_version_code),-1) < 88){
-            new MaterialDialog.Builder(this)
-                    .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                    .title(R.string.title_update_ab_music)
-                    .content(R.string.content_ab_music)
-                    .positiveText(R.string.pos_update_ab_music)
-                    .negativeText(R.string.cancel)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                            try {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                            } catch (ActivityNotFoundException anfe) {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                            }
-                        }
-                    })
-                    .show();
-        }*/
 
         MyApp.getPref().edit().putInt(getString(R.string.pref_version_code), verCode).apply();
     }
@@ -1432,8 +1409,7 @@ public class ActivityMain extends AppCompatActivity
         final String link = FirebaseRemoteConfig.getInstance().getString("sample_lyric_card");
 
         MaterialDialog dialog = new MyDialogBuilder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                .title(getString(R.string.nav_lyric_cards))
+               .title(getString(R.string.nav_lyric_cards))
                 .customView(R.layout.lyric_card_dialog, false)
                 //.content(R.string.dialog_lyric_card_content)
                 .positiveText(R.string.dialog_lyric_card_pos)
@@ -1557,7 +1533,6 @@ public class ActivityMain extends AppCompatActivity
         final String link = FirebaseRemoteConfig.getInstance().getString("link");
 
         MaterialDialog dialog = new MyDialogBuilder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.nav_developers_message))
                 .content(message)
                 //.neutralText(R.string.write_me)
@@ -1618,7 +1593,6 @@ public class ActivityMain extends AppCompatActivity
         linear.addView(ratingWrap);
 
         MaterialDialog dialog = new MyDialogBuilder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_rate_dialog_title))
                // .content(getString(R.string.lyric_art_info_content))
                 .positiveText(getString(R.string.main_act_rate_dialog_pos))
@@ -1709,7 +1683,6 @@ public class ActivityMain extends AppCompatActivity
         linear.addView(text);
 
         MaterialDialog dialog = builder
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(this.getString(R.string.main_act_sleep_timer_title))
                 .positiveText(this.getString(R.string.okay))
                 .negativeText(this.getString(R.string.cancel))
@@ -2041,7 +2014,6 @@ public class ActivityMain extends AppCompatActivity
         }
 
         MaterialDialog dialog = new MyDialogBuilder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_lock_info_title))
                 .content(getString(R.string.main_act_lock_info_content))
                 .positiveText(getString(R.string.main_act_lock_info_pos))
@@ -2083,7 +2055,6 @@ public class ActivityMain extends AppCompatActivity
         }, 200);
 
         MaterialDialog dialog = new MyDialogBuilder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(getString(R.string.main_act_create_play_list_title))
                 .positiveText(getString(R.string.okay))
                 .negativeText(getString(R.string.cancel))

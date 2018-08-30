@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 
 public class AfterSaveActionDialog extends Dialog {
 
@@ -56,6 +57,12 @@ public class AfterSaveActionDialog extends Dialog {
                 });
 
         mResponse = response;
+
+
+        if(getWindow()!=null){
+            getWindow().setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+            getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        }
     }
 
     private void closeAndSendResult(int clickedButtonId) {

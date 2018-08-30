@@ -22,6 +22,7 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.rewards.RewardPoints;
 import com.music.player.bhandari.m.utils.UtilityFun;
@@ -68,10 +69,9 @@ public class ActivityRewardVideo extends AppCompatActivity {
 
         int reward_points = MyApp.getPref().getInt(getString(R.string.pref_reward_points), 100);
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
+        MyDialogBuilder builder = new MyDialogBuilder(this);
 
         builder.title(R.string.title_reward_points)
-                .typeface(TypeFaceHelper.getTypeFace(ActivityRewardVideo.this),TypeFaceHelper.getTypeFace(ActivityRewardVideo.this))
                 .theme(Theme.DARK)
                 .customView(R.layout.reward_dialog_view, true)
                 .cancelable(false)
@@ -133,8 +133,7 @@ public class ActivityRewardVideo extends AppCompatActivity {
                 dialog.dismiss();
             }
 
-            MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(ActivityRewardVideo.this)
-                    .typeface(TypeFaceHelper.getTypeFace(ActivityRewardVideo.this),TypeFaceHelper.getTypeFace(ActivityRewardVideo.this))
+            MaterialDialog.Builder dialogBuilder = new MyDialogBuilder(ActivityRewardVideo.this)
                     .title(R.string.title_loading_ad)
                     .content(R.string.content_loading_ad)
                     .autoDismiss(false)
@@ -196,9 +195,8 @@ public class ActivityRewardVideo extends AppCompatActivity {
                     }
 
                     try {
-                        new MaterialDialog.Builder(ActivityRewardVideo.this)
-                                .typeface(TypeFaceHelper.getTypeFace(ActivityRewardVideo.this), TypeFaceHelper.getTypeFace(ActivityRewardVideo.this))
-                                .title(R.string.title_reward_failed)
+                        new MyDialogBuilder(ActivityRewardVideo.this)
+                                 .title(R.string.title_reward_failed)
                                 .content(R.string.content_reward_failed)
                                 .positiveText(R.string.pos_reward_failed)
                                 .negativeText(R.string.neg_reward_failed)
@@ -281,9 +279,8 @@ public class ActivityRewardVideo extends AppCompatActivity {
 
             private void showRewardedDialog() {
                 loadAdd();
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(ActivityRewardVideo.this)
-                        .typeface(TypeFaceHelper.getTypeFace(ActivityRewardVideo.this),TypeFaceHelper.getTypeFace(ActivityRewardVideo.this))
-                        .title("Congrats!")
+                MaterialDialog.Builder builder = new MyDialogBuilder(ActivityRewardVideo.this)
+                         .title("Congrats!")
                         .content(String.format("You have been awarded %d reward points. To add more, click on Refill." , pointsToBeRewarded))
                         .positiveText("Refill")
                         .negativeText("Done")

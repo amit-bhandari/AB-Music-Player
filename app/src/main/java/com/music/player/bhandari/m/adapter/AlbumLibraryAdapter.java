@@ -22,7 +22,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -31,6 +34,8 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityMain;
 import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary;
 import com.music.player.bhandari.m.model.Constants;
@@ -44,6 +49,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -352,11 +358,13 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
 
     private void Delete(){
 
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
+        new MyDialogBuilder(context)
+                .title(context.getString(R.string.are_u_sure))
+                .positiveText(R.string.yes)
+                .negativeText(R.string.no)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         ArrayList<Integer> ids = new ArrayList<>();
                         ArrayList<File> files = new ArrayList<>();
                         ArrayList<Integer> tracklist = MusicLibrary.getInstance().getSongListFromAlbumIdNew( filteredDataItems.get(position).album_id, Constants.SORT_ORDER.ASC);
@@ -368,7 +376,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                             }
                             TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
                             if(item==null){
-                               // Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
+                                // Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
                                 Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_LONG).show();
                                 return;
                             }
@@ -377,28 +385,19 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                         }
 
                         if(UtilityFun.Delete(context, files, ids)){
-                                // Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-                                Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems.get(position).title, Snackbar.LENGTH_LONG).show();
-                                dataItems.remove(dataItems.get(position));
-                                filteredDataItems.remove(filteredDataItems.get(position));
-                                notifyItemRemoved(position);
-                               // notifyDataSetChanged();
+                            // Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems.get(position).title, Snackbar.LENGTH_LONG).show();
+                            dataItems.remove(dataItems.get(position));
+                            filteredDataItems.remove(filteredDataItems.get(position));
+                            notifyItemRemoved(position);
+                            // notifyDataSetChanged();
                         }  else {
                             //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                             Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_LONG).show();
                         }
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
-                        break;
-                }
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(R.string.are_u_sure)).setPositiveButton(context.getString(R.string.yes), dialogClickListener)
-                .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();
+                    }
+                })
+                .show();
     }
 
     @NonNull

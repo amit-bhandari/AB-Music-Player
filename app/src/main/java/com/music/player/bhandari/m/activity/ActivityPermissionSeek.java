@@ -35,6 +35,7 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.fcm.CountryInfo;
 import com.music.player.bhandari.m.model.Constants;
@@ -254,8 +255,7 @@ public class ActivityPermissionSeek extends AppCompatActivity {
 
 
     private void permissionDetailsDialog(){
-        new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        new MyDialogBuilder(this)
                 .title(R.string.permission_details_title)
                 .content(R.string.permission_details_content)
                 .positiveText(R.string.permission_details_pos)

@@ -36,6 +36,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.PlaylistManager;
@@ -314,8 +315,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
     }
 
     private void unsavedDataAlert() {
-        new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        new MyDialogBuilder(this)
                 .title(getString(R.string.te_unsaved_data_title))
                 .content(getString(R.string.changes_discard_alert_te))
                 .positiveText(getString(R.string.te_unsaved_data_pos))
@@ -541,8 +541,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
             return;
         }
 
-        new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        new MyDialogBuilder(this)
                 .title(getString(R.string.te_show_info_title))
                 .content(getString(R.string.te_show_info_content))
                 .positiveText(getString(R.string.te_show_info_pos))

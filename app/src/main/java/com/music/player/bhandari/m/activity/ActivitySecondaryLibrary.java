@@ -57,6 +57,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.SecondaryLibraryAdapter;
 import com.music.player.bhandari.m.model.Constants;
@@ -688,7 +689,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
     public void setSleepTimerDialog(final Context context){
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+        MyDialogBuilder builder = new MyDialogBuilder(context);
 
         LinearLayout linear = new LinearLayout(context);
         linear.setOrientation(LinearLayout.VERTICAL);
@@ -746,7 +747,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         linear.addView(text);
 
         builder
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(context.getString(R.string.main_act_sleep_timer_title))
                 .positiveText(context.getString(R.string.okay))
                 .negativeText(context.getString(R.string.cancel))

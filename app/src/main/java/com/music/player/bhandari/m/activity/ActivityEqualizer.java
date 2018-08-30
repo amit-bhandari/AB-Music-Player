@@ -35,6 +35,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.customViews.VerticalSeekBar;
 import com.music.player.bhandari.m.equalizer.EqualizerSetting;
 import com.music.player.bhandari.m.model.Constants;
@@ -838,7 +839,7 @@ public class ActivityEqualizer extends AppCompatActivity {
      */
     private void showSavePresetDialog() {
 
-        new MaterialDialog.Builder(this)
+        new MyDialogBuilder(this)
                 .title(R.string.title_save_preset)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .input(getString(R.string.hint_save_preset), "", new MaterialDialog.InputCallback() {
@@ -882,7 +883,7 @@ public class ActivityEqualizer extends AppCompatActivity {
             Log.d("ActivityEqualizer", "showLoadPresetDialog: array " + s);
         }
 
-        new MaterialDialog.Builder(this)
+        new MyDialogBuilder(this)
                 .title(R.string.title_load_preset)
                 .items(array)
                 .itemsCallback(new MaterialDialog.ListCallback() {

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.Levenshtein;
@@ -131,7 +132,7 @@ public class ViewLyrics {
             @Override
             public void run() {
 
-                new MaterialDialog.Builder(MyApp.getContext())
+                new MyDialogBuilder(MyApp.getContext())
                         .title("title").show();
             }
         });*/
@@ -193,9 +194,7 @@ public class ViewLyrics {
 
         final Handler handler = new Handler(Looper.getMainLooper());
 
-        final MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
-                .typeface(TypeFaceHelper.getTypeFace(context),TypeFaceHelper.getTypeFace(context));
-
+        final MaterialDialog.Builder builder = new MyDialogBuilder(context);
         builder.title("Searching for other lyrics...");
         builder.progress(true, 0);
 

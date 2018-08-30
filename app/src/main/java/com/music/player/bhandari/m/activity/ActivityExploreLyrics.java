@@ -39,6 +39,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.TopTracksAdapter;
 import com.music.player.bhandari.m.lyricsExplore.OnPopularTracksReady;
@@ -351,8 +352,7 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
     }
 
     private void searchLyricDialog(){
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        MaterialDialog.Builder builder = new MyDialogBuilder(this)
                 .title(R.string.title_search_lyrics)
                 .customView(R.layout.lyric_search_dialog, true)
                 .positiveText(R.string.pos_search_lyric)

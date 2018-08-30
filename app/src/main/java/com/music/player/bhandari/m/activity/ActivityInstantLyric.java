@@ -60,6 +60,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter;
 import com.music.player.bhandari.m.lyricCard.ActivityLyricCard;
@@ -719,8 +720,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     }
 
     private void syncProblemDialog(){
-        new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        new MyDialogBuilder(this)
                 .title(getString(R.string.lyric_sync_error_title))
                 .content(getString(R.string.lyric_sync_error_content))
                 .positiveText(getString(R.string.okay))
@@ -1029,9 +1029,8 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     }
 
     private void searchLyricDialog(){
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
-                .title(R.string.title_search_lyrics)
+        MaterialDialog.Builder builder = new MyDialogBuilder(this)
+               .title(R.string.title_search_lyrics)
                 .customView(R.layout.lyric_search_dialog, true)
                 .positiveText(R.string.pos_search_lyric)
                 .negativeText(R.string.cancel)
@@ -1135,8 +1134,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     }
 
     private void showDisclaimerDialog(){
-        new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        new MyDialogBuilder(this)
                 .title(getString(R.string.lyrics_disclaimer_title))
                 .content(getString(R.string.lyrics_disclaimer_content))
                 .positiveText(getString(R.string.lyrics_disclaimer_title_pos))

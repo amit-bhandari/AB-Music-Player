@@ -64,7 +64,6 @@
         <item name="md_positive_color">#ffffff</item>
         <item name="md_neutral_color">#ffffff</item>
         <item name="md_negative_color">#ffffff</item>
-        <item name="md_widget_color">#ffffff</item>
     </style>
 
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">

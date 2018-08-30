@@ -52,6 +52,7 @@ import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter;
 import com.music.player.bhandari.m.lyricCard.ActivityLyricCard;
@@ -464,8 +465,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
     }
 
     private void searchLyricDialog(){
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        MaterialDialog.Builder builder = new MyDialogBuilder(this)
                 .title(R.string.title_search_lyrics)
                 .customView(R.layout.lyric_search_dialog, true)
                 .positiveText(R.string.pos_search_lyric)

@@ -58,6 +58,7 @@ import com.google.gson.reflect.TypeToken;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityPermissionSeek;
 import com.music.player.bhandari.m.customViews.ZoomTextView;
@@ -742,8 +743,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     }
 
     void showTextEditDialog(){
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        MaterialDialog.Builder builder = new MyDialogBuilder(this)
                 .title("Edit text")
                 .positiveText(getString(R.string.okay))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {

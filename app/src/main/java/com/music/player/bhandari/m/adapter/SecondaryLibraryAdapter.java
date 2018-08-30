@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -20,8 +21,11 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityTagEditor;
 import com.music.player.bhandari.m.model.Constants;
@@ -35,6 +39,7 @@ import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -318,8 +323,8 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
     }
 
     private void setTrackInfoDialog(){
-        final AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        alert.setTitle(context.getString(R.string.track_info_title) );
+        //final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        //alert.setTitle(context.getString(R.string.track_info_title) );
         LinearLayout linear = new LinearLayout(context);
         linear.setOrientation(LinearLayout.VERTICAL);
         final TextView text = new TextView(context);
@@ -331,12 +336,14 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         //text.setGravity(Gravity.CENTER);
 
         linear.addView(text);
-        alert.setView(linear);
-        alert.setPositiveButton(context.getString(R.string.okay) , new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
-        });
-        alert.show();
+        //alert.setView(linear);
+        //alert.show()
+
+        new MyDialogBuilder(context)
+                .title(context.getString(R.string.track_info_title))
+                .customView(linear, true)
+                .positiveText(R.string.okay)
+                .show();
     }
 
     private void Play(){
@@ -367,14 +374,16 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
     private void DeleteDialog(){
 
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
+        new MyDialogBuilder(context)
+                .title(context.getString(R.string.are_u_sure))
+                .positiveText(R.string.yes)
+                .negativeText(R.string.no)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if(playerService.getCurrentTrack().getTitle().equals(dataItems.get(position).title)){
                             Toast.makeText(context,context.getString(R.string.song_is_playing) ,Toast.LENGTH_SHORT).show();
-                           // Snackbar.make(viewParent, "Cannot delete currently playing song", Snackbar.LENGTH_LONG).show();
+                            // Snackbar.make(viewParent, "Cannot delete currently playing song", Snackbar.LENGTH_LONG).show();
                             return;
                         }
 
@@ -399,19 +408,9 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                             Toast.makeText(context, context.getString(R.string.unable_to_del)
                                     , Toast.LENGTH_SHORT).show();
                         }
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
-                        break;
-                }
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(R.string.are_u_sure))
-                .setPositiveButton(context.getString(R.string.yes), dialogClickListener)
-                .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();
+                    }
+                })
+                .show();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

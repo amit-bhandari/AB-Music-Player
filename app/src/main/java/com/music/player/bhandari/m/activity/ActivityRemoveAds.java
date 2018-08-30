@@ -21,6 +21,7 @@ import com.android.vending.billing.IInAppBillingService;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.MyApp;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
@@ -167,8 +168,7 @@ public class ActivityRemoveAds extends AppCompatActivity {
         }
 
 
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .title(getString(R.string.nav_remove_ads))
                 .content(R.string.remove_ads_content)
                 .dismissListener(new DialogInterface.OnDismissListener() {

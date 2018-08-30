@@ -32,6 +32,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.MyApp;
@@ -266,8 +267,7 @@ public class ActivityAboutUs extends AppCompatActivity {
     }
 
     private void callForHelpDialog(){
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .title("AB Music needs your help!")
                 .content("As AB Music grows bigger and reach more audience, its language support also needs to be widened. \n\n As Catelyn of House Stark once said, " +
                         "In the name of King Robert and good lords you serve, I call upon you to seize the opportunity to contribute and help me translate " +
@@ -299,8 +299,7 @@ public class ActivityAboutUs extends AppCompatActivity {
 
     private void selectDonateDialog() {
 
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .title(getString(R.string.about_us_support_dev_title))
                 .content(getString(R.string.about_us_support_dev_content))
                 .positiveText(getString(R.string.about_us_support_dev_pos))
@@ -337,8 +336,7 @@ public class ActivityAboutUs extends AppCompatActivity {
     }
 
     private void showDisclaimerDialog(){
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .title(getString(R.string.lyrics_disclaimer_title))
                 .content(getString(R.string.lyrics_disclaimer_content))
                 .positiveText(getString(R.string.lyrics_disclaimer_title_pos))

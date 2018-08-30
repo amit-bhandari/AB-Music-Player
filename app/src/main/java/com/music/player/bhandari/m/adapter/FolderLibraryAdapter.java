@@ -24,10 +24,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
+import com.music.player.bhandari.m.activity.ActivityExploreLyrics;
 import com.music.player.bhandari.m.activity.ActivityMain;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
@@ -359,8 +363,10 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
 
     private void setTrackInfoDialog(){
 
-        final AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        alert.setTitle(context.getString(R.string.track_info_title) );
+
+
+        //final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        //alert.setTitle(context.getString(R.string.track_info_title) );
         LinearLayout linear = new LinearLayout(context);
         linear.setOrientation(LinearLayout.VERTICAL);
         final TextView text = new TextView(context);
@@ -383,9 +389,15 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         //text.setGravity(Gravity.CENTER);
 
         linear.addView(text);
-        alert.setView(linear);
-        alert.setPositiveButton(context.getString(R.string.okay) , null);
-        alert.show();
+        //alert.setView(linear);
+        //alert.setPositiveButton(context.getString(R.string.okay) , null);
+        //alert.show();
+
+        new MyDialogBuilder(context)
+                .title(context.getString(R.string.track_info_title))
+                .customView(linear, true)
+                .positiveText(R.string.okay)
+                .show();
     }
 
     private void Play(){
@@ -524,11 +536,18 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
 
     private void Delete(){
 
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(context.getString(R.string.are_u_sure))
+                .setPositiveButton(context.getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();*/
+
+        new MyDialogBuilder(context)
+                .title(context.getString(R.string.are_u_sure))
+                .positiveText(R.string.yes)
+                .negativeText(R.string.no)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         ArrayList<File> files = new ArrayList<>();
                         if(clickedFile.isFile()) {
                             files.add(clickedFile);
@@ -543,28 +562,19 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                         }else {
                             Toast.makeText(context,context.getString(R.string.unable_to_del),Toast.LENGTH_SHORT).show();
                         }
-                        break;
+                    }
+                })
+                .show();
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
-                        break;
-                }
-            }
+    }
 
-            private void deleteSuccess() {
-                try {
-                    files.remove(clickedFile.getName());
-                    filteredHeaders.remove(clickedFile.getName());
-                    headers.remove(clickedFile.getName());
-                    notifyItemRemoved(clickedItemPosition);
-                }catch (ArrayIndexOutOfBoundsException ignored){}
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(R.string.are_u_sure))
-                .setPositiveButton(context.getString(R.string.yes), dialogClickListener)
-                .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();
+    private void deleteSuccess() {
+        try {
+            files.remove(clickedFile.getName());
+            filteredHeaders.remove(clickedFile.getName());
+            headers.remove(clickedFile.getName());
+            notifyItemRemoved(clickedItemPosition);
+        }catch (ArrayIndexOutOfBoundsException ignored){}
     }
 
     @NonNull

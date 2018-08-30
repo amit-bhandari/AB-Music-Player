@@ -72,6 +72,7 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.CurrentTracklistAdapter;
 import com.music.player.bhandari.m.model.Constants;
@@ -491,8 +492,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     }
 
     private void showDisclaimerDialog(){
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        MaterialDialog dialog = new MyDialogBuilder(this)
                 .title(getString(R.string.lyrics_disclaimer_title))
                 .content(getString(R.string.lyrics_disclaimer_content))
                 .positiveText(getString(R.string.lyrics_disclaimer_title_pos))
@@ -512,8 +512,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     }
 
     private void showInfoDialog(){
-        MaterialDialog dialog = new  MaterialDialog.Builder(this)
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+        MaterialDialog dialog = new  MyDialogBuilder(this)
                 .title(getString(R.string.lyric_art_info_title))
                 .content(getString(R.string.lyric_art_info_content))
                 .positiveText(getString(R.string.lyric_art_info_title_button_neg))
@@ -1042,8 +1041,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 final EditText input = new EditText(this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
 
-                MaterialDialog dialog = new MaterialDialog.Builder(this)
-                        .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
+                MaterialDialog dialog = new MyDialogBuilder(this)
                         .title(getString(R.string.main_act_create_play_list_title))
                         .positiveText(getString(R.string.okay))
                         .negativeText(getString(R.string.cancel))
@@ -1151,7 +1149,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
     public void setSleepTimerDialog(final Context context){
 
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+        MyDialogBuilder builder = new MyDialogBuilder(context);
 
         LinearLayout linear = new LinearLayout(context);
         linear.setOrientation(LinearLayout.VERTICAL);
@@ -1206,7 +1204,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         linear.addView(text);
 
         MaterialDialog dialog = builder
-                .typeface(TypeFaceHelper.getTypeFace(this),TypeFaceHelper.getTypeFace(this))
                 .title(context.getString(R.string.main_act_sleep_timer_title))
                 .positiveText(getString(R.string.okay))
                 .negativeText(getString(R.string.cancel))

@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
+import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 
 /**
@@ -67,8 +68,7 @@ public class AppLaunchCountManager {
 
     private static void showRateDialog(final Context mContext, final SharedPreferences.Editor editor) {
 
-        MaterialDialog dialog = new MaterialDialog.Builder(mContext)
-                .typeface(TypeFaceHelper.getTypeFace(mContext),TypeFaceHelper.getTypeFace(mContext))
+        MaterialDialog dialog = new MyDialogBuilder(mContext)
                 .title("Hello there!")
                 .content("This is AB (developer of AB Music) and I hope you" +
                         " are enjoying AB Music as much as I enjoyed developing it. Please consider rating and leaving review for "
