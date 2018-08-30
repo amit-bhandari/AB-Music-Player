@@ -144,6 +144,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     @BindView(R.id.shineButton)  ShineButton shineButton;
     @BindView(R.id.toolbar_)  Toolbar toolbar;
     @BindView(R.id.controls_wrapper) View controlsWrapper;
+    //@BindView(R.id.nowPlayingBackgroundImageOverlay) View backgroundOverlay;
 
     private SharedPreferences pref;
 
@@ -185,6 +186,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
         playerService = MyApp.getService();
 
+        ColorHelper.setStatusBarGradiant(ActivityNowPlaying.this);
+
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
             case Constants.PRIMARY_COLOR.DARK:
@@ -201,6 +204,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
         setContentView(R.layout.activity_now_playing);
         ButterKnife.bind(this);
+
+        //backgroundOverlay.setBackgroundDrawable(ColorHelper.GetGradientDrawable());
 
         slidingUpPanelLayout.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -355,11 +360,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         });
         //set gradient as background
 
-        GradientDrawable gd = new GradientDrawable(
+        /*GradientDrawable gd = new GradientDrawable(
                 GradientDrawable.Orientation.BR_TL,
                 new int[] {ColorHelper.getColor(R.color.colorBlackThemeBack),0xFF131313});
         gd.setCornerRadius(0f);
-        slidingUpPanelLayout.setBackgroundColor(ColorHelper.getColor(R.color.blackTransparent));
+        slidingUpPanelLayout.setBackgroundColor(ColorHelper.getColor(R.color.blackTransparent));*/
         slidingUpPanelLayout.setDragView(R.id.play_queue_title);
 
         shineButton.init(this);
@@ -434,6 +439,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupSharedElementTransitions();
         }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -682,10 +688,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
                     b = Bitmap.createScaledBitmap(b, width, height, false);
                     setBlurryBackground(b);
-                }else {
+                }/*else {
                     b = BitmapFactory.decodeResource(getResources(),R.drawable.now_playing_back);
                     setBlurryBackground(b);
-                }
+                }*/
 
                 toolbar.setTitle(playerService.getCurrentTrack().getTitle());
                 toolbar.setSubtitle(playerService.getCurrentTrack().getArtist());

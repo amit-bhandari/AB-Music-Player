@@ -2312,7 +2312,7 @@ public class ActivityMain extends AppCompatActivity
         @Override
         public void run() {
             if(!colorChanged) {
-                v.setColorFilter(ColorHelper.getPrimaryColor());
+                v.setColorFilter(ColorHelper.GetWidgetColor());
                 colorChanged=true;
                 mHandler.postDelayed(this,200);
             }else {

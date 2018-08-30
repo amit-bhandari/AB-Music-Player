@@ -36,7 +36,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@color/dark_gray1"
                 >
 
                 <ProgressBar
@@ -54,7 +53,7 @@
 
                 <View
                     android:id="@+id/overImageLayer"
-                    android:background="#10000000"
+                    android:background="@color/blackOverlay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     />

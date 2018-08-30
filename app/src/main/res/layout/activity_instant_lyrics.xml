@@ -11,6 +11,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:theme="@style/AppTheme.AppBarOverlay"
+    android:background="@color/blackOverlay"
     android:fitsSystemWindows="false">
 
 
@@ -24,12 +25,8 @@
                 android:id="@+id/full_screen_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/secondary_image_gradient"/>
+                android:scaleType="centerCrop"
+                card_view:ignore="ContentDescription" />
 
         </FrameLayout>
 

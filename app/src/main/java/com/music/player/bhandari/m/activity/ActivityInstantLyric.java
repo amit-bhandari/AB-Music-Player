@@ -171,6 +171,8 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
         currentMusicInfo = getSharedPreferences("current_music", Context.MODE_PRIVATE);
 
+        ColorHelper.setStatusBarGradiant(this);
+
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
             case Constants.PRIMARY_COLOR.DARK:
