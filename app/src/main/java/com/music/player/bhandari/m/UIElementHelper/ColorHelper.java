@@ -327,7 +327,48 @@ public class ColorHelper {
                 return getDarkColor(getColor(R.color.theme11_color2_widget), 0.5f);
 
             default:
-                return getColor(R.color.theme0_color2);
+                return getDarkColor(Color.YELLOW, 0.6f);
+        }
+    }
+
+
+    public static int GetLyricHighlightColor(){
+        switch (MyApp.getSelectedThemeId()){
+            case 1:
+                return getBrightColor(getColor(R.color.theme1_color2_widget));
+
+            case 2:
+                return getBrightColor(getColor(R.color.theme2_color2_widget));
+
+            case 3:
+                return getBrightColor(getColor(R.color.theme3_color2_widget));
+
+            case 4:
+                return getBrightColor(getColor(R.color.theme4_color2_widget));
+
+            case 5:
+                return getBrightColor(getColor(R.color.theme5_color2_widget));
+
+            case 6:
+                return getBrightColor(getColor(R.color.theme6_color2_widget));
+
+            case 7:
+                return getBrightColor(getColor(R.color.theme7_color2_widget));
+
+            case 8:
+                return getBrightColor(getColor(R.color.theme8_color2_widget));
+
+            case 9:
+                return getBrightColor(getColor(R.color.theme9_color2_widget));
+
+            case 10:
+                return getBrightColor(getColor(R.color.theme10_color2_widget));
+
+            case 11:
+                return getBrightColor(getColor(R.color.theme11_color2_widget));
+
+            default:
+                return Color.YELLOW;
         }
     }
 
@@ -392,7 +433,7 @@ public class ColorHelper {
     private static int getBrightColor(int color) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
-        hsv[2] = 1.0f - 0.8f * (1.0f - hsv[2]);; // value component
+        hsv[2] = 1.0f - 0.8f * (1.0f - hsv[2]); // value component
         return Color.HSVToColor(hsv);
     }
 }
