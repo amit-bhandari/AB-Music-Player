@@ -362,4 +362,7 @@
     <string name="share_playlist">Поделиться дорожками</string>
     <string name="user_playlists">Плейлисты пользователя</string>
     <string name="system_playlists">Системные плейлисты</string>
+
+    <string name="nav_default_album_art">Искусство альбома по умолчанию</string>
+    <string name="summary_pref_theme">выбрать цвет</string>
 </resources>

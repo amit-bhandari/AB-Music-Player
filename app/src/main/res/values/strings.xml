@@ -593,8 +593,8 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020 * Ringtone Cutter \n\n
-                                              * New font
+    <string name="whats_new"><![CDATA[ \u0020 * Ringtone Cutter \n
+                                              * New themes and font
         ]]></string>
 
     <!-- Request notification access-->
@@ -1104,6 +1104,8 @@ that this copyright notice remain intact.</string>
     <string name="share_playlist">Share tracks</string>
     <string name="user_playlists">User playlists</string>
     <string name="system_playlists">System playlists</string>
+
+
     <string name="nav_default_album_art">Default Album Art</string>
     <string name="pref_default_album_art">pef_default_album_art</string>
     <string name="pref_theme_id">selected_theme_id</string>
