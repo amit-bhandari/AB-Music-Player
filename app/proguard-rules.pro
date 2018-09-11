@@ -104,3 +104,11 @@ public *;
 
 -keepattributes *Annotation*,SourceFile,LineNumberTable
 
+-dontwarn com.sothree.**
+-keep class com.sothree.**
+-keep interface com.sothree.**
+
+-dontwarn com.simplecityapps.**
+-keep class com.simplecityapps.**
+-keep interface com.simplecityapps.**
+
