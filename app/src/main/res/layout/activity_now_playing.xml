@@ -112,13 +112,15 @@
 
                     <TextView
                         android:id="@+id/pw_runningTime"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="right"
+                        android:gravity="center"
                         android:textSize="15sp"
                         android:textColor="@color/colorwhite"
-                        android:layout_weight="1"
+                        android:typeface="sans"
+                        app:fontFamily="@font/roboto_slab"
+                        android:layout_weight="2"
                         android:text="00:00"
                         card_view:ignore="HardcodedText" />
 
@@ -133,12 +135,15 @@
 
                     <TextView
                         android:id="@+id/pw_totalTime"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:layout_gravity="center"
                         android:textSize="15sp"
+                        android:typeface="sans"
+                        app:fontFamily="@font/roboto_slab"
                         android:textColor="@color/colorwhite"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:text="00:00"
                         card_view:ignore="HardcodedText" />
 
