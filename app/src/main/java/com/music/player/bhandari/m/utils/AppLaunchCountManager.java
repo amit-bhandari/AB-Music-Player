@@ -99,7 +99,7 @@ public class AppLaunchCountManager {
                 })
                 .build();
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
 

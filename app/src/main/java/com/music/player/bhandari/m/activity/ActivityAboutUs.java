@@ -287,7 +287,7 @@ public class ActivityAboutUs extends AppCompatActivity {
                 })
                 .build();
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
     }
@@ -330,7 +330,7 @@ public class ActivityAboutUs extends AppCompatActivity {
                 })
                 .build();
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
     }
@@ -354,7 +354,7 @@ public class ActivityAboutUs extends AppCompatActivity {
         })
                 .build();
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
     }

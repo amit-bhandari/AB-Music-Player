@@ -512,7 +512,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 })
                 .build();
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
     }
@@ -531,7 +531,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 })
                 .build();
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
     }
@@ -784,7 +784,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
                     if(item!=null && PlaylistManager.getInstance(getApplicationContext()).isFavNew(item.getId())) {
                         drawable.mutate();
-                        drawable.setColorFilter(ColorHelper.getNowPlayingControlsColor(), PorterDuff.Mode.SRC_ATOP);
+                        drawable.setColorFilter(ColorHelper.GetWidgetColor(), PorterDuff.Mode.SRC_ATOP);
                     }else {
                         drawable.mutate();
                         drawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite), PorterDuff.Mode.SRC_ATOP);
@@ -1078,7 +1078,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         .customView(input,true)
                         .build();
 
-                dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+                //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
                 dialog.show();
                 break;
@@ -1230,7 +1230,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 .customView(linear,true)
                 .build();
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
     }
@@ -1368,16 +1368,16 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         if(!pref.getBoolean(Constants.PREFERENCES.SHUFFLE,false)){
             shuffle.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
         }else {
-            shuffle.setColorFilter(ColorHelper.getNowPlayingControlsColor());
+            shuffle.setColorFilter(ColorHelper.GetWidgetColor());
         }
 
         if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ALL){
-            textInsideRepeat.setTextColor(ColorHelper.getNowPlayingControlsColor());
-            repeat.setColorFilter(ColorHelper.getNowPlayingControlsColor());
+            textInsideRepeat.setTextColor(ColorHelper.GetWidgetColor());
+            repeat.setColorFilter(ColorHelper.GetWidgetColor());
             textInsideRepeat.setText("A");
         }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ONE){
-            textInsideRepeat.setTextColor(ColorHelper.getNowPlayingControlsColor());
-            repeat.setColorFilter(ColorHelper.getNowPlayingControlsColor());
+            textInsideRepeat.setTextColor(ColorHelper.GetWidgetColor());
+            repeat.setColorFilter(ColorHelper.GetWidgetColor());
             textInsideRepeat.setText("1");
         }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.NO_REPEAT){
             repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
@@ -1436,7 +1436,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             //shuffle is off, turn it on
             pref.edit().putBoolean(Constants.PREFERENCES.SHUFFLE,true).apply();
             playerService.shuffle(true);
-            shuffle.setColorFilter(ColorHelper.getNowPlayingControlsColor());
+            shuffle.setColorFilter(ColorHelper.GetWidgetColor());
         }
         UpdateCurrentTracklistAdapter();
     }
@@ -1446,13 +1446,13 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.NO_REPEAT){
             pref.edit().putInt(Constants.PREFERENCES.REPEAT,Constants.PREFERENCE_VALUES.REPEAT_ALL).apply();
             //repeat.setColorFilter(UtilityFun.GetDominatColor(playerService.getAlbumArt()));
-            textInsideRepeat.setTextColor(ColorHelper.getNowPlayingControlsColor());
-            repeat.setColorFilter(ColorHelper.getNowPlayingControlsColor());
+            textInsideRepeat.setTextColor(ColorHelper.GetWidgetColor());
+            repeat.setColorFilter(ColorHelper.GetWidgetColor());
             textInsideRepeat.setText("A");
         }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ALL){
             pref.edit().putInt(Constants.PREFERENCES.REPEAT,Constants.PREFERENCE_VALUES.REPEAT_ONE).apply();
-            textInsideRepeat.setTextColor(ColorHelper.getNowPlayingControlsColor());
-            repeat.setColorFilter(ColorHelper.getNowPlayingControlsColor());
+            textInsideRepeat.setTextColor(ColorHelper.GetWidgetColor());
+            repeat.setColorFilter(ColorHelper.GetWidgetColor());
             textInsideRepeat.setText("1");
         }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ONE){
             pref.edit().putInt(Constants.PREFERENCES.REPEAT,Constants.PREFERENCE_VALUES.NO_REPEAT).apply();

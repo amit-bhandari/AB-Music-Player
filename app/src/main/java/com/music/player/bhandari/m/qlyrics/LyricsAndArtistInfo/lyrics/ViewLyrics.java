@@ -325,7 +325,7 @@ public class ViewLyrics {
                         })
                         .build();
 
-                mDialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+                //mDialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
                 mDialog.show();
             }

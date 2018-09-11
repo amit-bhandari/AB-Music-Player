@@ -797,7 +797,7 @@ public class ActivitySettings extends AppCompatActivity {
                             })
                             .build();
 
-                    dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+                    //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
                     dialog.show();
 
@@ -835,7 +835,7 @@ public class ActivitySettings extends AppCompatActivity {
                             })
                             .build();
 
-                    dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+                    //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
                     dialog.show();
 
@@ -878,7 +878,7 @@ public class ActivitySettings extends AppCompatActivity {
                                 })
                                 .build();
 
-                        dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+                        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
                         dialog.show();
 
@@ -1088,7 +1088,7 @@ public class ActivitySettings extends AppCompatActivity {
                     })
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1135,7 +1135,7 @@ public class ActivitySettings extends AppCompatActivity {
                     .positiveText(R.string.okay)
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1182,7 +1182,7 @@ public class ActivitySettings extends AppCompatActivity {
                     .positiveText(R.string.okay)
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1229,7 +1229,7 @@ public class ActivitySettings extends AppCompatActivity {
                     .positiveText(R.string.okay)
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1278,7 +1278,7 @@ public class ActivitySettings extends AppCompatActivity {
                     .positiveText(R.string.okay)
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1313,7 +1313,7 @@ public class ActivitySettings extends AppCompatActivity {
                     })
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
 
@@ -1347,7 +1347,7 @@ public class ActivitySettings extends AppCompatActivity {
                     })
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
 
@@ -1384,7 +1384,7 @@ public class ActivitySettings extends AppCompatActivity {
                     })
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
 
@@ -1466,7 +1466,7 @@ public class ActivitySettings extends AppCompatActivity {
                     .customView(linear,false)
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1541,7 +1541,7 @@ public class ActivitySettings extends AppCompatActivity {
                     .customView(linear,true)
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1578,7 +1578,7 @@ public class ActivitySettings extends AppCompatActivity {
                     })
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1616,7 +1616,7 @@ public class ActivitySettings extends AppCompatActivity {
                     })
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1821,7 +1821,7 @@ public class ActivitySettings extends AppCompatActivity {
                                                 }
                                             }).build();
 
-                                    mDialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+                                    //mDialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
                                     mDialog.show();
                                     break;
@@ -1837,7 +1837,7 @@ public class ActivitySettings extends AppCompatActivity {
                     })
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1901,7 +1901,7 @@ public class ActivitySettings extends AppCompatActivity {
                    // .customView(linear,false)
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1953,7 +1953,7 @@ public class ActivitySettings extends AppCompatActivity {
                     })
                     .build();
 
-            dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
