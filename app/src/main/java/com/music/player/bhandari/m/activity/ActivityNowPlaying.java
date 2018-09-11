@@ -221,6 +221,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         toolbarHeight = toolbar.getHeight();
                         Log.d("ActivityNowPlaying", "onGlobalLayout: yControl " + yControl);
                         Log.d("ActivityNowPlaying", "onGlobalLayout: toolbarHeight " + toolbarHeight);
+
+                        Log.d("ActivityNowPlaying", controlsWrapper.getMeasuredHeight()+"");
+
+
                     }
         });
 

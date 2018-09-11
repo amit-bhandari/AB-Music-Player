@@ -117,7 +117,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private Boolean fIsLyricUpdaterThreadRunning =false;
     private Handler handler ;
 
-    /*private boolean fSeekbarThreadCancelled = false;
+/*private boolean fSeekbarThreadCancelled = false;
     private boolean fSeekbarRunning = false;*/
 
     @BindView(R.id.dynamic_lyrics_recycler_view) RecyclerView recyclerView;
@@ -153,6 +153,13 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         //showAdIfApplicable();
         initializeListeners();
         return layout;
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //recyclerView.setFadingEdgeLength(840);
     }
 
     private void initializeListeners() {

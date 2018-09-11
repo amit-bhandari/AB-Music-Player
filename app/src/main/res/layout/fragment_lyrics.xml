@@ -18,14 +18,15 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.RecyclerView
+                <com.music.player.bhandari.m.customViews.MyRecyclerView
                     android:requiresFadingEdge="horizontal|vertical"
+                    android:fadingEdgeLength="200dp"
                     android:layout_gravity="center"
                     android:id="@+id/dynamic_lyrics_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                </android.support.v7.widget.RecyclerView>
+                </com.music.player.bhandari.m.customViews.MyRecyclerView>
 
 
             </LinearLayout>
