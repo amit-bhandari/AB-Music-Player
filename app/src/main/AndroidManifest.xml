@@ -13,6 +13,9 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- Needed for android 9 (p)-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <compatible-screens>
         <!-- all small size screens -->
         <screen android:screenSize="small" android:screenDensity="ldpi" />
