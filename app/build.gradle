@@ -28,7 +28,7 @@ play {
 android {
 
     compileSdkVersion 28
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         applicationId 'com.bhandari.music'
@@ -59,6 +59,7 @@ android {
 
     lintOptions{
         abortOnError = false
+        disable 'MissingTranslation'
     }
 
     dataBinding {

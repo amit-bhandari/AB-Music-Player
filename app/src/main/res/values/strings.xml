@@ -31,6 +31,13 @@
         <string name="tab_folder">Folder</string>
         <string name="tab_title">Title</string>
 
+    <!-- playlist related -->
+        <string name="track_count">%1$s tracks</string>
+        <string name="empty_playlist">empty playlist</string>
+        <string name="share_playlist">Share tracks</string>
+        <string name="user_playlists">User playlists</string>
+        <string name="system_playlists">System playlists</string>
+
     <!-- drawer menu -->
         <string name="nav_remove_ads">Remove Ads</string>
         <string name="nav_rewards">Rewards</string>
@@ -199,6 +206,10 @@
 
 
         <string name="error_loading_image_lyric_card">Error loading image, check your connection.</string>
+
+        <string name="ad_serve_toast">One ad will be served for removing watermark. You can remove ads permanently from Settings.</string>
+        <string name="press_twice_exit">Press back again to exit.</string>
+        <string name="refreshing_library">Refreshing music library</string>
 
 
     <!-- dialogs -->
@@ -505,6 +516,9 @@
         <string name="title_data_Saver">Data Saver</string>
         <string name="title_cache_artist_data">Cache Artist Data Locally</string>
         <string name="title_click_me">Click me</string>
+        <string name="title_edit">Edit Text</string>
+        <string name="title_remove_watermark">Remove Watermark</string>
+
 
 
 
@@ -628,6 +642,10 @@
     <string name="bass_boost">Bass boost</string>
     <string name="virtulizer">Virtulizer</string>
 
+    <!--hints-->
+    <string name="hint_lyric">Lyric</string>
+    <string name="hint_author">Author</string>
+    <string name="hint_track">Track</string>
 
     <!-- Explore lyriocs -->
     <string name="snack_cleared">Cleared</string>
@@ -910,7 +928,12 @@
         <string name="pref_card_image_saved_at">pref_card_image_saved_at</string>
         <string name="pref_info_lyric_card_shown">pref_info_lyric_card_shown</string>
 
-
+        <string name="nav_default_album_art">Default Album Art</string>
+        <string name="pref_default_album_art">pef_default_album_art</string>
+        <string name="pref_theme_id">selected_theme_id</string>
+        <string name="summary_pref_theme">Tap to choose theme</string>
+        <string name="transition">transition</string>
+        <string name="secondary_transition">sec_transition</string>
 
     <!-- strings for licenses -->
     <string name="li_title">Third party Libraries used</string>
@@ -1089,27 +1112,9 @@ sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
 
-    <string name="title_edit">Edit Text</string>
-    <string name="hint_lyric">Lyric</string>
-    <string name="hint_author">Author</string>
-    <string name="hint_track">Track</string>
-    <string name="title_remove_watermark">Remove Watermark</string>
-    <string name="ad_serve_toast">One ad will be served for removing watermark. You can remove ads permanently from Settings.</string>
-    <string name="transition">transition</string>
-    <string name="secondary_transition">sec_transition</string>
-    <string name="press_twice_exit">Press back again to exit.</string>
-    <string name="track_count">%1$s tracks</string>
-    <string name="empty_playlist">empty playlist</string>
-    <string name="refreshing_library">Refreshing music library</string>
-    <string name="share_playlist">Share tracks</string>
-    <string name="user_playlists">User playlists</string>
-    <string name="system_playlists">System playlists</string>
 
 
-    <string name="nav_default_album_art">Default Album Art</string>
-    <string name="pref_default_album_art">pef_default_album_art</string>
-    <string name="pref_theme_id">selected_theme_id</string>
-    <string name="summary_pref_theme">Tap to choose theme</string>
+
 
     <string name="lorem">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit.
