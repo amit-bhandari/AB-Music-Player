@@ -1496,12 +1496,13 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void feedbackEmail() {
-        String myDeviceModel = Build.MODEL;
+        String myDeviceModel = "Model : " + Build.MODEL + " Version : " + Build.VERSION.RELEASE;
+
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto",getString(R.string.au_email_id), null));
         String[] address = new String[]{getString(R.string.au_email_id)};
         emailIntent.putExtra(Intent.EXTRA_EMAIL, address);
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "¯\\_(ツ)_/¯ AB Music ¯\\_(ツ)_/¯  : Device " + myDeviceModel);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "¯\\_(ツ)_/¯ AB Music ¯\\_(ツ)_/¯  : " + myDeviceModel);
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello AB, \n\n You are coolest person I know on the planet and I just want to say that ");
         startActivity(Intent.createChooser(emailIntent, "Write me"));
     }
