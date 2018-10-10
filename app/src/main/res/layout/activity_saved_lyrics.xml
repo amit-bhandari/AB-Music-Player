@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/root_view_saved_lyrics"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_size"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewSavedLyrics"
+        android:layout_below="@id/toolbar_"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

@@ -33,7 +33,10 @@
             android:icon="@drawable/ic_explore_black_24dp"
             android:title="@string/nav_explore_lyrics" />
 
-
+        <item
+            android:id="@+id/nav_saved_lyrics"
+            android:icon="@drawable/ic_save_black_24dp"
+            android:title="@string/nav_saved_lyrics" />
 
         <item
             android:id="@+id/nav_share"

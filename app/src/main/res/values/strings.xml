@@ -654,6 +654,7 @@
 
     <string name="nav_developers_message">Developers Message</string>
     <string name="nav_explore_lyrics">Search Lyrics</string>
+    <string name="nav_saved_lyrics">Saved Lyrics</string>
     <string name="lyrics_explore">Search Lyrics</string>
     <string name="title_search_youtube">Search Youtube</string>
     <string name="no_internet_explore_lyrics">Unable to connect to Internet, click here to retry!</string>

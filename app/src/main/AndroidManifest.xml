@@ -184,6 +184,14 @@
         </activity>
 
         <activity
+            android:name="com.music.player.bhandari.m.activity.ActivitySavedLyrics"
+            android:theme="@style/Theme.AppCompat"
+            android:launchMode="singleTask"
+            android:exported="true"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
             android:name="com.music.player.bhandari.m.activity.ActivityLicenses"
             android:theme="@style/Theme.AppCompat.Light"
             android:launchMode="singleTask"

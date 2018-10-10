@@ -16,6 +16,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -149,8 +151,6 @@ public class OfflineStorageLyrics {
         }
     }
 
-
-
     //methods for storing and retreiving instnt lyrics
     //unlike lyrics from AB Music, trackitem will not have id
     public static Lyrics getInstantLyricsFromDB(TrackItem item){
@@ -269,7 +269,7 @@ public class OfflineStorageLyrics {
 
     }
 
-
+    //temporary cache for instant lyrics and explore lyrics screens
     public static void putLyricsToCache(final Lyrics lyrics){
 
         //don't care about exception.
@@ -333,6 +333,36 @@ public class OfflineStorageLyrics {
         if(lyrics!=null){
             Log.v("Amit AB", "got from cache"+lyrics.getOriginalTrack());
         }
+        return lyrics;
+    }
+
+    //get all saved lyrics from db
+    public static List<Lyrics> getAllSavedLyrics(){
+        List<Lyrics> lyrics = new  ArrayList<>();
+
+        try {
+            DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
+            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            dbHelperLyrics.onCreate(db);
+
+            //String where = DbHelperLyrics._ID + " = " + item.getId();
+
+
+            Cursor cursor = db.query(DbHelperLyrics.TABLE_NAME, null, null, null, null, null, null, null);
+
+            if (cursor != null && cursor.getCount() != 0) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    Gson gson = new Gson();
+                    Lyrics lyric = gson.fromJson(cursor.getString(cursor.getColumnIndex(DbHelperLyrics.LYRICS)), Lyrics.class);
+                    if(lyric!=null)
+                        lyrics.add(lyric);
+                }
+                cursor.close();
+            }
+        }catch (Exception e){
+            return lyrics;
+        }
+
         return lyrics;
     }
 }

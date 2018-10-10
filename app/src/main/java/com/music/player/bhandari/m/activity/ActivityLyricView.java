@@ -405,6 +405,8 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
             }
         }
 
+        mLyrics = (Lyrics) getIntent().getExtras().get("lyrics");
+
         trackTitle = getIntent().getExtras().getString("track_title");
         artist = getIntent().getExtras().getString("artist");
 
@@ -430,8 +432,9 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(this, ActivityExploreLyrics.class));
-        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        finish();
+        //startActivity(new Intent(this, ActivityExploreLyrics.class));
+        //overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
     }
 
     @Override
@@ -598,7 +601,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         item.setTitle(trackTitle);
         item.setId(-1);
 
-        String artist = fetchArtistImage(item.getArtist());
+        //String artist = fetchArtistImage(item.getArtist());
 
 
         //check if user have reward points, if not, display error
@@ -663,7 +666,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private String fetchArtistImage(String artist) {
+    private void fetchArtistImage(String artist) {
         artist = UtilityFun.filterArtistString(artist);
 
         artistInfo = OfflineStorageArtistBio.getArtistInfoFromCache(artist);
@@ -672,7 +675,6 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         }else {
             new DownloadArtInfoThread(this, artist, null).start();
         }
-        return artist;
     }
 
     private void fetchLyrics(String... params) {

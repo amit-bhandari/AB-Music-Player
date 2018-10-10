@@ -1295,6 +1295,9 @@ public class ActivityMain extends AppCompatActivity
             lyricCardDialog();
         } else if(id==192){
             uploadPhotos();
+        } else if(id == R.id.nav_saved_lyrics){
+            startActivity(new Intent(this, ActivitySavedLyrics.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
