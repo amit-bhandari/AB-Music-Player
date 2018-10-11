@@ -36,6 +36,12 @@ import java.util.concurrent.Executors;
  limitations under the License.
  */
 
+/**
+ * Some things in this class are messed up because of instant lyrics and explore lyrics feature
+ * Those were unplanned changes
+ * But code works good without any issue
+ * If it looks stupid but it works, it ain't stupid
+ */
 public class OfflineStorageLyrics {
 
     //look into db for lyrics, if not found, return null
@@ -152,8 +158,8 @@ public class OfflineStorageLyrics {
         }
     }
 
-    //methods for storing and retreiving instnt lyrics
-    //unlike lyrics from AB Music, trackitem will not have id
+    //methods for storing and retrieving instant lyrics
+    //unlike lyrics from AB Music, track item will not have id
     public static Lyrics getInstantLyricsFromDB(TrackItem item){
         if(item==null){
             return null;
@@ -226,14 +232,22 @@ public class OfflineStorageLyrics {
 
     }
 
-    public static boolean isLyricsPresentInDB(String track){
+    /**
+     * check if lyrics present in db for given track title and id
+     * this method is used in lyric view and instant lyric screen to determine save or delete action for fab
+     * @param track
+     * @param id
+     * @return
+     */
+    public static boolean isLyricsPresentInDB(String track, int id){
+        Log.d("OfflineStorage", "isLyricsPresentInDB: " + track + " " + id );
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
             SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
             dbHelperLyrics.onCreate(db);
 
             String where = DbHelperLyrics.KEY_TITLE + " = '" + track.replace("'", "''") +"'  AND "
-                    + DbHelperLyrics._ID + " = -1";
+                    + DbHelperLyrics._ID + " = " + id;
 
             Cursor cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.LYRICS}
                     , where, null, null, null, null, "1");
@@ -292,7 +306,8 @@ public class OfflineStorageLyrics {
 
     }
 
-    //temporary cache for instant lyrics and explore lyrics screens
+    //temporary cache for instant lyrics and explore lyrics screens for avoiding repetitive lyric network calls
+    //
     public static void putLyricsToCache(final Lyrics lyrics){
 
         //don't care about exception.
@@ -381,6 +396,7 @@ public class OfflineStorageLyrics {
                     if(lyric!=null) {
                         lyric.setTrackId(id);
                         lyrics.add(lyric);
+                        Log.d("OfflineStorage", "getAllSavedLyrics: " + lyric.getTrack() + " : " + lyric.getTrackId());
                     }
                 }
                 cursor.close();

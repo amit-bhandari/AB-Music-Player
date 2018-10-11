@@ -765,11 +765,9 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     private void updateSaveDeleteFabDrawable() {
         final Drawable drawable;
-        if(OfflineStorageLyrics.isLyricsPresentInDB(trackTitle)){
+        if(OfflineStorageLyrics.isLyricsPresentInDB(trackTitle , (mLyrics==null) ? -1 : mLyrics.getTrackId())){
             isLyricsSaved=true;
             drawable = getResources().getDrawable(R.drawable.ic_delete_black_24dp);
-
-
         }else {
             isLyricsSaved=false;
             drawable=getResources().getDrawable(R.drawable.ic_save_black_24dp);

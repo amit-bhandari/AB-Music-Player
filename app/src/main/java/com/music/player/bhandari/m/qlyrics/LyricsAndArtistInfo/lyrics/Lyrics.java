@@ -77,6 +77,7 @@ public class Lyrics implements Serializable, Parcelable {
         mSource = in.readString();
         mLRC = in.readByte() != 0;
         mFlag = in.readInt();
+        trackId = in.readInt();
     }
 
     public static final Creator<Lyrics> CREATOR = new Creator<Lyrics>() {
@@ -235,5 +236,6 @@ public class Lyrics implements Serializable, Parcelable {
         dest.writeString(mSource);
         dest.writeByte((byte) (mLRC ? 1 : 0));
         dest.writeInt(mFlag);
+        dest.writeInt(trackId);
     }
 }

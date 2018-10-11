@@ -641,7 +641,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
     private void updateSaveDeleteFabDrawable() {
         final Drawable drawable;
-        if(OfflineStorageLyrics.isLyricsPresentInDB(track)){
+        if(OfflineStorageLyrics.isLyricsPresentInDB(track, (mLyrics==null) ? -1 : mLyrics.getTrackId())){
             isLyricsSaved=true;
             drawable = getResources().getDrawable(R.drawable.ic_delete_black_24dp);
 
