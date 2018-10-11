@@ -106,6 +106,7 @@ public class OfflineStorageLyrics {
 
     }
 
+    //clear lyrics based on id (used for internal lyrics of AB Music offline tracks)
     public static boolean clearLyricsFromDB(TrackItem item){
         if(item==null){
             return false;
@@ -250,6 +251,7 @@ public class OfflineStorageLyrics {
         }
     }
 
+    //clear lyrics based on track title and id =- 1,used in instant lyrics screen
     public static boolean clearLyricsFromDB(String track){
 
         try {
@@ -259,6 +261,27 @@ public class OfflineStorageLyrics {
 
             String where = DbHelperLyrics.KEY_TITLE + " = '" + track.replace("'", "''") +"'  AND "
                     + DbHelperLyrics._ID + " = -1";
+
+            int i = db.delete(DbHelperLyrics.TABLE_NAME,where,null);
+
+            return i >= 1;
+        }catch (Exception e){
+            return false;
+        }
+
+    }
+
+    //clear lyrics given track title and track id (used from saved lyrics screen)
+    //id == -1 in case lyrics is saved from tracks other than AB Music offline tracks
+    public static boolean clearLyricsFromDB(String track, int id){
+
+        try {
+            DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
+            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            dbHelperLyrics.onCreate(db);
+
+            String where = DbHelperLyrics.KEY_TITLE + " = '" + track.replace("'", "''") +"'  AND "
+                    + DbHelperLyrics._ID + " = " + id;
 
             int i = db.delete(DbHelperLyrics.TABLE_NAME,where,null);
 
@@ -353,9 +376,12 @@ public class OfflineStorageLyrics {
             if (cursor != null && cursor.getCount() != 0) {
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                     Gson gson = new Gson();
+                    int id = cursor.getInt(cursor.getColumnIndex(DbHelperLyrics._ID));
                     Lyrics lyric = gson.fromJson(cursor.getString(cursor.getColumnIndex(DbHelperLyrics.LYRICS)), Lyrics.class);
-                    if(lyric!=null)
+                    if(lyric!=null) {
+                        lyric.setTrackId(id);
                         lyrics.add(lyric);
+                    }
                 }
                 cursor.close();
             }

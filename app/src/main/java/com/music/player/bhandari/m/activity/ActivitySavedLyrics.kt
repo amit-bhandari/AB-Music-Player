@@ -249,11 +249,13 @@ class ActivitySavedLyrics: AppCompatActivity() {
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     }
                     R.id.delete ->{
-                        if (OfflineStorageLyrics.clearLyricsFromDB(lyrics[adapterPosition].originalTrack)) {
+                        if (OfflineStorageLyrics.clearLyricsFromDB(lyrics[adapterPosition].originalTrack, lyrics[adapterPosition].trackId)) {
                             Snackbar.make(v, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT).show()
+                            lyrics.removeAt(adapterPosition)
+                            notifyItemRemoved(adapterPosition)
+                        }else{
+                            Snackbar.make(v, getString(R.string.error_removing), Snackbar.LENGTH_SHORT).show()
                         }
-                        lyrics.removeAt(adapterPosition)
-                        notifyItemRemoved(adapterPosition)
                     }
                 }
             }
