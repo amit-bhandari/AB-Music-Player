@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools"
-    android:id="@+id/root_view_instant_lyrics"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentStart="true"
-    android:layout_alignParentLeft="true"
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
-    android:theme="@style/AppTheme.AppBarOverlay"
-    android:background="@color/blackOverlay"
-    android:fitsSystemWindows="false">
+    android:id="@+id/root_view_instant_lyrics"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        ads:layout_behavior="com.music.player.bhandari.m.customViews.MoveUpwardBehavior"
+        android:background="@color/blackOverlay"
+        android:fitsSystemWindows="false">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -54,42 +57,42 @@
                 xmlns:ads="http://schemas.android.com/apk/res-auto"
                 xmlns:app="http://schemas.android.com/apk/res-auto">
 
-                    <LinearLayout
-                        android:id="@+id/lyric_view_wrapper"
+                <LinearLayout
+                    android:id="@+id/lyric_view_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:requiresFadingEdge="horizontal|vertical"
+                        android:layout_gravity="center"
+                        android:id="@+id/dynamic_lyrics_recycler_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent">
 
-                            <android.support.v7.widget.RecyclerView
-                                android:requiresFadingEdge="horizontal|vertical"
-                                android:layout_gravity="center"
-                                android:id="@+id/dynamic_lyrics_recycler_view"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
+                    </android.support.v7.widget.RecyclerView>
 
-                            </android.support.v7.widget.RecyclerView>
+                    <TextView
+                        android:id="@+id/text_view_lyric_status"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:gravity="center"
+                        android:paddingBottom="20dp"
+                        android:text="@string/tap_to_refresh_lyrics"
+                        android:textColor="@color/nowPlayingText"
+                        android:textSize="20sp" />
 
-                            <TextView
-                                android:id="@+id/text_view_lyric_status"
-                                android:visibility="gone"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="20dp"
-                                android:gravity="center"
-                                android:paddingBottom="20dp"
-                                android:text="@string/tap_to_refresh_lyrics"
-                                android:textColor="@color/nowPlayingText"
-                                android:textSize="20sp" />
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/loading_lyrics_animation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        app:indicatorName="BallScaleMultipleIndicator"
+                        />
 
-                            <com.wang.avi.AVLoadingIndicatorView
-                            android:id="@+id/loading_lyrics_animation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            app:indicatorName="BallScaleMultipleIndicator"
-                            />
-
-                    </LinearLayout>
+                </LinearLayout>
 
                 <ScrollView
                     android:id="@+id/artist_info_wrapper"
@@ -115,81 +118,83 @@
 
         </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ad_view_wrapper"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_above="@+id/fab_save_lyrics"
-        android:paddingBottom="5dp"
-        android:layout_centerHorizontal="true">
-
-        <TextView
-            android:id="@+id/ad_close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/close"
-            android:textColor="@color/colorwhite"
-            android:paddingEnd="15dp"
-            android:gravity="end"
-            android:textSize="15sp"
+        <LinearLayout
+            android:id="@+id/ad_view_wrapper"
             android:visibility="gone"
-            android:paddingRight="15dp"
-            card_view:ignore="RtlSymmetry" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_above="@+id/fab_save_lyrics"
             android:paddingBottom="5dp"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_lyric_view">
+            android:layout_centerHorizontal="true">
 
-        </com.google.android.gms.ads.AdView>
+            <TextView
+                android:id="@+id/ad_close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/close"
+                android:textColor="@color/colorwhite"
+                android:paddingEnd="15dp"
+                android:gravity="end"
+                android:textSize="15sp"
+                android:visibility="gone"
+                android:paddingRight="15dp"
+                card_view:ignore="RtlSymmetry" />
 
-    </LinearLayout>
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_lyric_view">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_save_lyrics"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_marginStart="17dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/ic_save_black_24dp"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:layout_alignParentStart="true" />
+            </com.google.android.gms.ads.AdView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_video"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_marginStart="17dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:src="@drawable/ic_play_arrow_black_24dp"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:layout_marginRight="@dimen/fab_margin" />
+        </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/view_artist_info"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_info_black_24dp"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:layout_alignParentRight="true"
-        card_view:ignore="RelativeOverlap" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_save_lyrics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="17dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_save_black_24dp"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_alignParentStart="true" />
 
-</RelativeLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_marginStart="17dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:src="@drawable/ic_play_arrow_black_24dp"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/view_artist_info"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:src="@drawable/ic_info_black_24dp"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_alignParentRight="true"
+            card_view:ignore="RelativeOverlap" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

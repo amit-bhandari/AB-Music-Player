@@ -14,6 +14,13 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+
+    <View
+        android:layout_below="@+id/toolbar_"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blackOverlay"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewSavedLyrics"
         android:layout_below="@id/toolbar_"
