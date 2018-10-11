@@ -373,7 +373,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
         shineButton.init(this);
 
-        Button saveQueueButton = findViewById(R.id.save_queue_button);
+        View saveQueueButton = findViewById(R.id.save_queue_button);
         saveQueueButton.setOnClickListener(this);
 
         Log.v(Constants.TAG,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)+"VOLUME");

@@ -45,6 +45,7 @@ import com.music.player.bhandari.m.ringtoneCutter.RingdroidEditActivity;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.utils.UtilityFun;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -161,15 +162,19 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
         });
         if(playerService!=null && position==playerService.getCurrentTrackPosition()) {
             holder.cv.setCardBackgroundColor(ColorHelper.GetWidgetColor());
+            holder.playAnimation.setVisibility(View.VISIBLE);
             if (playerService.getStatus()==PlayerService.PLAYING){
-                holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
+                //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
+                holder.playAnimation.smoothToShow();
             }else {
-                holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_play_arrow_black_24dp));
+                holder.playAnimation.smoothToHide();
+                //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_play_arrow_black_24dp));
             }
-            holder.iv.setVisibility(View.VISIBLE);
+            //holder.iv.setVisibility(View.VISIBLE);
         }else {
             holder.cv.setCardBackgroundColor(context.getResources().getColor(R.color.colorTransparent));
-            holder.iv.setVisibility(View.GONE);
+            //holder.iv.setVisibility(View.GONE);
+            holder.playAnimation.setVisibility(View.GONE);
         }
     }
 
@@ -373,7 +378,9 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
         TextView title,secondary;
         ImageView handle;
         CardView cv;
-        ImageView iv;
+        //ImageView iv;
+
+        AVLoadingIndicatorView playAnimation;
 
         MyViewHolder(View itemView) {
             super(itemView);
@@ -383,7 +390,8 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
             handle = itemView.findViewById(R.id.handleForDrag);
             cv = itemView.findViewById(R.id.card_view_track_item_drag);
-            iv = itemView.findViewById(R.id.play_button_item_drag);
+            //iv = itemView.findViewById(R.id.play_button_item_drag);
+            playAnimation = itemView.findViewById(R.id.song_playing_animation);
             itemView.findViewById(R.id.more).setOnClickListener(this);
             itemView.findViewById(R.id.trackItemDraggable).setOnClickListener(this);
         }

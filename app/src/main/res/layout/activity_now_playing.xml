@@ -264,6 +264,17 @@
                     android:background="@color/colorBlack"
                 />
 
+                <TextView
+                    android:id="@+id/save_queue_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/action_bar_size"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Save Playlist"
+                    android:textSize="@dimen/np_play_queu"
+                    android:textColor="@color/colorwhite" />
+
+                <!--
                 <Button
                     android:id="@+id/save_queue_button"
                     android:layout_width="match_parent"
@@ -272,7 +283,7 @@
                     android:background="@color/blackTransparent"
                     android:backgroundTint="@color/blackTransparent"
                     android:textColor="@color/colorwhite"
-                    android:textSize="@dimen/np_play_queu" />
+                    android:textSize="@dimen/np_play_queu" /> -->
 
             </LinearLayout>
 

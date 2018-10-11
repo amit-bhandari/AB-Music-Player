@@ -11,6 +11,7 @@
     android:layout_marginLeft="@dimen/dta_margin"
     android:layout_marginRight="@dimen/dta_margin"
     android:elevation="3dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     card_view:cardCornerRadius="10dp">
 
     <RelativeLayout
@@ -35,10 +36,10 @@
             android:padding="@dimen/dta_song_wraper_padd"
             android:gravity="center_vertical"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/play_button_item_drag"
+            android:layout_toLeftOf="@+id/song_playing_animation"
             android:layout_toRightOf="@+id/handleForDrag"
             android:layout_toEndOf="@+id/handleForDrag"
-            android:layout_toStartOf="@+id/play_button_item_drag">
+            android:layout_toStartOf="@+id/song_playing_animation">
             <!-- Title Of Song-->
             <TextView
                 android:id="@+id/header"
@@ -66,6 +67,7 @@
                 android:textColor="@color/colorwhite" />
         </LinearLayout>
 
+        <!--
         <ImageView
             android:id="@+id/play_button_item_drag"
             android:layout_width="@dimen/action_bar_size"
@@ -75,7 +77,18 @@
             android:foregroundGravity="center"
             android:scaleType="center"
             android:src="@drawable/ic_play_arrow_black_24dp"
-            android:layout_toStartOf="@+id/more" />
+            android:layout_toStartOf="@+id/more" /> -->
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/song_playing_animation"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_toLeftOf="@+id/more"
+            android:layout_gravity="center"
+            android:layout_centerVertical="true"
+            android:foregroundGravity="center"
+            app:indicatorName="LineScalePulseOutIndicator"
+            android:layout_toStartOf="@+id/more"
+            />
 
         <ImageView
             android:id="@+id/more"

@@ -270,11 +270,13 @@
 
             <TextView
                 android:id="@+id/save_queue_button"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/action_bar_size_small"
-                android:textColor="@color/colorwhite"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:textSize="@dimen/np_play_queu"/>
+                android:text="Save Playlist"
+                android:textSize="@dimen/np_play_queu"
+                android:textColor="@color/colorwhite" />
 
         </LinearLayout>
 
