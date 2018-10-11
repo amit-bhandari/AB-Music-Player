@@ -40,7 +40,7 @@ android {
         versionCode 178
         versionName "Version 9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled false
+        multiDexEnabled true
     }
 
     signingConfigs{
