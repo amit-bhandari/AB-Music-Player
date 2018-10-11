@@ -17,10 +17,26 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewSavedLyrics"
         android:layout_below="@id/toolbar_"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
     </android.support.v7.widget.RecyclerView>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:id="@+id/progressBarSavedLyrics"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyle"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/emptyLyrics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/no_saved_lyrics"/>
+
 
 </RelativeLayout>

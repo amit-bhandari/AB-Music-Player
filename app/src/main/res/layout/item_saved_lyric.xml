@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
-    android:id="@+id/root_view_item_explore_lyrics"
+    android:id="@+id/root_view_item_saved_lyrics"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginLeft="2dp"
     android:layout_marginRight="2dp"
@@ -22,10 +22,11 @@
             android:orientation="vertical"
             android:layout_toEndOf="@+id/imageView"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/more"
+            android:layout_toLeftOf="@+id/delete"
             android:layout_toRightOf="@+id/imageView"
             android:paddingLeft="5dp"
-            android:layout_toStartOf="@+id/more">
+            android:layout_toStartOf="@+id/delete"
+            tools:ignore="RtlHardcoded,RtlSymmetry">
 
             <TextView
                 android:id="@+id/trackInfo"
@@ -59,19 +60,23 @@
             android:layout_height="60dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:src="@drawable/person_blue"
             android:layout_margin="5dp"
             android:scaleType="centerCrop" />
 
         <ImageView
-            android:id="@+id/more"
+            android:id="@+id/delete"
             android:layout_width="40dp"
             android:layout_height="60dp"
+            android:layout_marginRight="10dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/imageView"
             android:scaleType="center"
-            android:src="@drawable/ic_more_white"
-            android:contentDescription="more" />
+            android:src="@drawable/ic_delete_black_24dp"
+            android:contentDescription="more"
+            tools:ignore="HardcodedText"
+            android:layout_marginEnd="5dp" />
 
     </RelativeLayout>
 

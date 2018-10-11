@@ -1134,5 +1134,6 @@ that this copyright notice remain intact.</string>
 		Aenean ullamcorper dolor non condimentum congue. Aenean mauris nunc, pellentesque at placerat vitae,
 		aliquet quis orci. Curabitur maximus augue ut bibendum sagittis.
 	</string>
+    <string name="no_saved_lyrics">No saved lyrics :(</string>
 
 </resources>

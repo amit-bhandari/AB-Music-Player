@@ -366,4 +366,7 @@
 
     <string name="nav_default_album_art">Искусство альбома по умолчанию</string>
     <string name="summary_pref_theme">выбрать цвет</string>
+
+    <string name="no_saved_lyrics">Нет сохраненной лирики :(</string>
+
 </resources>

@@ -434,7 +434,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         super.onBackPressed();
         finish();
         //startActivity(new Intent(this, ActivityExploreLyrics.class));
-        //overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
     }
 
     @Override
@@ -699,7 +699,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onLyricsDownloaded(Lyrics lyrics) {
-        if(!(lyrics.getOriginalArtist().equals(artist) && lyrics.getOriginalTrack().equals(trackTitle))){
+        if(!(lyrics.getOriginalArtist().toLowerCase().equals(artist.toLowerCase()) && lyrics.getOriginalTrack().toLowerCase().equals(trackTitle.toLowerCase()))){
             return;
         }
 
