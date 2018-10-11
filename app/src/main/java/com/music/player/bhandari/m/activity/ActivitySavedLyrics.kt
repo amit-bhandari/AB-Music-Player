@@ -184,6 +184,10 @@ class ActivitySavedLyrics: AppCompatActivity() {
 
     inner class SavedLyricsAdapter: RecyclerView.Adapter<SavedLyricsAdapter.MyViewHolder>() {
 
+        init{
+            setHasStableIds(true)
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             return MyViewHolder(LayoutInflater.from(this@ActivitySavedLyrics).inflate(R.layout.item_saved_lyric, parent, false))
         }
@@ -194,6 +198,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
             Glide.with(this@ActivitySavedLyrics)
                     .load(artistImageUrls[lyrics[position].artist])
                     .asBitmap()
+                    .thumbnail(0.5f)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(object: SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
@@ -229,6 +234,14 @@ class ActivitySavedLyrics: AppCompatActivity() {
                 }
             }
             notifyDataSetChanged()
+        }
+
+        override fun getItemId(position: Int): Long {
+            return position.toLong()
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return position
         }
 
         inner class MyViewHolder(v: View): RecyclerView.ViewHolder(v), View.OnClickListener {
