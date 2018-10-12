@@ -45,18 +45,11 @@ import java.util.ArrayList;
  */
 
 public class FragmentLibrary extends Fragment implements
-        SwipeRefreshLayout.OnRefreshListener /*, RecyclerView.OnItemTouchListener
-        , ActionMode.Callback,  View.OnClickListener */{
+        SwipeRefreshLayout.OnRefreshListener {
     private int status;
     private MainLibraryAdapter cursoradapter;
     private RecyclerView mRecyclerView;
-    private FastScroller fastScroller;
-    //private SwipeRefreshLayout swipeRefreshLayout;
     private BroadcastReceiver mRefreshLibraryReceiver;
-
-    /*private GestureDetectorCompat gestureDetector;
-    private ActionMode actionMode;
-    private boolean actionModeActive = false;*/
 
     public FragmentLibrary() {
     }
@@ -104,7 +97,6 @@ public class FragmentLibrary extends Fragment implements
 
                 notifyDataSetChanges();
                 mRecyclerView.setAdapter(cursoradapter);
-                //swipeRefreshLayout.setRefreshing(false);
             }
         };
 
@@ -150,11 +142,6 @@ public class FragmentLibrary extends Fragment implements
     @Override
     public void onPause() {
         super.onPause();
-        /*
-        if(actionMode!=null){
-            actionMode.finish();
-            actionMode = null;
-        }*/
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mRefreshLibraryReceiver);
     }
 
@@ -167,14 +154,10 @@ public class FragmentLibrary extends Fragment implements
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_library, container, false);
-        //swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
-        //swipeRefreshLayout.setOnRefreshListener(this);
-        mRecyclerView = layout.findViewById(R.id.recyclerviewList);
-            /*mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
-            mRecyclerView.setThumbColor(ColorHelper.getAccentColor());
-            mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/
 
-        fastScroller = layout.findViewById(R.id.fastscroller);
+        mRecyclerView = layout.findViewById(R.id.recyclerviewList);
+
+        FastScroller fastScroller = layout.findViewById(R.id.fastscroller);
         fastScroller.setRecyclerView(mRecyclerView);
 
         initializeAdapter(status);
@@ -208,18 +191,6 @@ public class FragmentLibrary extends Fragment implements
             }
         });
 
-        /*mRecyclerView.addOnItemTouchListener(this);
-        gestureDetector =
-                new GestureDetectorCompat(getContext(), new FragmentLibrary.RecyclerViewDemoOnGestureListener());
-
-        ProgressBar progressBar = layout.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actionMode = ((ActivityMain)getActivity()).startSupportActionMode(FragmentLibrary.this);
-            }
-        });*/
         return layout;
     }
 
@@ -272,100 +243,6 @@ public class FragmentLibrary extends Fragment implements
         MusicLibrary.getInstance().RefreshLibrary();
     }
 
-
-
-/*
-    //action mode things
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        /f(actionMode!=null) {
-            MenuInflater inflater = actionMode.getMenuInflater();
-            inflater.inflate(R.menu.menu_cab_recyclerview_lyrics, menu);
-            return true;
-        }
-        return false;
-    }
-
-    /*
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_share:
-                StringBuilder shareString = new StringBuilder();
-                List<Integer> selectedItemPositions = cursoradapter.getSelectedItems();
-                int currPos;
-                for (int i = 0 ; i <=  selectedItemPositions.size() - 1; i++) {
-                    currPos = selectedItemPositions.get(i);
-                    //String lyricLine = cursoradapter.getLineAtPosition(currPos);
-                    //if(lyricLine!=null) {
-                    //    shareString.append(lyricLine).append("\n\n");
-                    //}
-                }
-                //shareTextIntent(shareString.toString());
-                actionMode.finish();
-                actionModeActive = false;
-                break;
-        }
-        return false;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        actionMode.finish();
-        actionModeActive = false;
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        gestureDetector.onTouchEvent(e);
-        return false;
-    }
-
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-    }
-
-    private void myToggleSelection(int idx) {
-        cursoradapter.toggleSelection(idx);
-        //String title = adapter.getSelectedItemCount();
-        //actionMode.setTitle(title);
-        if(cursoradapter.getSelectedItemCount()==0){
-            actionMode.finish();
-            actionMode = null;
-            return;
-        }
-        int numberOfItems = cursoradapter.getSelectedItemCount();
-        String selectionString = numberOfItems==1 ? " item selected" : " items selected";
-        String title = numberOfItems  + selectionString;
-        actionMode.setTitle(title);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.lyrics_line:
-                if (mRecyclerView != null) {
-                    int idx = mRecyclerView.getChildLayoutPosition(view);
-                    if (actionModeActive) {
-                        myToggleSelection(idx);
-                        return;
-                    }
-                }
-                break;
-        }
-    }
-*/
     //for catching exception generated by recycler view which was causing abend, no other way to handle this
         class WrapContentLinearLayoutManager extends LinearLayoutManager {
             WrapContentLinearLayoutManager(Context context) {
@@ -381,32 +258,5 @@ public class FragmentLibrary extends Fragment implements
                 }
             }
         }
-
-/*
-    private class RecyclerViewDemoOnGestureListener extends GestureDetector.SimpleOnGestureListener {
-
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-            if(view!=null) {
-                onClick(view);
-            }
-            return super.onSingleTapConfirmed(e);
-        }
-
-        public void onLongPress(MotionEvent e) {
-            View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-            if (actionModeActive) {
-                return;
-            }
-            // Start the CAB using the ActionMode.Callback defined above
-            actionMode = ((ActivityMain)getActivity()).startSupportActionMode(FragmentLibrary.this);
-            actionModeActive = true;
-            int idx = mRecyclerView.getChildPosition(view);
-            myToggleSelection(idx);
-            super.onLongPress(e);
-        }
-    }
-*/
 }
 

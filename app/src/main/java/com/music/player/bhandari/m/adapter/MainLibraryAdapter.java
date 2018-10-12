@@ -76,6 +76,10 @@ import java.util.concurrent.Executors;
  limitations under the License.
  */
 
+/**
+ * Congrats you are reading worst piece of code I have ever written
+ */
+
 public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.MyViewHolder>
         implements PopupMenu.OnMenuItemClickListener, FastScrollRecyclerView.SectionedAdapter, BubbleTextGetter {
 
