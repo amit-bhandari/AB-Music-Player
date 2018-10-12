@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.adapter;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -166,6 +167,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.album_card, parent, false);
+        view.getLayoutParams ().width = UtilityFun.getScreenWidth()/3;
         viewParent = parent;
         return new AlbumLibraryAdapter.MyViewHolder(view);
     }
@@ -247,8 +249,9 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                             , view.findViewById(R.id.thumbnail), context.getString(R.string.secondary_transition));
                     ActivityCompat.startActivityForResult((ActivityMain)context, intent, 100, options.toBundle());
                 }else {*/
+                //((Activity) context).finish();
                     context.startActivity(intent);
-                    ((ActivityMain) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 //}
                 break;
 

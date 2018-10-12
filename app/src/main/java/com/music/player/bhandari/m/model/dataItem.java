@@ -68,8 +68,9 @@ public class dataItem{
     }
 
 
-    public dataItem(int id,String title,String artist_name, int numberOfTracks, String year){
+    public dataItem(int id,String title,String artist_name, int numberOfTracks, String year, int artist_id){
         this.artist_name=artist_name;
+        this.artist_id = artist_id;
         if(title!=null) {
             this.title = title;
             this.albumName = title;

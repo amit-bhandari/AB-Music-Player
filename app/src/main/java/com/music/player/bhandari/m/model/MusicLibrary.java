@@ -331,7 +331,8 @@ public class MusicLibrary{
                                 MediaStore.Audio.Albums.NUMBER_OF_SONGS,
                                 MediaStore.Audio.Albums.ARTIST,
                                 MediaStore.Audio.Albums.FIRST_YEAR,
-                                MediaStore.Audio.Albums.ALBUM_ART
+                                MediaStore.Audio.Albums.ALBUM_ART,
+                                MediaStore.Audio.Media.ARTIST_ID
                         };
                 Cursor cursor = null;
                 try {
@@ -349,7 +350,10 @@ public class MusicLibrary{
                                 ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST))
                                 ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS))
                                 ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.FIRST_YEAR))
+                                ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
                         ));
+
+                        //Log.d("MusicLibrary", "artist id: " + );
                     }
                     cursor.close();
                 }

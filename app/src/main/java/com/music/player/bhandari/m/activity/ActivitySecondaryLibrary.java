@@ -27,6 +27,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -59,6 +60,7 @@ import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
+import com.music.player.bhandari.m.adapter.AlbumLibraryAdapter;
 import com.music.player.bhandari.m.adapter.SecondaryLibraryAdapter;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.TrackItem;
@@ -73,6 +75,7 @@ import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,7 +105,9 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     @BindView(R.id.ad_close)  TextView adCloseText;
 
     @BindView(R.id.secondaryLibraryList) RecyclerView mRecyclerView;
+    @BindView(R.id.albumsInArtistFrag) RecyclerView mAlbumsRecyclerView;
     private SecondaryLibraryAdapter adapter;
+
     private BroadcastReceiver mReceiverForMiniPLayerUpdate;
     @BindView(R.id.song_name_mini_player) TextView songNameMiniPlayer;
     @BindView(R.id.artist_mini_player) TextView artistNameMiniPlayer;
@@ -219,7 +224,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         Toolbar toolbar = findViewById(R.id.toolbar_);
         try {
             toolbar.setCollapsible(false);
-        }catch (Exception e){}
+        }catch (Exception ignored){}
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null){
@@ -246,7 +251,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             border.setVisibility(View.GONE);
         }
 
-        Bitmap albumArtBitmap = null;
         switch (status) {
                 case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
 
@@ -255,9 +259,24 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     if(adapter.getList().isEmpty()) {
                         break;
                     }
+
+                    Log.d("ActivitySecondary", "onCreate: Albums for this artist");
+
+                    ArrayList<dataItem> data = new ArrayList<>();
+                    for(dataItem d : MusicLibrary.getInstance().getDataItemsForAlbums()){
+                       if(d.artist_id == key) data.add(d);
+                    }
+
+                    for(dataItem d: data){
+                        Log.d("ActivitySecondary", "onCreate: "  + d.albumName);
+                    }
+
+
+                    mAlbumsRecyclerView.setVisibility(View.VISIBLE);
+                    mAlbumsRecyclerView.setAdapter(new AlbumLibraryAdapter(this, data));
+                    mAlbumsRecyclerView.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
                     break;
-
-
 
                 case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
                     adapter = new SecondaryLibraryAdapter(this,
@@ -388,22 +407,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             }
         }
 
-        /*final Drawable d;
-        if(MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY) == Constants.PRIMARY_COLOR.GLOSSY){
-            int color ;
-
-            color = ColorHelper.GetDominantColor
-                    (drawableToBitmap(ContextCompat.getDrawable(this, R.drawable.ic_batman_1)));
-
-            d = new GradientDrawable(
-                    GradientDrawable.Orientation.BR_TL,
-                    new int[] {color,0xFF131313});
-        }else {
-            d = ColorHelper.getBaseThemeDrawable();
-        }*/
-
-
-        //rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
         miniPlayer.setBackgroundColor(ColorHelper.GetWidgetColor());
         //collapsingToolbarLayout.setContentScrimColor(ColorHelper.GetStatusBarColor());
@@ -425,35 +428,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void setupSharedElementTransitions() {
-        //ArcMotion arcMotion = new ArcMotion();
-        //arcMotion.setMinimumHorizontalAngle(50f);
-        //arcMotion.setMinimumVerticalAngle(50f);
-
-        android.view.animation.Interpolator easeInOut = AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in);
-
-        MorphMiniToNowPlaying sharedEnter = new MorphMiniToNowPlaying();
-        //sharedEnter.setPathMotion(arcMotion);
-        sharedEnter.setInterpolator(easeInOut);
-
-        MorphNowPlayingToMini sharedExit = new MorphNowPlayingToMini();
-        //sharedExit.setPathMotion(arcMotion);
-        sharedExit.setInterpolator(easeInOut);
-
-        if (mainBackdrop != null) {
-            sharedEnter.addTarget(mainBackdrop);
-            sharedExit.addTarget(mainBackdrop);
-        }
-
-        getWindow().setSharedElementEnterTransition(sharedEnter);
-        getWindow().setSharedElementExitTransition(sharedExit);
-        //postponeEnterTransition();
-        //getWindow().sharedElementEnterTransition = sharedEnter
-        //getWindow().sharedElementReturnTransition = sharedReturn
-
-    }
-
     @OnClick(R.id.ad_close)
     public void close_ad(){
         if(mAdView!=null){
@@ -465,24 +439,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
-
-    private Bitmap drawableToBitmap(Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        }
-
-        int width = drawable.getIntrinsicWidth();
-        width = width > 0 ? width : 1;
-        int height = drawable.getIntrinsicHeight();
-        height = height > 0 ? height : 1;
-
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
     }
 
     private void updateMiniplayerUI(){

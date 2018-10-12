@@ -158,7 +158,6 @@
         <activity
             android:name="com.music.player.bhandari.m.activity.ActivitySecondaryLibrary"
             android:theme="@style/AppTheme"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
 

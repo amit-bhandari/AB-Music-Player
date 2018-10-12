@@ -11,7 +11,6 @@
     android:background="@color/colorTransparent"
     xmlns:ads="http://schemas.android.com/apk/res-auto">
 
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout_secondary_library"
         android:layout_width="match_parent"
@@ -82,11 +81,34 @@
         android:background="@color/blackOverlay"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <TextView
+            android:id="@+id/stats"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:text="10 albums, 38 tracks"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/albumsInArtistFrag"
+            android:layout_below="@+id/stats"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorTransparent"
+            android:fadeScrollbars="true"
+            android:isScrollContainer="true"
+            android:paddingTop="20dp"
+            android:scrollbars="vertical" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/secondaryLibraryList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorTransparent"
+            android:layout_below="@+id/albumsInArtistFrag"
             android:fadeScrollbars="true"
             android:isScrollContainer="true"
             android:paddingTop="20dp"
@@ -100,13 +122,11 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:background="@drawable/border_2dp"
-            android:orientation="horizontal"></LinearLayout>
-
+            android:orientation="horizontal"/>
 
     </RelativeLayout>
 
-
-     <LinearLayout
+    <LinearLayout
         android:layout_gravity="bottom"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
@@ -115,8 +135,7 @@
         android:orientation="vertical"
         android:elevation="12dp"
         android:background="@color/colorTransparent"
-        >
-
+        tools:ignore="UnusedAttribute">
 
          <LinearLayout
              android:id="@+id/ad_view_wrapper"
@@ -241,8 +260,6 @@
          </android.support.v7.widget.CardView>
 
     </LinearLayout>
-
-
 
 </android.support.design.widget.CoordinatorLayout>
 

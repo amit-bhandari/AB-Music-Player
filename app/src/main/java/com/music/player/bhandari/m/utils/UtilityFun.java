@@ -73,6 +73,10 @@ import java.util.concurrent.Executors;
 
 public class UtilityFun {
 
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
     public static int getProgressPercentage(int currentDuration, int totalDuration){
         Double percentage;
 
