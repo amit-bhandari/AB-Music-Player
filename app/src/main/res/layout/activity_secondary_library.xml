@@ -24,7 +24,8 @@
             android:id="@+id/main.collapsing"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+            app:statusBarScrim="@android:color/black"
             app:expandedTitleMarginStart="@dimen/sl_expanded_title_margin_start"
             app:expandedTitleMarginEnd="@dimen/sl_expanded_title_margin_end"
             android:persistentDrawingCache="none"
@@ -74,60 +75,65 @@
         app:layout_anchorGravity="bottom|end"
         android:src="@drawable/ic_shuffle_black_24dp" />
 
-    <RelativeLayout
+    <android.support.v4.widget.NestedScrollView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
         android:background="@color/blackOverlay"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
-        <com.music.player.bhandari.m.customViews.ExpandableTextView
-            android:id="@+id/artistBio"
-            android:visibility="gone"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorwhite"
-            android:paddingTop="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:textSize="15sp"
-            />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/albumsInArtistFrag"
-            android:layout_below="@+id/artistBio"
-            android:visibility="gone"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorTransparent"
-            android:fadeScrollbars="true"
-            android:isScrollContainer="true"
-            android:paddingTop="20dp"
-            android:scrollbars="vertical" />
+            android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/secondaryLibraryList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorTransparent"
-            android:layout_below="@+id/albumsInArtistFrag"
-            android:fadeScrollbars="true"
-            android:isScrollContainer="true"
-            android:paddingTop="20dp"
-            android:scrollbars="vertical" />
+            <com.music.player.bhandari.m.customViews.ExpandableTextView
+                android:id="@+id/artistBio"
+                android:visibility="gone"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorwhite"
+                android:paddingTop="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="15sp"
+                />
 
-        <LinearLayout
-            android:id="@+id/border_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/border_2dp"
-            android:orientation="horizontal"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/albumsInArtistFrag"
+                android:layout_below="@+id/artistBio"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorTransparent"
+                android:fadeScrollbars="true"
+                android:isScrollContainer="true"
+                android:paddingTop="20dp"
+                android:scrollbars="vertical"/>
 
-    </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/secondaryLibraryList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorTransparent"
+                android:layout_below="@+id/albumsInArtistFrag"
+                android:fadeScrollbars="true"
+                android:isScrollContainer="true"
+                android:paddingTop="20dp"
+                android:scrollbars="vertical" />
+
+            <LinearLayout
+                android:id="@+id/border_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/border_2dp"
+                android:orientation="horizontal"/>
+
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
         android:layout_gravity="bottom"

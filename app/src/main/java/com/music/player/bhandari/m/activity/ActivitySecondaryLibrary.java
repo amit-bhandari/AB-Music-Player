@@ -7,18 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -27,7 +21,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +30,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -73,13 +65,10 @@ import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
-import com.music.player.bhandari.m.transition.MorphMiniToNowPlaying;
-import com.music.player.bhandari.m.transition.MorphNowPlayingToMini;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -127,6 +116,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     @BindView(R.id.main_collapsing) CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.root_view_secondary_lib) View rootView;
 
+    @BindView(R.id.app_bar_layout_secondary_library) AppBarLayout appBarLayout;
     private long mLastClickTime;
 
     private int status;
@@ -227,7 +217,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             }
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbar_);
+        final Toolbar toolbar = findViewById(R.id.toolbar_);
         try {
             toolbar.setCollapsible(false);
         }catch (Exception ignored){}
@@ -275,6 +265,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     mAlbumsRecyclerView.setVisibility(View.VISIBLE);
                     mAlbumsRecyclerView.setAdapter(new AlbumLibraryAdapter(this, data));
                     mAlbumsRecyclerView.setLayoutManager( new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                    mAlbumsRecyclerView.setNestedScrollingEnabled(false);
 
                     TrackItem item = new TrackItem();
                     item.setArtist_id(key);
@@ -355,6 +346,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
 
         mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this));
+        mRecyclerView.setNestedScrollingEnabled(false);
 
         float offsetPx = getResources().getDimension(R.dimen.bottom_offset_secondary_lib);
         BottomOffsetDecoration bottomOffsetDecoration = new BottomOffsetDecoration((int) offsetPx);
@@ -424,7 +416,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
 
         miniPlayer.setBackgroundColor(ColorHelper.GetWidgetColor());
-        //collapsingToolbarLayout.setContentScrimColor(ColorHelper.GetStatusBarColor());
+        //collapsingToolbarLayout.setContentScrimColor(ColorHelper.Ge());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -441,6 +433,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             }
         });
         fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+
+        collapsingToolbarLayout.setStatusBarScrim(ColorHelper.GetGradientDrawable());
     }
 
     @OnClick(R.id.ad_close)
