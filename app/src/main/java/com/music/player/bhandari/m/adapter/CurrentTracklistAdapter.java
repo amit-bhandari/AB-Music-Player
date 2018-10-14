@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -252,7 +253,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                         .putExtra("track_title",dataItems.get(position).title)
                         .putExtra("position",position)
                         .putExtra("id",dataItems.get(position).id));
-                ((ActivityNowPlaying)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                ((Activity)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
             case R.id.action_search_youtube:

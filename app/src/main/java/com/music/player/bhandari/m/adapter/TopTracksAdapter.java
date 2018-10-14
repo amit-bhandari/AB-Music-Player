@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -117,9 +118,9 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
                 intent.putExtra("track_title", trackList.get(position).title);
                 intent.putExtra("artist", trackList.get(position).artist);
                 context.startActivity(intent);
-                if (context instanceof ActivityExploreLyrics) {
-                    ((ActivityExploreLyrics) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
+                //if (context instanceof ActivityExploreLyrics) {
+                ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                //}
                 break;
         }
     }

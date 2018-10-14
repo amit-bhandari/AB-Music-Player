@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -285,7 +286,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
                 intent.putExtra("status",Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT);
                 intent.putExtra("title",headers.get(position).trim());
                 context.startActivity(intent);
-                ((ActivityMain) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
             case R.id.menuPopup:

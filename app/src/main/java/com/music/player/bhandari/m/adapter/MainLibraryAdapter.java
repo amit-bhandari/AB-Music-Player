@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.adapter;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -355,8 +356,8 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             intent.putExtra("status",fl.getStatus());
                             intent.putExtra("key",key);
                             intent.putExtra("title",title.trim());
+                            ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             context.startActivity(intent);
-                            ((ActivityMain) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
                     }
                 });
@@ -431,7 +432,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                         .putExtra("track_title",filteredDataItems.get(position).title)
                         .putExtra("position",position)
                         .putExtra("id",filteredDataItems.get(position).id));
-                ((ActivityMain)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                ((Activity)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
             case R.id.action_search_youtube:
