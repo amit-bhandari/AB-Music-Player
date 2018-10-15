@@ -718,9 +718,9 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
                 getSupportActionBar().setSubtitle(lyrics.getArtist());
             }
 
-            if(!lyrics.getArtist().equals(lyrics.getOriginalArtist())){
+            //if(!lyrics.getArtist().equals(mLyrics.getArtist())){
                 fetchArtistImage(lyrics.getArtist());
-            }
+            //}
 
             initializeLyricsView();
         }else {
