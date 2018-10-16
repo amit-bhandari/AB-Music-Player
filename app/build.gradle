@@ -40,7 +40,6 @@ android {
         versionCode 182
         versionName "Version 9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled false
     }
 
     signingConfigs{
@@ -58,10 +57,12 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            multiDexEnabled false
         }
 
         debug{
             applicationIdSuffix ".dev"
+            multiDexEnabled true
         }
     }
 
