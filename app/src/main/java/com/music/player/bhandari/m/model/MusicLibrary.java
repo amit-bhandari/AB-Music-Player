@@ -25,8 +25,10 @@ import com.music.player.bhandari.m.utils.UtilityFun;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -70,7 +72,7 @@ public class MusicLibrary{
     private ArrayList<String> foldersList=new ArrayList<>();
 
     //data for all frgaments
-    private LinkedHashMap<Integer, dataItem> dataItemsForTracks = new LinkedHashMap<>();
+    private Map<Integer, dataItem> dataItemsForTracks = Collections.synchronizedMap(new LinkedHashMap<Integer, dataItem>());
     private ArrayList<dataItem> dataItemsForAlbums = new ArrayList<>();
     private ArrayList<dataItem> dataItemsForGenres = new ArrayList<>();
     private ArrayList<dataItem> dataItemsForArtists = new ArrayList<>();
@@ -423,7 +425,7 @@ public class MusicLibrary{
         return dataItemsForArtists;
     }
 
-    public HashMap<Integer, dataItem> getDataItemsForTracks(){
+    public Map<Integer, dataItem> getDataItemsForTracks(){
         return dataItemsForTracks;
     }
 

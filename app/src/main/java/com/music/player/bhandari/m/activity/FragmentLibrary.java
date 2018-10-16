@@ -65,10 +65,10 @@ public class FragmentLibrary extends Fragment implements
         mRefreshLibraryReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.v(Constants.TAG,"Items found tracks = "+MusicLibrary.getInstance().getDataItemsForTracks().size());
-                Log.v(Constants.TAG,"Items found art= "+MusicLibrary.getInstance().getDataItemsArtist().size());
-                Log.v(Constants.TAG,"Items found alb= "+MusicLibrary.getInstance().getDataItemsForAlbums().size());
-                Log.v(Constants.TAG,"Items found genr= "+MusicLibrary.getInstance().getDataItemsForGenres().size());
+                Log.v("FragmentLibrary","Items found tracks = "+MusicLibrary.getInstance().getDataItemsForTracks().size());
+                Log.v("FragmentLibrary","Items found art= "+MusicLibrary.getInstance().getDataItemsArtist().size());
+                Log.v("FragmentLibrary","Items found alb= "+MusicLibrary.getInstance().getDataItemsForAlbums().size());
+                Log.v("FragmentLibrary","Items found genr= "+MusicLibrary.getInstance().getDataItemsForGenres().size());
                 switch (status){
                     case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
                         cursoradapter=new MainLibraryAdapter(FragmentLibrary.this, getContext()
@@ -161,7 +161,6 @@ public class FragmentLibrary extends Fragment implements
         fastScroller.setRecyclerView(mRecyclerView);
 
         initializeAdapter(status);
-        Log.v(Constants.TAG,"STARTED");
 
         float offsetPx = getResources().getDimension(R.dimen.bottom_offset_dp);
         BottomOffsetDecoration bottomOffsetDecoration = new BottomOffsetDecoration((int) offsetPx);
@@ -195,6 +194,7 @@ public class FragmentLibrary extends Fragment implements
     }
 
     public void initializeAdapter(int status){
+        Log.d("FragmentLibrary", "initializeAdapter: ");
         switch (status){
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
                 cursoradapter=new MainLibraryAdapter(FragmentLibrary.this, getContext()
@@ -221,7 +221,7 @@ public class FragmentLibrary extends Fragment implements
                 break;
         }
 
-        Log.v(Constants.TAG,"item count "+cursoradapter.getItemCount());
+        Log.v("FragmentLibrary","item count "+cursoradapter.getItemCount());
         //cursoradapter.setHasStableIds(true);
         mRecyclerView.setAdapter(cursoradapter);
     }
