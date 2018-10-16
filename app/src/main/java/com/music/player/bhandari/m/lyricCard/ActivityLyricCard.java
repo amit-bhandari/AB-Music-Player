@@ -664,7 +664,7 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
     private void setMainImage(String url) {
         progressBar.setVisibility(View.VISIBLE);
-        Glide.with(ActivityLyricCard.this)
+        Glide.with(getApplicationContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .listener(new RequestListener<String, GlideDrawable>() {
