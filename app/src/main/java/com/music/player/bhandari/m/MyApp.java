@@ -52,6 +52,8 @@ public class MyApp extends Application {
 
     @Override
     public void onCreate() {
+        super.onCreate();
+
         instance = this;
         pref = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -77,7 +79,6 @@ public class MyApp extends Application {
             }
         });*/
 
-        super.onCreate();
     }
 
     public void handleUncaughtException (Thread thread, Throwable e)
