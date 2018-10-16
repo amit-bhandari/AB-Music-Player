@@ -498,8 +498,17 @@ public class UtilityFun {
     }
 
     public static Drawable getDefaultAlbumArtDrawable(){
-        return Drawable.createFromPath(MyApp.getContext().getFilesDir()
-                + MyApp.getContext().getString(R.string.def_album_art_custom_image));
+        try {
+            return Drawable.createFromPath(MyApp.getContext().getFilesDir()
+                    + MyApp.getContext().getString(R.string.def_album_art_custom_image));
+        }catch (OutOfMemoryError e){
+            //return batman in case user selected image causes out of memory
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                return MyApp.getContext().getDrawable(R.drawable.ic_batman_1);
+            }else {
+                return MyApp.getContext().getResources().getDrawable(R.drawable.ic_batman_1);
+            }
+        }
     }
 
     public static boolean isBluetoothHeadsetConnected() {
