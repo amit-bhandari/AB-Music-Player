@@ -30,6 +30,7 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics
 import kotlinx.android.synthetic.main.activity_saved_lyrics.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.item_saved_lyric.view.*
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 import java.io.Serializable
@@ -195,6 +196,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             holder.itemView?.trackInfo?.text = lyrics[position].track
             holder.itemView?.playCount?.text = lyrics[position].artist
+            holder.itemView?.delete?.isEnabled = true
             Glide.with(this@ActivitySavedLyrics)
                     .load(artistImageUrls[lyrics[position].artist])
                     .asBitmap()
@@ -262,11 +264,13 @@ class ActivitySavedLyrics: AppCompatActivity() {
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     }
                     R.id.delete ->{
+                        v.isEnabled = false  //to prevent double clicks
                         if (OfflineStorageLyrics.clearLyricsFromDB(lyrics[adapterPosition].originalTrack, lyrics[adapterPosition].trackId)) {
                             Snackbar.make(v, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT).show()
                             lyrics.removeAt(adapterPosition)
                             notifyItemRemoved(adapterPosition)
                         }else{
+                            v.isEnabled = true //enable click again
                             Snackbar.make(v, getString(R.string.error_removing), Snackbar.LENGTH_SHORT).show()
                         }
                     }
