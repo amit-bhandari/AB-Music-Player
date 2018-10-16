@@ -1,64 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view_secondary_lib"
-    tools:context="com.music.player.bhandari.m.activity.ActivitySecondaryLibrary"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorTransparent"
     android:fitsSystemWindows="true"
     android:theme="@style/AppTheme.AppBarOverlay"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/colorTransparent"
-    xmlns:ads="http://schemas.android.com/apk/res-auto">
+    tools:context="com.music.player.bhandari.m.activity.ActivitySecondaryLibrary">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout_secondary_library"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sl_image_dimen"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay"
         android:background="@color/colorTransparent"
-        >
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/main.collapsing"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
-            app:statusBarScrim="@android:color/black"
-            app:expandedTitleMarginStart="@dimen/sl_expanded_title_margin_start"
-            app:expandedTitleMarginEnd="@dimen/sl_expanded_title_margin_end"
-            android:persistentDrawingCache="none"
             android:fitsSystemWindows="true"
-            >
+            android:persistentDrawingCache="none"
+            app:expandedTitleMarginEnd="@dimen/sl_expanded_title_margin_end"
+            app:expandedTitleMarginStart="@dimen/sl_expanded_title_margin_start"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+            app:statusBarScrim="@android:color/black">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sl_image_dimen"
-                app:layout_collapseMode="parallax"
-                android:fitsSystemWindows="true">
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax">
 
                 <ImageView
                     android:id="@+id/main.backdrop"
-                    android:transitionName="@string/secondary_transition"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
+                    android:transitionName="@string/secondary_transition"
                     tools:ignore="ContentDescription,UnusedAttribute" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/secondary_image_gradient"/>
+                    android:background="@drawable/secondary_image_gradient" />
 
             </FrameLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/action_bar_size"
                 app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
 
                 />
 
@@ -71,202 +69,198 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_shuffle_black_24dp"
         app:layout_anchor="@id/app_bar_layout_secondary_library"
-        app:layout_anchorGravity="bottom|end"
-        android:src="@drawable/ic_shuffle_black_24dp" />
+        app:layout_anchorGravity="bottom|end" />
 
     <android.support.v4.widget.NestedScrollView
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/blackOverlay"
-        android:layout_height="match_parent">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
+            android:id="@+id/border_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/border_2dp">
 
             <com.music.player.bhandari.m.customViews.ExpandableTextView
                 android:id="@+id/artistBio"
-                android:visibility="gone"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorwhite"
-                android:paddingTop="20dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
+                android:paddingTop="20dp"
+                android:textColor="@color/colorwhite"
                 android:textSize="15sp"
-                />
+                android:visibility="gone" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/albumsInArtistFrag"
-                android:layout_below="@+id/artistBio"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/artistBio"
                 android:background="@color/colorTransparent"
                 android:fadeScrollbars="true"
                 android:isScrollContainer="true"
                 android:paddingTop="20dp"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical"
+                android:visibility="gone" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/secondaryLibraryList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorTransparent"
                 android:layout_below="@+id/albumsInArtistFrag"
+                android:background="@color/colorTransparent"
                 android:fadeScrollbars="true"
                 android:isScrollContainer="true"
                 android:paddingTop="20dp"
                 android:scrollbars="vertical" />
 
-            <LinearLayout
+            <!-- <FrameLayout
                 android:id="@+id/border_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
                 android:background="@drawable/border_2dp"
-                android:orientation="horizontal"/>
+                android:orientation="vertical" /> -->
 
         </RelativeLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
+
     <LinearLayout
-        android:layout_gravity="bottom"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/colorTransparent"
+        android:elevation="12dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:elevation="12dp"
-        android:background="@color/colorTransparent"
         tools:ignore="UnusedAttribute">
 
-         <LinearLayout
-             android:id="@+id/ad_view_wrapper"
-             android:visibility="gone"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:orientation="vertical"
-             android:layout_gravity="bottom">
-
-             <TextView
-                 android:id="@+id/ad_close"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:text="@string/close"
-                 android:textColor="@color/colorwhite"
-                 android:visibility="gone"
-                 android:paddingEnd="15dp"
-                 android:gravity="end"
-                 android:textSize="15sp"
-                 android:paddingRight="15dp"
-                 tools:ignore="RtlSymmetry" />
-
-             <com.google.android.gms.ads.AdView
-                 android:id="@+id/adView"
-                 android:visibility="visible"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 ads:adSize="BANNER"
-                 ads:adUnitId="@string/banner_secondary_activity"
-                 android:layout_gravity="bottom">
-             </com.google.android.gms.ads.AdView>
-
-         </LinearLayout>
-
-         <android.support.v7.widget.CardView
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_gravity="bottom"
-             android:layout_margin="@dimen/ac_card_margin"
-             app:cardCornerRadius="5dp"
-             android:elevation="10dp"
-             >
-
-         <LinearLayout
-            android:id="@+id/mini_player"
-            android:foreground="?attr/selectableItemBackground"
+        <LinearLayout
+            android:id="@+id/ad_view_wrapper"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <!--Icon of floating widget -->
-            <ImageView
-                android:id="@+id/album_art_mini_player"
-                android:transitionName="@string/transition"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_batman_1"
-                android:scaleType="centerCrop"
-                tools:ignore="UnusedAttribute">
-            </ImageView>
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="2"
-                android:padding="@dimen/abm_title_and_art_padd_combined">
+            <TextView
+                android:id="@+id/ad_close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingEnd="15dp"
+                android:paddingRight="15dp"
+                android:text="@string/close"
+                android:textColor="@color/colorwhite"
+                android:textSize="15sp"
+                android:visibility="gone"
+                tools:ignore="RtlSymmetry" />
 
-                <TextView
-                    android:id="@+id/song_name_mini_player"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/empty_queue"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:textSize="@dimen/abm_mini_player_song"
-                    android:scrollHorizontally="true"
-                    android:maxLines="1"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/abm_title_and_art_padd"
-                    android:paddingRight="@dimen/abm_title_and_art_padd"
-                    android:textColor="@android:color/background_light"
-                    tools:ignore="NestedWeights" />
-
-                <TextView
-                    android:id="@+id/artist_mini_player"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/abm_mini_player_artist"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:scrollHorizontally="true"
-                    android:layout_gravity="start|center_vertical"
-                    android:maxLines="1"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/abm_title_and_art_padd"
-                    android:paddingRight="@dimen/abm_title_and_art_padd"
-                    android:textColor="@android:color/background_light"/>
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/play_pause_mini_player"
-                android:layout_width="@dimen/action_bar_size"
-                android:layout_gravity="center"
-                android:layout_height="@dimen/action_bar_size"
-                android:src="@drawable/ic_play_arrow_black_24dp"
-                android:padding="@dimen/abm_play_next_padd"
-                android:background="?android:selectableItemBackground" />
-
-            <ImageView
-                android:id="@+id/next_mini_plaayrer"
-                android:layout_width="@dimen/action_bar_size"
-                android:layout_height="@dimen/action_bar_size"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_skip_next_black_24dp"
-                android:padding="@dimen/abm_play_next_padd"
-                android:background="?android:selectableItemBackground"
-                android:backgroundTint="@android:color/background_light" />
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:visibility="visible"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_secondary_activity"></com.google.android.gms.ads.AdView>
 
         </LinearLayout>
 
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/ac_card_margin"
+            android:elevation="10dp"
+            app:cardCornerRadius="5dp">
 
-         </android.support.v7.widget.CardView>
+            <LinearLayout
+                android:id="@+id/mini_player"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:foreground="?attr/selectableItemBackground">
+                <!--Icon of floating widget -->
+                <ImageView
+                    android:id="@+id/album_art_mini_player"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_batman_1"
+                    android:transitionName="@string/transition"
+                    tools:ignore="UnusedAttribute"></ImageView>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical"
+                    android:padding="@dimen/abm_title_and_art_padd_combined">
+
+                    <TextView
+                        android:id="@+id/song_name_mini_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingLeft="@dimen/abm_title_and_art_padd"
+                        android:paddingRight="@dimen/abm_title_and_art_padd"
+                        android:scrollHorizontally="true"
+                        android:text="@string/empty_queue"
+                        android:textColor="@android:color/background_light"
+                        android:textSize="@dimen/abm_mini_player_song"
+                        tools:ignore="NestedWeights" />
+
+                    <TextView
+                        android:id="@+id/artist_mini_player"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingLeft="@dimen/abm_title_and_art_padd"
+                        android:paddingRight="@dimen/abm_title_and_art_padd"
+                        android:scrollHorizontally="true"
+                        android:textColor="@android:color/background_light"
+                        android:textSize="@dimen/abm_mini_player_artist" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/play_pause_mini_player"
+                    android:layout_width="@dimen/action_bar_size"
+                    android:layout_height="@dimen/action_bar_size"
+                    android:layout_gravity="center"
+                    android:background="?android:selectableItemBackground"
+                    android:padding="@dimen/abm_play_next_padd"
+                    android:src="@drawable/ic_play_arrow_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/next_mini_plaayrer"
+                    android:layout_width="@dimen/action_bar_size"
+                    android:layout_height="@dimen/action_bar_size"
+                    android:layout_gravity="center"
+                    android:background="?android:selectableItemBackground"
+                    android:backgroundTint="@android:color/background_light"
+                    android:padding="@dimen/abm_play_next_padd"
+                    android:src="@drawable/ic_skip_next_black_24dp" />
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 
