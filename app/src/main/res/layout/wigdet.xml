@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view_widget"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/blackOverlay"
     android:layout_height="match_parent">
 
     <FrameLayout
@@ -28,6 +29,19 @@
             android:background="@drawable/secondary_image_gradient"/>
 
     </FrameLayout>
+
+    <ImageView
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:scaleType="center"
+        android:layout_width="@dimen/ne_button_height"
+        android:id="@+id/widget_fav"
+        android:layout_margin="10dp"
+        android:layout_height="@dimen/ne_button_height"
+        android:src="@drawable/ic_favorite_border_black_24dp"
+        android:background="?android:selectableItemBackground"
+        android:layout_alignParentEnd="true"
+        tools:ignore="ContentDescription" />
 
 
     <LinearLayout

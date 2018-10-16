@@ -34,6 +34,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
@@ -57,6 +58,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -338,6 +340,7 @@ public class PlayerService extends Service implements
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
+                Log.d("PlayerService", "onReceive: action " + action);
                 if(action==null){
                     return;
                 }
@@ -448,6 +451,16 @@ public class PlayerService extends Service implements
                         }
                         updateWidget(false);
                         break;
+
+                    case Constants.ACTION.FAV_WIDGET:
+                        if(getCurrentTrack()==null) return;
+                        if(PlaylistManager.getInstance(getApplicationContext()).isFavNew(getCurrentTrack().getId())){
+                            PlaylistManager.getInstance(getApplicationContext()).RemoveFromFavNew(getCurrentTrack().getId());
+                        }else {
+                            PlaylistManager.getInstance(getApplicationContext())
+                                    .addSongToFav(getCurrentTrack().getId());
+                        }
+                        break;
                 }
             }
         };
@@ -462,7 +475,8 @@ public class PlayerService extends Service implements
         intentFilter.addAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET);
         intentFilter.addAction(Constants.ACTION.WIDGET_UPDATE);
         intentFilter.addAction(Constants.ACTION.SHUFFLE_WIDGET);
-        intentFilter.addAction(Constants.ACTION.REPEAT_WIDGET);
+        intentFilter.addAction(Constants.ACTION.REPEAT_WIDGET);;
+        intentFilter.addAction(Constants.ACTION.FAV_WIDGET);
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiver, intentFilter);
     }
 
@@ -1097,23 +1111,29 @@ public class PlayerService extends Service implements
         }
 
         if (MyApp.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
-            views.setInt(R.id.widget_shuffle,"setColorFilter", ColorHelper.getAccentColor());
+            views.setInt(R.id.widget_shuffle,"setColorFilter", ColorHelper.GetWidgetColor());
         } else {
             views.setInt(R.id.widget_shuffle,"setColorFilter",ColorHelper.getColor(R.color.colorwhite));
         }
 
-        views.setTextColor(R.id.text_in_repeat_widget,ColorHelper.getBrightPrimaryColor());
+        views.setTextColor(R.id.text_in_repeat_widget,ColorHelper.GetWidgetColor());
 
         if (MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL) {
             views.setTextViewText(R.id.text_in_repeat_widget,"A");
-            views.setInt(R.id.widget_repeat,"setColorFilter", ColorHelper.getAccentColor());
+            views.setInt(R.id.widget_repeat,"setColorFilter", ColorHelper.GetWidgetColor());
         } else if (MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE) {
             views.setTextViewText(R.id.text_in_repeat_widget,"1");
-            views.setInt(R.id.text_in_repeat_widget,"setTextColor", ColorHelper.getAccentColor());
-            views.setInt(R.id.widget_repeat,"setColorFilter", ColorHelper.getAccentColor());
+            views.setInt(R.id.text_in_repeat_widget,"setTextColor", ColorHelper.GetWidgetColor());
+            views.setInt(R.id.widget_repeat,"setColorFilter", ColorHelper.GetWidgetColor());
         } else if (MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.NO_REPEAT) {
             views.setTextViewText(R.id.text_in_repeat_widget,"");
             views.setInt(R.id.widget_repeat,"setColorFilter", ColorHelper.getColor(R.color.colorwhite));
+        }
+
+        if(getCurrentTrack()!=null && PlaylistManager.getInstance(getApplicationContext()).isFavNew(getCurrentTrack().getId())) {
+            views.setInt(R.id.widget_fav, "setColorFilter", ColorHelper.GetWidgetColor());
+        }else {
+            views.setInt(R.id.widget_fav, "setColorFilter", ColorHelper.getColor(R.color.colorwhite));
         }
 
         ComponentName thisWidget = new ComponentName(context, WidgetReceiver.class);

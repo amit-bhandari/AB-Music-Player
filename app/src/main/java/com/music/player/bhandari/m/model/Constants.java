@@ -39,6 +39,7 @@ public class Constants {
         String LAUNCH_PLAYER_FROM_WIDGET = "comm.launch.nowplaying";
         String SHUFFLE_WIDGET = "com.shuffle.widget";
         String REPEAT_WIDGET  = "com.repeat.widget";
+        String FAV_WIDGET  = "com.fav.widget";
         String UPDATE_LYRIC_AND_INFO = "com.update.lyric.info";
         String PLAY_PAUSE_UI_UPDATE ="PLAY_PAUSE_UI_UPDATE";
         String CLICK_TO_CANCEL = "com.click.to.cancel";

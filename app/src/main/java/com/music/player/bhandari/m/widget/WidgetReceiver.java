@@ -176,6 +176,11 @@ public class WidgetReceiver extends AppWidgetProvider {
             PendingIntent repeat_p = PendingIntent.getBroadcast(context, 0,
                     repeatIntent, 0);
 
+            Intent favIntent = new Intent(context, WidgetReceiver.class);
+            favIntent.setAction(Constants.ACTION.FAV_WIDGET);
+            PendingIntent fav_p = PendingIntent.getBroadcast(context, 0,
+                    favIntent, 0);
+
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.wigdet);
             views.setOnClickPendingIntent(R.id.root_view_widget, activity_p);
             views.setOnClickPendingIntent(R.id.widget_Play, play_pause_p);
@@ -183,6 +188,7 @@ public class WidgetReceiver extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.widget_Skip_forward, next_p);
             views.setOnClickPendingIntent(R.id.widget_repeat, repeat_p);
             views.setOnClickPendingIntent(R.id.widget_shuffle, shuffle_p);
+            views.setOnClickPendingIntent(R.id.widget_fav, fav_p);
 
             if(MyApp.getService()!=null) {
                 MyApp.getService().updateWidget(true);
