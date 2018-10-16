@@ -679,7 +679,14 @@ public class PlaylistManager {
         HashMap<String, Integer> pathToId=new HashMap<>();
         ArrayList<File> musicFiles=new ArrayList<>();
         for (dataItem item:MusicLibrary.getInstance().getDataItemsForTracks().values()){
-            musicFiles.add(new File(item.file_path));
+            File f;
+            //for console error log
+            try {
+                 f = new File(item.file_path);
+            }catch (Exception e){
+                continue;
+            }
+            musicFiles.add(f);
             pathToId.put(item.file_path
                     ,item.id);
         }

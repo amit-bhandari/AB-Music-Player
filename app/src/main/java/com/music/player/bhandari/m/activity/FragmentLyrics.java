@@ -560,6 +560,8 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     public void clearLyrics(){
 
+        if (playerService==null) return;
+
         if(playerService.getCurrentTrack()!=null) {
             try {
                 ll_lyric_view.setVisibility(View.GONE);

@@ -999,8 +999,12 @@ public class PlayerService extends Service implements
                 Collections.sort(trackList, new Comparator<Integer>() {
                     @Override
                     public int compare(Integer integer, Integer t1) {
-                        return MusicLibrary.getInstance().getTrackMap().get(integer)
-                                .compareToIgnoreCase(MusicLibrary.getInstance().getTrackMap().get(t1));
+                        try {
+                            return MusicLibrary.getInstance().getTrackMap().get(integer)
+                                    .compareToIgnoreCase(MusicLibrary.getInstance().getTrackMap().get(t1));
+                        }catch (NullPointerException e){
+                            return 0;
+                        }
                     }
                 });
                 Log.d(TAG, "shuffle: sorted in " + (System.currentTimeMillis()-time));

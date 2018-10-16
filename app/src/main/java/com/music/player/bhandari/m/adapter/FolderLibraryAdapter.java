@@ -234,12 +234,16 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         holder.title.setText(fileName);
         if(positionalFile.isDirectory()){
             holder.image.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_folder_special_black_24dp));
-            holder.secondary.setText(positionalFile.listFiles(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    Log.d("FolderLibraryAdapter", "accept: " + dir);
-                    return isFileExtensionValid(name);
-                }
-            }).length + context.getString(R.string.tracks));
+            try {
+                holder.secondary.setText(positionalFile.listFiles(new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        Log.d("FolderLibraryAdapter", "accept: " + dir);
+                        return isFileExtensionValid(name);
+                    }
+                }).length + context.getString(R.string.tracks));
+            }catch (NullPointerException e) {
+                Log.d("FolderLibraryAdapter", "onBindViewHolder: ");
+            }
         }else{
             holder.image.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_audiotrack_black_24dp));
             holder.secondary.setText(android.text.format.Formatter.formatFileSize(MyApp.getContext(), positionalFile.length()));
@@ -425,10 +429,12 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         else {
             File[] fileList = clickedFile.listFiles();
             ArrayList<Integer> songTitles = new ArrayList<>();
-            for(File f:fileList){
-                if(isFileExtensionValid(f)) {
-                    int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
-                    songTitles.add(id);
+            if(fileList!=null) {
+                for (File f : fileList) {
+                    if (isFileExtensionValid(f)) {
+                        int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
+                        songTitles.add(id);
+                    }
                 }
             }
             if(songTitles.isEmpty()){

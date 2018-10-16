@@ -581,6 +581,8 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
     private void Play(){
 
+        if(playerService==null) return;
+
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
 

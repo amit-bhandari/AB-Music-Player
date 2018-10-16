@@ -242,9 +242,10 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
 
         if(MyApp.isLocked()){
-            border.setVisibility(View.VISIBLE);
+            //border.setVisibility(View.VISIBLE);
+            border.setBackgroundResource(R.drawable.border_2dp);
         }else {
-            border.setVisibility(View.GONE);
+            border.setBackgroundResource(0);
         }
 
         switch (status) {
