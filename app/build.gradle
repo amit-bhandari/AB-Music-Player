@@ -33,14 +33,78 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
-    defaultConfig {
-        applicationId 'com.bhandari.music'
-        minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 182
-        versionName "Version 9"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    def versionPropsFile = file('version.properties')  //maintains version number of apk
+    def value = 0
+    Properties versionProps = new Properties()
+    if (!versionPropsFile.exists()) {                  //create if does not exist
+        versionProps['VERSION_PATCH'] = "0"
+        versionProps['VERSION_NUMBER'] = "0"
+        versionProps['VERSION_BUILD'] = "-1" // I set it to minus one so the first build is 0 which isn't super important.
+        versionProps.store(versionPropsFile.newWriter(), null)
     }
+
+    def runTasks = gradle.startParameter.taskNames
+    if ('assembleRelease' in runTasks) {  //check is release build is getting executed
+        value = 1
+    }
+
+    def mVersionName = ""
+    def mFileName = ""
+
+    if (versionPropsFile.canRead()) {
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        //increase build number every time build happens
+        //increase version number and patch number only in case of release build
+
+        versionProps['VERSION_PATCH'] = (versionProps['VERSION_PATCH'].toInteger() + value).toString()
+        versionProps['VERSION_NUMBER'] = (versionProps['VERSION_NUMBER'].toInteger() + value).toString()
+        versionProps['VERSION_BUILD'] = (versionProps['VERSION_BUILD'].toInteger() + 1).toString()
+
+        versionProps.store(versionPropsFile.newWriter(), null)
+
+        // 1: change major and minor version here
+        mVersionName = "v9.0.${versionProps['VERSION_PATCH']}"
+        // 2: change AppName for your app name
+        mFileName = "AB-Music-${mVersionName}.apk"
+
+        defaultConfig {
+            applicationId 'com.bhandari.music'
+            minSdkVersion 14
+            targetSdkVersion 28
+            versionCode versionProps['VERSION_NUMBER'].toInteger()
+            versionName "${mVersionName} Build: ${versionProps['VERSION_BUILD']}"
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        }
+
+    } else {
+        throw new FileNotFoundException("Could not read version.properties!")
+    }
+
+    //rename apk files
+    if ('assembleRelease' in runTasks) {
+        applicationVariants.all { variant ->
+            variant.outputs.all { output ->
+                if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
+                    outputFileName = mFileName
+                }
+            }
+        }
+    }
+
+    //does not need, at least for now
+    //task copyApkFiles(type: Copy){
+    //    from 'build/outputs/apk/release'
+    //    into '../apk'
+    //    include mFileName
+    //}
+
+    //afterEvaluate {
+    //    assembleRelease.doLast {
+    //        tasks.copyApkFiles.execute()
+    //    }
+    //}
+
 
     signingConfigs{
         release {
