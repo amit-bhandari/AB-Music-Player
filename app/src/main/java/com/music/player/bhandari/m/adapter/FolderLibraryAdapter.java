@@ -425,10 +425,12 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         else {
             File[] fileList = clickedFile.listFiles();
             ArrayList<Integer> songTitles = new ArrayList<>();
-            for(File f:fileList){
-                if(isFileExtensionValid(f)) {
-                    int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
-                    songTitles.add(id);
+            if(fileList!=null) {
+                for (File f : fileList) {
+                    if (isFileExtensionValid(f)) {
+                        int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
+                        songTitles.add(id);
+                    }
                 }
             }
             if(songTitles.isEmpty()){
