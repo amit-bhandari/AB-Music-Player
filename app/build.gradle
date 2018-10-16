@@ -44,7 +44,7 @@ android {
     }
 
     def runTasks = gradle.startParameter.taskNames
-    if ('assembleRelease' in runTasks) {  //check is release build is getting executed
+    if ('publishApkRelease' in runTasks) {  //check is release build is getting executed
         value = 1
     }
 
