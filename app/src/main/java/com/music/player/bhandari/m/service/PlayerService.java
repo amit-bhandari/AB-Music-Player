@@ -205,6 +205,8 @@ public class PlayerService extends Service implements
                     playTrack(currentTrackPosition);
                 }else {
                     nextTrack();
+                    PostNotification();
+                    return;  //to avoid double call to notifyUi as it is getting called from nextTrack()  Sounds stupid but it works, so it ain't stupid
                 }
                 notifyUI();
                 PostNotification();
@@ -353,12 +355,12 @@ public class PlayerService extends Service implements
 
                     case Constants.ACTION.PREV_ACTION:
                         prevTrack();
-                        notifyUI();
+                        //notifyUI();
                         break;
 
                     case Constants.ACTION.NEXT_ACTION:
                         nextTrack();
-                        notifyUI();
+                        //notifyUI();
                         break;
 
                     case Constants.ACTION.DISMISS_EVENT:
@@ -460,6 +462,7 @@ public class PlayerService extends Service implements
                             PlaylistManager.getInstance(getApplicationContext())
                                     .addSongToFav(getCurrentTrack().getId());
                         }
+                        updateWidget(false);
                         break;
                 }
             }
@@ -575,7 +578,7 @@ public class PlayerService extends Service implements
                 Log.d(TAG, "onskiptoPrevious called (media button pressed)");
                 //if(!MyApp.isAppVisible) {
                     prevTrack();
-                notifyUI();
+                //notifyUI();
                 //}
                 super.onSkipToPrevious();
             }
@@ -584,7 +587,7 @@ public class PlayerService extends Service implements
                 Log.d(TAG, "onskiptonext called (media button pressed)");
                 //if(!MyApp.isAppVisible) {
                     nextTrack();
-                notifyUI();
+                //notifyUI();
                 //}
                 super.onSkipToNext();
             }
@@ -614,7 +617,7 @@ public class PlayerService extends Service implements
                 if(currentTime - lastTimePlayPauseClicked < 500){
                     Log.d(TAG, "onPlay: nextTrack on multiple play pause click");
                     nextTrack();
-                    notifyUI();
+                    //notifyUI();
                     return;
                 }
 
@@ -957,35 +960,10 @@ public class PlayerService extends Service implements
                     mNotificationManager.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
                 }
 
+
             }
         });
     }
-
-
-
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-        Bitmap bitmap;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        /*if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }*/
-        bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
 
 
     //get played song position, shuffle the list and get the played song at first position
@@ -1066,7 +1044,7 @@ public class PlayerService extends Service implements
         }
     }
 
-    public void notifyUI() {
+    private void notifyUI() {
         Intent UIIntent = new Intent();
         UIIntent.setAction(Constants.ACTION.COMPLETE_UI_UPDATE);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(UIIntent);
@@ -1080,8 +1058,10 @@ public class PlayerService extends Service implements
     }
 
     public void updateWidget(boolean loadBitmap){
+        Log.d("PlayerService", "updateWidget: called");
         Context context = this;
         if(getCurrentTrack()==null){
+            Log.d("PlayerService", "updateWidget: failed because of null current track");
             return;
         }
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -1100,7 +1080,8 @@ public class PlayerService extends Service implements
             if(b!=null) {
                 views.setImageViewBitmap(R.id.widget_album_art, b);
             }else {
-                views.setImageViewResource(R.id.widget_album_art,R.drawable.ic_batman_1);
+                views.setImageViewBitmap(R.id.widget_album_art, UtilityFun.drawableToBitmap(UtilityFun.getDefaultAlbumArtDrawable()));
+                //views.setImageViewResource(R.id.widget_album_art, R.drawable.ic_batman_1);
             }
         }
 
@@ -1342,6 +1323,7 @@ public class PlayerService extends Service implements
                 break;
         }
         PostNotification();
+        updateWidget(false);
     }
 
     public void pause() {
@@ -1353,6 +1335,7 @@ public class PlayerService extends Service implements
         setStatus(PAUSED);
         setSessionState();
         PostNotification();
+        updateWidget(false);
     }
 
     public void stop() {
@@ -1366,6 +1349,7 @@ public class PlayerService extends Service implements
         }catch (IllegalStateException e){
             setStatus(STOPPED);
         }
+        updateWidget(false);
     }
 
     public void shuffleAll(){
@@ -1425,6 +1409,7 @@ public class PlayerService extends Service implements
             }
         }
         PostNotification();
+        notifyUI();
     }
 
     public void prevTrack() {
@@ -1444,6 +1429,7 @@ public class PlayerService extends Service implements
             }
         }
         PostNotification();
+        notifyUI();
     }
 
     //to update trackitem when tags are changed
@@ -1552,7 +1538,7 @@ public class PlayerService extends Service implements
     @Override
     public void onDestroy() {
         Log.d("PlayerService", "onDestroy: ");
-        updateWidget(true);
+        updateWidget(false);
         storeTracklist();
         //mNotificationManager.cancelAll();
         mNotificationManager.cancel(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE);

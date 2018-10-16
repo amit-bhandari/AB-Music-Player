@@ -327,7 +327,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                             Toast.makeText(context, context.getString(R.string.deleted) + dataItems.get(position).title, Toast.LENGTH_SHORT).show();
                             if(playerService.getCurrentTrack().getTitle().equals(dataItems.get(position).title)){
                                 playerService.nextTrack();
-                                playerService.notifyUI();
+                                //playerService.notifyUI();
                                 notifyItemChanged(position+1);
                             }
                             playerService.removeTrack(position);
@@ -366,7 +366,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 notifyItemChanged(position);
                 if(position==playerService.getCurrentTrackPosition()){
                     playerService.play();
-                    playerService.notifyUI();
+                    //playerService.notifyUI();
                 }else {
                     playerService.playAtPositionFromNowPlaying(position);
                     Log.v(Constants.TAG,position+"  position");

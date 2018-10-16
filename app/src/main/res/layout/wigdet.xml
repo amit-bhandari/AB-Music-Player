@@ -3,7 +3,6 @@
     android:id="@+id/root_view_widget"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@color/blackOverlay"
     android:layout_height="match_parent">
 
     <FrameLayout
@@ -21,12 +20,12 @@
             android:contentDescription="widget_album_art"
             android:background="@color/colorBlack"
             android:scaleType="centerCrop"
-             />
+            tools:ignore="HardcodedText" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/secondary_image_gradient"/>
+            android:background="@color/blackTransparentLighter"/>
 
     </FrameLayout>
 
@@ -120,6 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:textSize="10sp"
                 android:layout_gravity="center" />
 
         </FrameLayout>

@@ -132,9 +132,12 @@ public class WidgetReceiver extends AppWidgetProvider {
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
+        Log.d("WidgetReceiver", "onUpdate: called");
+        
         //if player service is null, start the service
         //current song info will be updated in widget from the service itself
         if(MyApp.getService()==null){
+            Log.d("WidgetReceiver", "onUpdate: Music service is null");
             MusicLibrary.getInstance();
             try {
                 Intent playerServiceIntent = new Intent(context, PlayerService.class);
@@ -142,6 +145,7 @@ public class WidgetReceiver extends AppWidgetProvider {
                 context.startService(playerServiceIntent);
                 //context.bindService(playerServiceIntent, playerServiceConnection, Context.BIND_AUTO_CREATE);
             }catch (Exception e){
+                Log.d("WidgetReceiver", "onUpdate: Error in creating widget");
                 e.printStackTrace();
             }
         }
