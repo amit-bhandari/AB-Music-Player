@@ -186,7 +186,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
     inner class SavedLyricsAdapter: RecyclerView.Adapter<SavedLyricsAdapter.MyViewHolder>() {
 
         init{
-            setHasStableIds(true)
+            //setHasStableIds(true)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -238,13 +238,13 @@ class ActivitySavedLyrics: AppCompatActivity() {
             notifyDataSetChanged()
         }
 
-        override fun getItemId(position: Int): Long {
+        /*override fun getItemId(position: Int): Long {
             return position.toLong()
         }
 
         override fun getItemViewType(position: Int): Int {
             return position
-        }
+        }*/
 
         inner class MyViewHolder(v: View): RecyclerView.ViewHolder(v), View.OnClickListener {
 
@@ -254,21 +254,22 @@ class ActivitySavedLyrics: AppCompatActivity() {
             }
 
             override fun onClick(v: View?) {
+                val position = adapterPosition  //adapter position changes sometimes in between, don't know why
                 when(v?.id){
                     R.id.root_view_item_saved_lyrics -> {
                         val intent = Intent(this@ActivitySavedLyrics, ActivityLyricView::class.java)
-                        intent.putExtra("track_title", lyrics[adapterPosition].originalTrack)
-                        intent.putExtra("artist", lyrics[adapterPosition].originalArtist)
-                        intent.putExtra("lyrics", lyrics[adapterPosition] as Serializable)
+                        intent.putExtra("track_title", lyrics[position].originalTrack)
+                        intent.putExtra("artist", lyrics[position].originalArtist)
+                        intent.putExtra("lyrics", lyrics[position] as Serializable)
                         startActivity(intent)
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     }
                     R.id.delete ->{
                         v.isEnabled = false  //to prevent double clicks
-                        if (OfflineStorageLyrics.clearLyricsFromDB(lyrics[adapterPosition].originalTrack, lyrics[adapterPosition].trackId)) {
+                        if (OfflineStorageLyrics.clearLyricsFromDB(lyrics[position].originalTrack, lyrics[position].trackId)) {
                             Snackbar.make(v, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT).show()
-                            lyrics.removeAt(adapterPosition)
-                            notifyItemRemoved(adapterPosition)
+                            lyrics.removeAt(position)
+                            notifyItemRemoved(position)
                         }else{
                             v.isEnabled = true //enable click again
                             Snackbar.make(v, getString(R.string.error_removing), Snackbar.LENGTH_SHORT).show()
