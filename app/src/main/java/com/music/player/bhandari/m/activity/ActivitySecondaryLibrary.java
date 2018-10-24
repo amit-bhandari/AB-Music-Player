@@ -373,7 +373,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
 
         TrackItem item=null;
-        if (adapter.getList().size() > 0) {
+
+        if (adapter!=null && adapter.getList()!=null && adapter.getList().size() > 0) {
             item = MusicLibrary.getInstance().getTrackItemFromId(adapter.getList().get(0).id);
         }
 
