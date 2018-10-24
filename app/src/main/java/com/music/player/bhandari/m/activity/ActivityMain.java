@@ -13,6 +13,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
@@ -628,6 +629,17 @@ public class ActivityMain extends AppCompatActivity
                 MyApp.getPref().edit().putInt(getString(R.string.pref_theme)
                         , Constants.PRIMARY_COLOR.GLOSSY).apply();
             }
+
+            //check if unknown artist image is cached and remove it
+            //@todo remove in next release
+            try {
+                String CACHE_ART_THUMBS = this.getCacheDir() + "/art_thumbs/";
+                String actual_file_path = CACHE_ART_THUMBS + "<unknown>";
+                File f = new File(actual_file_path);
+                if (f.exists()) {
+                    f.delete();
+                }
+            }catch (Exception ignored){}
 
         }
 

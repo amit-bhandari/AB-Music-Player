@@ -409,7 +409,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             // 0 - System default   1 - artist image  2 - custom
             int currentNowPlayingBackPref = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back),1);
 
-            if(currentNowPlayingBackPref==1) {
+            if(currentNowPlayingBackPref==1 && !artistInfo.getCorrectedArtist().equals("[unknown]")) {
                 if (!((ActivityNowPlaying) getActivity()).isArtistLoadedInBack()) {
                     new SetBlurryImagetask().execute(artistInfo);
                 }
