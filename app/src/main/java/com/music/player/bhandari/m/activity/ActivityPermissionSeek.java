@@ -181,7 +181,12 @@ public class ActivityPermissionSeek extends AppCompatActivity {
 
         new CountryInfo().start();
 
-        initializeRemoteConfig();
+        try {
+            initializeRemoteConfig();
+        }catch (Exception e){
+            //unknown crash in firebase library
+            Log.d("ActivityPermissionSeek", "onCreate: " + e.getLocalizedMessage());
+        }
         //log selected font to know which font is used maximum
         //logFont();
     }
