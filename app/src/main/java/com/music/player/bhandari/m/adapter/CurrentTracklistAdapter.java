@@ -162,7 +162,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
             }
         });
         if(playerService!=null && position==playerService.getCurrentTrackPosition()) {
-            holder.cv.setCardBackgroundColor(ColorHelper.GetWidgetColor());
+            holder.cv.setBackgroundColor(ColorHelper.getColor(R.color.gray3));
             holder.playAnimation.setVisibility(View.VISIBLE);
             if (playerService.getStatus()==PlayerService.PLAYING){
                 //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
@@ -173,7 +173,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
             }
             //holder.iv.setVisibility(View.VISIBLE);
         }else {
-            holder.cv.setCardBackgroundColor(context.getResources().getColor(R.color.colorTransparent));
+            holder.cv.setBackgroundColor(context.getResources().getColor(R.color.colorTransparent));
             //holder.iv.setVisibility(View.GONE);
             holder.playAnimation.setVisibility(View.GONE);
         }
@@ -378,7 +378,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title,secondary;
         ImageView handle;
-        CardView cv;
+        View cv;
         //ImageView iv;
 
         AVLoadingIndicatorView playAnimation;
@@ -390,7 +390,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
             secondary = itemView.findViewById(R.id.secondaryHeader);
 
             handle = itemView.findViewById(R.id.handleForDrag);
-            cv = itemView.findViewById(R.id.card_view_track_item_drag);
+            cv = itemView.findViewById(R.id.trackItemDraggable);
             //iv = itemView.findViewById(R.id.play_button_item_drag);
             playAnimation = itemView.findViewById(R.id.song_playing_animation);
             itemView.findViewById(R.id.more).setOnClickListener(this);

@@ -32,6 +32,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -105,6 +106,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
+import static android.support.v7.widget.DividerItemDecoration.HORIZONTAL;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -565,6 +568,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+
+        DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        mRecyclerView.addItemDecoration(itemDecor);
     }
 
     public void UpdateCurrentTracklistAdapter(){
