@@ -1092,29 +1092,31 @@ public class PlayerService extends Service implements
         }
 
         if (MyApp.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
-            views.setInt(R.id.widget_shuffle,"setColorFilter", ColorHelper.GetWidgetColor());
+            views.setInt(R.id.widget_shuffle,"setColorFilter",  ColorHelper.getColor(R.color.colorwhite));
         } else {
-            views.setInt(R.id.widget_shuffle,"setColorFilter",ColorHelper.getColor(R.color.colorwhite));
+            views.setInt(R.id.widget_shuffle,"setColorFilter",ColorHelper.getColor(R.color.gray3));
         }
 
-        views.setTextColor(R.id.text_in_repeat_widget,ColorHelper.GetWidgetColor());
+        views.setTextColor(R.id.text_in_repeat_widget, ColorHelper.getColor(R.color.colorwhite));
 
         if (MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL) {
             views.setTextViewText(R.id.text_in_repeat_widget,"A");
-            views.setInt(R.id.widget_repeat,"setColorFilter", ColorHelper.GetWidgetColor());
+            views.setInt(R.id.widget_repeat,"setColorFilter",  ColorHelper.getColor(R.color.colorwhite));
         } else if (MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE) {
             views.setTextViewText(R.id.text_in_repeat_widget,"1");
-            views.setInt(R.id.text_in_repeat_widget,"setTextColor", ColorHelper.GetWidgetColor());
-            views.setInt(R.id.widget_repeat,"setColorFilter", ColorHelper.GetWidgetColor());
+            views.setInt(R.id.text_in_repeat_widget,"setTextColor", ColorHelper.getColor(R.color.colorwhite));
+            views.setInt(R.id.widget_repeat,"setColorFilter",  ColorHelper.getColor(R.color.colorwhite));
         } else if (MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.NO_REPEAT) {
             views.setTextViewText(R.id.text_in_repeat_widget,"");
-            views.setInt(R.id.widget_repeat,"setColorFilter", ColorHelper.getColor(R.color.colorwhite));
+            views.setInt(R.id.widget_repeat,"setColorFilter", ColorHelper.getColor(R.color.dark_gray3));
         }
 
         if(getCurrentTrack()!=null && PlaylistManager.getInstance(getApplicationContext()).isFavNew(getCurrentTrack().getId())) {
-            views.setInt(R.id.widget_fav, "setColorFilter", ColorHelper.GetWidgetColor());
+            //views.setInt(R.id.widget_fav, "setColorFilter", ColorHelper.GetWidgetColor());
+            views.setImageViewResource(R.id.widget_fav, R.drawable.ic_favorite_black_24dp);
         }else {
-            views.setInt(R.id.widget_fav, "setColorFilter", ColorHelper.getColor(R.color.colorwhite));
+            //views.setInt(R.id.widget_fav, "setColorFilter", ColorHelper.getColor(R.color.colorwhite));
+            views.setImageViewResource(R.id.widget_fav, R.drawable.ic_favorite_border_black_24dp);
         }
 
         ComponentName thisWidget = new ComponentName(context, WidgetReceiver.class);

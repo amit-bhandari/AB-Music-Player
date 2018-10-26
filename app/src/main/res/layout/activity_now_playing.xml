@@ -155,14 +155,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
                     android:orientation="horizontal"
                     >
 
                     <ImageView
                         android:id="@id/pw_ivShuffle"
-                        android:layout_width="@dimen/pw_image_item_size"
-                        android:layout_height="@dimen/pw_image_item_size"
-                        android:background="@drawable/pw_bg_iv_black"
+                        android:layout_width="@dimen/pw_image_item_size_small"
+                        android:layout_height="@dimen/pw_image_item_size_small"
                         android:scaleType="centerInside"
                         android:layout_weight="1"
                         android:src="@drawable/pw_ic_shuffle_black"
@@ -173,35 +174,31 @@
                         android:layout_weight="1"
                         android:layout_width="@dimen/pw_image_item_size"
                         android:layout_height="@dimen/pw_image_item_size"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/pw_bg_iv_white"
                         android:scaleType="centerInside"
                         android:src="@drawable/pw_ic_skip_previous"
                         card_view:ignore="ContentDescription" />
 
-                    <android.support.design.widget.FloatingActionButton
-                        android:id="@id/pw_playButton"
+                    <LinearLayout
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:layout_weight="1"
-                        android:scaleType="center"
-                        android:src="@drawable/pw_play"
-                        app:backgroundTint="@color/pw_accent"
-                        app:borderWidth="0dp"
-                        app:elevation="@dimen/pw_small_fab_default_elevation"
-                        app:fabSize="normal"
-                        app:pressedTranslationZ="6dp"
-                        />
+                        android:background="@drawable/ring_border">
+
+                        <ImageButton
+                            android:id="@+id/pw_playButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerInside"
+                            android:background="@color/colorTransparent"
+                            android:src="@drawable/pw_play"
+                            card_view:ignore="ContentDescription" />
+
+                    </LinearLayout>
 
                     <ImageView
                         android:id="@id/pw_ivSkipNext"
                         android:layout_width="@dimen/pw_image_item_size"
                         android:layout_height="@dimen/pw_image_item_size"
                         android:layout_weight="1"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/pw_bg_iv_white"
                         android:gravity="center"
                         android:scaleType="centerInside"
                         android:src="@drawable/pw_ic_skip_next"
@@ -209,14 +206,14 @@
 
                     <FrameLayout
                         android:layout_weight="1"
-                        android:layout_width="@dimen/pw_image_item_size"
-                        android:layout_height="@dimen/pw_image_item_size"
+                        android:layout_width="@dimen/pw_image_item_size_small"
+                        android:layout_height="@dimen/pw_image_item_size_small"
                         android:layout_gravity="center"
                         >
+
                         <ImageView
                             android:id="@id/pw_ivRepeat"
                             android:layout_gravity="center"
-                            android:background="@drawable/pw_bg_iv_black"
                             android:scaleType="centerInside"
                             android:src="@drawable/pw_ic_repeat_black"
                             card_view:ignore="ContentDescription"
@@ -227,7 +224,7 @@
                             android:id="@+id/text_in_repeat"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="10sp"
+                            android:textSize="7sp"
                             android:gravity="center"
                             android:textStyle="bold"
                             android:layout_gravity="center"

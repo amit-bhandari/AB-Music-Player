@@ -190,7 +190,7 @@ public class WidgetReceiver extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.widget_Play, play_pause_p);
             views.setOnClickPendingIntent(R.id.widget_Skip_back, prev_p);
             views.setOnClickPendingIntent(R.id.widget_Skip_forward, next_p);
-            views.setOnClickPendingIntent(R.id.widget_repeat, repeat_p);
+            views.setOnClickPendingIntent(R.id.repeat_wrapper, repeat_p);
             views.setOnClickPendingIntent(R.id.widget_shuffle, shuffle_p);
             views.setOnClickPendingIntent(R.id.widget_fav, fav_p);
 

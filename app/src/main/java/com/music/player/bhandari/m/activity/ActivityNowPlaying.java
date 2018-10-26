@@ -51,6 +51,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -136,7 +137,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     @BindView(R.id.pw_ivRepeat)  ImageView repeat;
     @BindView(R.id.text_in_repeat)  TextView textInsideRepeat;
     @BindView(R.id.seekbar_now_playing) SeekBar seekBar;
-    @BindView(R.id.pw_playButton) FloatingActionButton mPlayButton;
+    @BindView(R.id.pw_playButton) ImageButton mPlayButton;
     @BindView(R.id.pw_runningTime) TextView runningTime;
     @BindView(R.id.pw_totalTime) TextView totalTime;
     @BindView(R.id.sliding_layout)   SlidingUpPanelLayout slidingUpPanelLayout;
@@ -782,18 +783,20 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.menu_now_plying, menu);
         for(int i = 0; i < menu.size(); i++){
             if(menu.getItem(i).getItemId()==R.id.action_fav) {
-                Drawable drawable = menu.getItem(i).getIcon();
-                if (drawable != null) {
+                //Drawable drawable = menu.getItem(i).getIcon();
+                //if (drawable != null) {
                     TrackItem item=playerService.getCurrentTrack();
 
                     if(item!=null && PlaylistManager.getInstance(getApplicationContext()).isFavNew(item.getId())) {
-                        drawable.mutate();
-                        drawable.setColorFilter(ColorHelper.GetWidgetColor(), PorterDuff.Mode.SRC_ATOP);
+                        //rawable.mutate();
+                        //drawable.setColorFilter(ColorHelper.GetWidgetColor(), PorterDuff.Mode.SRC_ATOP);
+                        menu.getItem(i).setIcon(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
                     }else {
-                        drawable.mutate();
-                        drawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite), PorterDuff.Mode.SRC_ATOP);
+                        //drawable.mutate();
+                        //drawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite), PorterDuff.Mode.SRC_ATOP);
+                        menu.getItem(i).setIcon(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
                     }
-                }
+                //}
             }
         }
         return true;
@@ -1370,31 +1373,31 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     private void InitializeControlsUI(){
 
         if(!pref.getBoolean(Constants.PREFERENCES.SHUFFLE,false)){
-            shuffle.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
+            shuffle.setColorFilter(ColorHelper.getColor(R.color.dark_gray3));
         }else {
-            shuffle.setColorFilter(ColorHelper.GetWidgetColor());
+            shuffle.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
         }
 
         if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ALL){
-            textInsideRepeat.setTextColor(ColorHelper.GetWidgetColor());
-            repeat.setColorFilter(ColorHelper.GetWidgetColor());
+            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.colorwhite));
+            repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
             textInsideRepeat.setText("A");
         }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ONE){
-            textInsideRepeat.setTextColor(ColorHelper.GetWidgetColor());
-            repeat.setColorFilter(ColorHelper.GetWidgetColor());
+            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.colorwhite));
+            repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
             textInsideRepeat.setText("1");
         }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.NO_REPEAT){
-            repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
-            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.colorwhite));
+            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.dark_gray3));
+            repeat.setColorFilter(ColorHelper.getColor(R.color.dark_gray3));
             textInsideRepeat.setText("");
         }
         if(playerService.getStatus()==PlayerService.PLAYING){
-            mPlayButton.setImageResource(R.drawable.pw_pause);
+            mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_pause));
         }else {
-            mPlayButton.setImageResource(R.drawable.pw_play);
+            mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_play));
         }
 
-        mPlayButton.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+        //mPlayButton.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
 
         seekBar.setMax(100);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -1435,12 +1438,12 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             //shuffle is on, turn it off
             pref.edit().putBoolean(Constants.PREFERENCES.SHUFFLE,false).apply();
             playerService.shuffle(false);
-            shuffle.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
+            shuffle.setColorFilter(ColorHelper.getColor(R.color.dark_gray3));
         }else {
             //shuffle is off, turn it on
             pref.edit().putBoolean(Constants.PREFERENCES.SHUFFLE,true).apply();
             playerService.shuffle(true);
-            shuffle.setColorFilter(ColorHelper.GetWidgetColor());
+            shuffle.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
         }
         UpdateCurrentTracklistAdapter();
     }
@@ -1450,18 +1453,18 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.NO_REPEAT){
             pref.edit().putInt(Constants.PREFERENCES.REPEAT,Constants.PREFERENCE_VALUES.REPEAT_ALL).apply();
             //repeat.setColorFilter(UtilityFun.GetDominatColor(playerService.getAlbumArt()));
-            textInsideRepeat.setTextColor(ColorHelper.GetWidgetColor());
-            repeat.setColorFilter(ColorHelper.GetWidgetColor());
+            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.colorwhite));
+            repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
             textInsideRepeat.setText("A");
         }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ALL){
             pref.edit().putInt(Constants.PREFERENCES.REPEAT,Constants.PREFERENCE_VALUES.REPEAT_ONE).apply();
-            textInsideRepeat.setTextColor(ColorHelper.GetWidgetColor());
-            repeat.setColorFilter(ColorHelper.GetWidgetColor());
+            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.colorwhite));
+            repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
             textInsideRepeat.setText("1");
         }else if(pref.getInt(Constants.PREFERENCES.REPEAT,0)==Constants.PREFERENCE_VALUES.REPEAT_ONE){
             pref.edit().putInt(Constants.PREFERENCES.REPEAT,Constants.PREFERENCE_VALUES.NO_REPEAT).apply();
-            repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
-            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.colorwhite));
+            repeat.setColorFilter(ColorHelper.getColor(R.color.dark_gray3));
+            textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.dark_gray3));
             textInsideRepeat.setText("");
         }
     }
@@ -1517,10 +1520,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         playerService.play();
 
         if(playerService.getStatus()==PlayerService.PLAYING){
-            mPlayButton.setImageResource(R.drawable.pw_pause);
+            mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_pause));
             startUpdateTask();
         }else {
-            mPlayButton.setImageResource(R.drawable.pw_play);
+            mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_play));
             stopUpdateTask();
         }
     }

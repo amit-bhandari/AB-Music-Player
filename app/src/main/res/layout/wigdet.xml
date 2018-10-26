@@ -50,6 +50,8 @@
         android:orientation="horizontal"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true">
@@ -60,7 +62,7 @@
             android:layout_gravity="center"
             android:layout_width="0dp"
             android:id="@+id/widget_shuffle"
-            android:padding="5dp"
+            android:padding="12dp"
             android:layout_height="@dimen/ne_button_height"
             android:src="@drawable/ic_shuffle_black_24dp"
             android:background="?android:selectableItemBackground"/>
@@ -72,7 +74,7 @@
             android:layout_gravity="center"
             android:layout_weight="0.5"
             android:background="?android:selectableItemBackground"
-            android:padding="5dp"
+            android:padding="10dp"
             android:scaleType="fitCenter"
             android:src="@drawable/pw_ic_skip_previous" />
 
@@ -95,15 +97,16 @@
             android:layout_gravity="center"
             android:layout_width="0dp"
             android:id="@+id/widget_Skip_forward"
-            android:padding="5dp"
+            android:padding="10dp"
             android:layout_height="@dimen/ne_button_height"
             android:background="?android:selectableItemBackground"
             android:src="@drawable/pw_ic_skip_next"/>
 
 
         <FrameLayout
+            android:id="@+id/repeat_wrapper"
             android:layout_weight="0.5"
-            android:padding="8dp"
+            android:padding="12dp"
             android:layout_width="0dp"
             android:layout_height="match_parent">
 
@@ -119,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textSize="10sp"
+                android:textSize="7sp"
                 android:layout_gravity="center" />
 
         </FrameLayout>
