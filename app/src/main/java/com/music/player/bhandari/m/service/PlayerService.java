@@ -1260,7 +1260,7 @@ public class PlayerService extends Service implements
         }
 
         //sometimes player may shut down abruptly, make sure you save the current queue every time song changes
-        storeTracklist();
+        //storeTracklist();
     }
 
     private void setSessionState(){

@@ -1509,7 +1509,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
     @OnClick(R.id.pw_playButton)
     void play(){
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
+        //avoid debouncing of key if multiple play clicks are given by user
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
             return;
         }
         mLastClickTime = SystemClock.elapsedRealtime();

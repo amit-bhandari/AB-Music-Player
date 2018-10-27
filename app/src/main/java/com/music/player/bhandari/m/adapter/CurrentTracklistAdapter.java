@@ -11,6 +11,7 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -215,6 +216,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
             case R.id.action_play:
                 playerService.playAtPositionFromNowPlaying(position);
                 notifyItemChanged(position);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE));
                 break;
 
             case R.id.action_add_to_playlist:
@@ -359,18 +361,27 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
 
             case R.id.trackItemDraggable:
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 300){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
                 notifyItemChanged(position);
                 if(position==playerService.getCurrentTrackPosition()){
                     playerService.play();
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE));
                     //playerService.notifyUI();
                 }else {
                     playerService.playAtPositionFromNowPlaying(position);
                     Log.v(Constants.TAG,position+"  position");
                 }
+
+                /*if(context instanceof ActivityNowPlaying){
+                    if(playerService.getStatus()==PlayerService.PLAYING){
+                        startUpdateTask();
+                    }else {
+                        stopUpdateTask();
+                    }
+                }*/
                 break;
         }
     }
