@@ -27,7 +27,7 @@ public class RewardPoints {
 
     private static int MAX_REWARD_POINTS = 5000;
 
-    private static int MAX_DECREMENT_POINT = 7;
+    private static int MAX_DECREMENT_POINT = 5;
     private static int MIN_DECREMENT_POINT = 2;
 
     public static int getRewardPointsCount(){

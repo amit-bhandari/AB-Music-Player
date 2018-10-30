@@ -31,11 +31,9 @@ import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 
 public class AppLaunchCountManager {
 
-
-
     private final static int DAYS_UNTIL_PROMPT = 1;//Min number of days
     private final static int HOURS_UNTIL_INTER_AD = 24; //hours
-    private final static int HOURS_UNTIL_BANNER_ADS = 24;
+    private final static int HOURS_UNTIL_BANNER_ADS = 0;
     private final static int DAYS_UNTIL_RATE_ASK = 1;
 
     public static void app_launched(Context mContext) {

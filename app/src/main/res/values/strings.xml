@@ -607,8 +607,8 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020 * Access all saved lyrics from side navigation \n
-                                              * Added album list and artist info under artist screen
+    <string name="whats_new"><![CDATA[ \u0020 * Improved controls in Now Playing screen \n
+                                              * Bug fixes from last update
         ]]></string>
 
     <!-- Request notification access-->
