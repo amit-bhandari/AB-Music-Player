@@ -166,6 +166,43 @@
     <color name="theme15_color2_dark">#c0FF8C00</color>
     <color name="theme15_color3_dark">#c0FF0080</color>
 
+    <color name="theme16_color1">#80333333</color>
+    <color name="theme16_color2">#805a5454</color>
+    <color name="theme16_color2_widget">#45a247</color>
+    <color name="theme16_color1_dark">#c0333333</color>
+    <color name="theme16_color2_dark">#c05a5454</color>
+
+    <color name="theme17_color1">#8019A186</color>
+    <color name="theme17_color2">#80F2CF43</color>
+    <color name="theme17_color2_widget">#F2CF43</color>
+    <color name="theme17_color1_dark">#c019A186</color>
+    <color name="theme17_color2_dark">#c0F2CF43</color>
+
+    <color name="theme18_color1">#80BF033B</color>
+    <color name="theme18_color2">#80FFC719</color>
+    <color name="theme18_color2_widget">#FFC719</color>
+    <color name="theme18_color1_dark">#c0BF033B</color>
+    <color name="theme18_color2_dark">#c0FFC719</color>
+
+    <color name="theme19_color1">#80000000</color>
+    <color name="theme19_color2">#80D2A813</color>
+    <color name="theme19_color2_widget">#D2A813</color>
+    <color name="theme19_color1_dark">#c0000000</color>
+    <color name="theme19_color2_dark">#c0D2A813</color>
+
+    <color name="theme20_color1">#800C0C0C</color>
+    <color name="theme20_color2">#804834D4</color>
+    <color name="theme20_color2_widget">#A29BFE</color>
+    <color name="theme20_color1_dark">#c00C0C0C</color>
+    <color name="theme20_color2_dark">#c04834D4</color>
+
+    <color name="theme21_color1">#80ff1493</color>
+    <color name="theme21_color2">#800000ff</color>
+    <color name="theme21_color3">#80ff8c00</color>
+    <color name="theme21_color2_widget">#ff1493</color>
+    <color name="theme21_color1_dark">#c0ff1493</color>
+    <color name="theme21_color2_dark">#c00000ff</color>
+    <color name="theme21_color3_dark">#c0ff8c00</color>
 
     <!-- play widget custom view  -->
     <color name="pw_primary">#3F51B5</color>
