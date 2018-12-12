@@ -71,7 +71,8 @@
     <string name="nav_rewards">Поощрение</string>
     <string name="action_add_to_playlist">Добавить в плейлист</string>
     <string name="action_edit_track_info">Изменить теги трека</string>
-    <string name="action_wrong_lyrics">Альтернативный источник текстов</string>
+    <string name="action_wrong_lyrics">Альтернативный источник текстов песен</string>
+    <string name="action_add_lyrics">Добавить текстов песен</string>
     <string name="action_switch_offline_lyrics">Переключить режим текстов песен</string>
     <string name="action_exclude_from_library">Исключить из библиотеки</string>
     <string name="action_track_info">Данные композиции</string>
@@ -187,6 +188,7 @@
     <string name="instant_lyric_already_saved">Текст песни уже сохранен!</string>
     <string name="toast_artist_cache_complete">Кеширование инфо об исполнителе завершено</string>
     <string name="main_act_new_ver_info_neg">Поделиться словом</string>
+    <string name="dialog_add_lyric_hint">Скопируйте текст песни %s из интернета и вставьте сюда</string>
     <string name="main_act_sign_in_content">Войдите в Google, чтобы получить 1000 баллов! Это не займет больше 10 секунд.</string>
     <string name="main_act_sign_in_pos">Войти сейчас!</string>
     <string name="main_act_sign_in_neg">Нет, я бы предпочел рекламу</string>

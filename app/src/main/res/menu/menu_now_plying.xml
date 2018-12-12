@@ -56,6 +56,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_add_lyrics"
+        android:orderInCategory="100"
+        android:title="@string/action_add_lyrics"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_share_lyrics_offline"
         android:orderInCategory="100"
         android:title="@string/action_share_offline_lyrics"

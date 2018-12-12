@@ -50,6 +50,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -80,6 +81,7 @@ import com.music.player.bhandari.m.adapter.CurrentTracklistAdapter;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.TrackItem;
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics;
 import com.music.player.bhandari.m.transition.MorphMiniToNowPlaying;
 import com.music.player.bhandari.m.transition.MorphNowPlayingToMini;
@@ -108,6 +110,7 @@ import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static android.support.v7.widget.DividerItemDecoration.HORIZONTAL;
+import static com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics.POSITIVE_RESULT;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -864,7 +867,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         switch (item.getItemId()){
             case R.id.action_fav:
                 if(playerService.getCurrentTrack()==null) {
-                    Snackbar.make(rootView, getString(R.string.error_nothing_to_fav), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.error_nothing_to_fav), Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
                 if(PlaylistManager.getInstance(getApplicationContext()).isFavNew(playerService.getCurrentTrack().getId())){
@@ -894,7 +897,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     if(playerService.getEqualizerHelper().isEqualizerSupported()) {
                         startActivity(new Intent(this, ActivityEqualizer.class));
                     }else {
-                        Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -929,7 +932,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     art_intent.putExtra("title", trackItem.getArtist().trim());
                     startActivity(art_intent);
                 } else {
-                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -941,7 +944,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     alb_intent.putExtra("title", trackItem.getAlbum().trim());
                     startActivity(alb_intent);
                 }else {
-                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -953,13 +956,13 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         fileUris.add(FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
                         UtilityFun.Share(this, fileUris, trackItem.getTitle());
                     } else {
-                        Snackbar.make(rootView, R.string.error_nothing_to_share, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, R.string.error_nothing_to_share, Snackbar.LENGTH_SHORT).show();
                     }
                 }catch (IllegalArgumentException e){
                     try{
                         UtilityFun.ShareFromPath(this, trackItem.getFilePath());
                     }catch (Exception ex) {
-                        Snackbar.make(rootView, R.string.error_unable_to_share, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, R.string.error_unable_to_share, Snackbar.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -969,7 +972,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 if(trackItem!=null) {
                     AddToPlaylist();
                 }else {
-                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -986,7 +989,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                             .putExtra("position", playerService.getCurrentTrackPosition())
                             .putExtra("id",trackItem.getId()));
                 }else {
-                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.no_music_found), Snackbar.LENGTH_SHORT).show();
                 }
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
@@ -998,10 +1001,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         ((FragmentLyrics)viewPagerAdapter.getItem(2)).clearLyrics();
                     }else {
                         //Toast.makeText(this, "Unable to delete lyrics!", Toast.LENGTH_SHORT).show();
-                        Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_SHORT).show();
                     }
                 }else {
-                    Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -1009,7 +1012,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 if(trackItem!=null){
                    ((FragmentLyrics)viewPagerAdapter.getItem(2)).shareLyrics();
                 }else {
-                    Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -1019,7 +1022,13 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 if(trackItem!=null){
                     ((FragmentLyrics)viewPagerAdapter.getItem(2)).wrongLyrics();
                 }else {
-                    Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.action_add_lyrics:
+                if(trackItem!=null){
+                    showAddLyricDialog();
                 }
                 break;
 
@@ -1033,6 +1042,46 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showAddLyricDialog(){
+        final TrackItem item = playerService.getCurrentTrack();
+        String hintText = getString(R.string.dialog_add_lyric_hint, item.getTitle());
+        MaterialDialog dialog = new MyDialogBuilder(this)
+                .title(R.string.action_add_lyrics)
+                .input(hintText, "", false, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                        Log.d("ActivityNowPlaying", "onInput: " + input);
+                    }
+                })
+                //.inputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE)
+                .positiveText(R.string.add)
+                .negativeText(R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        String lyrics = dialog.getInputEditText().getText().toString();
+
+                        final Lyrics result = new Lyrics(POSITIVE_RESULT);
+                        result.setTitle(item.getTitle());
+                        result.setArtist(item.getArtist());
+                        result.setOriginalArtist(item.getArtist());
+                        result.setOriginalTitle(item.getTitle());
+                        result.setSource("manual");
+                        result.setText(lyrics.replace("\n","<br />"));
+
+                        OfflineStorageLyrics.putLyricsInDB(result, item);
+
+                        Snackbar.make(rootView, "Lyrics added", Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+                .build();
+
+        dialog.getInputEditText().setLines(4);
+        dialog.getInputEditText().setGravity(Gravity.TOP|Gravity.LEFT);
+        dialog.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+        dialog.show();
     }
 
     private void AddToPlaylist(){
@@ -1080,10 +1129,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                                         PlaylistManager.getInstance(ActivityNowPlaying.this)
                                                 .AddSongToPlaylist(playlist_name,ids);
                                        // Toast.makeText(ActivityNowPlaying.this, "Playlist saved!", Toast.LENGTH_SHORT).show();
-                                        Snackbar.make(rootView, getString(R.string.playlist_saved), Snackbar.LENGTH_LONG).show();
+                                        Snackbar.make(rootView, getString(R.string.playlist_saved), Snackbar.LENGTH_SHORT).show();
                                     }else {
                                         //Toast.makeText(ActivityNowPlaying.this, "Playlist already exists", Toast.LENGTH_SHORT).show();
-                                        Snackbar.make(rootView, getString(R.string.play_list_already_exists), Snackbar.LENGTH_LONG).show();
+                                        Snackbar.make(rootView, getString(R.string.play_list_already_exists), Snackbar.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -1189,7 +1238,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                             MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),0).apply();
                             playerService.setSleepTimer(0, false);
                            // Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-                            Snackbar.make(rootView, getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -1236,7 +1285,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                             String temp = getString(R.string.sleep_timer_successfully_set)
                                     + seek.getProgress()
                                     + getString(R.string.main_act_sleep_timer_status_minutes);
-                            Snackbar.make(rootView, temp, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, temp, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -1255,18 +1304,18 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             if(playlist_name.length()>2) {
                 //if playlist starts with digit, not allowed
                 if(Character.isDigit(playlist_name.charAt(0))){
-                    Snackbar.make(rootView, getString(R.string.playlist_error_1), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.playlist_error_1), Snackbar.LENGTH_SHORT).show();
                     return false;
                 }
                 return true;
             }else {
                 //Toast.makeText(this,"Enter at least 3 characters",Toast.LENGTH_SHORT).show();
-                Snackbar.make(rootView, getString(R.string.playlist_error_2), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, getString(R.string.playlist_error_2), Snackbar.LENGTH_SHORT).show();
                 return false;
             }
         }else {
             //Toast.makeText(this,"Only alphanumeric characters allowed",Toast.LENGTH_SHORT).show();
-            Snackbar.make(rootView, getString(R.string.playlist_error_3), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(rootView, getString(R.string.playlist_error_3), Snackbar.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -1335,9 +1384,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             MyApp.hasUserSignedIn=false;
 
             if (result.getStatus().getStatusCode() == CommonStatusCodes.NETWORK_ERROR) {
-                Snackbar.make(rootView, getString(R.string.network_error), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
             } else {
-                Snackbar.make(rootView, getString(R.string.unknown_error), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, getString(R.string.unknown_error), Snackbar.LENGTH_SHORT).show();
             }
 
         }

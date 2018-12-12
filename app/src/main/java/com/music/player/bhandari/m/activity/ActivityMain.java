@@ -380,7 +380,7 @@ public class ActivityMain extends AppCompatActivity
             public void onReceive(Context context, Intent intent) {
                 //updateUI();
                 if(MusicLibrary.getInstance().getDefaultTracklistNew().isEmpty()){
-                    Snackbar.make(rootView, getString(R.string.main_act_empty_lib), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.main_act_empty_lib), Snackbar.LENGTH_SHORT).show();
                 }
             }
         };
@@ -773,18 +773,18 @@ public class ActivityMain extends AppCompatActivity
             if(playlist_name.length()>2) {
                 //if playlist starts with digit, not allowed
                 if(Character.isDigit(playlist_name.charAt(0))){
-                    Snackbar.make(rootView, getString(R.string.playlist_error_1), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.playlist_error_1), Snackbar.LENGTH_SHORT).show();
                     return false;
                 }
                 return true;
             }else {
                 //Toast.makeText(this,"Enter at least 3 characters",Toast.LENGTH_SHORT).show();
-                Snackbar.make(rootView, getString(R.string.playlist_error_2), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, getString(R.string.playlist_error_2), Snackbar.LENGTH_SHORT).show();
                 return false;
             }
         }else {
             //Toast.makeText(this,"Only alphanumeric characters allowed",Toast.LENGTH_SHORT).show();
-            Snackbar.make(rootView, getString(R.string.playlist_error_3), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(rootView, getString(R.string.playlist_error_3), Snackbar.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -1077,7 +1077,7 @@ public class ActivityMain extends AppCompatActivity
             if(playerService.getEqualizerHelper().isEqualizerSupported()) {
                 startActivity(new Intent(this, ActivityEqualizer.class));
             }else {
-                Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -1503,7 +1503,7 @@ public class ActivityMain extends AppCompatActivity
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, parse);
             startActivity(browserIntent);
         } catch (Exception e) {
-            Snackbar.make(rootView, getString(R.string.error_opening_browser), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(rootView, getString(R.string.error_opening_browser), Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -1666,7 +1666,7 @@ public class ActivityMain extends AppCompatActivity
                         MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer),0).apply();
                         playerService.setSleepTimer(0, false);
                         //Toast.makeText(this, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-                        Snackbar.make(rootView,getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView,getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_SHORT).show();
                     }
             });
         }
@@ -1713,7 +1713,7 @@ public class ActivityMain extends AppCompatActivity
                                     + seek.getProgress()
                                     + getString(R.string.main_act_sleep_timer_status_minutes);
                             //Toast.makeText(this, temp, Toast.LENGTH_LONG).show();
-                            Snackbar.make(rootView, temp, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, temp, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -1805,7 +1805,7 @@ public class ActivityMain extends AppCompatActivity
                 mHandler.post(colorSwitchRunnablePlay);
                 if(playerService.getCurrentTrack()==null) {
                     //Toast.makeText(this,"Nothing to play!",Toast.LENGTH_LONG).show();
-                    Snackbar.make(rootView, getString(R.string.nothing_to_play), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.nothing_to_play), Snackbar.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -1860,13 +1860,13 @@ public class ActivityMain extends AppCompatActivity
                     CreatePlaylistDialog();
                 }else {
                     if(MyApp.isLocked()){
-                        Snackbar.make(rootView, getString(R.string.music_is_locked), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
                         return ;
                     }
                     if (playerService.getTrackList().size() > 0) {
                         playerService.shuffleAll();
                     } else {
-                        Snackbar.make(rootView, getString(R.string.empty_track_list), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, getString(R.string.empty_track_list), Snackbar.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -2097,10 +2097,10 @@ public class ActivityMain extends AppCompatActivity
                                 }
 
                                 //Toast.makeText(ActivityMain.this, "Playlist created", Toast.LENGTH_SHORT).show();
-                                Snackbar.make(rootView, getString(R.string.play_list_created), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(rootView, getString(R.string.play_list_created), Snackbar.LENGTH_SHORT).show();
                             }else {
                                 //Toast.makeText(ActivityMain.this, "Playlist already exists", Toast.LENGTH_SHORT).show();
-                                Snackbar.make(rootView, getString(R.string.play_list_already_exists), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(rootView, getString(R.string.play_list_already_exists), Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -2126,7 +2126,7 @@ public class ActivityMain extends AppCompatActivity
                         //updateUI(false);
                         MyApp.hasUserSignedIn=false;
                         updateDrawerUI(null, null, false);
-                        Snackbar.make(rootView, getString(R.string.signed_out), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, getString(R.string.signed_out), Snackbar.LENGTH_SHORT).show();
 
                     }
                 });
@@ -2171,10 +2171,10 @@ public class ActivityMain extends AppCompatActivity
             if(manualSignIn) {
                 if (result.getStatus().getStatusCode() == CommonStatusCodes.NETWORK_ERROR) {
                     //Toast.makeText(this, "Network Error, try again later!", Toast.LENGTH_SHORT).show();
-                    Snackbar.make(rootView, getString(R.string.network_error), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
                 } else {
                     //Toast.makeText(this, "Unknown Error, try again later!", Toast.LENGTH_SHORT).show();
-                    Snackbar.make(rootView, getString(R.string.unknown_error), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(rootView, getString(R.string.unknown_error), Snackbar.LENGTH_SHORT).show();
                 }
             }
         }

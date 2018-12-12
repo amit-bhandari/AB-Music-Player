@@ -1407,7 +1407,7 @@ public class ActivitySettings extends AppCompatActivity {
                         @Override
                         public void run() {
                             Toast.makeText(getActivity(),getString(R.string.main_act_lib_refreshed), Toast.LENGTH_SHORT).show();
-                           // Snackbar.make(rootView, "Library Refreshed", Snackbar.LENGTH_LONG).show();
+                           // Snackbar.make(rootView, "Library Refreshed", Snackbar.LENGTH_SHORT).show();
                         }
                     });
                 }

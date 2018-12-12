@@ -204,7 +204,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
             case R.id.libraryItem:
                 if(MyApp.isLocked()){
                     Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    //Snackbar.make(viewParent, "Music is Locked!", Snackbar.LENGTH_LONG).show();
+                    //Snackbar.make(viewParent, "Music is Locked!", Snackbar.LENGTH_SHORT).show();
                     return ;
                 }
                 Play();
@@ -244,7 +244,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
             case R.id.action_play:
                 if(MyApp.isLocked()){
                     Toast.makeText(context,context.getString(R.string.music_is_locked) ,Toast.LENGTH_SHORT).show();
-                    //Snackbar.make(viewParent, "Music is Locked!", Snackbar.LENGTH_LONG).show();
+                    //Snackbar.make(viewParent, "Music is Locked!", Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
                 Play();
@@ -291,7 +291,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                 TrackItem editItem = MusicLibrary.getInstance().getTrackItemFromId(dataItems.get(position).id);
                 if(editItem==null){
                     Toast.makeText(context,context.getString(R.string.unknown_error) ,Toast.LENGTH_SHORT).show();
-                    //Snackbar.make(viewParent, "Error occurred!", Snackbar.LENGTH_LONG).show();
+                    //Snackbar.make(viewParent, "Error occurred!", Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
                 context.startActivity(new Intent(context, ActivityTagEditor.class)
@@ -306,7 +306,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                 TrackItem tempItem = MusicLibrary.getInstance().getTrackItemFromId(dataItems.get(position).id);
                 if(tempItem==null){
                     Toast.makeText(context,context.getString(R.string.error_something_wrong) ,Toast.LENGTH_LONG).show();
-                    //Snackbar.make(viewParent, "Something went wrong!", Snackbar.LENGTH_LONG).show();
+                    //Snackbar.make(viewParent, "Something went wrong!", Snackbar.LENGTH_SHORT).show();
                     return false;
                 }
                 UtilityFun.SetRingtone(context, tempItem.getFilePath()
@@ -369,7 +369,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         Toast.makeText(context
                 ,toastString+dataItems.get(position).title
                 ,Toast.LENGTH_SHORT).show();
-        //Snackbar.make(viewParent, toastString+clikedON, Snackbar.LENGTH_LONG).show();
+        //Snackbar.make(viewParent, toastString+clikedON, Snackbar.LENGTH_SHORT).show();
     }
 
     private void DeleteDialog(){
@@ -383,7 +383,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if(playerService.getCurrentTrack().getTitle().equals(dataItems.get(position).title)){
                             Toast.makeText(context,context.getString(R.string.song_is_playing) ,Toast.LENGTH_SHORT).show();
-                            // Snackbar.make(viewParent, "Cannot delete currently playing song", Snackbar.LENGTH_LONG).show();
+                            // Snackbar.make(viewParent, "Cannot delete currently playing song", Snackbar.LENGTH_SHORT).show();
                             return;
                         }
 

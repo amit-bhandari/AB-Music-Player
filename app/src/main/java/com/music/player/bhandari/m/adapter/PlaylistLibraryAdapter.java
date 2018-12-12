@@ -124,7 +124,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
             case R.id.action_play:
                 if(MyApp.isLocked()){
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent, context.getString(R.string.music_is_locked), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(viewParent, context.getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
                 Play();
@@ -148,9 +148,9 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
 
             case R.id.action_clear_playlist:
                 if(PlaylistManager.getInstance(context).ClearPlaylist(headers.get(position))){
-                    Snackbar.make(viewParent, context.getString(R.string.snack_cleared) + " " + headers.get(position), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(viewParent, context.getString(R.string.snack_cleared) + " " + headers.get(position), Snackbar.LENGTH_SHORT).show();
                 }else {
-                    Snackbar.make(viewParent, context.getString(R.string.snack_unable_to_Clear) + " " + headers.get(position), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(viewParent, context.getString(R.string.snack_unable_to_Clear) + " " + headers.get(position), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -173,7 +173,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
                     .putExtra("position",0));*/
         }else {
             //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();
-            Snackbar.make(viewParent, context.getString(R.string.empty_play_list), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(viewParent, context.getString(R.string.empty_play_list), Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -193,7 +193,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
             }
             catch (Exception e ){
                 //Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
-                Snackbar.make(viewParent, context.getString(R.string.error_something_wrong), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(viewParent, context.getString(R.string.error_something_wrong), Snackbar.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -205,7 +205,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
             context.startActivity(Intent.createChooser(intent, "multiple audio files"));
         }else {
             //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();
-            Snackbar.make(viewParent, context.getString(R.string.empty_play_list), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(viewParent, context.getString(R.string.empty_play_list), Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -234,10 +234,10 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
             /*Toast.makeText(context
                     , toastString + headers.get(position)
                     , Toast.LENGTH_SHORT).show();*/
-            Snackbar.make(viewParent, toastString + headers.get(position), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(viewParent, toastString + headers.get(position), Snackbar.LENGTH_SHORT).show();
         }else {
             //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();
-            Snackbar.make(viewParent, context.getString(R.string.empty_play_list), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(viewParent, context.getString(R.string.empty_play_list), Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -256,17 +256,17 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
                                 || headers.get(position).equals(Constants.SYSTEM_PLAYLISTS.MY_FAV))
                         {
                             //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
-                            Snackbar.make(viewParent, context.getString(R.string.cannot_del)+headers.get(position), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(viewParent, context.getString(R.string.cannot_del)+headers.get(position), Snackbar.LENGTH_SHORT).show();
                             return;
                         }
                         if(PlaylistManager.getInstance(context).DeletePlaylist(headers.get(position))){
                             //Toast.makeText(context,"Deleted "+headers.get(position),Toast.LENGTH_SHORT).show();
-                            Snackbar.make(viewParent, context.getString(R.string.deleted)+headers.get(position), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(viewParent, context.getString(R.string.deleted)+headers.get(position), Snackbar.LENGTH_SHORT).show();
                             headers.remove(headers.get(position));
                             notifyDataSetChanged();
                         }else {
                             //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
-                            Snackbar.make(viewParent, context.getString(R.string.cannot_del)+headers.get(position), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(viewParent, context.getString(R.string.cannot_del)+headers.get(position), Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 })

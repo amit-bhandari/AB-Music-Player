@@ -271,7 +271,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                 else{
                     if(MyApp.isLocked()){
                         //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                        Snackbar.make(viewParent, context.getString(R.string.music_is_locked) , Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(viewParent, context.getString(R.string.music_is_locked) , Snackbar.LENGTH_SHORT).show();
                         return ;
                     }
                     Play();
@@ -304,7 +304,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             case R.id.action_play:
                 if(MyApp.isLocked()){
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent, context.getString(R.string.music_is_locked) , Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(viewParent, context.getString(R.string.music_is_locked) , Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
                 Play();
@@ -420,7 +420,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                 }
             }
             if(songTitles.isEmpty()){
-                Snackbar.make(viewParent, context.getString(R.string.nothing_to_play) , Snackbar.LENGTH_LONG).show();
+                Snackbar.make(viewParent, context.getString(R.string.nothing_to_play) , Snackbar.LENGTH_SHORT).show();
                 return;
             }
             playerService.setTrackList(songTitles);
@@ -438,7 +438,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                 }
             }
             if(songTitles.isEmpty()){
-                Snackbar.make(viewParent, context.getString(R.string.nothing_to_play) , Snackbar.LENGTH_LONG).show();
+                Snackbar.make(viewParent, context.getString(R.string.nothing_to_play) , Snackbar.LENGTH_SHORT).show();
                 return;
             }
             playerService.setTrackList(songTitles);
@@ -467,7 +467,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             }
             if(temp.isEmpty()){
                 //Toast.makeText(context,"Nothing to add!",Toast.LENGTH_LONG).show();
-                Snackbar.make(viewParent, "Nothing to add!", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(viewParent, "Nothing to add!", Snackbar.LENGTH_SHORT).show();
                 return;
             }
             ids = new int[temp.size()];
@@ -504,7 +504,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                     throw new Exception();
                 }
             }catch (Exception ex) {
-                Snackbar.make(viewParent, R.string.error_unable_to_share, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(viewParent, R.string.error_unable_to_share, Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -520,7 +520,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             /*Toast.makeText(context
                     ,toastString+title
                     ,Toast.LENGTH_SHORT).show();*/
-            Snackbar.make(viewParent, toastString+clickedFile.getName(), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(viewParent, toastString+clickedFile.getName(), Snackbar.LENGTH_SHORT).show();
         }else {
             File[] fileList = clickedFile.listFiles();
             for(File f:fileList){
@@ -532,7 +532,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             /*Toast.makeText(context
                     ,toastString+clickedFile.getName()
                     ,Toast.LENGTH_SHORT).show();*/
-            Snackbar.make(viewParent, toastString+clickedFile.getName(), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(viewParent, toastString+clickedFile.getName(), Snackbar.LENGTH_SHORT).show();
         }
 
         //to update the to be next field in notification

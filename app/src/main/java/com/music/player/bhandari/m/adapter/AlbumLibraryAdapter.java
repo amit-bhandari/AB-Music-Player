@@ -275,7 +275,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
             case R.id.action_play:
                 if(MyApp.isLocked()){
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent, context.getString(R.string.music_is_locked), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(viewParent, context.getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
                 Play();
@@ -304,7 +304,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                         files.add(fileUri);
                     } catch (Exception e){
                        // Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
-                        Snackbar.make(viewParent, context.getString(R.string.error_something_wrong), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(viewParent, context.getString(R.string.error_something_wrong), Snackbar.LENGTH_SHORT).show();
                         return true;
                     }
                 }
@@ -355,7 +355,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
         //Toast.makeText(context
                 //,toastString+filteredDataItems.get(position).title
               //  ,Toast.LENGTH_SHORT).show();
-        Snackbar.make(viewParent, toastString+filteredDataItems.get(position).title, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(viewParent, toastString+filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
 
     }
 
@@ -374,13 +374,13 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                         for(int id:tracklist){
                             if(playerService.getCurrentTrack().getId()==id){
                                 //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
-                                Snackbar.make(viewParent, context.getString(R.string.song_is_playing), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(viewParent, context.getString(R.string.song_is_playing), Snackbar.LENGTH_SHORT).show();
                                 return;
                             }
                             TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
                             if(item==null){
                                 // Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
-                                Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_SHORT).show();
                                 return;
                             }
                             files.add(new File(item.getFilePath()));
@@ -389,14 +389,14 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
 
                         if(UtilityFun.Delete(context, files, ids)){
                             // Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-                            Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems.get(position).title, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
                             dataItems.remove(dataItems.get(position));
                             filteredDataItems.remove(filteredDataItems.get(position));
                             notifyItemRemoved(position);
                             // notifyDataSetChanged();
                         }  else {
                             //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-                            Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 })

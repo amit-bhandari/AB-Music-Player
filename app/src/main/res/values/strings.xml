@@ -61,6 +61,7 @@
         <string name="action_edit_track_info">Edit Track info</string>
         <string name="action_clear_offline_lyrics">Clear Lyrics</string>
         <string name="action_wrong_lyrics">Alternate Lyric Source</string>
+        <string name="action_add_lyrics">Add Lyrics</string>
         <string name="action_share_offline_lyrics">Share Lyrics</string>
         <string name="action_switch_offline_lyrics">Switch Lyrics Mode</string>
         <string name="action_exclude_from_library">Exclude from library</string>
@@ -213,6 +214,9 @@
 
 
     <!-- dialogs -->
+
+        <string name="dialog_add_lyric_hint">Copy lyrics for %s from Internet and paste here</string>
+
         <string name="main_act_new_ver_info_title">Whats new</string>
         <string name="main_act_new_ver_info_neg">Share the word</string>
 

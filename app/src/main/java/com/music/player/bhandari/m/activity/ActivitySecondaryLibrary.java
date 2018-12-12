@@ -651,7 +651,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     if(playerService.getEqualizerHelper().isEqualizerSupported()) {
                         startActivity(new Intent(this, ActivityEqualizer.class));
                     }else {
-                        Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -686,7 +686,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                             MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),0).apply();
                             playerService.setSleepTimer(0, false);
                             //Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-                            Snackbar.make(rootView,context.getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView,context.getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -733,7 +733,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                                     + seek.getProgress()
                                     + context.getString(R.string.main_act_sleep_timer_status_minutes);
                             //Toast.makeText(context, temp, Toast.LENGTH_LONG).show();
-                            Snackbar.make(rootView, temp, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(rootView, temp, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 })
