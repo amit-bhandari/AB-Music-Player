@@ -1071,7 +1071,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         result.setSource("manual");
                         result.setText(lyrics.replace("\n","<br />"));
 
+                        OfflineStorageLyrics.clearLyricsFromDB(item);
                         OfflineStorageLyrics.putLyricsInDB(result, item);
+
+                        ((FragmentLyrics)viewPagerAdapter.getItem(2)).onLyricsDownloaded(result);
 
                         Snackbar.make(rootView, "Lyrics added", Snackbar.LENGTH_SHORT).show();
                     }
