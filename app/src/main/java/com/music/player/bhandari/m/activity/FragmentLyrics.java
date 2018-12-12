@@ -592,7 +592,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             return;
         }
 
-        if(mLyrics.getSource()==null || !mLyrics.getSource().equals(ViewLyrics.clientUserAgent)){
+        if(mLyrics.getSource()==null || (!mLyrics.getSource().equals(ViewLyrics.clientUserAgent) && !mLyrics.getSource().equals("manual"))){
             if(isAdded() && getActivity()!=null)
                 Toast.makeText(getActivity(), "No lyrics from other sources available!", Toast.LENGTH_SHORT).show();
             return;
