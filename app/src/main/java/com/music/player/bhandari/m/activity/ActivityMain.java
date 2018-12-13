@@ -1307,7 +1307,7 @@ public class ActivityMain extends AppCompatActivity
         } else if(id == R.id.nav_lyric_card){
             lyricCardDialog();
         } else if(id==192){
-            uploadPhotos();
+            //uploadPhotos();
         } else if(id == R.id.nav_saved_lyrics){
             startActivity(new Intent(this, ActivitySavedLyrics.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -1321,7 +1321,7 @@ public class ActivityMain extends AppCompatActivity
     /**
      * upload lyric card photos
      */
-    private void uploadPhotos(){
+    /*private void uploadPhotos(){
         Log.d("ActivityMain", "uploadPhotos: ");
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -1358,7 +1358,7 @@ public class ActivityMain extends AppCompatActivity
                             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
+                                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getUploadSessionUri());
                                     thumbUrl[0] = taskSnapshot.getDownloadUrl().toString();
                                 }
                             });
@@ -1420,7 +1420,7 @@ public class ActivityMain extends AppCompatActivity
         });
 
     }
-
+*/
     private void lyricCardDialog(){
         final String link = FirebaseRemoteConfig.getInstance().getString("sample_lyric_card");
 
