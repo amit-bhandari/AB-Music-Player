@@ -125,5 +125,4 @@ public class DownloadArtInfoThread extends Thread {
         };
     }
 
-
 }
