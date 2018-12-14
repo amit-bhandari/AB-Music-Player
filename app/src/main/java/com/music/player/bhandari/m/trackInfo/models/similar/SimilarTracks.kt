@@ -7,10 +7,6 @@ import com.music.player.bhandari.m.trackInfo.models.track.Image
 import com.music.player.bhandari.m.trackInfo.models.track.Streamable
 import com.music.player.bhandari.m.trackInfo.models.track.Track
 
-data class SimilarTracks(
-    val similartracks: Similartracks
-)
-
 data class Similartracks(
         @SerializedName("@attr") val attr : Attr,
         val track: List<Track>

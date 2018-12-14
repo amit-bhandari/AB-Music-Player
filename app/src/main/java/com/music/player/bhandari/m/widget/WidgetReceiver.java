@@ -109,7 +109,7 @@ public class WidgetReceiver extends AppWidgetProvider {
 
                         if (service != null){
                             PlayerService.PlayerBinder playerBinder = (PlayerService.PlayerBinder) service;
-                            PlayerService playerService = playerBinder.getService();
+                            PlayerService playerService = playerBinder.getTrackInfoService();
                             MyApp.setService(playerService);
                             context.startService(new Intent(context, PlayerService.class)
                                     .setAction(action));

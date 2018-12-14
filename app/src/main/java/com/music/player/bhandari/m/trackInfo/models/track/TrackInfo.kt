@@ -7,10 +7,6 @@ import com.music.player.bhandari.m.trackInfo.models.Image
 import com.music.player.bhandari.m.trackInfo.models.Streamable
 import com.music.player.bhandari.m.trackInfo.models.Track
 
-data class TrackInfo(
-    val track: Track
-)
-
 data class Track(
         val album: Album,
         val artist: Artist,
