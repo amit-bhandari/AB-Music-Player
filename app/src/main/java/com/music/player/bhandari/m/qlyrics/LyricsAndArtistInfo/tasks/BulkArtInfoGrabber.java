@@ -78,9 +78,9 @@ public class BulkArtInfoGrabber extends Thread {
                                 MusicLibrary.getInstance().putEntryInArtistUrl(artistInfo.getOriginalArtist(), artistInfo.getArtistUrl());
                                 if (artistInfo.getFlag() == ArtistInfo.POSITIVE) {
                                     MusicLibrary.getInstance().putEntryInArtistUrl(artistInfo.getOriginalArtist(), artistInfo.getImageUrl());
-                                    Log.d("BulkArtInfoGrabber", "onArtInfoDownloaded: found " + artistInfo.getCorrectedArtist());
+                                    Log.d("BulkArtInfoGrabber", "onTrackInfoReady: found " + artistInfo.getCorrectedArtist());
                                 } else {
-                                    Log.d("BulkArtInfoGrabber", "onArtInfoDownloaded: not found" + artistInfo.getOriginalArtist());
+                                    Log.d("BulkArtInfoGrabber", "onTrackInfoReady: not found" + artistInfo.getOriginalArtist());
                                 }
                             }
                         }, artist, trackItem).start();

@@ -1,11 +1,10 @@
 package com.music.player.bhandari.m.trackInfo.models.track
 
 import com.google.gson.annotations.SerializedName
-import com.music.player.bhandari.m.trackInfo.models.Artist
-import com.music.player.bhandari.m.trackInfo.models.Attr
-import com.music.player.bhandari.m.trackInfo.models.Image
-import com.music.player.bhandari.m.trackInfo.models.Streamable
-import com.music.player.bhandari.m.trackInfo.models.Track
+
+data class TrackWrap(
+    val track: Track
+)
 
 data class Track(
         val album: Album,
@@ -56,7 +55,7 @@ data class Attr(
 )
 
 data class Image(
-    @SerializedName("#name") val text: String,
+    @SerializedName("#text") val text: String,
     val size: String
 )
 

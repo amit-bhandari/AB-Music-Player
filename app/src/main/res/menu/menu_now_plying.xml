@@ -10,9 +10,15 @@
         android:title="@string/action_fav" />
 
     <item
+        android:id="@+id/action_track_info"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_info_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_track_info" />
+
+    <item
         android:id="@+id/action_equ"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_assessment_black_24dp"
         app:showAsAction="never"
         android:title="@string/action_equ" />
 

@@ -1,11 +1,10 @@
-package com.music.player.bhandari.m.trackInfo.models
+package com.music.player.bhandari.m.trackInfo.models.similar
 
 import com.google.gson.annotations.SerializedName
-import com.music.player.bhandari.m.trackInfo.models.track.Artist
-import com.music.player.bhandari.m.trackInfo.models.track.Attr
-import com.music.player.bhandari.m.trackInfo.models.track.Image
-import com.music.player.bhandari.m.trackInfo.models.track.Streamable
-import com.music.player.bhandari.m.trackInfo.models.track.Track
+
+data class SimilartracksWrap(
+        val similartracks: Similartracks
+)
 
 data class Similartracks(
         @SerializedName("@attr") val attr : Attr,
@@ -35,11 +34,11 @@ data class Artist(
 )
 
 data class Image(
-    @SerializedName("#name") val text: String,
+    @SerializedName("#text") val text: String,
     val size: String
 )
 
 data class Streamable(
-    @SerializedName("#name") val text: String,
+    @SerializedName("#text") val text: String,
     val fulltrack: String
 )

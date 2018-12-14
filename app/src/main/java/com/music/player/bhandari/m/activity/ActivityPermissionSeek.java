@@ -43,8 +43,11 @@ import com.music.player.bhandari.m.service.NotificationListenerService;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.trackInfo.models.FetchTrackInfo;
+import com.music.player.bhandari.m.trackInfo.models.TrackInfo;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -190,8 +193,6 @@ public class ActivityPermissionSeek extends AppCompatActivity {
         }
         //log selected font to know which font is used maximum
         //logFont();
-
-        new FetchTrackInfo("Eminem", "Beautiful").start();
     }
 
     private void initializeRemoteConfig(){
