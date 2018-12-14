@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:id="@+id/rootTrackInfo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:background="@color/blackOverlay"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:id="@+id/outOfLuck"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="You are out of luck :("
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <!--track info-->
+        <LinearLayout
+            android:layout_below="@+id/toolbar_"
+            android:id="@+id/trackSection"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/trackTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title : "/>
+
+            <TextView
+                android:id="@+id/trackArtist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Artist : "/>
+
+            <TextView
+                android:id="@+id/trackPlaycount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Playcount : "/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="tags"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerTrackTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+
+        <!--album info-->
+        <LinearLayout
+            android:id="@+id/albumSection"
+            android:layout_below="@+id/trackSection"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/albumTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title : "/>
+
+            <TextView
+                android:id="@+id/albumPlaycount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Playcount : "/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="tags"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerAlbumTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+
+        <!--album info-->
+        <LinearLayout
+            android:layout_below="@id/albumSection"
+            android:id="@+id/similarTrackSection"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerSimilarTracks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>
