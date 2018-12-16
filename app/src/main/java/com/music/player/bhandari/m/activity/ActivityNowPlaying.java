@@ -911,7 +911,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             case R.id.action_track_info:
                 if(trackItem!=null) {
                     startActivity(new Intent(this,TrackInfoActivity.class).putExtra("trackItem", trackItem));
-                    overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                    overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                 }
                 break;
 

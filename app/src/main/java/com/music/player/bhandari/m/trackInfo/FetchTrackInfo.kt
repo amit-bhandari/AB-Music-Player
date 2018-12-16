@@ -19,9 +19,13 @@ class FetchTrackInfo(var artist: String, var track: String, val callback: TrackI
             //perform all 3 network calls (if track info comes null, send out negative response otherwise positive no matter if we got similar tracks or not)
             trackInfoService = RetrofitInstance.getTrackInfoService()
             val track = trackInfoService.getTrackInfo(artist, track).execute()
+            Log.v("Track info", trackInfo.toString())
             if(track.body()?.track==null) {
-                trackInfo.result = RESULT.NEGATIVE
-                callback.onTrackInfoReady(trackInfo)
+                handler.post {
+                    //guaranteed to be called on UI thread
+                    trackInfo.result = RESULT.NEGATIVE
+                    callback.onTrackInfoReady(trackInfo)
+                }
                 return
             }
             trackInfo.track = track.body()?.track!!
@@ -48,6 +52,7 @@ class FetchTrackInfo(var artist: String, var track: String, val callback: TrackI
             Log.d("FetchTrackInfo", "Similar Tracks : ${similarTracks.body()}")
             Log.d("FetchTrackInfo", "Track Album : ${album.body()}")
         }catch (e: Exception) {
+            Log.v("Error" , "${e.localizedMessage}")
             handler.post {
                 //guaranteed to be called on UI thread
                 trackInfo.result = RESULT.NEGATIVE

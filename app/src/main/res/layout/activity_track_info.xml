@@ -1,136 +1,283 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:id="@+id/rootTrackInfo"
+<RelativeLayout
+    android:id="@+id/rootTrackInfo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_size"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:scaleType="centerCrop"
+        android:layout_below="@id/toolbar_"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:indeterminateTint="@color/colorwhite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="center"
+        android:layout_centerInParent="true"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_below="@+id/toolbar_"
         android:background="@color/blackOverlay"
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/action_bar_size"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
-
-        <TextView
-            android:id="@+id/outOfLuck"
-            android:visibility="gone"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="You are out of luck :("
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <!--track info-->
-        <LinearLayout
-            android:layout_below="@+id/toolbar_"
-            android:id="@+id/trackSection"
+        <RelativeLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/trackTitle"
+                android:id="@+id/outOfLuck"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textColor="@color/colorwhite"
+                android:text="You are out of luck :("
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Title : "/>
+                />
 
-            <TextView
-                android:id="@+id/trackArtist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Artist : "/>
-
-            <TextView
-                android:id="@+id/trackPlaycount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Playcount : "/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="tags"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerTrackTags"
+            <!--track info-->
+            <LinearLayout
+                android:id="@+id/trackSection"
+                android:visibility="gone"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorwhite"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Track Info"/>
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/trackTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorwhite"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Title : "/>
 
-        <!--album info-->
-        <LinearLayout
-            android:id="@+id/albumSection"
-            android:layout_below="@+id/trackSection"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/trackArtist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorwhite"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Artist : "/>
 
-            <TextView
-                android:id="@+id/albumTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Title : "/>
+                <TextView
+                    android:id="@+id/trackDuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorwhite"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Duration : "/>
 
-            <TextView
-                android:id="@+id/albumPlaycount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Playcount : "/>
+                <TextView
+                    android:id="@+id/trackPublishDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorwhite"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Published At : "/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="tags"/>
+                <TextView
+                    android:id="@+id/trackPlaycount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorwhite"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Playcount : "/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerAlbumTags"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorwhite"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Tags"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerTrackTags"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+                <com.music.player.bhandari.m.customViews.ExpandableTextView
+                    android:id="@+id/trackWiki"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:textColor="@color/colorwhite"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <!--album info-->
+            <LinearLayout
+                android:id="@+id/albumSection"
+                android:visibility="gone"
+                android:layout_below="@+id/trackSection"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorwhite"
+                    android:textStyle="bold"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Album Info"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerAlbumTracks"
+                <TextView
+                    android:id="@+id/albumTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="@color/colorwhite"
+                    android:text="Title : "/>
+
+                <TextView
+                    android:id="@+id/albumPlaycount"
+                    android:textSize="18sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/colorwhite"
+                    android:layout_marginLeft="20dp"
+                    android:text="Playcount : "/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="@color/colorwhite"
+                    android:text="Tags"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerAlbumTags"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+
+                <com.music.player.bhandari.m.customViews.ExpandableTextView
+                    android:id="@+id/albumWiki"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:textColor="@color/colorwhite"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorwhite"
+                    android:textStyle="bold"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Album Tracklist"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerAlbumTracks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+            <!--similar tracks-->
+            <LinearLayout
+                android:layout_below="@id/albumSection"
+                android:paddingTop="20dp"
+                android:visibility="gone"
+                android:id="@+id/similarTrackSection"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorwhite"
+                    android:textStyle="bold"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Similar Tracks"/>
 
-        </LinearLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerSimilarTracks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        <!--album info-->
-        <LinearLayout
-            android:layout_below="@id/albumSection"
-            android:id="@+id/similarTrackSection"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                </android.support.v7.widget.RecyclerView>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerSimilarTracks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            </LinearLayout>
 
-            </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
 
-        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
-    </RelativeLayout>
-
-</ScrollView>
+</RelativeLayout>

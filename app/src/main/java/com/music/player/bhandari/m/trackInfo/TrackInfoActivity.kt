@@ -1,10 +1,16 @@
 package com.music.player.bhandari.m.trackInfo
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -14,24 +20,32 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.SimpleTarget
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.activity.ActivityLyricView
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.TrackItem
 import com.music.player.bhandari.m.trackInfo.models.FetchTrackInfo
 import com.music.player.bhandari.m.trackInfo.models.RESULT
 import com.music.player.bhandari.m.trackInfo.models.TrackInfo
-import com.music.player.bhandari.m.trackInfo.models.track.Tag
+import com.music.player.bhandari.m.utils.UtilityFun
 import com.nshmura.snappysmoothscroller.SnapType
 import com.nshmura.snappysmoothscroller.SnappyLinearLayoutManager
 import kotlinx.android.synthetic.main.activity_track_info.*
 import java.lang.NullPointerException
+import java.util.*
 
 class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
+
+    private lateinit var  trackItem: TrackItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ColorHelper.setStatusBarGradiant(this)
@@ -48,9 +62,11 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_track_info)
 
+        progressBar.indeterminateDrawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite),
+                android.graphics.PorterDuff.Mode.MULTIPLY)
         if(intent.extras?.getSerializable("trackItem")==null) throw NullPointerException("TrackItem can't be null")
 
-        val trackItem = intent.extras?.getSerializable("trackItem") as TrackItem
+        trackItem = intent.extras?.getSerializable("trackItem") as TrackItem
 
         FetchTrackInfo(trackItem.artist, trackItem.title, this).start()
 
@@ -63,6 +79,8 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
+
+        title = trackItem.title
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -73,39 +91,65 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
     }
 
     override fun onBackPressed() {
-        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
         super.onBackPressed()
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
     }
 
     @SuppressLint("SetTextI18n")
     override fun onTrackInfoReady(trackInfo: TrackInfo) {
         progressBar.visibility = View.GONE
         if(trackInfo.result == RESULT.POSITIVE){
+            Glide.with(this).load(trackInfo.track?.album?.image?.last()?.text ?: "").crossFade().into(backgroundImage)
+
+            trackSection.visibility = View.VISIBLE
+            albumSection.visibility = View.VISIBLE
+            similarTrackSection.visibility = View.VISIBLE
+
             //positive result means its guaranteed track is found. Not sure about album and similar tracks, need to put null check
             trackTitle.text = "Title : ${trackInfo.track?.name ?: ""}"
             trackArtist.text = "Artist : ${trackInfo.track?.artist?.name ?: ""}"
-            trackPlaycount.text = "Playcount : ${trackInfo.track?.playcount ?: ""}"
+            trackDuration.text = "Duration : ${UtilityFun.msToString(trackInfo.track?.duration?.toLong() ?: 0)}"
+            trackPublishDate.text = "Published At : ${trackInfo.track?.wiki?.published ?: ""}"
+            trackPlaycount.text = "Play count : ${UtilityFun.coolFormat(trackInfo.track?.playcount?.toDouble() ?: 0.0, 0)}"
+
+            if(trackInfo.track?.wiki?.content != null){
+                trackWiki.visibility = View.VISIBLE
+                trackWiki.text = trackInfo.track?.wiki?.content
+            }
 
             albumTitle.text = "Title : ${trackInfo.album?.name ?: ""}"
-            albumPlaycount.text = "Playcount : ${trackInfo.album?.playcount ?: ""}"
+            albumPlaycount.text = "Playcount : ${UtilityFun.coolFormat(trackInfo.album?.playcount?.toDouble() ?: 0.0, 0)}"
 
-            val snappyLinearLayoutManager = SnappyLinearLayoutManager(this)
-            snappyLinearLayoutManager.setSnapType(SnapType.CENTER)
-            snappyLinearLayoutManager.setSnapDuration(1500)
+            val snappyLayoutManagerTrackTags = FlexboxLayoutManager(this)
+            snappyLayoutManagerTrackTags.flexDirection = FlexDirection.ROW
+            snappyLayoutManagerTrackTags.justifyContent = JustifyContent.FLEX_START
 
             recyclerTrackTags.adapter = TagsAdapter(trackInfo.track?.toptags?.tag?.map { it.name } ?: listOf())
-            recyclerTrackTags.layoutManager = snappyLinearLayoutManager
+            recyclerTrackTags.layoutManager = snappyLayoutManagerTrackTags
 
             if(trackInfo.album!=null){
+                val snappyLayoutManagerAlbumTags = FlexboxLayoutManager(this)
+                snappyLayoutManagerAlbumTags.flexDirection = FlexDirection.ROW
+                snappyLayoutManagerAlbumTags.justifyContent = JustifyContent.FLEX_START
+
                 recyclerAlbumTags.adapter = TagsAdapter(trackInfo.album?.tags?.tag?.map { it.name } ?: listOf())
-                recyclerAlbumTags.layoutManager = snappyLinearLayoutManager
+                recyclerAlbumTags.layoutManager = snappyLayoutManagerAlbumTags
+
+                if(trackInfo.album?.wiki?.content != null){
+                    albumWiki.visibility = View.VISIBLE
+                    albumWiki.text = trackInfo.album?.wiki?.content
+                }
 
                 recyclerAlbumTracks.adapter = TracksAdapter(this,
                         trackInfo.album
                                 ?.tracks?.track
-                                ?.map { TracksAdapter.TrackItem(it.name, it.duration, trackInfo.track?.album?.image?.last()?.text ?: "") }
+                                ?.map { TracksAdapter.TrackItem(it.name
+                                        , "Duration ${UtilityFun.msToString(it.duration.toLong()*1000)}"
+                                        , trackInfo.track?.album?.image?.last()?.text ?: ""
+                                        , it.url)}
                                 ?: listOf())
-                recyclerSimilarTracks.layoutManager = LinearLayoutManager(this)
+                recyclerAlbumTracks.layoutManager = LinearLayoutManager(this)
+                recyclerAlbumTracks.isNestedScrollingEnabled = false
             }else{
                 albumSection.visibility = View.GONE
             }
@@ -114,8 +158,12 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
                 recyclerSimilarTracks.adapter = TracksAdapter(this,
                         trackInfo.similarTracks
                                 ?.track
-                                ?.map { TracksAdapter.TrackItem(it.name, it.match.toString(), it.image.last().text) } ?: listOf())
+                                ?.map { TracksAdapter.TrackItem(it.name
+                                        , "Match ${it.match*100}%"
+                                        , it.image.last().text
+                                        , it.url) } ?: listOf())
                 recyclerSimilarTracks.layoutManager = LinearLayoutManager(this)
+                recyclerSimilarTracks.isNestedScrollingEnabled = false
             }else{
                 similarTrackSection.visibility = View.GONE
             }
@@ -131,9 +179,20 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
 
     }
 
+    fun launchLyricsView(){
+        val intent = Intent(this, ActivityLyricView::class.java)
+        intent.putExtra("track_title", trackItem.title)
+        intent.putExtra("artist", trackItem.artist)
+        startActivity(intent)
+       overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    }
+
     class TagsAdapter(): RecyclerView.Adapter<TagsAdapter.MyViewHolder>(){
 
         private var tags: List<String> = mutableListOf()
+
+        private val colors = arrayOf("#C62828","#AD1457","#6A1B9A", "#4527A0", "#1565C0", "#0277BD", "#2E7D32", "#64DD17", "#EF6C00", "#4E342E", "#424242", "#37474F")
+        private val random = Random()
 
         constructor(tags: List<String>):this(){
             this.tags = tags
@@ -150,6 +209,7 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
 
         override fun onBindViewHolder(p0: MyViewHolder, p1: Int) {
             p0.tagTextView.text = tags[p1]
+            (p0.itemView as CardView).setCardBackgroundColor(Color.parseColor(colors[random.nextInt(12)]))
         }
 
         override fun getItemCount(): Int {
@@ -159,7 +219,7 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
 
     class TracksAdapter(): RecyclerView.Adapter<TracksAdapter.MyViewHolder>(){
 
-        data class TrackItem(val trackTitle: String, val secondaryText: String, val imageUrl: String)
+        data class TrackItem(val trackTitle: String, val secondaryText: String, val imageUrl: String, val clickUrl: String)
         private var tracks:List<TrackItem> = mutableListOf()
         private lateinit var context: Context
 
@@ -168,10 +228,28 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
             this.tracks = tracks
         }
 
-        class MyViewHolder(view: View): RecyclerView.ViewHolder(view){
+        inner class MyViewHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener{
             var trackTitle: TextView = view.findViewById(R.id.trackInfo)
             var secondaryText: TextView = view.findViewById(R.id.playCount)
             var imageView: ImageView = view.findViewById(R.id.imageView)
+
+            init {
+                //for some reason, on click on root view is not working
+                trackTitle.setOnClickListener(this)
+                secondaryText.setOnClickListener(this)
+                imageView.setOnClickListener(this)
+                itemView.findViewById<View>(R.id.more).setOnClickListener(this)
+            }
+
+            override fun onClick(p0: View?) {
+
+                when(p0?.id){
+                    R.id.trackInfo, R.id.playCount, R.id.imageView -> (context as TrackInfoActivity).launchLyricsView()
+                    R.id.more -> (context as TrackInfoActivity).openUrl(Uri.parse(tracks[adapterPosition].clickUrl))
+                }
+
+            }
+
         }
 
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MyViewHolder {
@@ -181,12 +259,35 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
 
         override fun onBindViewHolder(p0: MyViewHolder, p1: Int) {
             p0.trackTitle.text = tracks[p1].trackTitle
+            p0.trackTitle.setTextColor(ColorHelper.getColor(R.color.colorwhite))
+            p0.secondaryText.setTextColor(ColorHelper.getColor(R.color.colorwhite))
             p0.secondaryText.text = tracks[p1].secondaryText
-            Glide.with(context).load(tracks[p1].imageUrl).into(p0.imageView)
+            //p0.trackTitle.setOnClickListener(p0)
+            Glide.with(context).load(tracks[p1].imageUrl).asBitmap()
+                    .thumbnail(0.5f)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(object: SimpleTarget<Bitmap>(){
+                        override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
+                            p0.imageView.setImageBitmap(resource)
+                        }
+                    })
+            p0.itemView.setOnClickListener {
+
+            }
         }
 
         override fun getItemCount(): Int {
             return tracks.count()
+        }
+
+    }
+
+    private fun openUrl(parse: Uri) {
+        try {
+            val browserIntent = Intent(Intent.ACTION_VIEW, parse)
+            startActivity(browserIntent)
+        } catch (e: Exception) {
+            Snackbar.make(rootTrackInfo, getString(R.string.error_opening_browser), Snackbar.LENGTH_SHORT).show()
         }
     }
 }
