@@ -159,7 +159,7 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
                         trackInfo.similarTracks
                                 ?.track
                                 ?.map { TracksAdapter.TrackItem(it.name
-                                        , "Match ${it.match*100}%"
+                                        , "${it.artist.name} | Match ${String.format("%.3f", it.match*100)}%"
                                         , it.image.last().text
                                         , it.url) } ?: listOf())
                 recyclerSimilarTracks.layoutManager = LinearLayoutManager(this)
@@ -179,10 +179,16 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
 
     }
 
-    fun launchLyricsView(){
+    fun launchLyricsView(trackTitle: String, trackArtist: String){
         val intent = Intent(this, ActivityLyricView::class.java)
-        intent.putExtra("track_title", trackItem.title)
-        intent.putExtra("artist", trackItem.artist)
+        intent.putExtra("track_title", trackTitle)
+        if(trackArtist.isEmpty()){
+            //clicked on album traklist item
+            intent.putExtra("artist", trackItem.artist)
+        }else{
+            //clicked on one of track from similar tracklist
+            intent.putExtra("artist", trackArtist)
+        }
         startActivity(intent)
        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
@@ -244,7 +250,14 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
             override fun onClick(p0: View?) {
 
                 when(p0?.id){
-                    R.id.trackInfo, R.id.playCount, R.id.imageView -> (context as TrackInfoActivity).launchLyricsView()
+                    R.id.trackInfo, R.id.playCount, R.id.imageView -> {
+                        //below code is ugly, but it works. Will refactor later
+                        if(secondaryText.text.contains("Duration"))
+                            (context as TrackInfoActivity).launchLyricsView(tracks[adapterPosition].trackTitle, "")
+                        else
+                            (context as TrackInfoActivity).launchLyricsView(tracks[adapterPosition].trackTitle
+                                    , tracks[adapterPosition].secondaryText.substring(0,tracks[adapterPosition].secondaryText.indexOf('|')))
+                    }
                     R.id.more -> (context as TrackInfoActivity).openUrl(Uri.parse(tracks[adapterPosition].clickUrl))
                 }
 
