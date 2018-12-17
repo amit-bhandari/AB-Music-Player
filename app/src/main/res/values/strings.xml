@@ -611,8 +611,9 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020 * Improved controls in Now Playing screen \n
-                                              * Bug fixes from last update
+    <string name="whats_new"><![CDATA[ \u0020 * One click to get track info from Now Playing screen. \n
+                                              * Add lyrics manually if AB Music is unable to find them. \n
+                                              * Couple of new color themes.
         ]]></string>
 
     <!-- Request notification access-->

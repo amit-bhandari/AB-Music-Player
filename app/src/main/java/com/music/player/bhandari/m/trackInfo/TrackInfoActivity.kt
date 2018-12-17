@@ -159,7 +159,7 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
                         trackInfo.similarTracks
                                 ?.track
                                 ?.map { TracksAdapter.TrackItem(it.name
-                                        , "${it.artist.name} | Match ${String.format("%.3f", it.match*100)}%"
+                                        , "${it.artist.name} | Match ${String.format("%.2f", it.match*100)}%"
                                         , it.image.last().text
                                         , it.url) } ?: listOf())
                 recyclerSimilarTracks.layoutManager = LinearLayoutManager(this)
