@@ -315,7 +315,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
         }
         if (item.getTitle().equals(REMOVE)) {
-            PlaylistManager.getInstance(context).RemoveSongFromPlaylistNew(playlist_name,dataItems.get(position).id);
+            PlaylistManager.getInstance(MyApp.getContext()).RemoveSongFromPlaylistNew(playlist_name,dataItems.get(position).id);
             dataItems.remove(position);
             notifyItemRemoved(position);
         }

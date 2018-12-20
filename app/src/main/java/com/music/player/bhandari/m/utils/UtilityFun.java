@@ -125,11 +125,11 @@ public class UtilityFun {
     public static void AddToPlaylist(final Context context, final int[] song_titles){
         MaterialDialog dialog = new MyDialogBuilder(context)
                 .title(context.getString(R.string.select_playlist_title))
-                .items(PlaylistManager.getInstance(context).GetPlaylistList(true))
+                .items(PlaylistManager.getInstance(MyApp.getContext()).GetPlaylistList(true))
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        PlaylistManager.getInstance(context).AddSongToPlaylist(text.toString(),song_titles);
+                        PlaylistManager.getInstance(MyApp.getContext()).AddSongToPlaylist(text.toString(),song_titles);
                     }
                 })
                 .build();

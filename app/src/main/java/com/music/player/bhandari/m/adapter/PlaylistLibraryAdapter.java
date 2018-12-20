@@ -74,8 +74,8 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
         this.context=context;
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         inflater=LayoutInflater.from(context);
-        headers = PlaylistManager.getInstance(context).getSystemPlaylistsList();
-        headers.addAll(PlaylistManager.getInstance(context).getUserCreatedPlaylistList());
+        headers = PlaylistManager.getInstance(MyApp.getContext()).getSystemPlaylistsList();
+        headers.addAll(PlaylistManager.getInstance(MyApp.getContext()).getUserCreatedPlaylistList());
         playerService = MyApp.getService();
         setHasStableIds(true);
     }
@@ -84,7 +84,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
     }
 
     public void refreshPlaylistList(){
-        headers = PlaylistManager.getInstance(context).getSystemPlaylistsList();
+        headers = PlaylistManager.getInstance(MyApp.getContext()).getSystemPlaylistsList();
         notifyDataSetChanged();
     }
 
@@ -109,7 +109,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
         holder.title.setText(headers.get(position));
         holder.title.setPadding(20,0,0,0);
 
-        Long count = PlaylistManager.getInstance(context).getTrackCountFromCache(headers.get(position));
+        Long count = PlaylistManager.getInstance(MyApp.getContext()).getTrackCountFromCache(headers.get(position));
         if(count!=0) {
             holder.count.setText(context.getString(R.string.track_count, count.toString()));
         }else {
@@ -147,7 +147,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
                 break;
 
             case R.id.action_clear_playlist:
-                if(PlaylistManager.getInstance(context).ClearPlaylist(headers.get(position))){
+                if(PlaylistManager.getInstance(MyApp.getContext()).ClearPlaylist(headers.get(position))){
                     Snackbar.make(viewParent, context.getString(R.string.snack_cleared) + " " + headers.get(position), Snackbar.LENGTH_SHORT).show();
                 }else {
                     Snackbar.make(viewParent, context.getString(R.string.snack_unable_to_Clear) + " " + headers.get(position), Snackbar.LENGTH_SHORT).show();
@@ -158,7 +158,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
     }
 
     private void Play(){
-        ArrayList<dataItem> temp = PlaylistManager.getInstance(context).GetPlaylist(headers.get(position));
+        ArrayList<dataItem> temp = PlaylistManager.getInstance(MyApp.getContext()).GetPlaylist(headers.get(position));
         ArrayList<Integer> trackList = new ArrayList<>();
         for(dataItem d:temp){
             trackList.add(d.id);
@@ -179,7 +179,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
 
     private void Share(){
         ArrayList<Uri> files = new ArrayList<>();  //for sending multiple files
-        ArrayList<dataItem> temp = PlaylistManager.getInstance(context).GetPlaylist(headers.get(position));
+        ArrayList<dataItem> temp = PlaylistManager.getInstance(MyApp.getContext()).GetPlaylist(headers.get(position));
         ArrayList<Integer> trackList = new ArrayList<>();
         for(dataItem d:temp){
             trackList.add(d.id);
@@ -259,7 +259,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
                             Snackbar.make(viewParent, context.getString(R.string.cannot_del)+headers.get(position), Snackbar.LENGTH_SHORT).show();
                             return;
                         }
-                        if(PlaylistManager.getInstance(context).DeletePlaylist(headers.get(position))){
+                        if(PlaylistManager.getInstance(MyApp.getContext()).DeletePlaylist(headers.get(position))){
                             //Toast.makeText(context,"Deleted "+headers.get(position),Toast.LENGTH_SHORT).show();
                             Snackbar.make(viewParent, context.getString(R.string.deleted)+headers.get(position), Snackbar.LENGTH_SHORT).show();
                             headers.remove(headers.get(position));

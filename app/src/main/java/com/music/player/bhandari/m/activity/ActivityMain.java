@@ -2080,7 +2080,7 @@ public class ActivityMain extends AppCompatActivity
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         String playlist_name = input.getText().toString().trim();
                         if(ValidatePlaylistName(playlist_name)) {
-                            if(PlaylistManager.getInstance(ActivityMain.this).CreatePlaylist(playlist_name)) {
+                            if(PlaylistManager.getInstance(MyApp.getContext()).CreatePlaylist(playlist_name)) {
 
                                 int tabCount = 0;
                                 for(int tab:savedTabSeqInt){
