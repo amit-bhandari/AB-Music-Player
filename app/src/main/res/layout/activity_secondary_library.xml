@@ -73,6 +73,13 @@
         app:layout_anchor="@id/app_bar_layout_secondary_library"
         app:layout_anchorGravity="bottom|end" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -83,6 +90,7 @@
             android:id="@+id/border_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:background="@drawable/border_2dp">
 
             <com.music.player.bhandari.m.customViews.ExpandableTextView

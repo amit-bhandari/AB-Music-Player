@@ -44,6 +44,7 @@ public class Constants {
         String PLAY_PAUSE_UI_UPDATE ="PLAY_PAUSE_UI_UPDATE";
         String CLICK_TO_CANCEL = "com.click.to.cancel";
         String UPDATE_INSTANT_LYRIC = "com.update.constant.lyric";
+        String SECONDARY_ADAPTER_DATA_READY = "com.secondary.data.ready";
     }
 
     public interface PREFERENCES{

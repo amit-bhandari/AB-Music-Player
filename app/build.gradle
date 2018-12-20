@@ -19,7 +19,7 @@ buildscript {
 apply plugin: 'com.github.triplet.play'
 
 // Load keystore
-def keystorePropertiesFile = rootProject.file("/Users/amit/studioprojects/keys/keystore.properties")
+def keystorePropertiesFile = rootProject.file("C:\\Users\\Captain Jack\\AndroidStudioProjects\\keys\\keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
