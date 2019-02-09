@@ -38,6 +38,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.text.method.ScrollingMovementMethod;
 import android.transition.ArcMotion;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -1068,7 +1069,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         Log.d("ActivityNowPlaying", "onInput: " + input);
                     }
                 })
-                //.inputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE)
                 .positiveText(R.string.add)
                 .negativeText(R.string.cancel)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -1094,9 +1094,17 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 })
                 .build();
 
-        dialog.getInputEditText().setLines(4);
-        dialog.getInputEditText().setGravity(Gravity.TOP|Gravity.LEFT);
-        dialog.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+        EditText texInput = dialog.getInputEditText();
+        assert texInput != null;
+        texInput.setSingleLine(false);
+        texInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+        texInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        texInput.setLines(5);
+        texInput.setMaxLines(10);
+        texInput.setVerticalScrollBarEnabled(true);
+        texInput.setMovementMethod(ScrollingMovementMethod.getInstance());
+        texInput.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
+        texInput.setGravity(Gravity.TOP|Gravity.START);
         dialog.show();
     }
 
