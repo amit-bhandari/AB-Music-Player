@@ -98,9 +98,9 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private TrackItem item;
     @BindView(R.id.loading_lyrics_animation) AVLoadingIndicatorView lyricLoadAnimation;
 
-    @BindView(R.id.ad_view_wrapper) View adViewWrapper;
+    /*@BindView(R.id.ad_view_wrapper) View adViewWrapper;
     @BindView(R.id.adView)  AdView mAdView;
-    @BindView(R.id.ad_close)  TextView adCloseText;
+    @BindView(R.id.ad_close)  TextView adCloseText;*/
 
     private BroadcastReceiver mLyricChange;
     @BindView(R.id.text_view_lyric_status)  TextView  lyricStatus;
@@ -183,13 +183,13 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     }
 
-    @OnClick(R.id.ad_close)
+    /*@OnClick(R.id.ad_close)
     public void close_ad(){
         if(mAdView!=null){
             mAdView.destroy();
         }
         adViewWrapper.setVisibility(View.GONE);
-    }
+    }*/
 
     private void updateLyricsIfNeeded() {
 
@@ -529,13 +529,13 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         }*/
 
         Log.v("frag",isVisibleToUser+"");
-        if(isVisibleToUser && mAdView!=null){
+        /*if(isVisibleToUser && mAdView!=null){
             mAdView.resume();
         }else {
             if(mAdView!=null){
                 mAdView.pause();
             }
-        }
+        }*/
 
         Log.v(Constants.L_TAG,"Called...." + isVisibleToUser);
     }
@@ -678,9 +678,9 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     @Override
     public void onDestroyView() {
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.destroy();
-        }
+        }*/
 
         fLyricUpdaterThreadCancelled =true;
         //fSeekbarThreadCancelled = true;

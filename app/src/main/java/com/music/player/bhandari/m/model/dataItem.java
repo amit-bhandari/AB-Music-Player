@@ -23,7 +23,7 @@ public class dataItem{
 
 
     public dataItem(int id,String title,int artist_id, String artist_name, int album_id, String albumName
-            , String year, String file_path, String duration){
+            , String year, String file_path, String duration, int trackNumber){
         if(title!=null) {
             this.title = title;
         }
@@ -53,6 +53,7 @@ public class dataItem{
             this.durStr = getDurStr();
         }
 
+        this.trackNumber = trackNumber;
     }
 
     public dataItem(int id,String title,int numberOfTracks, int numberOfAlbums){
@@ -112,6 +113,8 @@ public class dataItem{
 
     public String duration;
     public String durStr;
+
+    public int trackNumber=0;
 
     private String getDurStr(){
         int minutes = 0;

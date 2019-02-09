@@ -206,7 +206,8 @@ public class MusicLibrary{
                         MediaStore.Audio.Media.ALBUM,
                         MediaStore.Audio.Media.DATA,
                         MediaStore.Audio.Media.DURATION,
-                        MediaStore.Audio.Media.YEAR
+                        MediaStore.Audio.Media.YEAR,
+                        MediaStore.Audio.Media.TRACK
                 };
                 String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
                 Cursor cursor=null;
@@ -241,6 +242,10 @@ public class MusicLibrary{
                             if (isExcluded) continue;
                         }
 
+                        /*System.out.println("Track number "
+                                + cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+                                + " " + cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)));*/
+
                         if (cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) > SHORT_CLIPS_TIME_IN_MS) {
                             dataItemsForTracks.put(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
                                     new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
@@ -251,7 +256,8 @@ public class MusicLibrary{
                                     ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
                                     ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR))
                                     ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
-                                    ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)))
+                                    ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
+                                    ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)))
                             );
 
                             trackMap.put(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
@@ -334,7 +340,8 @@ public class MusicLibrary{
                                 MediaStore.Audio.Albums.ARTIST,
                                 MediaStore.Audio.Albums.FIRST_YEAR,
                                 MediaStore.Audio.Albums.ALBUM_ART,
-                                MediaStore.Audio.Media.ARTIST_ID
+                                MediaStore.Audio.Media.ARTIST_ID,
+                                MediaStore.Audio.Media.ALBUM
                         };
                 Cursor cursor = null;
                 try {
@@ -344,7 +351,9 @@ public class MusicLibrary{
                             null,
                             null,
                             MediaStore.Audio.Albums.ALBUM + " ASC");
-                }catch (Exception ignored){}
+                }catch (Exception ignored){
+                    System.out.println(ignored);
+                }
                 if(cursor!=null && cursor.getCount()>0) {
                     while (cursor.moveToNext()) {
                         dataItemsForAlbums.add(new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Albums._ID))
@@ -355,7 +364,8 @@ public class MusicLibrary{
                                 ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
                         ));
 
-                        //Log.d("MusicLibrary", "artist id: " + );
+                        /*Log.d("MusicLibrary", "album : " + cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM))
+                         + " Folder path : " + cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)));*/
                     }
                     cursor.close();
                 }

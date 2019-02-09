@@ -85,22 +85,22 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     @BindView(R.id.track_artist_artsi_bio_frag) EditText  artistEdit;
     @BindView(R.id.button_update_metadata)  Button buttonUpdateMetadata;
 
-    @BindView(R.id.ad_view_wrapper) View adViewWrapper;
-    @BindView(R.id.adView)  AdView mAdView;
-    @BindView(R.id.ad_close)  TextView adCloseText;
+    //@BindView(R.id.ad_view_wrapper) View adViewWrapper;
+    //@BindView(R.id.adView)  AdView mAdView;
+    //@BindView(R.id.ad_close)  TextView adCloseText;
 
     private PlayerService playerService;
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         Log.v("frag",isVisibleToUser+"");
-        if(isVisibleToUser && mAdView!=null){
+        /*if(isVisibleToUser && mAdView!=null){
             mAdView.resume();
         }else {
             if(mAdView!=null){
                 mAdView.pause();
             }
-        }
+        }*/
         super.setUserVisibleHint(isVisibleToUser);
     }
 
@@ -221,21 +221,21 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         return layout;
     }
 
-    @OnClick(R.id.ad_close)
+   /* @OnClick(R.id.ad_close)
     public void close_ad(){
         if(mAdView!=null){
             mAdView.destroy();
         }
         adViewWrapper.setVisibility(View.GONE);
-    }
+    }*/
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        if (mAdView != null) {
+        /*if (mAdView != null) {
             mAdView.destroy();
-        }
+        }*/
     }
 
     private void downloadArtInfo(){
