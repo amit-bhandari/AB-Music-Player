@@ -567,7 +567,7 @@ public class ActivityMain extends AppCompatActivity
         Glide.with(this)
                 .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.nav_back_custom_image))))
                 .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                .placeholder(R.drawable.back2)
+                //.placeholder(R.drawable.back1)
                 //.centerCrop()
                 .into(navViewBack);
     }
