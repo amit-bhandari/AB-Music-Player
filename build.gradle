@@ -16,6 +16,22 @@ buildscript {
     }
 }
 
+ext {
+    supportlib_version = '28.0.0'
+}
+
+//Ensure that all dependencies use the same version of the Android Support library
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex')) {
+                details.useVersion "$supportlib_version"
+            }
+        }
+    }
+}
+
 allprojects {
     repositories {
         google()
