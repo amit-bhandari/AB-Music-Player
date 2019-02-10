@@ -105,8 +105,8 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
         }
         progressBar.visibility = View.GONE
         if(trackInfo.result == RESULT.POSITIVE){
-            Glide.with(this).load("").crossFade().into(backgroundImage)
-           // Glide.with(this).load(trackInfo.track?.album?.image?.last()?.text ?: "").crossFade().into(backgroundImage)
+            //Glide.with(this).load("").crossFade().into(backgroundImage)
+            Glide.with(this).load(trackInfo.track?.album?.image?.last()?.text ?: "").crossFade().into(backgroundImage)
 
             trackSection.visibility = View.VISIBLE
             albumSection.visibility = View.VISIBLE
