@@ -14,6 +14,7 @@ import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -46,6 +47,7 @@ import java.util.*
 class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
 
     private lateinit var  trackItem: TrackItem
+    private var activityInBackground = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ColorHelper.setStatusBarGradiant(this)
@@ -97,9 +99,14 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
 
     @SuppressLint("SetTextI18n")
     override fun onTrackInfoReady(trackInfo: TrackInfo) {
+        if(activityInBackground) {
+            Log.d("TrackInfoActivity", "onTrackInfoReady : activity invisible, don't do shit")
+            return
+        }
         progressBar.visibility = View.GONE
         if(trackInfo.result == RESULT.POSITIVE){
-            Glide.with(this).load(trackInfo.track?.album?.image?.last()?.text ?: "").crossFade().into(backgroundImage)
+            Glide.with(this).load("").crossFade().into(backgroundImage)
+           // Glide.with(this).load(trackInfo.track?.album?.image?.last()?.text ?: "").crossFade().into(backgroundImage)
 
             trackSection.visibility = View.VISIBLE
             albumSection.visibility = View.VISIBLE
@@ -302,5 +309,17 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
         } catch (e: Exception) {
             Snackbar.make(rootTrackInfo, getString(R.string.error_opening_browser), Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("TrackInfoActivity", "onStart : ")
+        activityInBackground = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("TrackInfoActivity", "onStop : ")
+        activityInBackground = true
     }
 }
