@@ -24,12 +24,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/blackOverlay"
-                />
-
             <ImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
@@ -85,6 +79,12 @@
                 android:paddingStart="@dimen/ac_album_title_padding" />
 
         </RelativeLayout>
+
+       <!-- <View
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blackOverlay"
+            />-->
 
 
     </android.support.v7.widget.CardView>
