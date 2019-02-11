@@ -12,6 +12,7 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/ac_card_margin"
         android:elevation="3dp"
+        android:id="@+id/album_library_card"
         card_view:cardCornerRadius="@dimen/ac_card_album_radius">
 
         <!--<ImageView
@@ -20,7 +21,6 @@
             android:scaleType="fitXY"/>-->
 
         <RelativeLayout
-            android:id="@+id/album_library_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
