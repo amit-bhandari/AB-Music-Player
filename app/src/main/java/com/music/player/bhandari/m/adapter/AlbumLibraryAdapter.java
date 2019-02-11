@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.activity.ActivityMain;
@@ -167,6 +169,8 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.album_card, parent, false);
+        //((CardView)view.findViewById(R.id.album_library_card)).setCardBackgroundColor(ColorHelper.GetWidgetColor());
+        view.findViewById(R.id.album_library_card).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
         view.getLayoutParams ().width = UtilityFun.getScreenWidth()/3;
         viewParent = parent;
         return new AlbumLibraryAdapter.MyViewHolder(view);

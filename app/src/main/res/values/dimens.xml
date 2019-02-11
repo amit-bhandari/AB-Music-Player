@@ -100,11 +100,11 @@
     <dimen name="ac_card_album_radius">5dp</dimen>
     <dimen name="ac_album_cover_height">120dp</dimen>
     <dimen name="ac_album_title_padding">5dp</dimen>
-    <dimen name="ac_album_title">15sp</dimen>
+    <dimen name="ac_album_title">13sp</dimen>
     <dimen name="ac_songs_count_padding_bottom">5dp</dimen>
-    <dimen name="ac_songs_count">12sp</dimen>
+    <dimen name="ac_songs_count">9sp</dimen>
     <dimen name="ac_ic_album_overflow_width">25dp</dimen>
-    <dimen name="ac_ic_album_overflow_height">20dp</dimen>
+    <dimen name="ac_ic_album_overflow_height">25dp</dimen>
     <dimen name="ac_ic_album_overflow_margin_top">10dp</dimen>
 
     <!-- app_bar_main -->

@@ -36,6 +36,10 @@
     <color name="dark_gray3">#939292</color>
     <color name="dark_text">#ffffff</color>
 
+
+    <color name="test_color1">#d0EEEEEE</color>
+    <color name="test_color2">#d0979797</color>
+
     <color name="colorTransparent">#00ffffff</color>
     <color name="blackOverlay">#a0000000</color>
     <color name="blackTransparent">#77000000</color>
