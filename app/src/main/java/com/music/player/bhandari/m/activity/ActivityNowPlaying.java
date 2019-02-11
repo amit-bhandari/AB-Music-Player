@@ -63,6 +63,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -752,9 +753,19 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         findViewById(R.id.full_screen_iv).startAnimation(fadeIn);
 
         try {
-            Blurry.with(this).radius(1).color(Color.argb(100
-                    , 50, 0, 0)).from(b)
-                    .into(((ImageView) findViewById(R.id.full_screen_iv)));
+            /*int currentNowPlayingBackPref = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back),1);
+            if(currentNowPlayingBackPref==2){
+                //do not blur if user has selected album art as now playing option
+                //very ugly fix, but we gotta do what we gotta do.
+                //fix on user request
+                Glide.with(this).load(b).asBitmap().into(((ImageView) findViewById(R.id.full_screen_iv)));
+                *//*Blurry.with(this).radius(0).from(b)
+                        .into(((ImageView) findViewById(R.id.full_screen_iv)));*//*
+            }else {*/
+                Blurry.with(this).radius(1).color(Color.argb(100
+                        , 50, 0, 0)).from(b)
+                        .into(((ImageView) findViewById(R.id.full_screen_iv)));
+            /*}*/
         }catch (OutOfMemoryError e){
             Toast.makeText(playerService, "Error setting blurry background due to insufficient memory", Toast.LENGTH_SHORT).show();
         }

@@ -71,6 +71,8 @@ import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.concurrent.Executors;
 
 import butterknife.BindView;
@@ -268,7 +270,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                         }
 
                         //get album list for artist
-                        ArrayList<dataItem> data = new ArrayList<>();
+                        final ArrayList<dataItem> data = new ArrayList<>();
                         for(dataItem d : MusicLibrary.getInstance().getDataItemsForAlbums()){
                             if(d.artist_id == key) data.add(d);
                         }
@@ -303,9 +305,17 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
                         adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this,
                                 MusicLibrary.getInstance().getSongListFromAlbumIdNew(key, Constants.SORT_ORDER.ASC));
-                        if(adapter.getList().isEmpty()) {
+                        Collections.sort(adapter.getList(), new Comparator<dataItem>() {
+                            @Override
+                            public int compare(dataItem dataItem, dataItem t1) {
+                                if(dataItem.trackNumber>t1.trackNumber) return 1;
+                                else if(dataItem.trackNumber<t1.trackNumber) return -1;
+                                else return 0;
+                            }
+                        });
+                        /*if(adapter.getList().isEmpty()) {
                             break;
-                        }
+                        }*/
                         break;
 
                     case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
@@ -378,6 +388,44 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
                         border.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.INVISIBLE);
+
+                        TrackItem item=null;
+
+                        if (adapter!=null && adapter.getList()!=null && adapter.getList().size() > 0) {
+                            item = MusicLibrary.getInstance().getTrackItemFromId(adapter.getList().get(0).id);
+                        }
+
+                        Log.d("SecondaryLibraryActivi", "onCreate: item " + item);
+                        if(item!=null){
+                            String url = MusicLibrary.getInstance().getArtistUrls().get(item.getArtist());
+                            Log.d("SecondaryLibraryActivi", "onCreate: url " + url);
+                            if(UtilityFun.isConnectedToInternet() && url!=null) {
+                                setArtistImage(url);
+                            }else {
+                                int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+                                switch (defaultAlbumArtSetting){
+                                    case 0:
+                                        Glide.with(ActivitySecondaryLibrary.this)
+                                                .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
+                                                .centerCrop()
+                                                .placeholder(R.drawable.ic_batman_1)
+                                                .crossFade()
+                                                .into(mainBackdrop);
+                                        break;
+
+                                    case 1:
+                                        Glide.with(ActivitySecondaryLibrary.this)
+                                                .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
+                                                .centerCrop()
+                                                .placeholder(UtilityFun.getDefaultAlbumArtDrawable())
+                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                .crossFade().diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                .into(mainBackdrop);
+                                        break;
+                                }
+
+                            }
+                        }
                     }
                 });
             }
@@ -410,43 +458,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
 
-        TrackItem item=null;
 
-        if (adapter!=null && adapter.getList()!=null && adapter.getList().size() > 0) {
-            item = MusicLibrary.getInstance().getTrackItemFromId(adapter.getList().get(0).id);
-        }
-
-        Log.d("SecondaryLibraryActivi", "onCreate: item " + item);
-        if(item!=null){
-            String url = MusicLibrary.getInstance().getArtistUrls().get(item.getArtist());
-            Log.d("SecondaryLibraryActivi", "onCreate: url " + url);
-            if(UtilityFun.isConnectedToInternet() && url!=null) {
-                setArtistImage(url);
-            }else {
-                int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
-                switch (defaultAlbumArtSetting){
-                    case 0:
-                        Glide.with(this)
-                                .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
-                                .centerCrop()
-                                .placeholder(R.drawable.ic_batman_1)
-                                .crossFade()
-                                .into(mainBackdrop);
-                        break;
-
-                    case 1:
-                        Glide.with(this)
-                                .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
-                                .centerCrop()
-                                .placeholder(UtilityFun.getDefaultAlbumArtDrawable())
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .crossFade().diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(mainBackdrop);
-                        break;
-                }
-
-            }
-        }
 
 
         miniPlayer.setBackgroundColor(ColorHelper.GetWidgetColor());
