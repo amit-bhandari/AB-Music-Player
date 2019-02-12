@@ -611,10 +611,7 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ \u0020 * One click to get track info from Now Playing screen. \n
-                                              * Add lyrics manually if AB Music is unable to find them. \n
-                                              * Couple of new color themes.
-        ]]></string>
+    <string name="whats_new"><![CDATA[ * Deleting playlist feature enabled again. \n\n* One click to get track info from Now Playing screen. \n\n* Add lyrics manually if AB Music is unable to find them. \n\n* Couple of new color themes.]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
