@@ -15,7 +15,7 @@
         android:background="@color/colorTransparent"
         app:tabMode="scrollable"
         app:tabGravity="center"
-        app:tabTextAppearance="@style/TextAppearance.TabText"
+        app:tabTextAppearance="@style/TabText"
         app:tabMinWidth="@dimen/cm_tab_width_min"
         app:tabSelectedTextColor="@color/colorwhite"
         app:tabTextColor="@color/light_gray1"
