@@ -165,6 +165,8 @@ public class ActivityPermissionSeek extends AppCompatActivity {
             return;
         }
 
+        setContentView(R.layout.splash_activity);
+
         if(!hasPermissions(this, PERMISSIONS)) {
             try {
                 permissionDetailsDialog();
