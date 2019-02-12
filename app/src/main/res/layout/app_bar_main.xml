@@ -49,6 +49,7 @@
                     android:layout_height="@dimen/abm_mini_player_height"
                     android:paddingLeft="@dimen/abm_mini_player_padd_left_right"
                     android:paddingRight="@dimen/abm_mini_player_padd_left_right"
+                    android:paddingBottom="@dimen/abm_mini_player_padd_left_right"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:background="?android:selectableItemBackground"

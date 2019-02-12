@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -191,13 +191,19 @@
     <style name="TextAppearance" parent="TextAppearance.AppCompat"/>
     <style name="TextAppearance.Header">
         <item name="android:textAllCaps">true</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-medium</item>
         <item name="android:textColor">?colorAccent</item>
     </style>
 
     <style name="TextAppearance.ItemExample">
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-medium</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#5f5f5f</item>
+    </style>
+
+    <style name="TextAppearance.TabText">
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-medium</item>
+        <item name="android:textSize">5sp</item>
         <item name="android:textColor">#5f5f5f</item>
     </style>
 

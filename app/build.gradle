@@ -12,14 +12,14 @@ buildscript {
 
     dependencies {
         classpath 'com.github.triplet.gradle:play-publisher:1.2.2'
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.4'
+        //classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.4'
     }
 }
 
 apply plugin: 'com.github.triplet.play'
 
 // Load keystore
-def keystorePropertiesFile = rootProject.file("C:\\Users\\Captain Jack\\AndroidStudioProjects\\keys\\keystore.properties")
+def keystorePropertiesFile = rootProject.file("/Users/amit/studioprojects/keys/keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
@@ -240,4 +240,4 @@ repositories {
     mavenCentral()
 }
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.getkeepsafe.dexcount'
+/*apply plugin: 'com.getkeepsafe.dexcount'*/
