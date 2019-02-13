@@ -275,7 +275,12 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                             if(d.artist_id == key) data.add(d);
                         }
 
-                        mAlbumsRecyclerView.setVisibility(View.VISIBLE);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAlbumsRecyclerView.setVisibility(View.VISIBLE);
+                            }
+                        });
                         mAlbumsRecyclerView.setAdapter(new AlbumLibraryAdapter(ActivitySecondaryLibrary.this, data));
                         mAlbumsRecyclerView.setLayoutManager( new LinearLayoutManager(ActivitySecondaryLibrary.this, LinearLayoutManager.HORIZONTAL, false));
                         mAlbumsRecyclerView.setNestedScrollingEnabled(false);
