@@ -542,8 +542,8 @@ public class ActivityMain extends AppCompatActivity
     private void setTextAndIconColor() {
         songNameMiniPlayer.setTextColor(ColorHelper.getPrimaryTextColor());
         artistNameMiniPlayer.setTextColor(ColorHelper.getSecondaryTextColor());
-        buttonPlay.setColorFilter(ColorHelper.getPrimaryTextColor());
-        buttonNext.setColorFilter(ColorHelper.getPrimaryTextColor());
+        /*buttonPlay.setColorFilter(ColorHelper.getPrimaryTextColor());
+        buttonNext.setColorFilter(ColorHelper.getPrimaryTextColor());*/
     }
 
     private void disableNavigationViewScrollbars() {
