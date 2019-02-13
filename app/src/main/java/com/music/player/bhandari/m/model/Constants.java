@@ -20,7 +20,7 @@ public class Constants {
     public static String TAG="beta.developer";
     public static String L_TAG = "Lyrics --";
 
-    public static int DEFAULT_THEME_ID = 14;
+    public static int DEFAULT_THEME_ID = 12;
 
     public interface ACTION {
         String MAIN_ACTION = "com.bhandari.musicplayer.action.main";
@@ -98,15 +98,6 @@ public class Constants {
         int MOST_PLAYED_MAX=50;
     }
 
-    public interface COLOR_ARRAY{
-         String[] colorArray = new String[]{"#003300","#b30000","#99004d","#600080","#262673","#802000","#808000","#006600"};
-         int COLOR_ARR_SIZE=8;
-    }
-
-    public interface ERROR_CODE{
-        int SUCCESS=0;
-        int FAIL=1;
-    }
 
     public interface CLICK_ON_NOTIF{
         int OPEN_LIBRARY_VIEW=0;
@@ -124,53 +115,7 @@ public class Constants {
         int DARK = 1;
         int LIGHT = 2;
         int GLOSSY = 3;
-
-        int MANUAL_INPUT = 99;
-
-        int DEEP_PURPLE = -6345880;
-
-        int ANTIQUE_BRONZE = -10068706;
-        int ANTIQUE_RUBY = -8119507;
-       // int ANTIQUE_RUBY = 8657709;
-        int BLUE_MAGNETA_VIOLET = -11192942;
-
-        int EGGPLANT = -10403759;
-        int FRENCH_BISTRE = -8032947;
-        int DEEP_CHESTNUT = -4633016;
-
-        int RED_CARMINE = -6946792;
-        int GREEN_DARTMOUTH = -16748484;
-        int BLUE_CATALINA = -16373128;
-        int PINK_CERISE = -2215581;
-        int AMBER = -33280;
         int BLACK = -16119286;
-
-        int CYBER_GRAPE =  -10993028;
-        int BONDI_BLUE = -16738890;
-        int BYZANTIUM = -9426589;
-        int DARK_SLATE_GRAY = -13676721;
-
-        int YELLOW = -1862272256;
-
-        //new colors
-        int GUNMETAL = -14011335;
-        int HALAYA_UBE = -10078124;
-        int INTERNATIONAL_ORANGE = -45312;
-        int JACARTA = -12766627;
-        int JAPANESE_VIOLET = -10800554;
-        int MAGENTA = -3530885;
-        int MAASTRICHT_BLUE = -16769987;
-        int MAROON = -8388608;
-        int PINE_TREE = -14012637;
-        int POLIE_BLUE = -13152405;
-
-
-        int RANDOM = -1;
-
-
-        /*int RANDOM_ARR_SIZE = 10;
-        int[] MIX = new int[] {RED_CARMINE,GREEN_DARTMOUTH,BLACK,BLUE_CATALINA
-                ,PINK_CERISE,AMBER,CYBER_GRAPE,BONDI_BLUE,BYZANTIUM,DARK_SLATE_GRAY};*/
     }
 
     public interface TYPEFACE {

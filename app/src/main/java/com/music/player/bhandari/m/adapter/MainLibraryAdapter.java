@@ -168,14 +168,16 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         final View parentView = inflater.inflate(R.layout.fragment_library_item, parent, false);
         viewParent = parent;
-        int color = ColorHelper.getBaseThemeTextColor() ;
+        int color = ColorHelper.getPrimaryTextColor() ;
+        int subColor = ColorHelper.getSecondaryTextColor() ;
         ((TextView)(parentView.findViewById(R.id.header))).setTextColor(color);
-        ((TextView)(parentView.findViewById(R.id.secondaryHeader))).setTextColor(color);
-        ((TextView)(parentView.findViewById(R.id.count))).setTextColor(color);
+        ((TextView)(parentView.findViewById(R.id.secondaryHeader))).setTextColor(subColor);
+        ((TextView)(parentView.findViewById(R.id.count))).setTextColor(subColor);
         ((ImageView)(parentView.findViewById(R.id.menuPopup))).setColorFilter(color);
 
 

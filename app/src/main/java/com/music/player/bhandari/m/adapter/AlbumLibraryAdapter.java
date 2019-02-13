@@ -169,8 +169,10 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.album_card, parent, false);
-        //((CardView)view.findViewById(R.id.album_library_card)).setCardBackgroundColor(ColorHelper.GetWidgetColor());
-        ((CardView)view.findViewById(R.id.album_library_card)).setCardBackgroundColor(ColorHelper.getColor(R.color.colorTransparent));//.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+        ((TextView)view.findViewById(R.id.title)).setTextColor(ColorHelper.getPrimaryTextColor());
+        ((TextView)view.findViewById(R.id.count)).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((ImageView)view.findViewById(R.id.overflow)).setColorFilter(ColorHelper.getSecondaryTextColor());
+        ((CardView)view.findViewById(R.id.album_library_card)).setCardBackgroundColor(ColorHelper.getColor(R.color.colorTransparent));
         view.getLayoutParams ().width = UtilityFun.getScreenWidth()/3;
         viewParent = parent;
         return new AlbumLibraryAdapter.MyViewHolder(view);

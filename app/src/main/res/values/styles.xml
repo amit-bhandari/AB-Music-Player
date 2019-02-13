@@ -203,6 +203,7 @@
 
     <style name="TabText" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/primary_text_color</item>
     </style>
 
     <!--<style name="TextAppearance.TabText">

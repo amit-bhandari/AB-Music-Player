@@ -11,15 +11,12 @@
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:background="@color/colorTransparent"
         app:tabMode="scrollable"
         app:tabGravity="center"
         app:tabTextAppearance="@style/TabText"
-        app:tabMinWidth="@dimen/cm_tab_width_min"
-        app:tabSelectedTextColor="@color/colorwhite"
-        app:tabTextColor="@color/light_gray1"
-        app:tabIndicatorColor="@android:color/white" />
+        app:tabMinWidth="@dimen/cm_tab_width_min" />
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -535,6 +535,15 @@ public class ActivityMain extends AppCompatActivity
 
         //throw new NullPointerException();
         Log.d("ActivityMain", "onCreate: reward point count is :" + RewardPoints.getRewardPointsCount());
+
+        setTextAndIconColor();
+    }
+
+    private void setTextAndIconColor() {
+        songNameMiniPlayer.setTextColor(ColorHelper.getPrimaryTextColor());
+        artistNameMiniPlayer.setTextColor(ColorHelper.getSecondaryTextColor());
+        buttonPlay.setColorFilter(ColorHelper.getPrimaryTextColor());
+        buttonNext.setColorFilter(ColorHelper.getPrimaryTextColor());
     }
 
     private void disableNavigationViewScrollbars() {
@@ -864,6 +873,7 @@ public class ActivityMain extends AppCompatActivity
                     } else {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp));
                     }
+                    setTextAndIconColor();
 
                     songNameMiniPlayer.setText(playerService.getCurrentTrack().getTitle());
                     artistNameMiniPlayer.setText(playerService.getCurrentTrack().getArtist());
@@ -1818,11 +1828,10 @@ public class ActivityMain extends AppCompatActivity
 
                 if (playerService.getStatus() == PlayerService.PLAYING) {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
-                    //startUpdateTask();
                 } else {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp));
-                    //stopUpdateTask();
                 }
+                setTextAndIconColor();
 
                 actionMode = startSupportActionMode(this);
                 break;
