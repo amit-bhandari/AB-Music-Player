@@ -1066,7 +1066,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             case R.id.action_set_as_ringtone:
                 if(trackItem!=null){
                     String abPath = trackItem.getFilePath();
-                    UtilityFun.SetRingtone(getApplicationContext(), abPath
+                    UtilityFun.SetRingtone(this, abPath
                             ,MusicLibrary.getInstance().getIdFromFilePath(abPath));
                 }else {
                     Snackbar.make(rootView, getString(R.string.main_act_empty_lib), Snackbar.LENGTH_SHORT).show();
