@@ -50,16 +50,17 @@ public class OfflineStorageLyrics {
             return null;
         }
         Lyrics lyrics = null;
-
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            db = dbHelperLyrics.getReadableDatabase();
             dbHelperLyrics.onCreate(db);
 
             String where = DbHelperLyrics._ID + " = " + item.getId();
 
 
-            Cursor cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.LYRICS}
+            cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.LYRICS}
                     , where, null, null, null, null, "1");
 
             if (cursor != null && cursor.getCount() != 0) {
@@ -72,6 +73,13 @@ public class OfflineStorageLyrics {
             }
         }catch (Exception e){
             return null;
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
         }
 
         return lyrics;
@@ -82,9 +90,11 @@ public class OfflineStorageLyrics {
             return;
         }
 
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getWritableDatabase();
+            db = dbHelperLyrics.getWritableDatabase();
             dbHelperLyrics.onCreate(db);
 
             //check if data already exists, if it does, return
@@ -92,7 +102,7 @@ public class OfflineStorageLyrics {
                     + " OR " + DbHelperLyrics.KEY_TITLE + "= '" + item.getTitle().replace("'", "''") + "'";
 
 
-            Cursor cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.KEY_TITLE}
+            cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.KEY_TITLE}
                     , where, null, null, null, null, "1");
             if(cursor!=null && cursor.getCount()>0){
                 cursor.close();
@@ -108,7 +118,16 @@ public class OfflineStorageLyrics {
             c.put(DbHelperLyrics.KEY_TITLE, item.getTitle());
             c.put(DbHelperLyrics._ID, item.getId());
             db.insert(DbHelperLyrics.TABLE_NAME, null, c);
-        }catch (Exception ignored){}
+        }catch (Exception ignored){
+
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
 
     }
 
@@ -118,9 +137,11 @@ public class OfflineStorageLyrics {
             return false;
         }
 
+
+        SQLiteDatabase db = null;
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            db = dbHelperLyrics.getReadableDatabase();
             dbHelperLyrics.onCreate(db);
 
             String where = DbHelperLyrics._ID + " = " + item.getId();
@@ -130,19 +151,26 @@ public class OfflineStorageLyrics {
             return i >= 1;
         }catch (Exception e){
             return false;
+        }finally {
+            if (db != null) {
+                db.close();
+            }
         }
 
     }
 
     public static boolean isLyricsPresentInDB(int id){
+
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            db = dbHelperLyrics.getReadableDatabase();
             dbHelperLyrics.onCreate(db);
 
             String where = DbHelperLyrics._ID + " = " + id;
 
-            Cursor cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.LYRICS}
+            cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.LYRICS}
                     , where, null, null, null, null, "1");
 
             if (cursor != null && cursor.getCount() != 0) {
@@ -153,8 +181,14 @@ public class OfflineStorageLyrics {
             }
 
         }catch (Exception e){
-
             return false;
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
         }
     }
 
@@ -166,16 +200,19 @@ public class OfflineStorageLyrics {
         }
         Lyrics lyrics = null;
 
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            db = dbHelperLyrics.getReadableDatabase();
             dbHelperLyrics.onCreate(db);
 
             String where = DbHelperLyrics._ID + " = " + item.getId() + " AND " + DbHelperLyrics.KEY_TITLE
                     + " = '" + item.getTitle().replace("'", "''") +"'";
 
 
-            Cursor cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.LYRICS}
+            cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.LYRICS}
                     , where, null, null, null, null, "1");
 
 
@@ -189,6 +226,13 @@ public class OfflineStorageLyrics {
             }
         }catch (Exception e){
             return null;
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
         }
 
         return lyrics;
@@ -199,9 +243,11 @@ public class OfflineStorageLyrics {
             return false;
         }
 
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getWritableDatabase();
+            db = dbHelperLyrics.getWritableDatabase();
             dbHelperLyrics.onCreate(db);
 
             //check if data already exists, if it does, return
@@ -209,7 +255,7 @@ public class OfflineStorageLyrics {
                     + " AND " + DbHelperLyrics.KEY_TITLE + "= '" + item.getTitle().replace("'", "''") + "'";
 
 
-            Cursor cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.KEY_TITLE}
+            cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.KEY_TITLE}
                     , where, null, null, null, null, "1");
             if(cursor!=null && cursor.getCount()>0){
                 cursor.close();
@@ -228,7 +274,16 @@ public class OfflineStorageLyrics {
 
             return true;
 
-        }catch (Exception ignored){return false;}
+        }catch (Exception ignored){
+            return false;
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
 
     }
 
@@ -241,15 +296,18 @@ public class OfflineStorageLyrics {
      */
     public static boolean isLyricsPresentInDB(String track, int id){
         Log.d("OfflineStorage", "isLyricsPresentInDB: " + track + " " + id );
+
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            db = dbHelperLyrics.getReadableDatabase();
             dbHelperLyrics.onCreate(db);
 
             String where = DbHelperLyrics.KEY_TITLE + " = '" + track.replace("'", "''") +"'  AND "
                     + DbHelperLyrics._ID + " = " + id;
 
-            Cursor cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.LYRICS}
+            cursor = db.query(DbHelperLyrics.TABLE_NAME, new String[]{DbHelperLyrics.LYRICS}
                     , where, null, null, null, null, "1");
 
             if (cursor != null && cursor.getCount() != 0) {
@@ -260,17 +318,24 @@ public class OfflineStorageLyrics {
             }
 
         }catch (Exception e){
-
             return false;
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
         }
     }
 
     //clear lyrics based on track title and id =- 1,used in instant lyrics screen
     public static boolean clearLyricsFromDB(String track){
 
+        SQLiteDatabase db = null;
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            db = dbHelperLyrics.getReadableDatabase();
             dbHelperLyrics.onCreate(db);
 
             String where = DbHelperLyrics.KEY_TITLE + " = '" + track.replace("'", "''") +"'  AND "
@@ -281,6 +346,10 @@ public class OfflineStorageLyrics {
             return i >= 1;
         }catch (Exception e){
             return false;
+        }finally {
+            if (db != null) {
+                db.close();
+            }
         }
 
     }
@@ -289,9 +358,10 @@ public class OfflineStorageLyrics {
     //id == -1 in case lyrics is saved from tracks other than AB Music offline tracks
     public static boolean clearLyricsFromDB(String track, int id){
 
+        SQLiteDatabase db = null;
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            db = dbHelperLyrics.getReadableDatabase();
             dbHelperLyrics.onCreate(db);
 
             String where = DbHelperLyrics.KEY_TITLE + " = '" + track.replace("'", "''") +"'  AND "
@@ -302,6 +372,10 @@ public class OfflineStorageLyrics {
             return i >= 1;
         }catch (Exception e){
             return false;
+        }finally {
+            if (db != null) {
+                db.close();
+            }
         }
 
     }
@@ -378,15 +452,17 @@ public class OfflineStorageLyrics {
     public static List<Lyrics> getAllSavedLyrics(){
         List<Lyrics> lyrics = new  ArrayList<>();
 
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
         try {
             DbHelperLyrics dbHelperLyrics = new DbHelperLyrics(MyApp.getContext());
-            SQLiteDatabase db = dbHelperLyrics.getReadableDatabase();
+            db = dbHelperLyrics.getReadableDatabase();
             dbHelperLyrics.onCreate(db);
 
             //String where = DbHelperLyrics._ID + " = " + item.getId();
 
 
-            Cursor cursor = db.query(DbHelperLyrics.TABLE_NAME, null, null, null, null, null, null, null);
+            cursor = db.query(DbHelperLyrics.TABLE_NAME, null, null, null, null, null, null, null);
 
             if (cursor != null && cursor.getCount() != 0) {
                 for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -403,6 +479,13 @@ public class OfflineStorageLyrics {
             }
         }catch (Exception e){
             return lyrics;
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
         }
 
         return lyrics;

@@ -40,21 +40,23 @@ import java.util.concurrent.Executors;
  */
 
 public class OfflineStorageArtistBio {
+
     public static ArtistInfo getArtistBioFromTrackItem(TrackItem item){
         if(item==null){
             return null;
         }
         ArtistInfo artistInfo = null;
-
+        Cursor cursor = null;
+        SQLiteDatabase db = null;
         try {
             DbHelperArtistBio dbHelperArtistBio = new DbHelperArtistBio(MyApp.getContext());
-            SQLiteDatabase db = dbHelperArtistBio.getReadableDatabase();
+            db = dbHelperArtistBio.getReadableDatabase();
             dbHelperArtistBio.onCreate(db);
 
             String where = DbHelperArtistBio.ARTIST_ID + " = " + item.getArtist_id()
                     + " OR " + DbHelperArtistBio.KEY_ARTIST + "= '" + item.getArtist().replace("'","''") +"'" ;;
 
-            Cursor cursor = db.query(DbHelperArtistBio.TABLE_NAME,new String[]{DbHelperArtistBio.ARTIST_BIO}
+            cursor = db.query(DbHelperArtistBio.TABLE_NAME,new String[]{DbHelperArtistBio.ARTIST_BIO}
                     ,where,null,null,null,null,"1");
 
             if(cursor!=null && cursor.getCount()!=0){
@@ -63,11 +65,17 @@ public class OfflineStorageArtistBio {
                 Gson gson = new Gson();
                 artistInfo = gson.fromJson(cursor.getString
                         (cursor.getColumnIndex(DbHelperArtistBio.ARTIST_BIO)),ArtistInfo.class);
-                cursor.close();
             }
 
         }catch (Exception e){
             return null;
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
         }
 
         return artistInfo;
@@ -77,17 +85,18 @@ public class OfflineStorageArtistBio {
         if(item==null || artistInfo==null){
             return;
         }
-
+        Cursor cursor=null;
+        SQLiteDatabase db = null;
         try {
             DbHelperArtistBio dbHelperArtistBio = new DbHelperArtistBio(MyApp.getContext());
-            SQLiteDatabase db = dbHelperArtistBio.getWritableDatabase();
+             db = dbHelperArtistBio.getWritableDatabase();
             dbHelperArtistBio.onCreate(db);
 
             //check if already exists, if yes, return
             String where = DbHelperArtistBio.ARTIST_ID + " = " + item.getArtist_id()
                     + " OR " + DbHelperArtistBio.KEY_ARTIST + "= '" + item.getArtist().replace("'","''") +"'" ;;
 
-            Cursor cursor = db.query(DbHelperArtistBio.TABLE_NAME,new String[]{DbHelperArtistBio.KEY_ARTIST}
+            cursor = db.query(DbHelperArtistBio.TABLE_NAME,new String[]{DbHelperArtistBio.KEY_ARTIST}
                     ,where,null,null,null,null,"1");
             if(cursor!=null && cursor.getCount()>0){
                 cursor.close();
@@ -105,6 +114,13 @@ public class OfflineStorageArtistBio {
             db.insert(DbHelperArtistBio.TABLE_NAME, null, c);
         }catch (Exception ignored){
 
+        }finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
         }
     }
 
