@@ -41,6 +41,7 @@
     <color name="secondary_text_color">#d0979797</color>
 
     <color name="colorTransparent">#00ffffff</color>
+    <color name="popupMenuBackground">#c0000000</color>
     <color name="blackOverlay">#a0000000</color>
     <color name="blackTransparent">#77000000</color>
     <color name="blackTransparentLight">#10000000</color>
