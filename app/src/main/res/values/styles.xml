@@ -11,6 +11,11 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeBackground">@color/colorBlack</item>
+        <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
+    </style>
+
+    <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/primary_text_color</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.AppCompat">
@@ -83,12 +88,11 @@
         <item name="actionModeBackground">@color/colorBlack</item>
     </style>
 
-    <style name="AppTheme.Toolbar">
-        <item name="android:textColorPrimary">@color/colorwhite</item>
-        <item name="colorControlNormal">@color/colorwhite</item>
+    <!--<style name="AppTheme.Toolbar">
+        <item name="android:textColorPrimary">@color/primary_text_color</item>
+        <item name="colorControlNormal">@color/primary_text_color</item>
         <item name="windowActionModeOverlay">true</item>
-
-    </style>
+    </style>-->
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"
         />

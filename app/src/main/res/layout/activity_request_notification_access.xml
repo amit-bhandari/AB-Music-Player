@@ -60,6 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_request"
+        style="@style/MyButton"
         android:layout_centerHorizontal="true"
         android:background="@drawable/round_button"
         android:elevation="10dp"

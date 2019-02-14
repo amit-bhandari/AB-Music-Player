@@ -20,7 +20,7 @@ public class Constants {
     public static String TAG="beta.developer";
     public static String L_TAG = "Lyrics --";
 
-    public static int DEFAULT_THEME_ID = 12;
+    public static int DEFAULT_THEME_ID = 21;
 
     public interface ACTION {
         String MAIN_ACTION = "com.bhandari.musicplayer.action.main";
