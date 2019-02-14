@@ -65,10 +65,10 @@
         <item name="colorAccent">@color/darktThemeAccent</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeBackground">@color/colorBlack</item>
-
         <item name="md_positive_color">#ffffff</item>
         <item name="md_neutral_color">#ffffff</item>
         <item name="md_negative_color">#ffffff</item>
+        <item name="android:textColorSecondary">@color/primary_text_color</item>
     </style>
 
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
@@ -97,7 +97,10 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"
         />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:colorBackground">@color/blackOverlay</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+    </style>
 
     <style name="TabLargeText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
         <item name="android:textSize">22sp</item>

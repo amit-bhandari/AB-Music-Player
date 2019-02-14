@@ -16,6 +16,7 @@
         app:tabMode="scrollable"
         app:tabGravity="center"
         app:tabTextAppearance="@style/TabText"
+        app:tabSelectedTextColor="@color/colorwhite"
         app:tabMinWidth="@dimen/cm_tab_width_min" />
 
     <FrameLayout
