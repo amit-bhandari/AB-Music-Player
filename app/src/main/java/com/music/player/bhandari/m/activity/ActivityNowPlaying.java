@@ -1063,6 +1063,17 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 }
                 break;
 
+            case R.id.action_set_as_ringtone:
+                if(trackItem!=null){
+                    String abPath = trackItem.getFilePath();
+                    UtilityFun.SetRingtone(getApplicationContext(), abPath
+                            ,MusicLibrary.getInstance().getIdFromFilePath(abPath));
+                }else {
+                    Snackbar.make(rootView, getString(R.string.main_act_empty_lib), Snackbar.LENGTH_SHORT).show();
+                }
+
+                break;
+
 
         }
 

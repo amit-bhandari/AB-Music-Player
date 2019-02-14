@@ -18,6 +18,13 @@
         android:tint="#FFFFFF"
         />
 
+
+    <item
+        android:id="@+id/action_equ"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        app:showAsAction="never"
+        android:title="@string/action_equ" />
+
     <item
         android:id="@+id/action_sleep_timer"
         android:icon="@drawable/ic_settings_black_24dp"
@@ -25,11 +32,6 @@
         app:showAsAction="never"
         android:tint="#FFFFFF"/>
 
-    <item
-        android:id="@+id/action_equ"
-        android:icon="@drawable/ic_assessment_black_24dp"
-        app:showAsAction="never"
-        android:title="@string/action_equ" />
 
 
     <item

@@ -68,7 +68,12 @@
         <item name="md_positive_color">#ffffff</item>
         <item name="md_neutral_color">#ffffff</item>
         <item name="md_negative_color">#ffffff</item>
-        <item name="android:textColorSecondary">@color/primary_text_color</item>
+        <item name="android:textColorSecondary">@color/primary_text_color</item>\
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+    </style>
+
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">@color/blackOverlay</item>
     </style>
 
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
