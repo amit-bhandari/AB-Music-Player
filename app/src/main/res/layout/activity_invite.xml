@@ -21,6 +21,7 @@
         app:contentInsetStartWithNavigation="0dp"
         android:id="@+id/toolbar_"
         android:layout_width="match_parent"
+        app:titleTextColor="@color/primary_text_color"
         android:layout_height="wrap_content"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
