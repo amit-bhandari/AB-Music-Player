@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:layout_marginTop="10dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
@@ -78,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     android:text="Title : "/>
@@ -88,7 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     android:text="Artist : "/>
@@ -98,7 +98,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     android:text="Duration : "/>
@@ -108,7 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     android:text="Published At : "/>
@@ -118,7 +118,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     android:text="Playcount : "/>
@@ -127,7 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     android:text="Tags"/>
@@ -149,7 +149,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:textSize="16sp"
                     android:visibility="gone" />
 
@@ -168,7 +168,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
@@ -182,7 +182,7 @@
                     android:textSize="18sp"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:text="Title : "/>
 
                 <TextView
@@ -191,7 +191,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:layout_marginLeft="20dp"
                     android:text="Playcount : "/>
 
@@ -201,7 +201,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:text="Tags"/>
 
                 <android.support.v7.widget.RecyclerView
@@ -222,7 +222,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:textSize="16sp"
                     android:visibility="gone" />
 
@@ -230,7 +230,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
@@ -261,7 +261,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:textColor="@color/colorwhite"
+                    android:textColor="@color/primary_text_color"
                     android:textStyle="bold"
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"

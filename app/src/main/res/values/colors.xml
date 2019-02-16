@@ -50,7 +50,7 @@
     <color name="backkColorForNotification">#dd000000</color>
 
     <color name="lightThemeAccent">#6f6f70</color>
-    <color name="darktThemeAccent">#959597</color>
+    <color name="darkThemeAccent">#959597</color>
     <color name="nowPlayingAccent">#0d0d0d</color>
 
     <color name="nowPlayingText">#ebebec</color>

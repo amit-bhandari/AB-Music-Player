@@ -108,7 +108,7 @@
         </CheckBoxPreference>
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:title="@string/title_equalizer"
             android:key="@string/pref_prefer_system_equ">
         </CheckBoxPreference>
@@ -130,11 +130,11 @@
             android:key="@string/pref_batch_download">
         </Preference>
 
-        <Preference
+        <!--<Preference
             android:title="@string/title_cache_artist_data"
             android:key="@string/pref_cache_artist_data"
             android:enabled="false">
-        </Preference>
+        </Preference>-->
 
     </PreferenceCategory>
 
