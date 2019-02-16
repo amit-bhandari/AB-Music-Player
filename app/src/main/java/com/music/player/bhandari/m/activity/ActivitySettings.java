@@ -130,11 +130,11 @@ public class ActivitySettings extends AppCompatActivity {
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
             case Constants.PRIMARY_COLOR.DARK:
-                setTheme(R.style.AppThemeDark);
+                setTheme(R.style.AppThemeDarkPref);
                 break;
 
             case Constants.PRIMARY_COLOR.GLOSSY:
-                setTheme(R.style.AppThemeDark);
+                setTheme(R.style.AppThemeDarkPref);
                 break;
 
             case Constants.PRIMARY_COLOR.LIGHT:

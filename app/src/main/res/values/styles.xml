@@ -78,6 +78,11 @@
         <item name="actionModeBackground">@color/colorBlack</item>
     </style>
 
+    <style name="AppThemeDarkPref" parent="AppThemeDark">
+        <item name="android:textColorSecondary">@color/secondary_text_color</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+        <item name="android:textColorPrimary">@color/primary_text_color</item>
+    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
