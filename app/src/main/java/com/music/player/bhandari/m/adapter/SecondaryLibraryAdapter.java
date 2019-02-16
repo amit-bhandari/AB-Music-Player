@@ -147,11 +147,12 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         View view = inflater.inflate(R.layout.fragment_library_item, parent, false);
         View viewParent = parent;
         //int color = ColorHelper.getColor(R.color.colorwhite) ;
-        int color = ColorHelper.getBaseThemeTextColor();
-        ((TextView)(view.findViewById(R.id.header))).setTextColor(color);
-        ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(color);
-        ((TextView)(view.findViewById(R.id.count))).setTextColor(color);
-        ((ImageView)(view.findViewById(R.id.menuPopup))).setColorFilter(color);
+        //int color = ColorHelper.getBaseThemeTextColor();
+
+        ((TextView)(view.findViewById(R.id.header))).setTextColor(ColorHelper.getPrimaryTextColor());
+        ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((TextView)(view.findViewById(R.id.count))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((ImageView)(view.findViewById(R.id.menuPopup))).setColorFilter(ColorHelper.getSecondaryTextColor());
 
         return new SecondaryLibraryAdapter.MyViewHolder (view);
     }

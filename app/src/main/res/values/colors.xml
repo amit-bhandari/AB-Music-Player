@@ -41,7 +41,7 @@
     <color name="secondary_text_color">#d0979797</color>
 
     <color name="colorTransparent">#00ffffff</color>
-    <color name="popupMenuBackground">#c0000000</color>
+    <color name="popupMenuBackground">#d5000000</color>
     <color name="blackOverlay">#a0000000</color>
     <color name="blackTransparent">#77000000</color>
     <color name="blackTransparentLight">#10000000</color>
@@ -203,11 +203,11 @@
 
     <color name="theme21_color1">#80ff1493</color>
     <color name="theme21_color2">#800000ff</color>
-    <color name="theme21_color3">#80ff8c00</color>
+    <!--<color name="theme21_color3">#80ff8c00</color>-->
     <color name="theme21_color2_widget">#ff1493</color>
     <color name="theme21_color1_dark">#c0ff1493</color>
     <color name="theme21_color2_dark">#c00000ff</color>
-    <color name="theme21_color3_dark">#c0ff8c00</color>
+    <!--<color name="theme21_color3_dark">#c0ff8c00</color>-->
 
     <!-- play widget custom view  -->
     <color name="pw_primary">#3F51B5</color>

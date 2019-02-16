@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/close"
-            android:textColor="@color/colorwhite"
+            android:textColor="@color/primary_text_color"
             android:paddingEnd="15dp"
             android:gravity="end"
             android:textSize="15sp"

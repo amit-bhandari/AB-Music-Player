@@ -94,11 +94,12 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
         View view = inflater.inflate(R.layout.fragment_playlist_item, parent, false);
         viewParent = parent;
         final PlaylistLibraryAdapter.MyViewHolder holder=new PlaylistLibraryAdapter.MyViewHolder (view);
-        int color = ColorHelper.getBaseThemeTextColor() ;
-        ((TextView)(view.findViewById(R.id.header))).setTextColor(color);
-        ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(color);
-        ((TextView)(view.findViewById(R.id.count))).setTextColor(color);
-        ((ImageView)(view.findViewById(R.id.menuPopup))).setColorFilter(color);
+        //int color = ColorHelper.getBaseThemeTextColor() ;
+
+        ((TextView)(view.findViewById(R.id.header))).setTextColor(ColorHelper.getPrimaryTextColor());
+        ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((TextView)(view.findViewById(R.id.count))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((ImageView)(view.findViewById(R.id.menuPopup))).setColorFilter(ColorHelper.getSecondaryTextColor());
 
 
         return holder;

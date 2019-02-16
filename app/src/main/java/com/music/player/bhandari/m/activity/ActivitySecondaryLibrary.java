@@ -486,6 +486,16 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
 
         collapsingToolbarLayout.setStatusBarScrim(ColorHelper.GetGradientDrawable());
+
+        setTextAndIconColor();
+    }
+
+    private void setTextAndIconColor() {
+        songNameMiniPlayer.setTextColor(ColorHelper.getPrimaryTextColor());
+        artistNameMiniPlayer.setTextColor(ColorHelper.getSecondaryTextColor());
+        artistBio.setTextColor(ColorHelper.getPrimaryTextColor());
+        /*buttonPlay.setColorFilter(ColorHelper.getPrimaryTextColor());
+        buttonNext.setColorFilter(ColorHelper.getPrimaryTextColor());*/
     }
 
     private void setArtistImage(String url) {

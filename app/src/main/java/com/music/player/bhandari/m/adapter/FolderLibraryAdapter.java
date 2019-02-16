@@ -166,11 +166,11 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         viewParent = parent;
         //stub=((ViewStub)view.findViewById(R.id.stub_in_fragment_library_item)).inflate();
         final FolderLibraryAdapter.MyViewHolder holder=new FolderLibraryAdapter.MyViewHolder (view);
-        int color = ColorHelper.getBaseThemeTextColor() ;
-        ((TextView)(view.findViewById(R.id.header))).setTextColor(color);
-        ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(color);
-        ((TextView)(view.findViewById(R.id.count))).setTextColor(color);
-        ((ImageView)(view.findViewById(R.id.menuPopup))).setColorFilter(color);
+        //int color = ColorHelper.getPrimaryTextColor() ;
+        ((TextView)(view.findViewById(R.id.header))).setTextColor(ColorHelper.getPrimaryTextColor());
+        ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((TextView)(view.findViewById(R.id.count))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((ImageView)(view.findViewById(R.id.menuPopup))).setColorFilter(ColorHelper.getSecondaryTextColor());
 
         return holder;
     }
