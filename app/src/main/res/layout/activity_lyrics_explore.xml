@@ -99,7 +99,6 @@
             android:visibility="gone"
             android:paddingRight="15dp" />
 
-
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
             android:visibility="visible"
