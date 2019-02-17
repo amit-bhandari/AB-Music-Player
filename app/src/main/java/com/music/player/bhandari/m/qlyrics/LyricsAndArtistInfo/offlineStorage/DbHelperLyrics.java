@@ -36,7 +36,7 @@ public class DbHelperLyrics extends SQLiteOpenHelper {
 
 
 
-    public DbHelperLyrics(Context context) {
+    DbHelperLyrics(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

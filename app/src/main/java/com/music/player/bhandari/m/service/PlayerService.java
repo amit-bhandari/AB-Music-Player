@@ -1053,8 +1053,8 @@ public class PlayerService extends Service implements
         }catch (Exception ignored){
 
         }
-        Intent intent = new Intent().setAction(Constants.ACTION.UPDATE_LYRIC_AND_INFO);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+        //Intent intent = new Intent().setAction(Constants.ACTION.UPDATE_LYRIC_AND_INFO);
+        //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     public void updateWidget(boolean loadBitmap){
