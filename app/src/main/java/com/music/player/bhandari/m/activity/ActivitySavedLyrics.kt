@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.signature.StringSignature
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.music.player.bhandari.m.MyApp
@@ -225,13 +226,14 @@ class ActivitySavedLyrics: AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            holder.itemView?.trackInfo?.text = lyrics[position].track
-            holder.itemView?.playCount?.text = lyrics[position].artist
-            holder.itemView?.delete?.isEnabled = true
+            holder.itemView.trackInfo?.text = lyrics[position].track
+            holder.itemView.playCount?.text = lyrics[position].artist
+            holder.itemView.delete?.isEnabled = true
             Glide.with(this@ActivitySavedLyrics)
-                    .load(artistImageUrls[lyrics[position].artist])
+                    .load(artistImageUrls[lyrics[position].originalArtist])
                     .asBitmap()
                     .thumbnail(0.5f)
+                    .signature(StringSignature(System.currentTimeMillis().toString()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(object: SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
