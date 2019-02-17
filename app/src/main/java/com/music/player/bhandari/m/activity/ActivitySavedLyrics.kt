@@ -233,7 +233,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
                     .load(artistImageUrls[lyrics[position].originalArtist])
                     .asBitmap()
                     .thumbnail(0.5f)
-                    .signature(StringSignature(System.currentTimeMillis().toString()))
+                    //.signature(StringSignature(System.currentTimeMillis().toString()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(object: SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
