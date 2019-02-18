@@ -19,7 +19,7 @@ buildscript {
 apply plugin: 'com.github.triplet.play'
 
 // Load keystore
-def keystorePropertiesFile = rootProject.file("C:\\Users\\Captain Jack\\AndroidStudioProjects\\keys\\keystore.properties")
+def keystorePropertiesFile = rootProject.file("/home/ab/studioprojects/keys/keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
@@ -60,7 +60,7 @@ android {
 
         versionProps['VERSION_PATCH'] = (versionProps['VERSION_PATCH'].toInteger() + value).toString()
         versionProps['VERSION_NUMBER'] = (versionProps['VERSION_NUMBER'].toInteger() + value).toString()
-        versionProps['VERSION_BUILD'] = (versionProps['VERSION_BUILD'].toInteger() + 1).toString()
+        versionProps['VERSION_BUILD'] = (versionProps['VERSION_BUILD'].toInteger() + 0).toString()
 
         versionProps.store(versionPropsFile.newWriter(), null)
 
@@ -127,7 +127,7 @@ android {
 
         debug{
             applicationIdSuffix ".dev"
-            multiDexEnabled true
+            multiDexEnabled false
         }
     }
 
