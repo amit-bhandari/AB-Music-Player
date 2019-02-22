@@ -216,7 +216,7 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
 
     private void showAdIfApplicable(){
         //noinspection PointlessBooleanExpression
-        if( false &&/*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved() ) {
+        if( /*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved() ) {
             MobileAds.initialize(getApplicationContext(), getString(R.string.banner_lyrics_explore));
             if (UtilityFun.isConnectedToInternet()) {
                 AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")

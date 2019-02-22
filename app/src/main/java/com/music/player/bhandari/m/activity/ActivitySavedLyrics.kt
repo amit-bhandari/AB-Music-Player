@@ -22,6 +22,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.signature.StringSignature
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
@@ -29,8 +32,9 @@ import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics
+import com.music.player.bhandari.m.utils.AppLaunchCountManager
+import com.music.player.bhandari.m.utils.UtilityFun
 import kotlinx.android.synthetic.main.activity_saved_lyrics.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.item_saved_lyric.view.*
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 import java.io.Serializable
@@ -62,6 +66,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saved_lyrics)
+        showAdIfApplicable()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar_)
         setSupportActionBar(toolbar)
@@ -183,6 +188,33 @@ class ActivitySavedLyrics: AppCompatActivity() {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
     }
 
+    private fun showAdIfApplicable() {
+        if (/*AppLaunchCountManager.isEligibleForInterstialAd() && */ !UtilityFun.isAdsRemoved() && AppLaunchCountManager.isEligibleForBannerAds()) {
+            MobileAds.initialize(this, getString(R.string.banner_lyric_view))
+            if (UtilityFun.isConnectedToInternet()) {
+                val adRequest = AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
+                        .build()
+                if (adView != null) {
+                    adView.loadAd(adRequest)
+                    adView.visibility = View.VISIBLE
+                    ad_view_wrapper.visibility = View.VISIBLE
+                    ad_close.visibility = View.VISIBLE
+                    ad_close.setOnClickListener {
+                        if (adView != null) {
+                            adView.destroy()
+                        }
+                        ad_view_wrapper.visibility = View.GONE
+                    }
+                }
+            } else {
+                if (adView != null) {
+                    adView.visibility = View.GONE
+                    ad_view_wrapper.visibility = View.GONE
+                }
+            }
+        }
+    }
+
     inner class SavedLyricsAdapter: RecyclerView.Adapter<SavedLyricsAdapter.MyViewHolder>() {
 
         init{
@@ -194,13 +226,14 @@ class ActivitySavedLyrics: AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            holder.itemView?.trackInfo?.text = lyrics[position].track
-            holder.itemView?.playCount?.text = lyrics[position].artist
-            holder.itemView?.delete?.isEnabled = true
+            holder.itemView.trackInfo?.text = lyrics[position].track
+            holder.itemView.playCount?.text = lyrics[position].artist
+            holder.itemView.delete?.isEnabled = true
             Glide.with(this@ActivitySavedLyrics)
-                    .load(artistImageUrls[lyrics[position].artist])
+                    .load(artistImageUrls[lyrics[position].originalArtist])
                     .asBitmap()
                     .thumbnail(0.5f)
+                    //.signature(StringSignature(System.currentTimeMillis().toString()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(object: SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {

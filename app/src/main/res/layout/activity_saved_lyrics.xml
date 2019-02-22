@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/root_view_saved_lyrics"
+<RelativeLayout android:id="@+id/root_view_saved_lyrics"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/tools">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_"
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_size"
+        app:titleTextColor="@color/primary_text_color"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
@@ -46,5 +48,40 @@
         android:layout_centerInParent="true"
         android:text="@string/no_saved_lyrics"/>
 
+    <LinearLayout
+        android:id="@+id/ad_view_wrapper"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="5dp"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/ad_close"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/close"
+            android:textColor="@color/primary_text_color"
+            android:paddingEnd="15dp"
+            android:gravity="end"
+            android:textSize="15sp"
+            android:visibility="gone"
+            android:paddingRight="15dp"
+            card_view:ignore="RtlSymmetry" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_lyric_view">
+
+        </com.google.android.gms.ads.AdView>
+
+    </LinearLayout>
 
 </RelativeLayout>

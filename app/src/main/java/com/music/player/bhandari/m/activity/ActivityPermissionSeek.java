@@ -165,7 +165,7 @@ public class ActivityPermissionSeek extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.splash_activity);
+        //setContentView(R.layout.splash_activity);
 
         if(!hasPermissions(this, PERMISSIONS)) {
             try {
@@ -339,7 +339,7 @@ public class ActivityPermissionSeek extends AppCompatActivity {
             MyApp.getPref().edit().putBoolean(getString(R.string.pref_first_install),false).apply();
             MyApp.getPref().edit().putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY).apply();
             MyApp.getPref().edit().putInt(getString(R.string.pref_theme_color), Constants.PRIMARY_COLOR.BLACK).apply();
-            MyApp.getPref().edit().putBoolean(getString(R.string.pref_prefer_system_equ),true).apply();
+            MyApp.getPref().edit().putBoolean(getString(R.string.pref_prefer_system_equ),false).apply();
             MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply();
             MyApp.getPref().edit().putInt(getString(R.string.pref_reward_points), 500).apply();
             MyApp.getPref().edit().putInt(getString(R.string.pref_theme_id), Constants.DEFAULT_THEME_ID).apply();

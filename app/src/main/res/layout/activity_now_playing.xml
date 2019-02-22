@@ -58,6 +58,7 @@
                     android:fitsSystemWindows="true"
                     android:minHeight="@dimen/action_bar_size"
                     app:contentInsetStartWithNavigation="0dp"
+                    app:titleTextColor="@color/primary_text_color"
                     android:id="@+id/toolbar_"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

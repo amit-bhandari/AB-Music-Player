@@ -10,6 +10,7 @@
     <!-- toolbar -->
     <android.support.v7.widget.Toolbar
         android:fitsSystemWindows="true"
+        app:titleTextColor="@color/primary_text_color"
         android:minHeight="@dimen/action_bar_size"
         app:contentInsetStartWithNavigation="0dp"
         android:id="@+id/toolbar_"
@@ -91,13 +92,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/close"
-            android:textColor="@color/colorwhite"
+            android:textColor="@color/primary_text_color"
             android:paddingEnd="15dp"
             android:gravity="end"
             android:textSize="15sp"
             android:visibility="gone"
             android:paddingRight="15dp" />
-
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"

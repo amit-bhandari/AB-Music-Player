@@ -130,11 +130,11 @@ public class ActivitySettings extends AppCompatActivity {
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector){
             case Constants.PRIMARY_COLOR.DARK:
-                setTheme(R.style.AppThemeDark);
+                setTheme(R.style.AppThemeDarkPref);
                 break;
 
             case Constants.PRIMARY_COLOR.GLOSSY:
-                setTheme(R.style.AppThemeDark);
+                setTheme(R.style.AppThemeDarkPref);
                 break;
 
             case Constants.PRIMARY_COLOR.LIGHT:
@@ -806,7 +806,7 @@ public class ActivitySettings extends AppCompatActivity {
             });
 
             //cache artist data
-            Preference cacheArtistDataPref = findPreference(getString(R.string.pref_cache_artist_data));
+            /*Preference cacheArtistDataPref = findPreference(getString(R.string.pref_cache_artist_data));
             Long lastTimeDidAt = MyApp.getPref().getLong(getString(R.string.pref_artist_cache_manual),0);
             if (System.currentTimeMillis() >= lastTimeDidAt +
                     (2 * 60 * 60 * 1000)) {
@@ -821,7 +821,7 @@ public class ActivitySettings extends AppCompatActivity {
                     Toast.makeText(MyApp.getContext(), "Artist info local caching started in background, will be finished shortly!", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-            });
+            });*/
 
             //batch download  preference
             Preference batchDownload = findPreference(getString(R.string.pref_batch_download));

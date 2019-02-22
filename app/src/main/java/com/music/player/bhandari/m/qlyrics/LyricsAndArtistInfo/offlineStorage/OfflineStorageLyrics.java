@@ -90,6 +90,8 @@ public class OfflineStorageLyrics {
             return;
         }
 
+        Log.d("OfflineStorageLyrics", "putLyricsInDB: "+item.getTitle());
+
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {

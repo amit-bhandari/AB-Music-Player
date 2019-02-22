@@ -67,6 +67,7 @@ import com.nshmura.snappysmoothscroller.SnappyLayoutManager;
 import com.nshmura.snappysmoothscroller.SnappyLinearLayoutManager;
 import com.wang.avi.AVLoadingIndicatorView;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -217,6 +218,8 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     private void updateLyrics(){
         //hide edit metadata things
+        Log.d("FragmentLyrics", "updateLyrics: ");
+        Log.d("FragmentLyrics", "updateLyrics: " + Log.getStackTraceString(new Exception()));
 
         if(!isAdded() || getActivity()==null){
             return;

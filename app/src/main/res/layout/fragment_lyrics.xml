@@ -41,7 +41,7 @@
                 android:gravity="center"
                 android:paddingBottom="20dp"
                 android:text="@string/tap_to_refresh_lyrics"
-                android:textColor="@color/nowPlayingText"
+                android:textColor="@color/primary_text_color"
                 android:textSize="20sp" />
 
             <com.wang.avi.AVLoadingIndicatorView
@@ -57,7 +57,7 @@
                 android:visibility="gone"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textColor="@color/nowPlayingText"
+                android:textColor="@color/primary_text_color"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:gravity="center"
                 android:textSize="20sp"
-                android:textColor="@color/nowPlayingText"
+                android:textColor="@color/primary_text_color"
                 android:layout_height="wrap_content"
                 android:inputType="textNoSuggestions" />
 
@@ -83,7 +83,7 @@
                 android:visibility="gone"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textColor="@color/nowPlayingText"
+                android:textColor="@color/primary_text_color"
                 android:background="@color/colorTransparent"
                 android:foreground="@drawable/border_1dp"
                 android:text="@string/update_tags"/>
@@ -97,7 +97,7 @@
                 android:textSize="20sp"
                 android:gravity="center"
                 android:text="@string/tag_update"
-                android:textColor="@color/nowPlayingText"
+                android:textColor="@color/primary_text_color"
                 />
 
 
@@ -118,7 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/close"
-            android:textColor="@color/colorwhite"
+            android:textColor="@color/primary_text_color"
             android:paddingEnd="15dp"
             android:gravity="end"
             android:textSize="15sp"

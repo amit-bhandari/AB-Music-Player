@@ -31,7 +31,7 @@
                 android:textColorLink="@color/colorSleepTimer"
                 android:textSize="20sp"
                 android:text="@string/artist_info_loading"
-                android:textColor="@color/nowPlayingText" />
+                android:textColor="@color/primary_text_color" />
 
             <TextView
                 android:id="@+id/retry_text_view"
@@ -42,7 +42,7 @@
                 android:layout_margin="20dp"
                 android:textSize="20sp"
                 android:text="@string/tap_to_refresh_art_bio"
-                android:textColor="@color/nowPlayingText" />
+                android:textColor="@color/primary_text_color" />
 
             <com.wang.avi.AVLoadingIndicatorView
                 android:id="@+id/loading_lyrics_animation"
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:gravity="center"
                 android:textSize="20sp"
-                android:textColor="@color/nowPlayingText"
+                android:textColor="@color/primary_text_color"
                 android:layout_height="wrap_content"
                 android:inputType="textNoSuggestions"
                 card_view:ignore="LabelFor" />
@@ -72,7 +72,7 @@
                 android:visibility="gone"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textColor="@color/nowPlayingText"
+                android:textColor="@color/primary_text_color"
                 android:background="@color/colorTransparent"
                 android:foreground="@drawable/border_1dp"
                 android:text="@string/update_tags"/>
@@ -86,7 +86,7 @@
                 android:textSize="20sp"
                 android:gravity="center"
                 android:text="@string/tag_update"
-                android:textColor="@color/nowPlayingText"
+                android:textColor="@color/primary_text_color"
                 />
 
 
@@ -109,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/close"
-            android:textColor="@color/colorwhite"
+            android:textColor="@color/primary_text_color"
             android:paddingEnd="15dp"
             android:gravity="end"
             android:textSize="15sp"

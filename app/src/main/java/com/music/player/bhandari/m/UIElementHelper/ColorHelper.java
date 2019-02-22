@@ -286,7 +286,7 @@ public class ColorHelper {
             case 21:
                 return getGradient(getDarkColor(getColor(R.color.theme21_color1_dark), 0.5f)
                         ,getDarkColor(getColor(R.color.theme21_color2_dark), 0.5f)
-                        ,getDarkColor(getColor(R.color.theme21_color3_dark), 0.5f));
+                        /*,getDarkColor(getColor(R.color.theme21_color3_dark), 0.5f)*/);
 
             default:
                 return getGradient(getColor(R.color.theme0_color1), getColor(R.color.theme0_color2));

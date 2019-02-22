@@ -29,6 +29,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_"
             android:layout_width="match_parent"
+            app:titleTextColor="@color/primary_text_color"
             android:layout_height="@dimen/action_bar_size"
             android:background="@color/colorTransparent"
             android:theme="@style/AppTheme.AppBarOverlay"

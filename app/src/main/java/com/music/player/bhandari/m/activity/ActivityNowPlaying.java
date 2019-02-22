@@ -629,6 +629,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     }
 
     private void UpdateUI() {
+
+        Log.d("ActivityNowPlaying", "UpdateUI: " + Log.getStackTraceString(new Exception()));
+
         if(playerService!=null) {
             TrackItem item = playerService.getCurrentTrack();
             if(mAdapter!=null) mAdapter.notifyDataSetChanged();
@@ -1580,7 +1583,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
         mLastClickTime = SystemClock.elapsedRealtime();
         playerService.nextTrack();
-        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
+        //LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
 
     }
@@ -1596,7 +1599,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
         mLastClickTime = SystemClock.elapsedRealtime();
         playerService.prevTrack();
-        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
+        //LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
 
     }

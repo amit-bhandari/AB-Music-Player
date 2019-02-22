@@ -62,13 +62,14 @@
 
     <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
         <item name="android:actionBarStyle">@style/MyTheme.ActionBarStyle</item>
-        <item name="colorAccent">@color/darktThemeAccent</item>
+        <item name="colorAccent">@color/darkThemeAccent</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeBackground">@color/colorBlack</item>
         <item name="md_positive_color">#ffffff</item>
         <item name="md_neutral_color">#ffffff</item>
         <item name="md_negative_color">#ffffff</item>
         <item name="android:textColorSecondary">@color/primary_text_color</item>
+        <item name="android:itemBackground">@color/popupMenuBackground</item>
     </style>
 
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
@@ -78,6 +79,11 @@
         <item name="actionModeBackground">@color/colorBlack</item>
     </style>
 
+    <style name="AppThemeDarkPref" parent="AppThemeDark">
+        <item name="android:textColorSecondary">@color/secondary_text_color</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+        <item name="android:textColorPrimary">@color/primary_text_color</item>
+    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>

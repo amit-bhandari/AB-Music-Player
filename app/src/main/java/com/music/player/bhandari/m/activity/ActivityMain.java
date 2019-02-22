@@ -161,7 +161,7 @@ public class ActivityMain extends AppCompatActivity
     final static String FB_URL = "http://www.facebook.com/abmusicoffline/";
     final static String WEBSITE = "http://www.thetechguru.in";
     final static String GITHUB = "https://github.com/amit-bhandari/AB-Music-Player";
-    final static String INSTA_WEBSITE = "https://www.instagram.com/_amit_bhandari/?hl=en";
+    final static String INSTA_WEBSITE = "https://www.instagram.com/ab_music__/?hl=en";
     final static String LYRIC_CARD_GIF = "https://media.giphy.com/media/2w6JlMibDu9ZL9xVuB/giphy.gif";
     final static String AB_REMOTE_WALL_URL = "https://play.google.com/store/apps/details?id=in.thetechguru.walle.remote.abremotewallpaperchanger&hl=en";
 
@@ -1869,6 +1869,7 @@ public class ActivityMain extends AppCompatActivity
                     CreatePlaylistDialog();
                 }else {
                     if(MyApp.isLocked()){
+
                         Snackbar.make(rootView, getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
                         return ;
                     }
