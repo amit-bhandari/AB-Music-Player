@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -69,8 +70,11 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class ActivityEqualizer extends AppCompatActivity {
 
     //views
-    /*@BindView(R.id.equalizerScrollView)
-    NestedScrollView mScrollView;*/
+    @BindView(R.id.equalizerScrollView)
+    ScrollView mScrollView;
+
+    @BindView(R.id.equalizerLinearLayout)
+    View equalizerView;
 
     // 50Hz equalizer controls.
     @BindView(R.id.equalizer50Hz)
@@ -186,6 +190,7 @@ public class ActivityEqualizer extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -314,7 +319,29 @@ public class ActivityEqualizer extends AppCompatActivity {
             UtilityFun.logEvent(bundle);
         }catch (Exception ignored){
         }
+
+        equalizer50HzSeekBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d("ActivityEqualizer", "onTouch: " + event.toString());
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    isScrollingBlocked = true;
+                }else if(event.getAction() ==MotionEvent.ACTION_UP) {
+                    isScrollingBlocked = false;
+                }
+                return false;
+            }
+        });
+
+        mScrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return isScrollingBlocked;
+            }
+        });
     }
+
+    private boolean isScrollingBlocked = false;
 
     private void showAdIfApplicable() {
         if(false /*AppLaunchCountManager.isEligibleForInterstialAd() && !UtilityFun.isAdsRemoved()
