@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -151,6 +152,7 @@ public class ActivityEqualizer extends AppCompatActivity {
     // Temp variables that hold audio fx settings.
     private int virtualizerLevel;
     private int bassBoostLevel;
+    private int enhancementLevel;
     private int reverbSetting;
 
     //Audio FX elements.
@@ -158,6 +160,8 @@ public class ActivityEqualizer extends AppCompatActivity {
      SeekBar virtualizerSeekBar;
     @BindView(R.id.bass_boost_seekbar)
      SeekBar bassBoostSeekBar;
+    @BindView(R.id.enhancer_seekbar)
+    SeekBar enhanceSeekBar;
     @BindView(R.id.reverb_spinner)
      Spinner reverbSpinner;
     @BindView(R.id.virtualizer_title_text)
@@ -243,6 +247,7 @@ public class ActivityEqualizer extends AppCompatActivity {
         //Set the max values for the seekbars.
         virtualizerSeekBar.setMax(1000);
         bassBoostSeekBar.setMax(1000);
+        enhanceSeekBar.setMax(1000);
 
         resetAllButton.setOnClickListener(new View.OnClickListener() {
 
@@ -258,6 +263,7 @@ public class ActivityEqualizer extends AppCompatActivity {
                 equalizer12_5kHzSeekBar.setProgressAndThumb(16);
                 virtualizerSeekBar.setProgress(0);
                 bassBoostSeekBar.setProgress(0);
+                enhanceSeekBar.setProgress(0);
                 reverbSpinner.setSelection(0, false);
 
                 //Apply the new setings to the service.
@@ -296,6 +302,7 @@ public class ActivityEqualizer extends AppCompatActivity {
         virtualizerSeekBar.setOnSeekBarChangeListener(virtualizerListener);
         bassBoostSeekBar.setOnSeekBarChangeListener(bassBoostListener);
         reverbSpinner.setOnItemSelectedListener(reverbListener);
+        enhanceSeekBar.setOnSeekBarChangeListener(enhanceListener);
 
         new AsyncInitSlidersTask().execute(MyApp.getService().getEqualizerHelper().getLastEquSetting());
 
@@ -361,6 +368,7 @@ public class ActivityEqualizer extends AppCompatActivity {
         equalizerSetting.setTwelvePointFiveKilohertz(twelvePointFiveKilohertzLevel);
         equalizerSetting.setVirtualizer(virtualizerLevel);
         equalizerSetting.setBassBoost(bassBoostLevel);
+        equalizerSetting.setEnhancement(enhancementLevel);
         equalizerSetting.setReverb(reverbSetting);
         return equalizerSetting;
     }
@@ -807,6 +815,32 @@ public class ActivityEqualizer extends AppCompatActivity {
     };
 
     /**
+     * Enhance listener.
+     */
+    private SeekBar.OnSeekBarChangeListener enhanceListener = new SeekBar.OnSeekBarChangeListener() {
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @Override
+        public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+            MyApp.getService().getEqualizerHelper().getEnhancer().setTargetGain((short) arg1);
+            enhancementLevel = (short) arg1;
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            // TODO Auto-generated method stub
+
+        }
+
+    };
+
+    /**
      * Virtualizer listener.
      */
     private SeekBar.OnSeekBarChangeListener virtualizerListener = new SeekBar.OnSeekBarChangeListener() {
@@ -913,6 +947,7 @@ public class ActivityEqualizer extends AppCompatActivity {
 
         virtualizerListener.onProgressChanged(virtualizerSeekBar, virtualizerSeekBar.getProgress(), true);
         bassBoostListener.onProgressChanged(bassBoostSeekBar, bassBoostSeekBar.getProgress(), true);
+        enhanceListener.onProgressChanged(enhanceSeekBar, enhanceSeekBar.getProgress(), true);
         reverbListener.onItemSelected(reverbSpinner, null, reverbSpinner.getSelectedItemPosition(), 0l);
 
     }
@@ -946,6 +981,7 @@ public class ActivityEqualizer extends AppCompatActivity {
             twelvePointFiveKilohertzLevel = equalizerSetting.getTwelvePointFiveKilohertz();
             virtualizerLevel = equalizerSetting.getVirtualizer();
             bassBoostLevel = equalizerSetting.getBassBoost();
+            enhancementLevel = equalizerSetting.getEnhancement();
             reverbSetting = equalizerSetting.getReverb();
 
             //Move the sliders to the equalizer settings.
@@ -958,6 +994,7 @@ public class ActivityEqualizer extends AppCompatActivity {
             equalizer12_5kHzSeekBar.setProgressAndThumb(twelvePointFiveKilohertzLevel);
             virtualizerSeekBar.setProgress(virtualizerLevel);
             bassBoostSeekBar.setProgress(bassBoostLevel);
+            enhanceSeekBar.setProgress(enhancementLevel);
             reverbSpinner.setSelection(reverbSetting, false);
 
             //50Hz Band.

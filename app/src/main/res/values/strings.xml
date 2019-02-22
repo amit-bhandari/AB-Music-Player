@@ -643,6 +643,7 @@
     <string name="reverb">Reverb</string>
     <string name="bass_boost">Bass boost</string>
     <string name="virtulizer">Virtulizer</string>
+    <string name="enhancer">Enhancer</string>
 
     <!--hints-->
     <string name="hint_lyric">Lyric</string>

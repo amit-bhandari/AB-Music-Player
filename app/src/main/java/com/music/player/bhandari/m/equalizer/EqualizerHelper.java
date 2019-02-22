@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
+import android.media.audiofx.LoudnessEnhancer;
 import android.media.audiofx.PresetReverb;
 import android.media.audiofx.Virtualizer;
+import android.os.Build;
 
 import com.google.gson.Gson;
 import com.music.player.bhandari.m.DBHelper.DbHelperEqualizer;
@@ -37,6 +39,7 @@ public class EqualizerHelper {
     private Virtualizer virtualizer;
     private BassBoost bassBoost;
     private PresetReverb presetReverb;
+    private LoudnessEnhancer loudnessEnhancer;
 
     private boolean isEqualizerSupported = true;
 
@@ -59,6 +62,12 @@ public class EqualizerHelper {
 
             presetReverb = new PresetReverb(0, audioSessionId);
             presetReverb.setEnabled(equalizerEnabled);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
+                loudnessEnhancer.setEnabled(equalizerEnabled);
+            }
+
 
         }catch (Exception e){
             isEqualizerSupported = false;
@@ -89,6 +98,10 @@ public class EqualizerHelper {
 
     public BassBoost getBassBoost(){
         return bassBoost;
+    }
+
+    public LoudnessEnhancer getEnhancer(){
+        return loudnessEnhancer;
     }
 
     public PresetReverb getPresetReverb(){

@@ -16,9 +16,7 @@
         android:layout_height="wrap_content"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
+    <ScrollView
         android:layout_below="@id/toolbar_"
         android:id="@+id/equalizerScrollView"
         android:background="@color/blackOverlay"
@@ -476,10 +474,10 @@
                     android:id="@+id/reverb_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/reverb_title_text"
-                    android:layout_toRightOf="@+id/reverb_title_text"
+                    android:layout_alignBottom="@+id/bass_boost_title_text"
+                    android:layout_toRightOf="@+id/bass_boost_title_text"
                     android:layout_marginLeft="10dp"
-                    android:layout_toEndOf="@+id/reverb_title_text"
+                    android:layout_toEndOf="@+id/bass_boost_title_text"
                     android:layout_marginStart="10dp" />
 
             </RelativeLayout>
@@ -585,6 +583,18 @@
                 </RelativeLayout>
 
             </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/enhancer_seekbar"
+                android:layout_margin="10dp"
+                android:layout_below="@id/equalizerPresetsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_centerHorizontal="true"
+                android:thumb="@drawable/thumb"
+                android:layout_marginTop="10dp" />
 
             <com.google.android.gms.ads.AdView
                 android:id="@+id/adView"

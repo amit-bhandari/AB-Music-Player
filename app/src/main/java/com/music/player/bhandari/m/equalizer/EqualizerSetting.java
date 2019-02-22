@@ -27,6 +27,7 @@ public class EqualizerSetting {
     private int twelvePointFiveKilohertz=16;
     private int virtualizer=16;
     private int bassBoost=16;
+    private int enhancement=16;
     private int reverb=16;
 
     public EqualizerSetting(int fiftyHertz, int oneThirtyHertz, int threeTwentyHertz, int eightHundredHertz, int twoKilohertz, int fiveKilohertz, int twelvePointFiveKilohertz
@@ -127,8 +128,16 @@ public class EqualizerSetting {
         return bassBoost;
     }
 
+    public int getEnhancement() {
+        return enhancement;
+    }
+
     public void setBassBoost(int bassBoost) {
         this.bassBoost = bassBoost;
+    }
+
+    public void setEnhancement(int enhancement) {
+        this.enhancement = enhancement;
     }
 
     public int getReverb() {
