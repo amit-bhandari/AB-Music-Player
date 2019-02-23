@@ -180,7 +180,7 @@ public class ActivityPermissionSeek extends AppCompatActivity {
         setNotificationChannelForOreoPlus();
 
         //if(MyApp.getPref().getBoolean(getString(R.string.pref_first_install),true)) {
-            checkForDeepLink();
+            //checkForDeepLink();
         //}
 
         changeSettingsForVersion();
