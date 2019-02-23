@@ -2246,9 +2246,9 @@ public class ActivityMain extends AppCompatActivity
         navigationView.getMenu().findItem(R.id.nav_lyric_card).setActionView(R.layout.nav_item_lyric_card);
 
         //add upload image button
-        if(BuildConfig.DEBUG){
+        /*if(BuildConfig.DEBUG){
             navigationView.getMenu().add(R.id.grp2, 192, 10,"Upload");
-        }
+        }*/
 
         //updateNavigationMenuItems();
     }
