@@ -8,11 +8,14 @@ Open sourced code for the offline music player developed by me.
 - Clone the project in your system.
 - Create keystore.properties file in project root directory with content as following
 
-storeFile=/path/to/signing/key.jks
-storePassword=<insert keystore password>
-keyAlias= <insert key alias>
-keyPassword=<insert key password>
+storeFile=/path/to/signing/key.jks <br/>
+storePassword=<insert keystore password> <br/>
+keyAlias= <insert key alias> <br/>
+keyPassword=<insert key password> <br/>
 
+- [Important] Some features of AB Music need firebase connection (Lyric cards). If you don't want to connect to firebase, just comment this line in application level build.gradle file --> "apply plugin: 'com.google.gms.google-services'" <br/>
+OR <br/>
+Sign up for Google Firebase account if you don't already have one. Create new project there. Get google-services.json file from Project Settings and put it under app/ directory. Make sure you match application id with id in google-services.json 
 - Use Android studio 3.+ and latest build tools version and gradle.
 - And that shall be it.
 
