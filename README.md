@@ -3,6 +3,19 @@ Lightweight Offline Music Player for Android (Downloaded over 90k times on store
 
 Open sourced code for the offline music player developed by me.
 
+# Build steps
+
+- Clone the project in your system.
+- Create keystore.properties file in project root directory with content as following
+
+storeFile=/path/to/signing/key.jks
+storePassword=<insert keystore password>
+keyAlias= <insert key alias>
+keyPassword=<insert key password>
+
+- Use Android studio 3.+ and latest build tools version and gradle.
+- And that shall be it.
+
 Have a look here for demo --> https://play.google.com/store/apps/details?id=com.bhandari.music&hl=en
 
 Check it on your device by downlaoding from store
