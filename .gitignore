@@ -18,3 +18,4 @@ app/release/output.json
 app/release/app-release.apk
 app/release
 installDebug.sh
+keystore.properties
