@@ -1,5 +1,5 @@
 # AB-Music-Player
-Lightweight Offline Music Player for Android (Downloaded over 70k times on store, rated 4.5)
+Lightweight Offline Music Player for Android (Downloaded over 90k times on store, rated 4.5)
 
 Open sourced code for the offline music player developed by me.
 
