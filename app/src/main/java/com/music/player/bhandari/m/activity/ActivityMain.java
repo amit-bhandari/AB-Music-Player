@@ -639,6 +639,8 @@ public class ActivityMain extends AppCompatActivity
                         , Constants.PRIMARY_COLOR.GLOSSY).apply();
             }
 
+            //MyApp.getPref().edit().putBoolean(getString(R.string.pref_prefer_system_equ),false).apply();
+
             //check if unknown artist image is cached and remove it
             //@todo remove in next release
             try {
