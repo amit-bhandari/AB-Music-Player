@@ -320,28 +320,28 @@ public class ActivityEqualizer extends AppCompatActivity {
         }catch (Exception ignored){
         }
 
-        equalizer50HzSeekBar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d("ActivityEqualizer", "onTouch: " + event.toString());
-                if(event.getAction()==MotionEvent.ACTION_DOWN){
-                    isScrollingBlocked = true;
-                }else if(event.getAction() ==MotionEvent.ACTION_UP) {
-                    isScrollingBlocked = false;
-                }
-                return false;
-            }
-        });
+        equalizer50HzSeekBar.setOnTouchListener(listener);
+        equalizer130HzSeekBar.setOnTouchListener(listener);
+        equalizer320HzSeekBar.setOnTouchListener(listener);
+        equalizer800HzSeekBar.setOnTouchListener(listener);
+        equalizer2kHzSeekBar.setOnTouchListener(listener);
+        equalizer5kHzSeekBar.setOnTouchListener(listener);
+        equalizer12_5kHzSeekBar.setOnTouchListener(listener);
 
-        mScrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return isScrollingBlocked;
-            }
-        });
     }
 
-    private boolean isScrollingBlocked = false;
+    View.OnTouchListener listener = new View.OnTouchListener() {
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            Log.d("ActivityEqualizer", "onTouch: " + event.toString());
+            if(event.getAction()==MotionEvent.ACTION_DOWN){
+                mScrollView.requestDisallowInterceptTouchEvent(true);
+            }else if(event.getAction() ==MotionEvent.ACTION_UP) {
+                mScrollView.requestDisallowInterceptTouchEvent(false);                }
+            return false;
+        }
+    };
 
     private void showAdIfApplicable() {
         if(false /*AppLaunchCountManager.isEligibleForInterstialAd() && !UtilityFun.isAdsRemoved()
@@ -409,7 +409,7 @@ public class ActivityEqualizer extends AppCompatActivity {
 
         @Override
         public void onProgressChanged(SeekBar arg0, int seekBarLevel, boolean changedByUser) {
-
+            Log.d("ActivityEqualizer", "onProgressChanged : ");
             try {
                 //Get the appropriate equalizer band.
                 short sixtyHertzBand = MyApp.getService().getEqualizerHelper().getEqualizer().getBand(50000);
@@ -443,14 +443,12 @@ public class ActivityEqualizer extends AppCompatActivity {
 
         @Override
         public void onStartTrackingTouch(SeekBar arg0) {
-            // TODO Auto-generated method stub
-
+            Log.d("ActivityEqualizer", "onStartTrackingTouch : ");
         }
 
         @Override
         public void onStopTrackingTouch(SeekBar arg0) {
-            // TODO Auto-generated method stub
-
+            Log.d("ActivityEqualizer", "onStopTrackingTouch : ");
         }
 
     };

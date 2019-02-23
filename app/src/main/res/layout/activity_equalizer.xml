@@ -595,7 +595,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="?android:selectableItemBackground">
+                        android:background="@drawable/border_1dp">
 
                         <TextView
                             android:id="@+id/save_as_preset_text"
@@ -625,7 +625,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="?android:selectableItemBackground">
+                        android:background="@drawable/border_1dp">
 
                         <TextView
                             android:id="@+id/load_preset_text"
@@ -655,7 +655,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="?android:selectableItemBackground">
+                        android:background="@drawable/border_1dp">
 
                         <TextView
                             android:id="@+id/reset_all_text"
