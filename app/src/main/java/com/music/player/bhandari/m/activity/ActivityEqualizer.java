@@ -1021,7 +1021,9 @@ public class ActivityEqualizer extends AppCompatActivity {
             virtualizerSeekBar.setProgress(virtualizerLevel);
             bassBoostSeekBar.setProgress(bassBoostLevel);
             enhanceSeekBar.setProgress(enhancementLevel);
-            reverbSpinner.setSelection(reverbSetting, false);
+
+            if(reverbSetting < reverbSpinner.getAdapter().getCount())
+                reverbSpinner.setSelection(reverbSetting, false);
 
             //50Hz Band.
             if (fiftyHertzLevel==16) {
