@@ -181,7 +181,7 @@ public class FragmentAlbumArt extends Fragment{
                                     if(UtilityFun.isConnectedToInternet() &&
                                             !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                         final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                        if(url!=null)
+                                        if(url!=null && !url.isEmpty())
                                             request.load(Uri.parse(url))
                                                     .into(albumArt);
                                         return true;
@@ -207,7 +207,7 @@ public class FragmentAlbumArt extends Fragment{
                                     if(UtilityFun.isConnectedToInternet() &&
                                             !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                         final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                        if(url!=null)
+                                        if(url!=null && !url.isEmpty())
                                             request.load(Uri.parse(url))
                                                     .into(albumArt);
                                         return true;

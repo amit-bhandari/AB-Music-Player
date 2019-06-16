@@ -826,21 +826,21 @@ public class ActivityMain extends AppCompatActivity
                                     .listener(new RequestListener<Uri, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            //Log.d("AlbumLibraryAdapter", "onException: ");
+                                            Log.d("AlbumLibraryAdapter", "onException: ");
                                             if(UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null)
+                                                if(url!=null && !url.isEmpty())
                                                     request.load(Uri.parse(url))
                                                             .into(albumArt);
                                                 return true;
                                             }
-                                            return false;
+                                            return true;
                                         }
 
                                         @Override
                                         public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            return false;
+                                            return true;
                                         }
                                     })
                                     .placeholder(R.drawable.ic_batman_1);
@@ -851,11 +851,11 @@ public class ActivityMain extends AppCompatActivity
                                     .listener(new RequestListener<Uri, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            //Log.d("AlbumLibraryAdapter", "onException: ");
+                                            Log.d("AlbumLibraryAdapter", "onException: ");
                                             if(UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null)
+                                                if(url!=null && !url.isEmpty())
                                                     request.load(Uri.parse(url))
                                                             .into(albumArt);
                                                 return true;
