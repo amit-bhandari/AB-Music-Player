@@ -1,5 +1,7 @@
 package com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks;
 
+import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.ArtistInfo.ArtistInfo;
@@ -47,6 +50,7 @@ public class DownloadArtInfoThread extends Thread {
 
     private static String FORMAT_STRING="/?method=artist.getinfo&artist=%s&autocorrect=1&api_key=%s&format=json";
     private static String FORMAT_STRING_SPOTI="/?q=%s&type=artist";
+
 
     public DownloadArtInfoThread(ArtistInfo.Callback callback, final String artist, TrackItem item){
         super(DownloadArtInfoThread.getRunnable(callback,artist.trim(),item));
@@ -99,15 +103,42 @@ public class DownloadArtInfoThread extends Thread {
                 threadMsg(artistInfo);
             }
 
+            @SuppressLint("ApplySharedPref")
             private String getImageUrl() {
-                /*String url = String.format(API_ROOT_URL_SPOTI+FORMAT_STRING_SPOTI, artist);
                 String imageUrl = null;
-                JsonObject response;
-                try {
+                String access_token = "";
+                try{
+                    long time = MyApp.getPref().getLong("spoty_expiry_time", System.currentTimeMillis());
+                    long diff = System.currentTimeMillis() - time;
+                    Log.d("ArtInfoThread", "getImageUrl: difference " + diff);
+                    if(diff/1000<3600) {
+                        access_token = MyApp.getPref().getString("spoty_token", "");
+                        Log.d("ArtInfoThread", "getImageUrl: Access token from cache " + access_token);
+                    }
+                    else {
+                        URL queryURL = new URL("https://accounts.spotify.com/api/token");
+                        Connection connection = Jsoup.connect(queryURL.toExternalForm())
+                                .header("Authorization", "Basic NmQ1MGI5OGZkMWNmNGI0NThmMGZhNzhiNzM4YzU1MzA6MzI2NjRjODE5OTBkNDk1ZTgzNzY5Y2VmYmQ1YWM1ZGI=")
+                                .timeout(10000) //10 seconds timeout
+                                .ignoreContentType(true);
+                        Document document = connection.userAgent(Net.USER_AGENT).data("grant_type","client_credentials").post();
+                        JsonObject response = new JsonParser().parse(document.text()).getAsJsonObject();
+                        if(response!=null && response.has("access_token")){
+                            String token = response.get("access_token").getAsString();
+                            MyApp.getPref().edit().putLong("spoty_expiry_time", System.currentTimeMillis()).commit();
+                            MyApp.getPref().edit().putString("spoty_token", token).commit();
+                            access_token = token;
+                        }
+
+                        Log.d("ArtInfoThread", "getImageUrl: Access token from internet " + access_token);
+                    }
+
+                    String url = String.format(API_ROOT_URL_SPOTI+FORMAT_STRING_SPOTI, artist);
+                    JsonObject response;
 
                     URL queryURL = new URL(url);
                     Connection connection = Jsoup.connect(queryURL.toExternalForm())
-                            .header("Authorization", "Bearer " + Keys.SPOTI)
+                            .header("Authorization", "Bearer " + access_token)
                             .timeout(10000) //10 seconds timeout
                             .ignoreContentType(true);
                     Document document = connection.userAgent(Net.USER_AGENT).get();
@@ -119,14 +150,15 @@ public class DownloadArtInfoThread extends Thread {
                             imageUrl = res.get(0).getAsJsonObject().getAsJsonArray("images").get(0).getAsJsonObject().get("url").getAsString();
                         }
                     }
+
                 }catch (IOException e){
                     Log.d(Constants.TAG, "getArtistUrl: io exception");
                 }
                 catch (Exception e){
                     Log.v(Constants.TAG,e.toString());
                 }
-                return imageUrl==null ? "" : imageUrl;*/
-                return "https://firebasestorage.googleapis.com/v0/b/ab-music.appspot.com/o/beautiful-cellphone-cute-761963.jpg?alt=media&token=017ece8a-5d6a-4dd3-a068-2425d45ac664";
+
+                return imageUrl==null ? "" : imageUrl;
             }
 
             private void threadMsg(ArtistInfo artistInfo) {
