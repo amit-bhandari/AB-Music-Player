@@ -108,7 +108,7 @@ public class DownloadArtInfoThread extends Thread {
                 String imageUrl = null;
                 String access_token = "";
                 try{
-                    long time = MyApp.getPref().getLong("spoty_expiry_time", System.currentTimeMillis());
+                    long time = MyApp.getPref().getLong("spoty_expiry_time", 0);
                     long diff = System.currentTimeMillis() - time;
                     Log.d("ArtInfoThread", "getImageUrl: difference " + diff);
                     if(diff/1000<3600) {

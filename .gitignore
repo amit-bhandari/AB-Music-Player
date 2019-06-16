@@ -1,4 +1,5 @@
 *.iml
+music_player.jks
 .gradle
 /local.properties
 /.idea/workspace.xml

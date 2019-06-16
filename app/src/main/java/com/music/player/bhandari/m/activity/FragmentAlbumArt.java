@@ -169,6 +169,9 @@ public class FragmentAlbumArt extends Fragment{
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
 
             int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+
+            final int[] retryCount = {0};
+
             switch (defaultAlbumArtSetting){
                 case 0:
                     request.listener(new RequestListener<Uri, GlideDrawable>() {
@@ -188,7 +191,9 @@ public class FragmentAlbumArt extends Fragment{
 
                                 @Override
                                 public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    return true;
+                                    if(retryCount[0]>0) return true;
+                                    retryCount[0]++;
+                                    return false;
                                 }
                             })
                             .placeholder(R.drawable.ic_batman_1);
@@ -212,7 +217,9 @@ public class FragmentAlbumArt extends Fragment{
 
                                 @Override
                                 public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    return true;
+                                    if(retryCount[0]>0) return true;
+                                    retryCount[0]++;
+                                    return false;
                                 }
                             })
                             .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
