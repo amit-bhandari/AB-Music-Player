@@ -400,7 +400,7 @@
 
         <string name="cont_playback_content">Enabling this makes sure that Music Playback will go on continuously (Even if Queue is empty). This feature is in Beta stage.</string>
 
-        <string name="dialog_ringtone_cutter">Did you know, you can cut Ringtone out of your favorite song in AB Music. Just press on 3 dot icon on right hand side of any track and select \'Set as Ringtone\' option to get started with Ringtone Cutter.</string>
+        <string name="dialog_ringtone_cutter">Did you know, you can cut Ringtone out of your favorite song in AB Music. \n\n Just press 3 dot icon on right hand side of any track and select \'Set as Ringtone\' option to get started with Ringtone Cutter.</string>
         <string name="dialog_rington_cutter_button">Got it</string>
     <!--first time info messages -->
         <string name="music_lock_primary">Try music lock feature</string>
