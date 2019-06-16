@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.music.player.bhandari.m.model.Constants;
@@ -42,8 +43,10 @@ import java.net.URL;
 public class DownloadArtInfoThread extends Thread {
 
     private static String API_ROOT_URL="http://ws.audioscrobbler.com/2.0";
+    private static String API_ROOT_URL_SPOTI="https://api.spotify.com/v1/search";
 
     private static String FORMAT_STRING="/?method=artist.getinfo&artist=%s&autocorrect=1&api_key=%s&format=json";
+    private static String FORMAT_STRING_SPOTI="/?q=%s&type=artist";
 
     public DownloadArtInfoThread(ArtistInfo.Callback callback, final String artist, TrackItem item){
         super(DownloadArtInfoThread.getRunnable(callback,artist.trim(),item));
@@ -70,12 +73,12 @@ public class DownloadArtInfoThread extends Thread {
 
                         String content = response.getAsJsonObject("artist").getAsJsonObject("bio").get("content").getAsString();
 
-                        JsonArray imageUrlArray = response.getAsJsonObject("artist").getAsJsonArray("image");
-                        String imageUrl = imageUrlArray.get(3).getAsJsonObject().get("#text").getAsString();
+                        //JsonArray imageUrlArray = response.getAsJsonObject("artist").getAsJsonArray("image");
+                        //String imageUrl = imageUrlArray.get(3).getAsJsonObject().get("#text").getAsString();
 
                         String artistUrl = response.getAsJsonObject("artist").get("url").getAsString();
 
-                        artistInfo.setImageUrl(imageUrl);
+                        artistInfo.setImageUrl(getImageUrl());
                         artistInfo.setArtistContent(content);
                         artistInfo.setArtistUrl(artistUrl);
 
@@ -94,6 +97,35 @@ public class DownloadArtInfoThread extends Thread {
                     Log.v(Constants.TAG,e.toString());
                 }
                 threadMsg(artistInfo);
+            }
+
+            private String getImageUrl() {
+                String url = String.format(API_ROOT_URL_SPOTI+FORMAT_STRING_SPOTI, artist);
+                String imageUrl = null;
+                JsonObject response;
+                try {
+
+                    URL queryURL = new URL(url);
+                    Connection connection = Jsoup.connect(queryURL.toExternalForm())
+                            .header("Authorization", "Bearer " + Keys.SPOTI)
+                            .timeout(10000) //10 seconds timeout
+                            .ignoreContentType(true);
+                    Document document = connection.userAgent(Net.USER_AGENT).get();
+                    response = new JsonParser().parse(document.text()).getAsJsonObject();
+                    if(response!=null && response.has("artists")){
+
+                        JsonArray res = response.getAsJsonObject("artists").getAsJsonArray("items");
+                        if(res.size()>0){
+                            imageUrl = res.get(0).getAsJsonObject().getAsJsonArray("images").get(0).getAsJsonObject().get("url").getAsString();
+                        }
+                    }
+                }catch (IOException e){
+                    Log.d(Constants.TAG, "getArtistUrl: io exception");
+                }
+                catch (Exception e){
+                    Log.v(Constants.TAG,e.toString());
+                }
+                return imageUrl==null ? "" : imageUrl;
             }
 
             private void threadMsg(ArtistInfo artistInfo) {

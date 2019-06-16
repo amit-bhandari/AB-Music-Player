@@ -38,6 +38,22 @@
         <screen android:screenSize="normal" android:screenDensity="560" />
         <screen android:screenSize="normal" android:screenDensity="640" />
 
+        <!-- all hd size screens -->
+        <screen android:screenSize="large" android:screenDensity="ldpi" />
+        <screen android:screenSize="large" android:screenDensity="mdpi" />
+        <screen android:screenSize="large" android:screenDensity="hdpi" />
+        <screen android:screenSize="large" android:screenDensity="xhdpi" />
+        <screen android:screenSize="large" android:screenDensity="xxhdpi" />
+        <screen android:screenSize="large" android:screenDensity="xxxhdpi" />
+
+        <!-- all xlarge hd size screens -->
+        <screen android:screenSize="xlarge" android:screenDensity="ldpi" />
+        <screen android:screenSize="xlarge" android:screenDensity="mdpi" />
+        <screen android:screenSize="xlarge" android:screenDensity="hdpi" />
+        <screen android:screenSize="xlarge" android:screenDensity="xhdpi" />
+        <screen android:screenSize="xlarge" android:screenDensity="xxhdpi" />
+        <screen android:screenSize="xlarge" android:screenDensity="xxxhdpi" />
+
     </compatible-screens>
 
     <application
@@ -49,6 +65,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,UnusedAttribute">
+
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

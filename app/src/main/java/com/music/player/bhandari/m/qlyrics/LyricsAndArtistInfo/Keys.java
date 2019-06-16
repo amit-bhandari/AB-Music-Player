@@ -24,6 +24,7 @@ public class Keys {
     public static final String GENIUS = "6wPhYenV4K78zZ4ndmuP1iiPTRUGJWG5_X17LvpoCx4XHc1236IIHDUv2rVZhUUN";
 
     public static String LASTFM = "4e464c9ca4e6763aca6d5a7a04728c77";
+    public static String SPOTI = "BQD4xHVM-gAEgKnxCE5NS2Gb58XhEpdquyq7Hps1HA1_50IIUfpM5GdiLiduZjXErOogNZbZ36Vkz56ZbiVq8tpMCVGeD9zl5bq3gbqPIgy349mUvZbnMO-HOBEMrPecXMLwxVCTyHxKKEfwpGQqNKTX";
     //shared secret for lastfm = d82a87b03faa65d001bd48713c60d645
 
 }
