@@ -316,6 +316,7 @@
     <string name="title_cache_artist_data">Закешировать данные артистов локально</string>
     <string name="title_reset_pref">Сбросить настройки</string>
     <string name="title_try_my_new_app">AB Remote Wallpaper</string>
+    <string name="title_ringtone_cutter">Рингтон Резак</string>
     <string name="title_equalizer">Предпочитаемый системный эквалайзер</string>
     <string name="title_reward_points">Бонусные очки!</string>
 
@@ -329,6 +330,9 @@
 
     <string name="dialog_lyric_card_content">Теперь создайте потрясающие лирические Фото, выбрав лирический текст и нажав кнопку изображения в верхней правой панели инструментов.</string>
     <string name="dialog_lyric_card_pos">Попробуй!</string>
+
+    <string name="dialog_ringtone_cutter">Знаете ли вы, вы можете вырезать рингтон из вашей любимой песни в AB Music. Просто нажмите на значок с 3 точками справа от любой дорожки и выберите опцию «Установить как мелодию звонка», чтобы начать работу с Ringtone Cutter.</string>
+    <string name="dialog_rington_cutter_button">Понял</string>
 
     <string name="first_launch_lyric_card_no_internet">Интернет необходим для загрузки изображений. Изображения будут загружаться один раз и будут кэшироваться для последующего использования.</string>
     <string name="first_launch_lyric_card">Первый запуск может занять некоторое время для загрузки изображений с наших серверов. Последующие запуски должны работать молниеносно!</string>

@@ -1327,11 +1327,21 @@ public class ActivityMain extends AppCompatActivity
         } else if(id == R.id.nav_saved_lyrics){
             startActivity(new Intent(this, ActivitySavedLyrics.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        } else if(id == R.id.nav_ringtone_cutter){
+            showRingtoneCutterDialog();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showRingtoneCutterDialog() {
+        new MyDialogBuilder(this)
+                .title(getString(R.string.action_ringtone_cutter))
+                .content(getString(R.string.dialog_ringtone_cutter))
+                .positiveText(getString(R.string.dialog_rington_cutter_button))
+                .show();
     }
 
     /**
@@ -2247,7 +2257,7 @@ public class ActivityMain extends AppCompatActivity
             updateNewDevMessageDot(true);
         }
 
-        navigationView.getMenu().findItem(R.id.nav_lyric_card).setActionView(R.layout.nav_item_lyric_card);
+        //navigationView.getMenu().findItem(R.id.nav_lyric_card).setActionView(R.layout.nav_item_lyric_card);  //showing new icon with color red
 
         //add upload image button
         /*if(BuildConfig.DEBUG){
