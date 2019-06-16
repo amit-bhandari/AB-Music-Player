@@ -191,8 +191,8 @@ public class FragmentAlbumArt extends Fragment{
 
                                 @Override
                                 public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    if(retryCount[0]>0) return true;
-                                    retryCount[0]++;
+                                    //if(retryCount[0]>0) return true;
+                                    //retryCount[0]++;
                                     return false;
                                 }
                             })
@@ -217,8 +217,8 @@ public class FragmentAlbumArt extends Fragment{
 
                                 @Override
                                 public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    if(retryCount[0]>0) return true;
-                                    retryCount[0]++;
+                                    //if(retryCount[0]>0) return true;
+                                    //retryCount[0]++;
                                     return false;
                                 }
                             })

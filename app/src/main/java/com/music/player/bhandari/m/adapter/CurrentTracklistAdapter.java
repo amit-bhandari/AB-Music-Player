@@ -216,7 +216,9 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
             case R.id.action_play:
                 playerService.playAtPositionFromNowPlaying(position);
                 notifyItemChanged(position);
-                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE));
+                Intent intent = new Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE);
+                intent.putExtra("skip_adapter_update", true);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                 break;
 
             case R.id.action_add_to_playlist:
@@ -345,6 +347,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
     }
 
     public void onClick(View view, int position) {
+        int oldPos = this.position;
         this.position=position;
         switch (view.getId()){
             case R.id.more:
@@ -365,10 +368,13 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
+                notifyItemChanged(oldPos);
                 notifyItemChanged(position);
                 if(position==playerService.getCurrentTrackPosition()){
                     playerService.play();
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE));
+                    Intent intent = new Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE);
+                    intent.putExtra("skip_adapter_update", true);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                     //playerService.notifyUI();
                 }else {
                     playerService.playAtPositionFromNowPlaying(position);

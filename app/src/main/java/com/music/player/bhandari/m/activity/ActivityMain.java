@@ -371,6 +371,7 @@ public class ActivityMain extends AppCompatActivity
         mReceiverForMiniPLayerUpdate=new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.d(Constants.TAG, "onReceive: Update UI");
                 updateUI(true);
             }
         };
@@ -651,6 +652,9 @@ public class ActivityMain extends AppCompatActivity
                     f.delete();
                 }
             }catch (Exception ignored){}
+
+            //invalidate spotify key
+            MyApp.getPref().edit().putLong("spoty_expiry_time", 0).apply();
 
         }
 
