@@ -169,6 +169,7 @@ public class FragmentAlbumArt extends Fragment{
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
 
             int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+            final int[] retryCount = {0};  //do not retry more than once to load image, results in stackoverflow error in some devices
             switch (defaultAlbumArtSetting){
                 case 0:
                     request.listener(new RequestListener<Uri, GlideDrawable>() {
@@ -181,7 +182,8 @@ public class FragmentAlbumArt extends Fragment{
                                         if(url!=null)
                                             request.load(Uri.parse(url))
                                                     .into(albumArt);
-                                        return true;
+                                        retryCount[0]++;
+                                        return retryCount[0] < 2; //retry only once
                                     }
                                     return false;
                                 }
@@ -205,7 +207,8 @@ public class FragmentAlbumArt extends Fragment{
                                         if(url!=null)
                                             request.load(Uri.parse(url))
                                                     .into(albumArt);
-                                        return true;
+                                        retryCount[0]++;
+                                        return retryCount[0] < 2;  //retry only once
                                     }
                                     return false;
                                 }

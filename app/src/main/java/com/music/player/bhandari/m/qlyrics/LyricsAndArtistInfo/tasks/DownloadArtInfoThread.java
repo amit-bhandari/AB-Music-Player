@@ -100,7 +100,7 @@ public class DownloadArtInfoThread extends Thread {
             }
 
             private String getImageUrl() {
-                String url = String.format(API_ROOT_URL_SPOTI+FORMAT_STRING_SPOTI, artist);
+                /*String url = String.format(API_ROOT_URL_SPOTI+FORMAT_STRING_SPOTI, artist);
                 String imageUrl = null;
                 JsonObject response;
                 try {
@@ -125,7 +125,8 @@ public class DownloadArtInfoThread extends Thread {
                 catch (Exception e){
                     Log.v(Constants.TAG,e.toString());
                 }
-                return imageUrl==null ? "" : imageUrl;
+                return imageUrl==null ? "" : imageUrl;*/
+                return "https://firebasestorage.googleapis.com/v0/b/ab-music.appspot.com/o/beautiful-cellphone-cute-761963.jpg?alt=media&token=017ece8a-5d6a-4dd3-a068-2425d45ac664";
             }
 
             private void threadMsg(ArtistInfo artistInfo) {
