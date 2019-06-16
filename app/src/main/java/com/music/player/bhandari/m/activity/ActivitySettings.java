@@ -365,6 +365,20 @@ public class ActivitySettings extends AppCompatActivity {
         final String MANROPE = "Manrope (Recommended)";
         final String ASAP = "Asap";
         final String SYSTEM_DEFAULT = "System Default";
+        final String ACLONICA = "Aclonica";
+        final String CHERRY_SWASH = "Cherry Swash";
+        final String CORBEN = "Corben";
+        final String NOVA_ROUND = "Nova (Round)";
+        final String NOVA_SCRIPT = "Nova (Script)";
+        final String PACIFITO = "Pacifito";
+        final String PURPLE_PURSE = "Purple Purse";
+        final String QUANTICO = "Quantico";
+        final String ROBOTO = "Roboto";
+        final String ROBOTO_C = "Roboto (Condensed)";
+        final String ROBOTO_M = "Roboto (Mono)";
+        final String TRADE_WINDS = "Trade Winds";
+        final String UBUNTU = "Ubuntu";
+
 
         final String LIST = "List View";
         final String GRID = "Grid View";
@@ -476,6 +490,58 @@ public class ActivitySettings extends AppCompatActivity {
 
                 case Constants.TYPEFACE.ASAP:
                     findPreference(getString(R.string.pref_text_font)).setSummary(ASAP);
+                    break;
+
+                case Constants.TYPEFACE.ACLONICA:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(ACLONICA);
+                    break;
+
+                case Constants.TYPEFACE.CHEERYSWASH:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(CHERRY_SWASH);
+                    break;
+
+                case Constants.TYPEFACE.CORBEN:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(CORBEN);
+                    break;
+
+                case Constants.TYPEFACE.NOVA_R:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(NOVA_ROUND);
+                    break;
+
+                case Constants.TYPEFACE.NOVA_S:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(NOVA_SCRIPT);
+                    break;
+
+                case Constants.TYPEFACE.PACFITO:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(PACIFITO);
+                    break;
+
+                case Constants.TYPEFACE.PURPLEPURSE:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(PURPLE_PURSE);
+                    break;
+
+                case Constants.TYPEFACE.QUATICO:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(QUANTICO);
+                    break;
+
+                case Constants.TYPEFACE.ROBOTO:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO);
+                    break;
+
+                case Constants.TYPEFACE.ROBOTO_C:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO_C);
+                    break;
+
+                case Constants.TYPEFACE.ROBOTO_M:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO_M);
+                    break;
+
+                case Constants.TYPEFACE.TRADE_WINDS:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(TRADE_WINDS);
+                    break;
+
+                case Constants.TYPEFACE.UBUNTU:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(UBUNTU);
                     break;
             }
             fontPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -1481,7 +1547,8 @@ public class ActivitySettings extends AppCompatActivity {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_text_font))
-                    .items((CharSequence[]) new String[]{ MANROPE, ASAP, MONOSPACE, SOFIA, SYSTEM_DEFAULT})
+                    .items((CharSequence[]) new String[]{ MANROPE, ASAP, MONOSPACE, SOFIA, ROBOTO, ROBOTO_C, ROBOTO_M,  ACLONICA, CHERRY_SWASH
+                            , CORBEN, NOVA_ROUND, NOVA_SCRIPT, PACIFITO, PURPLE_PURSE, QUANTICO, TRADE_WINDS, UBUNTU, SYSTEM_DEFAULT})
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -1506,6 +1573,71 @@ public class ActivitySettings extends AppCompatActivity {
                                     findPreference(getString(R.string.pref_text_font)).setSummary(ASAP);
                                     break;
 
+                                case ROBOTO:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO);
+                                    break;
+
+                                case ROBOTO_C:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO_C).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO_C);
+                                    break;
+
+                                case ROBOTO_M:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO_M).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO_M);
+                                    break;
+
+                                case ACLONICA:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ACLONICA).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(ACLONICA);
+                                    break;
+
+                                case CHERRY_SWASH:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.CHEERYSWASH).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(CHERRY_SWASH);
+                                    break;
+
+                                case CORBEN:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.CORBEN).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(CORBEN);
+                                    break;
+
+                                case NOVA_ROUND:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.NOVA_R).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(NOVA_ROUND);
+                                    break;
+
+                                case NOVA_SCRIPT:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.NOVA_S).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(NOVA_SCRIPT);
+                                    break;
+
+                                case PACIFITO:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PACFITO).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(PACIFITO);
+                                    break;
+
+                                case PURPLE_PURSE:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PURPLEPURSE).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(PURPLE_PURSE);
+                                    break;
+
+                                case QUANTICO:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.QUATICO).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(QUANTICO);
+                                    break;
+
+                                case TRADE_WINDS:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.TRADE_WINDS).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(TRADE_WINDS);
+                                    break;
+
+                                case UBUNTU:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.UBUNTU).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(UBUNTU);
+                                    break;
+
                                 case SYSTEM_DEFAULT:
                                     MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SYSTEM_DEFAULT).apply();
                                     findPreference(getString(R.string.pref_text_font)).setSummary(SYSTEM_DEFAULT);
@@ -1514,10 +1646,17 @@ public class ActivitySettings extends AppCompatActivity {
 
                             MyApp.getPref().edit().putBoolean(getString(R.string.pref_font_already_logged), false).apply();
 
-                            CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                            /*CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                                     .setDefaultFontPath(TypeFaceHelper.getTypeFacePath())
                                     .setFontAttrId(R.attr.fontPath)
-                                    .build());
+                                    .build());*/
+
+                            int id = TypeFaceHelper.getTypeFacePathId();
+                            if(id!=-1) {
+                                CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                                        .setDefaultFont(id)
+                                        .build());
+                            }
 
                             restartSettingsActivity();
                         }

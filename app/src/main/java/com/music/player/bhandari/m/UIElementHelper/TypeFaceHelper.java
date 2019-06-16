@@ -27,6 +27,7 @@ public class TypeFaceHelper {
 
     private static Typeface typeface = null;
     private static String typefacePath = "";
+    private static int typefaceId = R.font.manrope;
 
     public static Typeface getTypeFace(Context context) {
         if (typeface == null) {
@@ -89,4 +90,84 @@ public class TypeFaceHelper {
         return typefacePath;
     }
 
+    public static int getTypeFacePathId() {
+        switch (MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE)){
+            case Constants.TYPEFACE.SOFIA:
+                typefaceId = R.font.sofia;
+                break;
+
+            case Constants.TYPEFACE.MANROPE:
+                typefaceId = R.font.manrope;
+                break;
+
+            case Constants.TYPEFACE.SYSTEM_DEFAULT:
+                typefaceId = -1;
+                break;
+
+            case Constants.TYPEFACE.MONOSPACE:
+                typefaceId = R.font.monospace;
+                break;
+
+            case Constants.TYPEFACE.ASAP:
+                typefaceId = R.font.asap;
+                break;
+
+            case Constants.TYPEFACE.ACME:
+                typefaceId = R.font.acme;
+                break;
+
+            case Constants.TYPEFACE.ACLONICA:
+                typefaceId = R.font.aclonica;
+                break;
+
+            case Constants.TYPEFACE.CHEERYSWASH:
+                typefaceId = R.font.cherry_swash;
+                break;
+
+            case Constants.TYPEFACE.CORBEN:
+                typefaceId = R.font.corben;
+                break;
+
+            case Constants.TYPEFACE.NOVA_R:
+                typefaceId = R.font.nova_round;
+                break;
+
+            case Constants.TYPEFACE.NOVA_S:
+                typefaceId = R.font.nova_script;
+                break;
+
+            case Constants.TYPEFACE.PACFITO:
+                typefaceId = R.font.pacifico;
+                break;
+
+            case Constants.TYPEFACE.PURPLEPURSE:
+                typefaceId = R.font.purple_purse;
+                break;
+
+            case Constants.TYPEFACE.QUATICO:
+                typefaceId = R.font.quantico;
+                break;
+
+            case Constants.TYPEFACE.ROBOTO:
+                typefaceId = R.font.roboto;
+                break;
+
+            case Constants.TYPEFACE.ROBOTO_C:
+                typefaceId = R.font.roboto_condensed_regular;
+                break;
+
+            case Constants.TYPEFACE.ROBOTO_M:
+                typefaceId = R.font.roboto_mono;
+                break;
+
+            case Constants.TYPEFACE.TRADE_WINDS:
+                typefaceId = R.font.trade_winds;
+
+            case Constants.TYPEFACE.UBUNTU:
+                typefaceId = R.font.ubuntu;
+                break;
+        }
+
+        return typefaceId;
+    }
 }

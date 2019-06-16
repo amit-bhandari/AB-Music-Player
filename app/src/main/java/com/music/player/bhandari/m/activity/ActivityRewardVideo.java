@@ -53,10 +53,10 @@ public class ActivityRewardVideo extends AppCompatActivity {
     private boolean rewardGranted = false;
     private MaterialDialog dialog;
 
-    private int MIN_REWARD = 200;
-    private int MAX_REWARD = 500;
+    private int MIN_REWARD = 1500;
+    private int MAX_REWARD = 2500;
 
-    private int REWARD_AFTER_AD_IS_CLICKED = 1000;
+    private int REWARD_AFTER_AD_IS_CLICKED = 5000;
 
     private int pointsToBeRewarded;
 

@@ -125,6 +125,21 @@ public class Constants {
         int ASAP = 3;
         int SYSTEM_DEFAULT = 4;
         int ACME = 5;
+
+
+        int ACLONICA = 6;
+        int CHEERYSWASH = 7;
+        int CORBEN = 8;
+        int NOVA_R = 9;
+        int NOVA_S = 10;
+        int PACFITO = 11;
+        int PURPLEPURSE = 12;
+        int QUATICO = 13;
+        int ROBOTO = 14;
+        int ROBOTO_C = 15;
+        int ROBOTO_M = 16;
+        int TRADE_WINDS = 17;
+        int UBUNTU = 18;
     }
     public interface PREF_LAUNCHED_FROM{
         int MAIN = 0;

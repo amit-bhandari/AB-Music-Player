@@ -316,9 +316,9 @@
                     pop up menu for particular folder.</string>
         <string name="pos_how_to_add">Got it!</string>
 
-        <string name="reward_dialog_content">AB Music utilizes 2-7 reward points for displaying 1 lyric.
+        <string name="reward_dialog_content">AB Music utilizes 2 reward points for displaying 1 lyric.
             To refill reward points, click on Refill button below to watch an ad.
-            Your account will be refilled with anything between 200-500 reward points.
+            Your account will be refilled with anything between 1500-2500 reward points.
              </string>
         <string name="title_reward_points">Reward points!</string>
         <string name="pos_reward_points">Refill</string>

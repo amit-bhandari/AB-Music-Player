@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/aclonica</item>
         <item>@font/acme</item>
         <item>@font/bangers</item>
         <item>@font/berkshire_swash</item>
         <item>@font/bubblegum_sans</item>
         <item>@font/cabin_sketch_bold</item>
         <item>@font/caveat_brush</item>
+        <item>@font/cherry_swash</item>
         <item>@font/condiment</item>
+        <item>@font/corben</item>
         <item>@font/dosis_semibold</item>
         <item>@font/indie_flower</item>
+        <item>@font/nova_round</item>
+        <item>@font/nova_script</item>
+        <item>@font/pacifico</item>
+        <item>@font/purple_purse</item>
+        <item>@font/quantico</item>
+        <item>@font/roboto</item>
+        <item>@font/roboto_condensed_regular</item>
+        <item>@font/roboto_mono</item>
         <item>@font/roboto_slab</item>
         <item>@font/satisfy</item>
         <item>@font/slabo_27px</item>
+        <item>@font/trade_winds</item>
+        <item>@font/ubuntu</item>
         <item>@font/ubuntu_medium</item>
     </array>
 </resources>
