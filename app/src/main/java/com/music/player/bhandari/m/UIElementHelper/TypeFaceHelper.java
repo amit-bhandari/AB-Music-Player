@@ -166,6 +166,56 @@ public class TypeFaceHelper {
             case Constants.TYPEFACE.UBUNTU:
                 typefaceId = R.font.ubuntu;
                 break;
+
+            case Constants.TYPEFACE.CONCERT_ONCE:
+                typefaceId = R.font.concert_one;
+                break;
+
+            case Constants.TYPEFACE.LATO:
+                typefaceId = R.font.lato;
+                break;
+
+            case Constants.TYPEFACE.LATO_ITALIC:
+                typefaceId = R.font.lato_italic;
+                break;
+
+            case Constants.TYPEFACE.LORA:
+                typefaceId = R.font.lora;
+                break;
+
+            case Constants.TYPEFACE.MONTESERRAT:
+                typefaceId = R.font.montserrat;
+                break;
+
+            case Constants.TYPEFACE.OPEN_SANS_LIGHT:
+                typefaceId = R.font.open_sans_light;
+                break;
+
+            case Constants.TYPEFACE.OSWALD:
+                typefaceId = R.font.oswald;
+                break;
+
+            case Constants.TYPEFACE.PROMPT:
+                typefaceId = R.font.prompt;
+                break;
+
+            case Constants.TYPEFACE.PROMPT_MEDIUM:
+                typefaceId = R.font.prompt_medium;
+                break;
+
+            case Constants.TYPEFACE.PT_SANS_CAPTION:
+                typefaceId = R.font.pt_sans_caption_bold;
+
+            case Constants.TYPEFACE.RALEWAY:
+                typefaceId = R.font.raleway_medium;
+                break;
+
+            case Constants.TYPEFACE.SLABO:
+                typefaceId = R.font.slabo_13px;
+
+            case Constants.TYPEFACE.SOURCE_SANS_PRO:
+                typefaceId = R.font.source_sans_pro;
+                break;
         }
 
         return typefaceId;

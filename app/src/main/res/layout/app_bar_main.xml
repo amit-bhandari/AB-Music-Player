@@ -115,7 +115,7 @@
                             android:scrollHorizontally="true"
                             android:textColor="@color/colorwhite"
                             android:textSize="@dimen/abm_mini_player_artist"
-                            app:fontFamily="@font/open_sans_light" />
+                            app:fontFamily="@font/raleway_medium" />
 
                     </LinearLayout>
 

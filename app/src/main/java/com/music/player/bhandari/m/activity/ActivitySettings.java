@@ -379,6 +379,20 @@ public class ActivitySettings extends AppCompatActivity {
         final String TRADE_WINDS = "Trade Winds";
         final String UBUNTU = "Ubuntu";
 
+        final String CONCERT_ONE = "Concert One";
+        final String LATO = "Lato";
+        final String LATO_ITALIC = "Lato (Italic)";
+        final String LORA = "Lora";
+        final String MONTSERRAT = "Montserrat";
+        final String OPEN_SANS_LIGHT = "Open Sans Light";
+        final String OSWALD = "Oswald";
+        final String PROMPT = "Prompt";
+        final String PROMPY_MEDIUM = "Prompt (Medium)";
+        final String PT_SANS = "PT Sans";
+        final String RALEWAY = "Raleway";
+        final String SLABO = "Slabo";
+        final String SOURCE_SANS_PRO = "Source Sans Pro";
+
 
         final String LIST = "List View";
         final String GRID = "Grid View";
@@ -542,6 +556,58 @@ public class ActivitySettings extends AppCompatActivity {
 
                 case Constants.TYPEFACE.UBUNTU:
                     findPreference(getString(R.string.pref_text_font)).setSummary(UBUNTU);
+                    break;
+
+                case Constants.TYPEFACE.CONCERT_ONCE:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(CONCERT_ONE);
+                    break;
+
+                case Constants.TYPEFACE.LATO:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(LATO);
+                    break;
+
+                case Constants.TYPEFACE.LATO_ITALIC:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(LATO_ITALIC);
+                    break;
+
+                case Constants.TYPEFACE.LORA:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(LORA);
+                    break;
+
+                case Constants.TYPEFACE.MONTESERRAT:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(MONTSERRAT);
+                    break;
+
+                case Constants.TYPEFACE.OPEN_SANS_LIGHT:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(OPEN_SANS_LIGHT);
+                    break;
+
+                case Constants.TYPEFACE.OSWALD:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(OSWALD);
+                    break;
+
+                case Constants.TYPEFACE.PROMPT:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(PROMPT);
+                    break;
+
+                case Constants.TYPEFACE.PROMPT_MEDIUM:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(PROMPY_MEDIUM);
+                    break;
+
+                case Constants.TYPEFACE.PT_SANS_CAPTION:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(PT_SANS);
+                    break;
+
+                case Constants.TYPEFACE.RALEWAY:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(RALEWAY);
+                    break;
+
+                case Constants.TYPEFACE.SLABO:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(SLABO);
+                    break;
+
+                case Constants.TYPEFACE.SOURCE_SANS_PRO:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(SOURCE_SANS_PRO);
                     break;
             }
             fontPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -1547,8 +1613,11 @@ public class ActivitySettings extends AppCompatActivity {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_text_font))
-                    .items((CharSequence[]) new String[]{ MANROPE, ASAP, MONOSPACE, SOFIA, ROBOTO, ROBOTO_C, ROBOTO_M,  ACLONICA, CHERRY_SWASH
-                            , CORBEN, NOVA_ROUND, NOVA_SCRIPT, PACIFITO, PURPLE_PURSE, QUANTICO, TRADE_WINDS, UBUNTU, SYSTEM_DEFAULT})
+                    .items((CharSequence[]) new String[]{ MANROPE, ASAP, ROBOTO, SOFIA, ROBOTO_C, ROBOTO_M,SOURCE_SANS_PRO,  ACLONICA,
+                            CONCERT_ONE, LATO, LATO_ITALIC, LORA, MONTSERRAT, OPEN_SANS_LIGHT, OSWALD, PROMPT
+                            ,PROMPY_MEDIUM, PT_SANS, RALEWAY,SLABO,CHERRY_SWASH
+                            , CORBEN, NOVA_ROUND, NOVA_SCRIPT, PACIFITO,  QUANTICO, TRADE_WINDS, UBUNTU
+                            , MONOSPACE, PURPLE_PURSE, SYSTEM_DEFAULT})
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -1636,6 +1705,71 @@ public class ActivitySettings extends AppCompatActivity {
                                 case UBUNTU:
                                     MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.UBUNTU).apply();
                                     findPreference(getString(R.string.pref_text_font)).setSummary(UBUNTU);
+                                    break;
+
+                                case CONCERT_ONE:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.CONCERT_ONCE).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(CONCERT_ONE);
+                                    break;
+
+                                case LATO:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.LATO).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(LATO);
+                                    break;
+
+                                case LATO_ITALIC:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.LATO_ITALIC).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(LATO_ITALIC);
+                                    break;
+
+                                case LORA:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.LORA).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(LORA);
+                                    break;
+
+                                case MONTSERRAT:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONTESERRAT).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(MONTSERRAT);
+                                    break;
+
+                                case OPEN_SANS_LIGHT:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.OPEN_SANS_LIGHT).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(OPEN_SANS_LIGHT);
+                                    break;
+
+                                case OSWALD:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.OSWALD).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(OSWALD);
+                                    break;
+
+                                case PROMPT:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PROMPT).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(PROMPT);
+                                    break;
+
+                                case PROMPY_MEDIUM:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PROMPT_MEDIUM).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(PROMPY_MEDIUM);
+                                    break;
+
+                                case PT_SANS:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PT_SANS_CAPTION).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(PT_SANS);
+                                    break;
+
+                                case RALEWAY:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.RALEWAY).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(RALEWAY);
+                                    break;
+
+                                case SLABO:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SLABO).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(SLABO);
+                                    break;
+
+                                case SOURCE_SANS_PRO:
+                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOURCE_SANS_PRO).apply();
+                                    findPreference(getString(R.string.pref_text_font)).setSummary(SOURCE_SANS_PRO);
                                     break;
 
                                 case SYSTEM_DEFAULT:
