@@ -8,8 +8,7 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_height="match_parent">
 
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,7 +25,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:theme="@style/AppTheme.AppBarOverlay"
         android:fitsSystemWindows="false">
 
@@ -65,8 +63,7 @@
 
                 <FrameLayout
                     android:layout_weight="5"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_width="match_parent">
 
                     <com.sackcentury.shinebuttonlib.ShineButton
                         android:id="@+id/shineButton"
@@ -90,7 +87,6 @@
 
                     <com.music.player.bhandari.m.customViews.CustomViewPager
                         android:id="@+id/view_pager_now_playing"
-                        xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
