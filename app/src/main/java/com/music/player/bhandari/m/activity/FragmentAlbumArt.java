@@ -169,7 +169,6 @@ public class FragmentAlbumArt extends Fragment{
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
 
             int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
-            final int[] retryCount = {0};  //do not retry more than once to load image, results in stackoverflow error in some devices
             switch (defaultAlbumArtSetting){
                 case 0:
                     request.listener(new RequestListener<Uri, GlideDrawable>() {
@@ -182,15 +181,14 @@ public class FragmentAlbumArt extends Fragment{
                                         if(url!=null)
                                             request.load(Uri.parse(url))
                                                     .into(albumArt);
-                                        retryCount[0]++;
-                                        return retryCount[0] < 2; //retry only once
+                                        return true;
                                     }
                                     return false;
                                 }
 
                                 @Override
                                 public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    return false;
+                                    return true;
                                 }
                             })
                             .placeholder(R.drawable.ic_batman_1);
@@ -207,15 +205,14 @@ public class FragmentAlbumArt extends Fragment{
                                         if(url!=null)
                                             request.load(Uri.parse(url))
                                                     .into(albumArt);
-                                        retryCount[0]++;
-                                        return retryCount[0] < 2;  //retry only once
+                                        return true;
                                     }
                                     return false;
                                 }
 
                                 @Override
                                 public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    return false;
+                                    return true;
                                 }
                             })
                             .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
