@@ -18,17 +18,6 @@ buildscript {
 
 apply plugin: 'com.github.triplet.play'
 
-// Load keystore
-def keystorePropertiesFile = rootProject.file("/home/ab/studioprojects/keys/keystore.properties")
-def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
-/*play {
-    track = 'internal'
-    serviceAccountEmail = keystoreProperties['serviceEmail']
-    pk12File = file(keystoreProperties['p12keyFile'])
-}*/
-
 android {
 
     compileSdkVersion 28
@@ -109,10 +98,17 @@ android {
 
     signingConfigs{
        release {
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
+           def keystorePropertiesFile = rootProject.file("keystore.properties")
+
+           if(keystorePropertiesFile.exists()){
+               def keystoreProperties = new Properties()
+               keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+               storeFile file(keystoreProperties['storeFile'])
+               storePassword keystoreProperties['storePassword']
+               keyAlias keystoreProperties['keyAlias']
+               keyPassword keystoreProperties['keyPassword']
+           }
         }
     }
 
