@@ -611,7 +611,7 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ * New icon and default album art for AB Music. \n\n* Master Volume Gain from Equalizer (Make AB Music loud!).  \n\n* Some small issues faced by users fixed. \n\n* Some minor UI tweaks. \n\n* Bug fixes from last release.]]></string>
+    <string name="whats_new"><![CDATA[ * Changed source of artist images to Spotify now. \n\n* Bugs removal and performance improvement. ]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
