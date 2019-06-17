@@ -559,18 +559,27 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
     private void fillFonts(){
         requestDownload(new QueryBuilder("Ubuntu").build());  //unique
-        requestDownload(new QueryBuilder("Roboto Slab").build());  //unique
+        requestDownload(new QueryBuilder("Trade Winds").build());  //unique
         requestDownload(new QueryBuilder("Indie Flower").build());  //unique
         requestDownload(new QueryBuilder("Satisfy").build());  //unique
-        requestDownload(new QueryBuilder("Berkshire Swash").build());  //r
-        requestDownload(new QueryBuilder("Bubblegum Sans").build()); //good
+        requestDownload(new QueryBuilder("Roboto Slab").build());  //unique
         requestDownload(new QueryBuilder("Cabin Sketch").build()); //good
-        requestDownload(new QueryBuilder("Caveat Brush").build()); //good
         requestDownload(new QueryBuilder("Condiment").build()); //good cursue
-        requestDownload(new QueryBuilder("Slabo 27px").build());  //unique
-        requestDownload(new QueryBuilder("Acme").build());  //unique
-        requestDownload(new QueryBuilder("Dosis").build());  //unique
-        requestDownload(new QueryBuilder("Bangers").build());  //unique
+        requestDownload(new QueryBuilder("Caveat Brush").build());
+        requestDownload(new QueryBuilder("Cherry Swash").build());  //unique
+        requestDownload(new QueryBuilder("Concert One").build());  //unique
+        requestDownload(new QueryBuilder("Nova Round").build());  //unique
+        requestDownload(new QueryBuilder("Nova Script").build());  //unique
+        requestDownload(new QueryBuilder("Pacifico").build());  //unique
+        requestDownload(new QueryBuilder("Prompt").build());  //unique
+        requestDownload(new QueryBuilder("Purple Purse").build());  //unique
+        requestDownload(new QueryBuilder("Quantico").build());  //unique
+        requestDownload(new QueryBuilder("name=Raleway&amp;weight=700").build());  //unique
+        requestDownload(new QueryBuilder("Roboto").build());  //unique
+        requestDownload(new QueryBuilder("Slabo 13px").build());  //unique
+        requestDownload(new QueryBuilder("Source Sans Pro").build());  //unique
+        requestDownload(new QueryBuilder("Montserrat").build());  //unique1
+        requestDownload(new QueryBuilder("Lora").build());
     }
 
     private void requestDownload(String query) {
