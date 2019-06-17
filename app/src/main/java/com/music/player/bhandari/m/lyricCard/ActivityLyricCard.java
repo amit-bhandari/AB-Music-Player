@@ -558,10 +558,10 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
     }
 
     private void fillFonts(){
-        requestDownload(new QueryBuilder("Ubuntu").build());  //unique
         requestDownload(new QueryBuilder("Trade Winds").build());  //unique
         requestDownload(new QueryBuilder("Indie Flower").build());  //unique
         requestDownload(new QueryBuilder("Satisfy").build());  //unique
+        requestDownload(new QueryBuilder("Ubuntu").build());  //unique
         requestDownload(new QueryBuilder("Roboto Slab").build());  //unique
         requestDownload(new QueryBuilder("Cabin Sketch").build()); //good
         requestDownload(new QueryBuilder("Condiment").build()); //good cursue
@@ -641,24 +641,17 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
 
     private void changeAlignment(){
         switch (currentTextAlignment){
-            case 0:
-                lyricText.setGravity(Gravity.CENTER);
-                artistText.setGravity(Gravity.CENTER);
-                trackText.setGravity(Gravity.CENTER);
-                currentTextAlignment = 1;
-                break;
-
             case 1:
-                lyricText.setGravity(Gravity.RIGHT);
-                artistText.setGravity(Gravity.RIGHT);
-                trackText.setGravity(Gravity.RIGHT);
+                lyricText.setGravity(Gravity.END);
+                artistText.setGravity(Gravity.END);
+                trackText.setGravity(Gravity.END);
                 currentTextAlignment = 2;
                 break;
 
             case 2:
-                lyricText.setGravity(Gravity.LEFT);
-                artistText.setGravity(Gravity.LEFT);
-                trackText.setGravity(Gravity.LEFT);
+                lyricText.setGravity(Gravity.START);
+                artistText.setGravity(Gravity.START);
+                trackText.setGravity(Gravity.START);
                 currentTextAlignment = 0;
                 break;
 

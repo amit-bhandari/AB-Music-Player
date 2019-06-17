@@ -26,18 +26,18 @@
 
         <!-- Extra parent for weight adjustment and inner frame layout for square image-->
         <FrameLayout
-
+            android:id="@+id/dragView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
             android:layout_weight="8">
 
-            <com.music.player.bhandari.m.customViews.FixedAspectRatioFrameLayout
+            <!--<com.music.player.bhandari.m.customViews.FixedAspectRatioFrameLayout
                 android:id="@+id/dragView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                >
+                >-->
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -81,7 +81,10 @@
 
                 <com.music.player.bhandari.m.customViews.ZoomTextView
                     android:id="@+id/text_track"
-                    android:layout_margin="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="10dp"
                     android:lineSpacingExtra="2sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,8 +104,8 @@
                     tools:ignore="ContentDescription"
                     android:layout_marginRight="5dp" />
 
-
-            </com.music.player.bhandari.m.customViews.FixedAspectRatioFrameLayout>
+<!--
+            </com.music.player.bhandari.m.customViews.FixedAspectRatioFrameLayout>-->
 
         </FrameLayout>
 
