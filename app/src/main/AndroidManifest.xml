@@ -17,8 +17,8 @@
     <!-- Needed for android 9 (p)-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <compatible-screens>
-        <!-- all small size screens -->
+    <!--<compatible-screens>
+        &lt;!&ndash; all small size screens &ndash;&gt;
         <screen android:screenSize="small" android:screenDensity="ldpi" />
         <screen android:screenSize="small" android:screenDensity="mdpi" />
         <screen android:screenSize="small" android:screenDensity="hdpi" />
@@ -26,7 +26,7 @@
         <screen android:screenSize="small" android:screenDensity="480" />
         <screen android:screenSize="small" android:screenDensity="640" />
 
-        <!-- all normal size screens -->
+        &lt;!&ndash; all normal size screens &ndash;&gt;
         <screen android:screenSize="normal" android:screenDensity="ldpi" />
         <screen android:screenSize="normal" android:screenDensity="mdpi" />
         <screen android:screenSize="normal" android:screenDensity="hdpi" />
@@ -38,7 +38,7 @@
         <screen android:screenSize="normal" android:screenDensity="560" />
         <screen android:screenSize="normal" android:screenDensity="640" />
 
-        <!-- all hd size screens -->
+        &lt;!&ndash; all hd size screens &ndash;&gt;
         <screen android:screenSize="large" android:screenDensity="ldpi" />
         <screen android:screenSize="large" android:screenDensity="mdpi" />
         <screen android:screenSize="large" android:screenDensity="hdpi" />
@@ -46,7 +46,7 @@
         <screen android:screenSize="large" android:screenDensity="xxhdpi" />
         <screen android:screenSize="large" android:screenDensity="xxxhdpi" />
 
-        <!-- all xlarge hd size screens -->
+        &lt;!&ndash; all xlarge hd size screens &ndash;&gt;
         <screen android:screenSize="xlarge" android:screenDensity="ldpi" />
         <screen android:screenSize="xlarge" android:screenDensity="mdpi" />
         <screen android:screenSize="xlarge" android:screenDensity="hdpi" />
@@ -54,7 +54,7 @@
         <screen android:screenSize="xlarge" android:screenDensity="xxhdpi" />
         <screen android:screenSize="xlarge" android:screenDensity="xxxhdpi" />
 
-    </compatible-screens>
+    </compatible-screens>-->
 
     <application
         android:name="com.music.player.bhandari.m.MyApp"
@@ -76,7 +76,7 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_batman_kitkat" />
         <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+             notification mehuassage. See README(https://goo.gl/6BKBk7) for more. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/pw_accent" />
