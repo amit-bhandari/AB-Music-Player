@@ -835,12 +835,12 @@ public class ActivityMain extends AppCompatActivity
                                                             .into(albumArt);
                                                 return true;
                                             }
-                                            return true;
+                                            return false;
                                         }
 
                                         @Override
                                         public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            return true;
+                                            return false;
                                         }
                                     })
                                     .placeholder(R.drawable.ic_batman_1);
