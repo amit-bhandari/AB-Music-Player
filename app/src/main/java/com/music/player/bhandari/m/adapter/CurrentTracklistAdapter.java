@@ -83,6 +83,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
     private LayoutInflater inflater;
     //current playing position
     private int position=0;
+    private int tempPosition = 0; //temporary variable to hold position for onMenuItemClick
     private Handler handler;
 
     public CurrentTracklistAdapter(Context context, OnStartDragListener dragStartListener){
@@ -214,7 +215,10 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_play:
-                playerService.playAtPositionFromNowPlaying(position);
+                int oldPos = this.position;
+                this.position = this.tempPosition;
+                playerService.playAtPositionFromNowPlaying(this.tempPosition);
+                notifyItemChanged(oldPos);
                 notifyItemChanged(position);
                 Intent intent = new Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE);
                 intent.putExtra("skip_adapter_update", true);
@@ -347,8 +351,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
     }
 
     public void onClick(View view, int position) {
-        int oldPos = this.position;
-        this.position=position;
+        this.tempPosition = position;
         switch (view.getId()){
             case R.id.more:
                 PopupMenu popup = new PopupMenu(context, view);
@@ -364,6 +367,8 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
 
             case R.id.trackItemDraggable:
+                int oldPos = this.position;
+                this.position=position;
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
                     return;
                 }
@@ -380,14 +385,6 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                     playerService.playAtPositionFromNowPlaying(position);
                     Log.v(Constants.TAG,position+"  position");
                 }
-
-                /*if(context instanceof ActivityNowPlaying){
-                    if(playerService.getStatus()==PlayerService.PLAYING){
-                        startUpdateTask();
-                    }else {
-                        stopUpdateTask();
-                    }
-                }*/
                 break;
         }
     }
