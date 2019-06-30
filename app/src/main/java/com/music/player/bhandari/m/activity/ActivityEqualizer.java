@@ -368,11 +368,15 @@ public class ActivityEqualizer extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        EqualizerSetting equalizerSetting = getCurrentEquSetting();
-        MyApp.getService().getEqualizerHelper().storeLastEquSetting(equalizerSetting);
-        Log.d("ActivityEqualizer", "onPause: stored equ setting : " + equalizerSetting.toString());
-        mAdView.pause();
-        MyApp.isAppVisible = false;
+        try{
+            EqualizerSetting equalizerSetting = getCurrentEquSetting();
+            MyApp.getService().getEqualizerHelper().storeLastEquSetting(equalizerSetting);
+            Log.d("ActivityEqualizer", "onPause: stored equ setting : " + equalizerSetting.toString());
+            mAdView.pause();
+            MyApp.isAppVisible = false;
+        }catch (Exception ignore){
+
+        }
         super.onPause();
     }
 

@@ -316,9 +316,9 @@
                     pop up menu for particular folder.</string>
         <string name="pos_how_to_add">Got it!</string>
 
-        <string name="reward_dialog_content">AB Music utilizes 2-7 reward points for displaying 1 lyric.
+        <string name="reward_dialog_content">AB Music utilizes 2 reward points for displaying 1 lyric.
             To refill reward points, click on Refill button below to watch an ad.
-            Your account will be refilled with anything between 200-500 reward points.
+            Your account will be refilled with anything between 1500-2500 reward points.
              </string>
         <string name="title_reward_points">Reward points!</string>
         <string name="pos_reward_points">Refill</string>
@@ -400,7 +400,8 @@
 
         <string name="cont_playback_content">Enabling this makes sure that Music Playback will go on continuously (Even if Queue is empty). This feature is in Beta stage.</string>
 
-
+        <string name="dialog_ringtone_cutter">Did you know, you can cut Ringtone out of your favorite song in AB Music. \n\n Just press 3 dot icon on right hand side of any track and select \'Set as Ringtone\' option to get started with Ringtone Cutter.</string>
+        <string name="dialog_rington_cutter_button">Got it</string>
     <!--first time info messages -->
         <string name="music_lock_primary">Try music lock feature</string>
         <string name="music_lock_secondary">Tap the button to lock the music!</string>
@@ -478,6 +479,7 @@
         <string name="title_text_font">Font</string>
         <string name="title_misc">Miscellaneous</string>
         <string name="title_try_my_new_app">AB Remote Wallpaper</string>
+        <string name="title_ringtone_cutter">Ringtone Cutter</string>
         <string name="title_continous_playback">Continuous Playback</string>
         <string name="title_batch_download">Batch Lyrics Download</string>
         <string name="title_hide_lock_button">Hide Music Lock Button</string>
@@ -611,7 +613,7 @@
             <item>#43abc9</item>
         </string-array>
 
-    <string name="whats_new"><![CDATA[ * New icon and default album art for AB Music. \n\n* Master Volume Gain from Equalizer (Make AB Music loud!).  \n\n* Some small issues faced by users fixed. \n\n* Some minor UI tweaks. \n\n* Bug fixes from last release.]]></string>
+    <string name="whats_new"><![CDATA[ * Changed source of artist images to Spotify now. \n\n* Added lots of new fonts. \n\n* New background images and fonts added in lyrics card screen. \n\n* Bugs removal and performance improvement. ]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
@@ -1138,5 +1140,6 @@ that this copyright notice remain intact.</string>
 		aliquet quis orci. Curabitur maximus augue ut bibendum sagittis.
 	</string>
     <string name="no_saved_lyrics">No saved lyrics :(</string>
+
 
 </resources>

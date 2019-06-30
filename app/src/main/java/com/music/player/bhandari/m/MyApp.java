@@ -64,10 +64,18 @@ public class MyApp extends Application {
         }
         LeakCanary.install(this);
 
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+        /*CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath(TypeFaceHelper.getTypeFacePath())
                         .setFontAttrId(R.attr.fontPath)
-                        .build());
+                        .build());*/
+
+        int id = TypeFaceHelper.getTypeFacePathId();
+
+        if(id!=-1) {
+            CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                    .setDefaultFont(id)
+                    .build());
+        }
 
         //this stops crash reports, that's why removed
         /*Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()

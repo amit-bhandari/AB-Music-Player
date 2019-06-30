@@ -397,7 +397,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.v(Constants.TAG, "update UI__ please Jarvis");
-                UpdateUI();
+                UpdateUI(intent);
             }
         };
 
@@ -628,13 +628,17 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         super.onDestroy();
     }
 
-    private void UpdateUI() {
+    private void UpdateUI(Intent receivedIntent) {  //intent carries information if only particular item needs to be updated in adapter
 
         Log.d("ActivityNowPlaying", "UpdateUI: " + Log.getStackTraceString(new Exception()));
 
         if(playerService!=null) {
             TrackItem item = playerService.getCurrentTrack();
-            if(mAdapter!=null) mAdapter.notifyDataSetChanged();
+            if(mAdapter!=null) {
+                if(receivedIntent==null || !receivedIntent.getBooleanExtra("skip_adapter_update", false)){
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
             invalidateOptionsMenu();
 
             if (item != null) {
@@ -796,7 +800,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             playerService = MyApp.getService();
         }
 
-        UpdateUI();
+        UpdateUI(null);
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mUIUpdateReceiver
                 ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
@@ -1221,17 +1225,17 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
             case KeyEvent.KEYCODE_MEDIA_NEXT:
                 playerService.nextTrack();
-                UpdateUI();
+                UpdateUI(null);
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 playerService.prevTrack();
-                UpdateUI();
+                UpdateUI(null);
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_STOP:
                 playerService.stop();
-                UpdateUI();
+                UpdateUI(null);
                 break;
 
             case KeyEvent.KEYCODE_BACK:

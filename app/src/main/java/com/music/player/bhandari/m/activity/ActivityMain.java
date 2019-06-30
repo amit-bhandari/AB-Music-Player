@@ -371,6 +371,7 @@ public class ActivityMain extends AppCompatActivity
         mReceiverForMiniPLayerUpdate=new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.d(Constants.TAG, "onReceive: Update UI");
                 updateUI(true);
             }
         };
@@ -624,7 +625,7 @@ public class ActivityMain extends AppCompatActivity
                     .dismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialogInterface) {
-                            Toast.makeText(getApplicationContext(), "Artist Information local sync started in background.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "Artist Information local sync started in background.", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .build();
@@ -651,6 +652,9 @@ public class ActivityMain extends AppCompatActivity
                     f.delete();
                 }
             }catch (Exception ignored){}
+
+            //invalidate spotify key
+            MyApp.getPref().edit().putLong("spoty_expiry_time", 0).apply();
 
         }
 
@@ -822,11 +826,11 @@ public class ActivityMain extends AppCompatActivity
                                     .listener(new RequestListener<Uri, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            //Log.d("AlbumLibraryAdapter", "onException: ");
+                                            Log.d("AlbumLibraryAdapter", "onException: ");
                                             if(UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null)
+                                                if(url!=null && !url.isEmpty())
                                                     request.load(Uri.parse(url))
                                                             .into(albumArt);
                                                 return true;
@@ -847,11 +851,11 @@ public class ActivityMain extends AppCompatActivity
                                     .listener(new RequestListener<Uri, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            //Log.d("AlbumLibraryAdapter", "onException: ");
+                                            Log.d("AlbumLibraryAdapter", "onException: ");
                                             if(UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null)
+                                                if(url!=null && !url.isEmpty())
                                                     request.load(Uri.parse(url))
                                                             .into(albumArt);
                                                 return true;
@@ -1323,11 +1327,21 @@ public class ActivityMain extends AppCompatActivity
         } else if(id == R.id.nav_saved_lyrics){
             startActivity(new Intent(this, ActivitySavedLyrics.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        } else if(id == R.id.nav_ringtone_cutter){
+            showRingtoneCutterDialog();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showRingtoneCutterDialog() {
+        new MyDialogBuilder(this)
+                .title(getString(R.string.action_ringtone_cutter))
+                .content(getString(R.string.dialog_ringtone_cutter))
+                .positiveText(getString(R.string.dialog_rington_cutter_button))
+                .show();
     }
 
     /**
@@ -2243,7 +2257,7 @@ public class ActivityMain extends AppCompatActivity
             updateNewDevMessageDot(true);
         }
 
-        navigationView.getMenu().findItem(R.id.nav_lyric_card).setActionView(R.layout.nav_item_lyric_card);
+        //navigationView.getMenu().findItem(R.id.nav_lyric_card).setActionView(R.layout.nav_item_lyric_card);  //showing new icon with color red
 
         //add upload image button
         /*if(BuildConfig.DEBUG){

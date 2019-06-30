@@ -54,7 +54,7 @@ android {
         versionProps.store(versionPropsFile.newWriter(), null)
 
         // 1: change major and minor version here
-        mVersionName = "v9.0.${versionProps['VERSION_PATCH']}"
+        mVersionName = "v10.0.${versionProps['VERSION_PATCH']}"
         // 2: change AppName for your app name
         mFileName = "AB-Music-${mVersionName}.apk"
 
@@ -187,7 +187,8 @@ dependencies {
     implementation 'com.sackcentury:shinebutton:0.1.7'
 
     //dialogs
-    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+    //implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+    implementation project(':dialogs')
 
     //firebase
     implementation 'com.google.firebase:firebase-ads:17.1.3'
@@ -215,7 +216,8 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
 
     //font
-    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+    //implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+    implementation 'com.github.takahirom.downloadable.calligraphy:downloadable-calligraphy:0.1.3'
 
     //flow layout
     implementation 'com.google.android:flexbox:1.0.0'

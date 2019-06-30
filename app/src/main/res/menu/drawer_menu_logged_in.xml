@@ -17,6 +17,11 @@
             android:title="@string/title_try_my_new_app" />
 
         <item
+            android:id="@+id/nav_ringtone_cutter"
+            android:icon="@drawable/ic_content_cut_black_24dp"
+            android:title="@string/title_ringtone_cutter" />
+
+        <item
             android:id="@+id/nav_rewards"
             android:icon="@drawable/ic_card_giftcard_black_24dp"
             android:title="@string/nav_rewards" />

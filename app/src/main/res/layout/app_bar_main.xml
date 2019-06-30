@@ -104,16 +104,17 @@
                             android:id="@+id/artist_mini_player"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/abm_mini_player_artist"
+                            android:layout_gravity="start|center_vertical"
                             android:layout_weight="1"
                             android:ellipsize="end"
-                            android:scrollHorizontally="true"
-                            android:layout_gravity="start|center_vertical"
-                            android:maxLines="1"
                             android:gravity="center_vertical"
+                            android:maxLines="1"
                             android:paddingLeft="@dimen/abm_title_and_art_padd"
                             android:paddingRight="@dimen/abm_title_and_art_padd"
-                            android:textColor="@color/colorwhite"/>
+                            android:scrollHorizontally="true"
+                            android:textColor="@color/colorwhite"
+                            android:textSize="@dimen/abm_mini_player_artist"
+                            app:fontFamily="@font/raleway_medium" />
 
                     </LinearLayout>
 

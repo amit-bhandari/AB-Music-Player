@@ -120,7 +120,7 @@
                     android:textSize="14sp"
                     android:textColor="@color/colorwhite"
                     android:typeface="sans"
-                    app:fontFamily="@font/roboto_slab"
+                    app:fontFamily="@font/lato"
                     android:layout_weight="2"
                     android:text="00:00"
                     card_view:ignore="HardcodedText" />
@@ -134,7 +134,7 @@
                     android:layout_gravity="end"
                     android:textSize="14sp"
                     android:typeface="sans"
-                    app:fontFamily="@font/roboto_slab"
+                    app:fontFamily="@font/lato"
                     android:textColor="@color/colorwhite"
                     android:layout_weight="2"
                     android:text="00:00"
