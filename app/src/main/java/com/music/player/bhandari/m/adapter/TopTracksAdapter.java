@@ -83,7 +83,7 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
         holder.trackName.setText(trackInfo);
         holder.playCount.setText(playcount);
 
-        Glide.with(context)
+        /*Glide.with(context)
                 .load(trackList.get(position).imageUrl)
                 .asBitmap()
                 .thumbnail(0.5f)
@@ -93,7 +93,7 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         holder.imageView.setImageBitmap(resource);
                     }
-                });
+                });*/
     }
 
     @Override
