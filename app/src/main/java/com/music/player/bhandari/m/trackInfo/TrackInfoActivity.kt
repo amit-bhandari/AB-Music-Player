@@ -273,7 +273,7 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
         }
 
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): MyViewHolder {
-            val v = LayoutInflater.from(MyApp.getContext()).inflate(R.layout.track_item_explore_lyrics, p0, false)
+            val v = LayoutInflater.from(MyApp.getContext()).inflate(R.layout.track_item_square_image, p0, false)
             return MyViewHolder(v)
         }
 
@@ -282,18 +282,6 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
             p0.trackTitle.setTextColor(ColorHelper.getColor(R.color.colorwhite))
             p0.secondaryText.setTextColor(ColorHelper.getColor(R.color.colorwhite))
             p0.secondaryText.text = tracks[p1].secondaryText
-            //p0.trackTitle.setOnClickListener(p0)
-            Glide.with(context).load(tracks[p1].imageUrl).asBitmap()
-                    .thumbnail(0.5f)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(object: SimpleTarget<Bitmap>(){
-                        override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                            p0.imageView.setImageBitmap(resource)
-                        }
-                    })
-            p0.itemView.setOnClickListener {
-
-            }
         }
 
         override fun getItemCount(): Int {

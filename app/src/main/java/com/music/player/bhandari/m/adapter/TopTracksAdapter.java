@@ -72,7 +72,7 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.track_item_explore_lyrics, parent, false);
+        View view = inflater.inflate(R.layout.track_item_square_image, parent, false);
         return new MyViewHolder (view);
     }
 
@@ -82,18 +82,6 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
         String playcount = "Playcount - " + trackList.get(position).playCount;
         holder.trackName.setText(trackInfo);
         holder.playCount.setText(playcount);
-
-        /*Glide.with(context)
-                .load(trackList.get(position).imageUrl)
-                .asBitmap()
-                .thumbnail(0.5f)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new SimpleTarget<Bitmap>(300, 300) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                        holder.imageView.setImageBitmap(resource);
-                    }
-                });*/
     }
 
     @Override
@@ -140,7 +128,7 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
 
         @BindView(R.id.trackInfo) TextView trackName;
         @BindView(R.id.playCount) TextView playCount;
-        @BindView(R.id.imageView) RoundedImageView imageView;
+        @BindView(R.id.imageView) ImageView imageView;
         @BindView(R.id.more) ImageView overflow;
         MyViewHolder(View itemView) {
             super(itemView);
