@@ -637,7 +637,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     return;
                 }
 
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 300){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
@@ -655,7 +655,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 break;
 
             case R.id.next_mini_plaayrer:
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();

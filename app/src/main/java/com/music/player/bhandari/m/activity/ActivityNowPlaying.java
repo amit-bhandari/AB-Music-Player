@@ -1582,7 +1582,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             Toast.makeText(this,getString(R.string.nothing_to_play),Toast.LENGTH_LONG).show();
             return;
         }
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
             return;
         }
         mLastClickTime = SystemClock.elapsedRealtime();
@@ -1598,7 +1598,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             Toast.makeText(this,getString(R.string.nothing_to_play),Toast.LENGTH_LONG).show();
             return;
         }
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
             return;
         }
         mLastClickTime = SystemClock.elapsedRealtime();

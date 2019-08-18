@@ -1835,7 +1835,7 @@ public class ActivityMain extends AppCompatActivity
                     return;
                 }
 
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 300){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
@@ -1855,7 +1855,7 @@ public class ActivityMain extends AppCompatActivity
             case R.id.next_mini_plaayrer:
                 ColorSwitchRunnableForImageView colorSwitchRunnableNext = new ColorSwitchRunnableForImageView((ImageView) view);
                 mHandler.post(colorSwitchRunnableNext);
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
