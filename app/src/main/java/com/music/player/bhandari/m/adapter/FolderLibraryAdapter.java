@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
@@ -79,8 +80,11 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
     private View viewParent;
 
     private PlayerService playerService;
-    
     private boolean backPressedOnce = false;
+
+    //for restoring state on coming back to folder list
+    private Parcelable recyclerViewState;
+    private RecyclerView rv;
 
     public FolderLibraryAdapter(Context context){
         //create first page for folder fragment
@@ -132,6 +136,8 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         Collections.sort(filteredHeaders);
         notifyDataSetChanged();
         isHomeFolder =true;
+
+        if(rv!=null && rv.getLayoutManager()!=null) rv.getLayoutManager().onRestoreInstanceState(recyclerViewState);
     }
 
     private boolean isFileExtensionValid(File f) {
@@ -252,6 +258,18 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         return filteredHeaders.size();
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        rv = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        rv = null;
+    }
+
     public void onClick(View view, int position){
         Log.d("FolderLibraryAdapter", "onClick: " + position);
         clickedItemPosition = position;
@@ -261,10 +279,10 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             case R.id.libraryItem:
                 if(clickedFile.isDirectory()) {
                     //update list here
+                    if(rv.getLayoutManager() != null) recyclerViewState = rv.getLayoutManager().onSaveInstanceState();
                     refreshList(clickedFile);
                     isHomeFolder =false;
-                }
-                else{
+                } else{
                     if(MyApp.isLocked()){
                         //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
                         Snackbar.make(viewParent, context.getString(R.string.music_is_locked) , Snackbar.LENGTH_SHORT).show();
