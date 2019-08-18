@@ -197,10 +197,6 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
     public void onStepBack(){
 
         if(isHomeFolder){
-            /*Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);*/
             if(backPressedOnce){
                 ((ActivityMain) context).finish();
                 return;
