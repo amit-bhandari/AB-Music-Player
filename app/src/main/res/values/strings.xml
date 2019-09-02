@@ -1,307 +1,307 @@
 <resources>
 
-        <string name="app_name">AB Music</string>
-        <string name="music_is_life">Music is love, Music is life!</string>
-        <string name="navigation_drawer_open">Open navigation drawer</string>
-        <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="app_name">AB Music</string>
+    <string name="music_is_life">Music is love, Music is life!</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
-        <string name="okay">Okay</string>
-        <string name="cancel">Cancel</string>
-        <string name="yes">Yes</string>
-        <string name="add">Add</string>
-        <string name="no">No</string>
-        <string name="reset">Reset</string>
-        <string name="are_u_sure">Are you sure?</string>
-        <string name="licenses">Licenses</string>
-        <string name="added_to_q">Added to queue\u0020 </string>
-        <string name="playing_next">Playing next\u0020 </string>
-        <string name="track">track</string>
-        <string name="tracks">\u0020tracks</string>
-        <string name="albums">\u0020albums</string>
-        <string name="create_playlist">Create new playlist</string>
-        <string name="enable_now">Enable Now</string>
-<!-- Main Library activity     -->
+    <string name="okay">Okay</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="add">Add</string>
+    <string name="no">No</string>
+    <string name="reset">Reset</string>
+    <string name="are_u_sure">Are you sure?</string>
+    <string name="licenses">Licenses</string>
+    <string name="added_to_q">Added to queue\u0020 </string>
+    <string name="playing_next">Playing next\u0020 </string>
+    <string name="track">track</string>
+    <string name="tracks">\u0020tracks</string>
+    <string name="albums">\u0020albums</string>
+    <string name="create_playlist">Create new playlist</string>
+    <string name="enable_now">Enable Now</string>
+    <!-- Main Library activity     -->
 
     <!-- tabs -->
-        <string name="tab_album">Album</string>
-        <string name="tab_track">Track</string>
-        <string name="tab_artist">Artist</string>
-        <string name="tab_genre">Genre</string>
-        <string name="tab_playlist">Playlist</string>
-        <string name="tab_folder">Folder</string>
-        <string name="tab_title">Title</string>
+    <string name="tab_album">Album</string>
+    <string name="tab_track">Track</string>
+    <string name="tab_artist">Artist</string>
+    <string name="tab_genre">Genre</string>
+    <string name="tab_playlist">Playlist</string>
+    <string name="tab_folder">Folder</string>
+    <string name="tab_title">Title</string>
 
     <!-- playlist related -->
-        <string name="track_count">%1$s tracks</string>
-        <string name="empty_playlist">empty playlist</string>
-        <string name="share_playlist">Share tracks</string>
-        <string name="user_playlists">User playlists</string>
-        <string name="system_playlists">System playlists</string>
+    <string name="track_count">%1$s tracks</string>
+    <string name="empty_playlist">empty playlist</string>
+    <string name="share_playlist">Share tracks</string>
+    <string name="user_playlists">User playlists</string>
+    <string name="system_playlists">System playlists</string>
 
     <!-- drawer menu -->
-        <string name="nav_remove_ads">Remove Ads</string>
-        <string name="nav_rewards">Rewards</string>
-        <string name="nav_sleep_timer">Sleep Timer</string>
-        <string name="nav_share">Share</string>
-        <string name="nav_rate">Rate in store</string>
-        <string name="nav_feature_request">Feature Request</string>
-        <string name="nav_social">We are Social!</string>
-        <string name="nav_website">Visit Website</string>
-        <string name="nav_settings">Settings</string>
-        <string name="nav_logout">Sign Out</string>
-        <string name="nav_login">Sign Up</string>
+    <string name="nav_remove_ads">Remove Ads</string>
+    <string name="nav_rewards">Rewards</string>
+    <string name="nav_sleep_timer">Sleep Timer</string>
+    <string name="nav_share">Share</string>
+    <string name="nav_rate">Rate in store</string>
+    <string name="nav_feature_request">Feature Request</string>
+    <string name="nav_social">We are Social!</string>
+    <string name="nav_website">Visit Website</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_logout">Sign Out</string>
+    <string name="nav_login">Sign Up</string>
 
     <!-- menu -->
-        <string name="menu_search">Search</string>
-        <string name="menu_sort_by">Sort by</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_sort_by">Sort by</string>
 
     <!-- menu for overflow menu -->
-        <string name="action_play">Play</string>
-        <string name="action_add_to_playlist">Add to Playlist</string>
-        <string name="action_edit_track_info">Edit Track info</string>
-        <string name="action_clear_offline_lyrics">Clear Lyrics</string>
-        <string name="action_wrong_lyrics">Alternate Lyric Source</string>
-        <string name="action_add_lyrics">Add Lyrics</string>
-        <string name="action_share_offline_lyrics">Share Lyrics</string>
-        <string name="action_switch_offline_lyrics">Switch Lyrics Mode</string>
-        <string name="action_exclude_from_library">Exclude from library</string>
-        <string name="action_edit_info">Edit info</string>
-        <string name="action_track_info">Track info</string>
-        <string name="action_share_file">Share music file</string>
-        <string name="action_delete">Delete</string>
-        <string name="action_ringtone_cutter">Ringtone Cutter</string>
-        <string name="action_go_to_artist">Go to Artist</string>
-        <string name="action_go_to_album">Go to Album</string>
-        <string name="action_fav">Fav</string>
-        <string name="action_equ">Equalizer</string>
-        <string name="action_play_next">Play Next</string>
-        <string name="action_add_to_q">Add to Queue</string>
-        <string name="action_set_as_ringtone">Set as Ringtone</string>
-        <string name="action_settings">Settings</string>
-        <string name="action_shuffle_all">Shuffle All</string>
-        <string name="action_refresh_library">Refresh Library</string>
-        <string name="action_save">Save</string>
-        <string name="action_share">Share</string>
-        <string name="action_sync_problem">Sync problem?</string>
-        <string name="action_reload">Reload</string>
-        <string name="action_call_for_help">Call for help *new*</string>
+    <string name="action_play">Play</string>
+    <string name="action_add_to_playlist">Add to Playlist</string>
+    <string name="action_edit_track_info">Edit Track info</string>
+    <string name="action_clear_offline_lyrics">Clear Lyrics</string>
+    <string name="action_wrong_lyrics">Alternate Lyric Source</string>
+    <string name="action_add_lyrics">Add Lyrics</string>
+    <string name="action_share_offline_lyrics">Share Lyrics</string>
+    <string name="action_switch_offline_lyrics">Switch Lyrics Mode</string>
+    <string name="action_exclude_from_library">Exclude from library</string>
+    <string name="action_edit_info">Edit info</string>
+    <string name="action_track_info">Track info</string>
+    <string name="action_share_file">Share music file</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_ringtone_cutter">Ringtone Cutter</string>
+    <string name="action_go_to_artist">Go to Artist</string>
+    <string name="action_go_to_album">Go to Album</string>
+    <string name="action_fav">Fav</string>
+    <string name="action_equ">Equalizer</string>
+    <string name="action_play_next">Play Next</string>
+    <string name="action_add_to_q">Add to Queue</string>
+    <string name="action_set_as_ringtone">Set as Ringtone</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_shuffle_all">Shuffle All</string>
+    <string name="action_refresh_library">Refresh Library</string>
+    <string name="action_save">Save</string>
+    <string name="action_share">Share</string>
+    <string name="action_sync_problem">Sync problem?</string>
+    <string name="action_reload">Reload</string>
+    <string name="action_call_for_help">Call for help *new*</string>
 
     <!-- menu about us -->
-        <string name="action_licenses">Licenses</string>
-        <string name="action_terms_of_use">Terms of Use</string>
-        <string name="action_feedback">Provide Feedback</string>
-        <string name="action_support_dev">Support Development</string>
+    <string name="action_licenses">Licenses</string>
+    <string name="action_terms_of_use">Terms of Use</string>
+    <string name="action_feedback">Provide Feedback</string>
+    <string name="action_support_dev">Support Development</string>
 
     <!-- menu sort -->
-        <string name="action_sort_name">By Name</string>
-        <string name="action_sort_year">By Year"</string>
-        <string name="action_sort_size">By Size</string>
-        <string name="action_sort_no_of_album">By No. of Albums</string>
-        <string name="action_sort_no_of_tracks">By No. of Tracks</string>
-        <string name="action_sort_by_duration">By Duration</string>
-        <string name="action_sort_asc">Asc</string>
+    <string name="action_sort_name">By Name</string>
+    <string name="action_sort_year">By Year"</string>
+    <string name="action_sort_size">By Size</string>
+    <string name="action_sort_no_of_album">By No. of Albums</string>
+    <string name="action_sort_no_of_tracks">By No. of Tracks</string>
+    <string name="action_sort_by_duration">By Duration</string>
+    <string name="action_sort_asc">Asc</string>
 
     <!-- App bar main  -->
-        <string name="abm_song_name_mini_player">Empty queue</string>
-        <string name="abm_title">Library</string>
+    <string name="abm_song_name_mini_player">Empty queue</string>
+    <string name="abm_title">Library</string>
 
     <!-- Firebase Invites  -->
-        <string name="invite_text">Invite one of your friend to AB Music and enjoy ad-free experience lifetime. \n\n
+    <string name="invite_text">Invite one of your friend to AB Music and enjoy ad-free experience lifetime. \n\n
             Please note, invitation is successful only on new install. If person you invited already has AB Music installed, it will not work.
         </string>
-        <string name="invite_friends_title">Invite Friends</string>
-        <string name="invitation_sent">Invitation sent</string>
-        <string name="invite_more">Invite More</string>
-        <string name="invite_now">Invite Now</string>
-        <string name="error_invitation_not_sent">Invitation not sent, Please try again!</string>
-        <string name="pref_sent_invittions">pref_sent_invitations</string>
-        <string name="referral_succeessful">Referral successful! You can remove ads for free by referring one of your friend to AB Music.</string>
+    <string name="invite_friends_title">Invite Friends</string>
+    <string name="invitation_sent">Invitation sent</string>
+    <string name="invite_more">Invite More</string>
+    <string name="invite_now">Invite Now</string>
+    <string name="error_invitation_not_sent">Invitation not sent, Please try again!</string>
+    <string name="pref_sent_invittions">pref_sent_invitations</string>
+    <string name="referral_succeessful">Referral successful! You can remove ads for free by referring one of your friend to AB Music.</string>
 
 
     <!-- toasts and snacks -->
-        <string name="main_act_empty_lib">No Music found in Library!</string>
-        <string name="main_act_lib_refreshed">Library Refreshed</string>
-        <string name="playlist_error_1">Playlist name cannot begin with digit</string>
-        <string name="playlist_error_2">Enter at least 3 characters</string>
-        <string name="playlist_error_3">Only alphanumeric characters allowed</string>
-        <string name="error_opening_browser">Unable to open browser!</string>
-        <string name="sleep_timer_discarded">Sleep timer discarded</string>
-        <string name="sleep_timer_successfully_set">Music will be stopped in \u0020</string>
-        <string name="nothing_to_play">Nothing to play!</string>
-        <string name="music_is_locked">Music is Locked!</string>
-        <string name="empty_track_list">Empty Track List</string>
-        <string name="empty_play_list">Empty Play List</string>
-        <string name="play_list_created">Playlist created</string>
-        <string name="play_list_already_exists">Playlist already exists</string>
-        <string name="playlist_saved">Playlist saved</string>
-        <string name="signed_out">Signed out</string>
-        <string name="network_error">Network Error, try again later!</string>
-        <string name="unknown_error">Unknown Error, try again later!</string>
-        <string name="error_invalid_url">Invalid URL!</string>
-        <string name="art_info_not_available">Artist info not available at the moment, try again later</string>
-        <string name="lyrics_saved">Lyrics saved</string>
-        <string name="lyrics_removed">Lyrics Removed</string>
-        <string name="error_unable_to_share">Sorry, Unable to share this file</string>
+    <string name="main_act_empty_lib">No Music found in Library!</string>
+    <string name="main_act_lib_refreshed">Library Refreshed</string>
+    <string name="playlist_error_1">Playlist name cannot begin with digit</string>
+    <string name="playlist_error_2">Enter at least 3 characters</string>
+    <string name="playlist_error_3">Only alphanumeric characters allowed</string>
+    <string name="error_opening_browser">Unable to open browser!</string>
+    <string name="sleep_timer_discarded">Sleep timer discarded</string>
+    <string name="sleep_timer_successfully_set">Music will be stopped in \u0020</string>
+    <string name="nothing_to_play">Nothing to play!</string>
+    <string name="music_is_locked">Music is Locked!</string>
+    <string name="empty_track_list">Empty Track List</string>
+    <string name="empty_play_list">Empty Play List</string>
+    <string name="play_list_created">Playlist created</string>
+    <string name="play_list_already_exists">Playlist already exists</string>
+    <string name="playlist_saved">Playlist saved</string>
+    <string name="signed_out">Signed out</string>
+    <string name="network_error">Network Error, try again later!</string>
+    <string name="unknown_error">Unknown Error, try again later!</string>
+    <string name="error_invalid_url">Invalid URL!</string>
+    <string name="art_info_not_available">Artist info not available at the moment, try again later</string>
+    <string name="lyrics_saved">Lyrics saved</string>
+    <string name="lyrics_removed">Lyrics Removed</string>
+    <string name="error_unable_to_share">Sorry, Unable to share this file</string>
 
-        <string name="preview_player_server_died">Server has died!</string>
-        <string name="preview_player_io_error">I/O error!</string>
-        <string name="preview_player_malform_media">Malformed media!</string>
-        <string name="preview_player_invalid">Not valid for progressive playback!</string>
-        <string name="preview_player_time_out">Media server timed out!</string>
-        <string name="preview_player_unsupported">Media is unsupported!</string>
-        <string name="preview_player_unknown">An unknown error has occurred:</string>
+    <string name="preview_player_server_died">Server has died!</string>
+    <string name="preview_player_io_error">I/O error!</string>
+    <string name="preview_player_malform_media">Malformed media!</string>
+    <string name="preview_player_invalid">Not valid for progressive playback!</string>
+    <string name="preview_player_time_out">Media server timed out!</string>
+    <string name="preview_player_unsupported">Media is unsupported!</string>
+    <string name="preview_player_unknown">An unknown error has occurred:</string>
 
-        <string name="te_error_saving_tags">Error while saving tags!</string>
-        <string name="te_error_empty_field">Cannot leave field empty!</string>
-        <string name="te_error_image_load">Error loading image, Please try another one</string>
+    <string name="te_error_saving_tags">Error while saving tags!</string>
+    <string name="te_error_empty_field">Cannot leave field empty!</string>
+    <string name="te_error_image_load">Error loading image, Please try another one</string>
 
-        <string name="error_no_lyrics">No Lyrics Found!</string>
-        <string name="error_sharing_lyrics">Error sharing lyrics!</string>
-        <string name="error_nothing_to_fav">Nothing to set fav</string>
-        <string name="error_no_equlizer">No equalizer application found in device</string>
-        <string name="error_nothing_to_share">Nothing to share!</string>
-        <string name="error_batch_download_running">Batch download already running!</string>
+    <string name="error_no_lyrics">No Lyrics Found!</string>
+    <string name="error_sharing_lyrics">Error sharing lyrics!</string>
+    <string name="error_nothing_to_fav">Nothing to set fav</string>
+    <string name="error_no_equlizer">No equalizer application found in device</string>
+    <string name="error_nothing_to_share">Nothing to share!</string>
+    <string name="error_batch_download_running">Batch download already running!</string>
 
-        <string name="change_tags_to_update">Please change tags to update!</string>
-        <string name="no_music_found">No music found. Play some Music for artist information to be displayed.</string>
-        <string name="no_music_found_lyrics">No music found. Play some Music for lyrics to be displayed.</string>
+    <string name="change_tags_to_update">Please change tags to update!</string>
+    <string name="no_music_found">No music found. Play some Music for artist information to be displayed.</string>
+    <string name="no_music_found_lyrics">No music found. Play some Music for lyrics to be displayed.</string>
 
-        <string name="phone_stat_perm_required">Reading phone state is necessary to control playback during calls!</string>
-        <string name="storage_perm_required">Please provide storage permission from Settings for app to work properly</string>
+    <string name="phone_stat_perm_required">Reading phone state is necessary to control playback during calls!</string>
+    <string name="storage_perm_required">Please provide storage permission from Settings for app to work properly</string>
 
-        <string name="ads_already_removed">You already have removed the ads!</string>
-        <string name="ads_removed">You have removed the ads! Voila</string>
-        <string name="ads_still_showing">If you still see the ads, please restart the app!</string>
-        <string name="error_something_wrong">Something went wrong!</string>
-        <string name="error_trans_failed">Transaction failed!</string>
+    <string name="ads_already_removed">You already have removed the ads!</string>
+    <string name="ads_removed">You have removed the ads! Voila</string>
+    <string name="ads_still_showing">If you still see the ads, please restart the app!</string>
+    <string name="error_something_wrong">Something went wrong!</string>
+    <string name="error_trans_failed">Transaction failed!</string>
 
-        <string name="batch_download_started">Batch download started in Background!</string>
+    <string name="batch_download_started">Batch download started in Background!</string>
 
-        <string name="song_is_playing">One of the song is playing currently</string>
-        <string name="unable_to_del">Unable to delete, Permission Denied</string>
-        <string name="cannot_del">Cannot delete \u0020 </string>
-        <string name="no_info_available">No info available at the moment!</string>
+    <string name="song_is_playing">One of the song is playing currently</string>
+    <string name="unable_to_del">Unable to delete, Permission Denied</string>
+    <string name="cannot_del">Cannot delete \u0020 </string>
+    <string name="no_info_available">No info available at the moment!</string>
 
-        <string name="song_already_exists_in">Songs already exists in \u0020</string>
-        <string name="songs_added_in">Song(s) added in \u0020</string>
-        <string name="removed_from_playlist">Removed from playlist</string>
-        <string name="error_removing">Error occurred while removing</string>
+    <string name="song_already_exists_in">Songs already exists in \u0020</string>
+    <string name="songs_added_in">Song(s) added in \u0020</string>
+    <string name="removed_from_playlist">Removed from playlist</string>
+    <string name="error_removing">Error occurred while removing</string>
 
-        <string name="deleted">Deleted \u0020</string>
+    <string name="deleted">Deleted \u0020</string>
 
-        <string name="error_playing_track">Something wrong! Track may be deleted or storage is not available at this time</string>
-        <string name="error_adding_song_to_q">Error adding song to queue</string>
-        <string name="timer_over">Timer Over</string>
+    <string name="error_playing_track">Something wrong! Track may be deleted or storage is not available at this time</string>
+    <string name="error_adding_song_to_q">Error adding song to queue</string>
+    <string name="timer_over">Timer Over</string>
 
-        <string name="error_saving_instant_lyrics">Error saving lyrics!</string>
-        <string name="instant_lyric_saved">Lyrics saved</string>
-        <string name="instant_lyric_already_saved">Lyrics already saved!</string>
+    <string name="error_saving_instant_lyrics">Error saving lyrics!</string>
+    <string name="instant_lyric_saved">Lyrics saved</string>
+    <string name="instant_lyric_already_saved">Lyrics already saved!</string>
 
-        <string name="toast_artist_cache_complete">Artist info local caching complete</string>
+    <string name="toast_artist_cache_complete">Artist info local caching complete</string>
 
-        <string name="first_launch_lyric_card_no_internet">Internet is needed for loading images for cards. Images will be downloaded once and will be cached for later use.</string>
-        <string name="first_launch_lyric_card">First launch might take a while for loading images from our servers. Subsequent launches should work lightning fast!</string>
-        <string name="share_lyric_card_extra_text"><![CDATA[Created using AB Music -> https://tinyurl.com/mtxvchw]]></string>
-        <string name="share_file_extra_text"><![CDATA[Shared using AB Music -> https://tinyurl.com/mtxvchw]]></string>
-        <string name="share_file_extra_subject">Check out this awesome track</string>
+    <string name="first_launch_lyric_card_no_internet">Internet is needed for loading images for cards. Images will be downloaded once and will be cached for later use.</string>
+    <string name="first_launch_lyric_card">First launch might take a while for loading images from our servers. Subsequent launches should work lightning fast!</string>
+    <string name="share_lyric_card_extra_text"><![CDATA[Created using AB Music -> https://tinyurl.com/mtxvchw]]></string>
+    <string name="share_file_extra_text"><![CDATA[Shared using AB Music -> https://tinyurl.com/mtxvchw]]></string>
+    <string name="share_file_extra_subject">Check out this awesome track</string>
 
 
-        <string name="error_loading_image_lyric_card">Error loading image, check your connection.</string>
+    <string name="error_loading_image_lyric_card">Error loading image, check your connection.</string>
 
-        <string name="ad_serve_toast">One ad will be served for removing watermark. You can remove ads permanently from Settings.</string>
-        <string name="press_twice_exit">Press back again to exit.</string>
-        <string name="refreshing_library">Refreshing music library</string>
+    <string name="ad_serve_toast">One ad will be served for removing watermark. You can remove ads permanently from Settings.</string>
+    <string name="press_twice_exit">Press back again to exit.</string>
+    <string name="refreshing_library">Refreshing music library</string>
 
 
     <!-- dialogs -->
 
-        <string name="dialog_add_lyric_hint">Copy lyrics for %s from Internet and paste here</string>
+    <string name="dialog_add_lyric_hint">Copy lyrics for %s from Internet and paste here</string>
 
-        <string name="main_act_new_ver_info_title">Whats new</string>
-        <string name="main_act_new_ver_info_neg">Share the word</string>
+    <string name="main_act_new_ver_info_title">Whats new</string>
+    <string name="main_act_new_ver_info_neg">Share the word</string>
 
-        <string name="main_act_sign_in_title">Sign in</string>
-        <string name="main_act_sign_in_content">Sign in with Google to get 1000 Reward Points! It won\'t take more than 10 seconds.</string>
-        <string name="main_act_sign_in_pos">Sign in now!</string>
-        <string name="main_act_sign_in_neg">Nah, I would prefer ads</string>
+    <string name="main_act_sign_in_title">Sign in</string>
+    <string name="main_act_sign_in_content">Sign in with Google to get 1000 Reward Points! It won\'t take more than 10 seconds.</string>
+    <string name="main_act_sign_in_pos">Sign in now!</string>
+    <string name="main_act_sign_in_neg">Nah, I would prefer ads</string>
 
-        <string name="main_act_rate_dialog_title">Rate Us!</string>
-        <string name="main_act_rate_dialog_pos">Rate now!</string>
+    <string name="main_act_rate_dialog_title">Rate Us!</string>
+    <string name="main_act_rate_dialog_pos">Rate now!</string>
 
-        <string name="main_act_sleep_timer_title">Sleep Timer</string>
-        <string name="main_act_sleep_timer_neu">Discard Timer</string>
-        <string name="main_act_sleep_timer_status_minutes">\u0020 minutes</string>
-        <string name="main_act_sleep_timer_status_part1">Timer set for \u0020</string>
-        <string name="main_act_sleep_timer_status_part2">\u0020 minutes already</string>
+    <string name="main_act_sleep_timer_title">Sleep Timer</string>
+    <string name="main_act_sleep_timer_neu">Discard Timer</string>
+    <string name="main_act_sleep_timer_status_minutes">\u0020 minutes</string>
+    <string name="main_act_sleep_timer_status_part1">Timer set for \u0020</string>
+    <string name="main_act_sleep_timer_status_part2">\u0020 minutes already</string>
 
-        <string name="main_act_lock_info_title">Music Lock!</string>
-        <string name="main_act_lock_info_pos">Got it!</string>
-        <string name="main_act_lock_info_neg">Hide this button</string>
-        <string name="main_act_lock_info_neu">Never show again</string>
-        <string name="main_act_lock_info_content">How often have you ruined the song because of wrong touch! Imagine you are enjoying the best part of the song
+    <string name="main_act_lock_info_title">Music Lock!</string>
+    <string name="main_act_lock_info_pos">Got it!</string>
+    <string name="main_act_lock_info_neg">Hide this button</string>
+    <string name="main_act_lock_info_neu">Never show again</string>
+    <string name="main_act_lock_info_content">How often have you ruined the song because of wrong touch! Imagine you are enjoying the best part of the song
             while going through library and by mistake you click on some song and baaam, your mood is ruined. This button is here for rescue.
             Whenever you want to enjoy a song without interruption and browse gallery meanwhile, just lock the music by using this button and
             player will not change song unless and until you unlock it again!</string>
 
-        <string name="main_act_create_play_list_title">Enter playlist name</string>
-        <string name="main_act_ad_removal_title">Congratulation!</string>
-        <string name="main_act_ad_removal_content">You have received 1000 Reward Points. Want to spread the word?</string>
-        <string name="main_act_ad_removal_neg">Nah, I will do that later</string>
+    <string name="main_act_create_play_list_title">Enter playlist name</string>
+    <string name="main_act_ad_removal_title">Congratulation!</string>
+    <string name="main_act_ad_removal_content">You have received 1000 Reward Points. Want to spread the word?</string>
+    <string name="main_act_ad_removal_neg">Nah, I will do that later</string>
 
-        <string name="main_act_ad_removal_failed_title">Oooops!</string>
-        <string name="main_act_ad_removal_failed_content">It seems this email id has already been registered with us. Reward points are granted only once per Email id!"</string>
-        <string name="main_act_ad_removal_failed_pos">Reach us</string>
+    <string name="main_act_ad_removal_failed_title">Oooops!</string>
+    <string name="main_act_ad_removal_failed_content">It seems this email id has already been registered with us. Reward points are granted only once per Email id!"</string>
+    <string name="main_act_ad_removal_failed_pos">Reach us</string>
 
-        <string name="main_act_whats_new_title">Whats new</string>
-        <string name="main_act_whats_new_neg">Share the word!</string>
+    <string name="main_act_whats_new_title">Whats new</string>
+    <string name="main_act_whats_new_neg">Share the word!</string>
 
-        <string name="lyric_art_info_title">Getting started!</string>
-        <string name="lyric_art_info_content">Swipe right for Artist Bio and left for Lyrics</string>
-        <string name="lyric_art_info_button_p">Got it!</string>
-        <string name="lyric_art_info_title_button_neg">Never show Again</string>
+    <string name="lyric_art_info_title">Getting started!</string>
+    <string name="lyric_art_info_content">Swipe right for Artist Bio and left for Lyrics</string>
+    <string name="lyric_art_info_button_p">Got it!</string>
+    <string name="lyric_art_info_title_button_neg">Never show Again</string>
 
-        <string name="main_act_rate_us">Loving AB Music? Please take a time to rate it on store.</string>
+    <string name="main_act_rate_us">Loving AB Music? Please take a time to rate it on store.</string>
 
-        <string name="about_us_support_dev_title">Support Development!</string>
-        <string name="about_us_support_dev_content">If you enjoy using AB Music,
+    <string name="about_us_support_dev_title">Support Development!</string>
+    <string name="about_us_support_dev_content">If you enjoy using AB Music,
             please consider supporting the development by buying me a Coffee or something. Thanks for your support!</string>
-        <string name="about_us_support_dev_pos">Coffee</string>
-        <string name="about_us_support_dev_neg">Beer</string>
-        <string name="about_us_support_dev_neu">Jack Daniels!</string>
+    <string name="about_us_support_dev_pos">Coffee</string>
+    <string name="about_us_support_dev_neg">Beer</string>
+    <string name="about_us_support_dev_neu">Jack Daniels!</string>
 
-        <string name="te_unsaved_data_title">Unsaved Data!</string>
-        <string name="te_unsaved_data_pos">Save</string>
-        <string name="te_unsaved_data_new">Discard</string>
+    <string name="te_unsaved_data_title">Unsaved Data!</string>
+    <string name="te_unsaved_data_pos">Save</string>
+    <string name="te_unsaved_data_new">Discard</string>
 
-        <string name="te_show_info_title">Alert!</string>
-        <string name="te_show_info_content">All the changes done in music tag are local to device. Actual audio file is not modified!</string>
-        <string name="te_show_info_pos">Never show again</string>
-        <string name="te_show_info_neg">Got it</string>
+    <string name="te_show_info_title">Alert!</string>
+    <string name="te_show_info_content">All the changes done in music tag are local to device. Actual audio file is not modified!</string>
+    <string name="te_show_info_pos">Never show again</string>
+    <string name="te_show_info_neg">Got it</string>
 
-        <string name="disc_frag_record_perm_title">Need Permission</string>
-        <string name="disc_frag_record_perm_content">Please provide permission for AB Music to record audio. It will be used for showing cool visualization surrounding disc.</string>
-        <string name="disc_frag_record_perm_neu">Later</string>
-        <string name="disc_frag_record_perm_neg">Never ask again</string>
+    <string name="disc_frag_record_perm_title">Need Permission</string>
+    <string name="disc_frag_record_perm_content">Please provide permission for AB Music to record audio. It will be used for showing cool visualization surrounding disc.</string>
+    <string name="disc_frag_record_perm_neu">Later</string>
+    <string name="disc_frag_record_perm_neg">Never ask again</string>
 
-        <string name="setting_tab_seqe_title">Tab Sequence on startup</string>
+    <string name="setting_tab_seqe_title">Tab Sequence on startup</string>
 
-        <string name="library_rescan">Rescanning library. Please wait…</string>
-        <string name="case_sensitive_text">Text is case sensitive!</string>
+    <string name="library_rescan">Rescanning library. Please wait…</string>
+    <string name="case_sensitive_text">Text is case sensitive!</string>
 
-        <string name="app_restart_title">Application Restart is Needed</string>
-        <string name="app_restart_content">To apply new font, AB Music needs to be restarted. You can do it now or later.</string>
-        <string name="app_restart_pos">Restart AB Music</string>
-        <string name="app_restart_neg">I will do it later</string>
+    <string name="app_restart_title">Application Restart is Needed</string>
+    <string name="app_restart_content">To apply new font, AB Music needs to be restarted. You can do it now or later.</string>
+    <string name="app_restart_pos">Restart AB Music</string>
+    <string name="app_restart_neg">I will do it later</string>
 
-        <string name="track_info_title">Track Info</string>
+    <string name="track_info_title">Track Info</string>
 
-        <string name="select_playlist_title">Select Playlist</string>
+    <string name="select_playlist_title">Select Playlist</string>
 
-        <string name="write_setting_perm_title">Permission Required</string>
-        <string name="write_setting_perm_content">Please provide write setting permission for application to change Ringtone</string>
+    <string name="write_setting_perm_title">Permission Required</string>
+    <string name="write_setting_perm_content">Please provide write setting permission for application to change Ringtone</string>
 
-        <string name="lyric_sync_error_title">Lyrics not in Sync?</string>
-        <string name="lyric_sync_error_content">Apologies for the inconvenience! \n\n
+    <string name="lyric_sync_error_title">Lyrics not in Sync?</string>
+    <string name="lyric_sync_error_content">Apologies for the inconvenience! \n\n
                 Fetching music information from other music players is tricky business and most of the times
                 they will not broadcast current music progress information (either intentionally or because of sloppy developers
                 like me!) \n\n
@@ -311,66 +311,66 @@
                 Unfortunately this is how Android works!
         </string>
 
-        <string name="title_how_to_add">How to Add</string>
-        <string name="content_how_to_add">To exclude folder from library, go to Folders section in Main library and select \'Exclude from Library\' option from
+    <string name="title_how_to_add">How to Add</string>
+    <string name="content_how_to_add">To exclude folder from library, go to Folders section in Main library and select \'Exclude from Library\' option from
                     pop up menu for particular folder.</string>
-        <string name="pos_how_to_add">Got it!</string>
+    <string name="pos_how_to_add">Got it!</string>
 
-        <string name="reward_dialog_content">AB Music utilizes 2 reward points for displaying 1 lyric.
+    <string name="reward_dialog_content">AB Music utilizes 2 reward points for displaying 1 lyric.
             To refill reward points, click on Refill button below to watch an ad.
             Your account will be refilled with anything between 1500-2500 reward points.
              </string>
-        <string name="title_reward_points">Reward points!</string>
-        <string name="pos_reward_points">Refill</string>
-        <string name="neg_reward_points">Cancel</string>
+    <string name="title_reward_points">Reward points!</string>
+    <string name="pos_reward_points">Refill</string>
+    <string name="neg_reward_points">Cancel</string>
 
-        <string name="content_loading_ad">Please wait while we load your reward video…</string>
-        <string name="title_loading_ad">Loading…</string>
+    <string name="content_loading_ad">Please wait while we load your reward video…</string>
+    <string name="title_loading_ad">Loading…</string>
 
-        <string name="reward_points_count_text">Your current reward points count is</string>
-        <string name="reward_points_exhausted">Your reward points have been exhausted, please refill to continue getting lyrics. Click here to refill now!</string>
-        <string name="not_enough_reward_points_for_batch_lyrics">You do not seem to have enough Reward Points for downloading batch lyrics.
+    <string name="reward_points_count_text">Your current reward points count is</string>
+    <string name="reward_points_exhausted">Your reward points have been exhausted, please refill to continue getting lyrics. Click here to refill now!</string>
+    <string name="not_enough_reward_points_for_batch_lyrics">You do not seem to have enough Reward Points for downloading batch lyrics.
             If you choose to start batch lyrics download anyway, download will be skipped as soon as reward points are exhausted.
             \n\n Reward points you have : %d \n  Reward points you need : %d</string>
-        <string name="title_not_enough_reward_points">Not enough Reward Points</string>
-        <string name="pos_not_enough_reward_points">Refill for Free</string>
-        <string name="neu_not_enough_reward_points">Start anyway</string>
+    <string name="title_not_enough_reward_points">Not enough Reward Points</string>
+    <string name="pos_not_enough_reward_points">Refill for Free</string>
+    <string name="neu_not_enough_reward_points">Start anyway</string>
 
-        <string name="content_reward_failed">We are unable to give you any reward points, click on refill to try again!</string>
-        <string name="title_reward_failed">Ooops</string>
-        <string name="pos_reward_failed">Refill</string>
-        <string name="neg_reward_failed">Done</string>
+    <string name="content_reward_failed">We are unable to give you any reward points, click on refill to try again!</string>
+    <string name="title_reward_failed">Ooops</string>
+    <string name="pos_reward_failed">Refill</string>
+    <string name="neg_reward_failed">Done</string>
 
-        <string name="title_lyric_card">Lyric card</string>
-        <string name="action_font">Font</string>
-        <string name="action_text_alignment">Text Alignment</string>
-        <string name="nav_lyric_cards">Lyric Cards</string>
+    <string name="title_lyric_card">Lyric card</string>
+    <string name="action_font">Font</string>
+    <string name="action_text_alignment">Text Alignment</string>
+    <string name="nav_lyric_cards">Lyric Cards</string>
 
-        <string name="dialog_lyric_card_content">Now create awesome lyric cards by selecting lyric text(by long pressing) and pressing image button on top right tool bar.</string>
-        <string name="dialog_lyric_card_pos">Try now!</string>
+    <string name="dialog_lyric_card_content">Now create awesome lyric cards by selecting lyric text(by long pressing) and pressing image button on top right tool bar.</string>
+    <string name="dialog_lyric_card_pos">Try now!</string>
 
-        <string name="main_act_content_rate_reward_failed">You have already claimed reward points for rating AB Music in store!</string>
-        <string name="close">close</string>
-        <string name="remove_ads_permanently">Remove Ads Permanently</string>
-        <string name="title_clear_playlist">Clear</string>
+    <string name="main_act_content_rate_reward_failed">You have already claimed reward points for rating AB Music in store!</string>
+    <string name="close">close</string>
+    <string name="remove_ads_permanently">Remove Ads Permanently</string>
+    <string name="title_clear_playlist">Clear</string>
 
-        <string name="permission_details_title">Permissions required!</string>
-        <string name="permission_details_content">For AB Music to work correctly, following permissions are needed.
+    <string name="permission_details_title">Permissions required!</string>
+    <string name="permission_details_content">For AB Music to work correctly, following permissions are needed.
             \n\n * Phone state : For controlling playback during calls.  \n\n  * Storage : For reading music on SD Card.
             </string>
-        <string name="permission_details_pos">Grant</string>
+    <string name="permission_details_pos">Grant</string>
 
-        <string name="turn_on">Turn On</string>
-        <string name="turn_off">Turn Off</string>
-        <string name="notifications_title">Push Notifications</string>
-        <string name="notification_content">Enabling this will allow AB Music to show notifications about trending lyrics and new exciting offers!</string>
-        <string name="instant_lyrics_title">Instant Lyrics</string>
-        <string name="instant_lyrics_content">Enabling this allows AB Music to fetch Lyrics whenever Music starts playing in your device,
+    <string name="turn_on">Turn On</string>
+    <string name="turn_off">Turn Off</string>
+    <string name="notifications_title">Push Notifications</string>
+    <string name="notification_content">Enabling this will allow AB Music to show notifications about trending lyrics and new exciting offers!</string>
+    <string name="instant_lyrics_title">Instant Lyrics</string>
+    <string name="instant_lyrics_content">Enabling this allows AB Music to fetch Lyrics whenever Music starts playing in your device,
             no matter in which application. Whenever you play music in your device, notification will be displayed for fetching lyrics.
             Most major online music players are supported. If it doesn\'t work well with the music player you use, let me know. Turn on now to get Instant Lyrics.</string>
 
-        <string name="free_ad_removal_dialog_title">Remove Ads for Free</string>
-        <string name="free_ad_removal_dialog_cont"> \u0020 Your ads will be removed for free after clicking button below, but make sure to return the favour and follow and shout out for
+    <string name="free_ad_removal_dialog_title">Remove Ads for Free</string>
+    <string name="free_ad_removal_dialog_cont"> \u0020 Your ads will be removed for free after clicking button below, but make sure to return the favour and follow and shout out for
             me on Instagram. I hope you would do that!
 
             \n\n
@@ -383,55 +383,55 @@
             \n\n And if you love using Ad-Free AB Music, I know for a fact that you would consider donating few bucks for me by going
             in Settings -> About -> Support Development. Have a nice day and cheers!"
         </string>
-        <string name="free_ad_removal_dialog_pos">Remove Ads for Free</string>
-        <string name="free_ad_removal_dialog_neg">Remove Ads by Paying</string>
-        <string name="free_ad_removal_dialog_title_neu">Follow me!</string>
+    <string name="free_ad_removal_dialog_pos">Remove Ads for Free</string>
+    <string name="free_ad_removal_dialog_neg">Remove Ads by Paying</string>
+    <string name="free_ad_removal_dialog_title_neu">Follow me!</string>
 
-        <string name="manual_color_title">Manual Color Input</string>
-        <string name="manual_color_content">
+    <string name="manual_color_title">Manual Color Input</string>
+    <string name="manual_color_content">
             Google any Color you like and Enter hex string of that color in the form of #XXXXXX \n\n
             For e.g. \n
             BLACK = #000000 \n
             RED = #ff0000
         </string>
-        <string name="manual_color_hint">6-digit String</string>
-        <string name="manual_color_prefill">#</string>
-        <string name="manual_color_error">Invalid color</string>
+    <string name="manual_color_hint">6-digit String</string>
+    <string name="manual_color_prefill">#</string>
+    <string name="manual_color_error">Invalid color</string>
 
-        <string name="cont_playback_content">Enabling this makes sure that Music Playback will go on continuously (Even if Queue is empty). This feature is in Beta stage.</string>
+    <string name="cont_playback_content">Enabling this makes sure that Music Playback will go on continuously (Even if Queue is empty). This feature is in Beta stage.</string>
 
-        <string name="dialog_ringtone_cutter">Did you know, you can cut Ringtone out of your favorite song in AB Music. \n\n Just press 3 dot icon on right hand side of any track and select \'Set as Ringtone\' option to get started with Ringtone Cutter.</string>
-        <string name="dialog_rington_cutter_button">Got it</string>
+    <string name="dialog_ringtone_cutter">Did you know, you can cut Ringtone out of your favorite song in AB Music. \n\n Just press 3 dot icon on right hand side of any track and select \'Set as Ringtone\' option to get started with Ringtone Cutter.</string>
+    <string name="dialog_rington_cutter_button">Got it</string>
     <!--first time info messages -->
-        <string name="music_lock_primary">Try music lock feature</string>
-        <string name="music_lock_secondary">Tap the button to lock the music!</string>
+    <string name="music_lock_primary">Try music lock feature</string>
+    <string name="music_lock_secondary">Tap the button to lock the music!</string>
 
-        <string name="mini_player_primary">Get running Lyrics and Artist info in one tap!</string>
-        <string name="mini_player_secondary">Tap to get Lyrics!</string>
+    <string name="mini_player_primary">Get running Lyrics and Artist info in one tap!</string>
+    <string name="mini_player_secondary">Tap to get Lyrics!</string>
 
-        <string name="sorting_primary">Try sorting your music on the go!</string>
-        <string name="sorting_secondary">Tap the sort music!</string>
+    <string name="sorting_primary">Try sorting your music on the go!</string>
+    <string name="sorting_secondary">Tap the sort music!</string>
 
 
     <!-- now playing screen -->
     <!--artist info and lyrics fragment -->
-        <string name="artist_info_loading">Loading artist bio, please wait…!</string>
-        <string name="artist_info_no_result">Unable to search artist bio, make sure that audio tags are correct and touch here to retry!</string>
-        <string name="tap_to_refresh_art_bio">Unable to fetch artist bio, Please make sure audio is correctly tagged! \n
+    <string name="artist_info_loading">Loading artist bio, please wait…!</string>
+    <string name="artist_info_no_result">Unable to search artist bio, make sure that audio tags are correct and touch here to retry!</string>
+    <string name="tap_to_refresh_art_bio">Unable to fetch artist bio, Please make sure audio is correctly tagged! \n
                 Touch here to retry!</string>
-        <string name="tag_update">Please make sure audio tags are correct!</string>
-        <string name="tap_to_refresh_lyrics">Lyrics not found, Touch here to retry!</string>
-        <string name="lyrics_coming_soon">Lyrics coming soon!</string>
-        <string name="lyrics_loading">Loading lyrics, please wait…</string>
-        <string name="no_connection">No connection! Touch here to retry!</string>
-        <string name="update_tags">Update</string>
-        <string name="lyric_copy_right_msg">Lyrics obtained from ViewLyrics.com!
+    <string name="tag_update">Please make sure audio tags are correct!</string>
+    <string name="tap_to_refresh_lyrics">Lyrics not found, Touch here to retry!</string>
+    <string name="lyrics_coming_soon">Lyrics coming soon!</string>
+    <string name="lyrics_loading">Loading lyrics, please wait…</string>
+    <string name="no_connection">No connection! Touch here to retry!</string>
+    <string name="update_tags">Update</string>
+    <string name="lyric_copy_right_msg">Lyrics obtained from ViewLyrics.com!
             \n Lyrics are property of their respective owner and I claim no right on it! \n
             If you think, copyright infringement is happening, please drop a mail to contact in about section and
             I will take the content down!</string>
-        <string name="lyrics_disclaimer_title">Disclaimer</string>
-        <string name="lyrics_share_text">\n\n\nShared from AB Music Lite https://play.google.com/store/apps/details?id=com.bhandari.music</string>
-        <string name="lyrics_disclaimer_content">AB Music (Version 1.0)\n
+    <string name="lyrics_disclaimer_title">Disclaimer</string>
+    <string name="lyrics_share_text">\n\n\nShared from AB Music Lite https://play.google.com/store/apps/details?id=com.bhandari.music</string>
+    <string name="lyrics_disclaimer_content">AB Music (Version 1.0)\n
             Made by Amit Bhandari | All Copyrights Reserved
             \n\n
             AB Music is absolutely legal and does not host or upload any lyrics. AB Music simply aggregate lyrics in convenient and user-friendly environment.
@@ -443,175 +443,88 @@
             applicable.
                     \n\n
             </string>
-        <string name="disclaimer_rejected">Cannot display lyrics right now! Please press back and try again!</string>
-        <string name="lyrics_disclaimer_title_pos">Accept</string>
-        <string name="lyrics_disclaimer_title_neg">Reject</string>
+    <string name="disclaimer_rejected">Cannot display lyrics right now! Please press back and try again!</string>
+    <string name="lyrics_disclaimer_title_pos">Accept</string>
+    <string name="lyrics_disclaimer_title_neg">Reject</string>
 
     <!-- tag editor -->
-        <string name="touch_art">Touch the album art to change</string>
-        <string name="changes_discard_alert_te">You have made changes in some tags, do you want to save those?</string>
+    <string name="touch_art">Touch the album art to change</string>
+    <string name="changes_discard_alert_te">You have made changes in some tags, do you want to save those?</string>
 
     <!-- strings for about us -->
-        <string name="au_version">Version 1.0.0 </string>
-        <string name="au_made_with_love">Made with </string>
-        <string name="au_made_in_india">in India </string>
-        <string name="visit_website">Visit Website</string>
+    <string name="au_version">Version 1.0.0 </string>
+    <string name="au_made_with_love">Made with </string>
+    <string name="au_made_in_india">in India </string>
+    <string name="visit_website">Visit Website</string>
 
     <!-- strings for preferences details    -->
-        <string name="tab_seq_pref_info">Hold the Handle and Drag the Tabs to Change the Sequence on Startup Screen.</string>
-        <string name="main_act_share_app_text">\nEnjoy the best free Offline Music Experience with AB Music\n\n</string>
-        <string name="main_act_share_app_choose">Choose One</string>
+    <string name="tab_seq_pref_info">Hold the Handle and Drag the Tabs to Change the Sequence on Startup Screen.</string>
+    <string name="main_act_share_app_text">\nEnjoy the best free Offline Music Experience with AB Music\n\n</string>
+    <string name="main_act_share_app_choose">Choose One</string>
 
     <!-- batch download -->
-        <string name="batch_download_finished">Batch Download Finished!</string>
-        <string name="batch_download_not_title">Lyrics Download(Tap to stop)</string>
-        <string name="batch_download_starting">Initiating Download..</string>
-        <string name="error_no_internet">No Internet!</string>
-        <string name="error_no_connection">No Connection!</string>
+    <string name="batch_download_finished">Batch Download Finished!</string>
+    <string name="batch_download_not_title">Lyrics Download(Tap to stop)</string>
+    <string name="batch_download_starting">Initiating Download..</string>
+    <string name="error_no_internet">No Internet!</string>
+    <string name="error_no_connection">No Connection!</string>
 
     <!-- player service -->
-        <string name="notif_minutes_to_sleep">\u0020 minutes to sleep</string>
-        <string name="next_track">Next:\u0020 </string>
-        <string name="empty_queue">Empty Queue</string>
+    <string name="notif_minutes_to_sleep">\u0020 minutes to sleep</string>
+    <string name="next_track">Next:\u0020 </string>
+    <string name="empty_queue">Empty Queue</string>
 
     <!-- preference screen -->
-        <string name="title_remove_ads">Remove Ads</string>
-        <string name="title_text_font">Font</string>
-        <string name="title_misc">Miscellaneous</string>
-        <string name="title_try_my_new_app">AB Remote Wallpaper</string>
-        <string name="title_ringtone_cutter">Ringtone Cutter</string>
-        <string name="title_continous_playback">Continuous Playback</string>
-        <string name="title_batch_download">Batch Lyrics Download</string>
-        <string name="title_hide_lock_button">Hide Music Lock Button</string>
-        <string name="title_notification">Notifications</string>
-        <string name="title_rotatingdisk">Rotating Disc UI</string>
-        <string name="title_opening_tab">Manage Tabs</string>
-        <string name="title_reset_pref">Reset Preferences to Default</string>
-        <string name="title_hide_tracks_starting_with">Hide Tracks Starting With</string>
-        <string name="title_excluded_folders">Excluded Folders</string>
-        <string name="title_feedback">Provide Feedback</string>
-        <string name="title_support_dev">Support Development (Donate)</string>
-        <string name="title_theme">Base Theme</string>
-        <string name="title_theme_color">Theme</string>
-        <string name="title_now_playing_back">Now Playing Background</string>
-        <string name="title_main_library_back">Main Library Background</string>
-        <string name="title_nav_back">Side Navigation Background</string>
-        <string name="title_shake_action">Shake will</string>
-        <string name="title_shake">Shake Control</string>
-        <string name="title_shake_main">Shake</string>
-        <string name="title_library">Library</string>
-        <string name="title_about">About</string>
-        <string name="title_reset">Reset</string>
-        <string name="title_find_me_on_instagram">Let\'s be Friends</string>
-        <string name="title_contribute">Contribute</string>
-        <string name="title_remove_ads_for_free">Remove Ads for Free</string>
-        <string name="title_instant_lyric">Instant Lyrics</string>
-        <string name="title_ui">User Interface</string>
-        <string name="title_theme_category">AB Music theme</string>
-        <string name="title_lock_screen_album_Art">Lock Screen Album Art</string>
-        <string name="title_disc_size">Disc Size</string>
-        <string name="title_licenses">Licenses </string>
-        <string name="title_about_us">About </string>
-        <string name="title_terms_of_use">Terms of Use</string>
-        <string name="title_tag_editor">Music Tag Editor </string>
-        <string name="title_rescan_lib">Rescan Music Library</string>
-        <string name="title_album_lib_view">Album Library View</string>
-        <string name="title_hide_short_clips">Hide Audio Tracks Shorter Than</string>
-        <string name="title_batch_lyrics">Batch Lyrics</string>
-        <string name="title_equalizer">Prefer System Equalizer</string>
-        <string name="title_data_Saver">Data Saver</string>
-        <string name="title_cache_artist_data">Cache Artist Data Locally</string>
-        <string name="title_click_me">Click me</string>
-        <string name="title_edit">Edit Text</string>
-        <string name="title_remove_watermark">Remove Watermark</string>
+    <string name="title_remove_ads">Remove Ads</string>
+    <string name="title_text_font">Font</string>
+    <string name="title_misc">Miscellaneous</string>
+    <string name="title_try_my_new_app">AB Remote Wallpaper</string>
+    <string name="title_ringtone_cutter">Ringtone Cutter</string>
+    <string name="title_continous_playback">Continuous Playback</string>
+    <string name="title_batch_download">Batch Lyrics Download</string>
+    <string name="title_hide_lock_button">Hide Music Lock Button</string>
+    <string name="title_notification">Notifications</string>
+    <string name="title_rotatingdisk">Rotating Disc UI</string>
+    <string name="title_opening_tab">Manage Tabs</string>
+    <string name="title_reset_pref">Reset Preferences to Default</string>
+    <string name="title_hide_tracks_starting_with">Hide Tracks Starting With</string>
+    <string name="title_excluded_folders">Excluded Folders</string>
+    <string name="title_feedback">Provide Feedback</string>
+    <string name="title_support_dev">Support Development (Donate)</string>
+    <string name="title_theme">Base Theme</string>
+    <string name="title_theme_color">Theme</string>
+    <string name="title_now_playing_back">Now Playing Background</string>
+    <string name="title_main_library_back">Main Library Background</string>
+    <string name="title_nav_back">Side Navigation Background</string>
+    <string name="title_shake_action">Shake will</string>
+    <string name="title_shake">Shake Control</string>
+    <string name="title_shake_main">Shake</string>
+    <string name="title_library">Library</string>
+    <string name="title_about">About</string>
+    <string name="title_reset">Reset</string>
+    <string name="title_find_me_on_instagram">Let\'s be Friends</string>
+    <string name="title_contribute">Contribute</string>
+    <string name="title_remove_ads_for_free">Remove Ads for Free</string>
+    <string name="title_instant_lyric">Instant Lyrics</string>
+    <string name="title_ui">User Interface</string>
+    <string name="title_theme_category">AB Music theme</string>
+    <string name="title_lock_screen_album_Art">Lock Screen Album Art</string>
+    <string name="title_disc_size">Disc Size</string>
+    <string name="title_licenses">Licenses </string>
+    <string name="title_about_us">About </string>
+    <string name="title_terms_of_use">Terms of Use</string>
+    <string name="title_tag_editor">Music Tag Editor </string>
+    <string name="title_rescan_lib">Rescan Music Library</string>
+    <string name="title_album_lib_view">Album Library View</string>
+    <string name="title_hide_short_clips">Hide Audio Tracks Shorter Than</string>
+    <string name="title_batch_lyrics">Batch Lyrics</string>
+    <string name="title_equalizer">Prefer System Equalizer</string>
+    <string name="title_data_Saver">Data Saver</string>
+    <string name="title_cache_artist_data">Cache Artist Data Locally</string>
+    <string name="title_click_me">Click me</string>
+    <string name="title_edit">Edit Text</string>
+    <string name="title_remove_watermark">Remove Watermark</string>
 
-
-
-
-    <!-- arrays -->
-        <string-array name="now_playing_back_pref_array">
-            <item>System default</item>
-            <item>Track Artist</item>
-            <item>Album Art</item>
-            <item>Custom</item>
-        </string-array>
-
-        <string-array name="main_lib_back_pref_array">
-            <item>System default</item>
-            <item>Custom</item>
-        </string-array>
-
-    <string-array name="nav_back_pref_array">
-        <item>System default</item>
-        <item>Custom</item>
-    </string-array>
-
-
-    <string-array name="def_album_art_pref_array">
-        <item>System default</item>
-        <item>Custom</item>
-    </string-array>
-
-        <string-array name="colors">
-            <item>#000000</item>
-            <item>#424242</item>
-            <item>#757575</item>
-            <item>#F5F5F5</item>
-            <item>#ffffff</item>
-
-            <item>#D81B60</item>
-            <item>#E91E63</item>
-            <item>#FF4081</item>
-            <item>#F48FB1</item>
-            <item>#F8BBD0</item>
-
-
-            <item>#9C27B0</item>
-            <item>#AA00FF</item>
-            <item>#E040FB</item>
-            <item>#BA68C8</item>
-            <item>#E1BEE7</item>
-
-            <item>#1A237E</item>
-            <item>#303F9F</item>
-            <item>#3F51B5</item>
-            <item>#5C6BC0</item>
-            <item>#9FA8DA</item>
-
-
-            <item>#2E7D32</item>
-            <item>#00C853</item>
-            <item>#66BB6A</item>
-            <item>#A5D6A7</item>
-            <item>#E8F5E9</item>
-
-            <item>#BF360C</item>
-            <item>#E64A19</item>
-            <item>#FF5722</item>
-            <item>#FF8A65</item>
-            <item>#FFCCBC</item>
-
-            <item>#093145</item>
-            <item>#0c374d</item>
-            <item>#0d3d56</item>
-            <item>#3c6478</item>
-
-            <item>#bca136</item>
-            <item>#d3b53d</item>
-            <item>#ebc944</item>
-            <item>#efd469</item>
-
-
-            <item>#9a2617</item>
-            <item>#ad2a1a</item>
-            <item>#c02f1d</item>
-            <item>#cd594a</item>
-
-            <item>#107896</item>
-            <item>#1287a8</item>
-            <item>#1496bb</item>
-            <item>#43abc9</item>
-        </string-array>
 
     <string name="whats_new"><![CDATA[ * Changed source of artist images to Spotify now. \n\n* Added lots of new fonts. \n\n* New background images and fonts added in lyrics card screen. \n\n* Bugs removal and performance improvement. ]]></string>
 
@@ -798,8 +711,7 @@
     <string name="delete_audio">Delete Audio</string>
 
     <string name="confirm_delete_ringdroid">Are you sure?</string>
-    <string name="confirm_delete_non_ringdroid"
-        >Are you sure?  This file was not created using Ringdroid!</string>
+    <string name="confirm_delete_non_ringdroid">Are you sure?  This file was not created using Ringdroid!</string>
 
     <string name="delete_ok_button">Delete</string>
     <string name="delete_cancel_button">Cancel</string>
@@ -846,115 +758,122 @@
     <string name="about_text"><![CDATA[Use Ringdroid to edit MP3, OGG, WAV, AAC, and AMR audio files and create ringtones, alarms, and notifications from them.\n\nTip: copy audio files to your SD card using a USB cable.\n\nTip: tap anywhere on the waveform to start playing at that position.\n\nTip: while playing, tap the word Start or End to quickly set the start and end markers to the current playback time.\n\nVersion %s\n\nDeveloper: Dominic Mazzoni, Nicolas Faralli\nGraphics: Joseph Wain\nSupport and evangelizing: Eugene Koh\nEnhancements: Dan Klufas\n\nRingdroid is free software, distributed under the Apache 2.0 license.  Source code is on github.com/google/ringdroid\n]]></string>
 
 
-
     <!-- NO TRANSLATION REQUIRED AFTER THIS POINT -->
 
+
+    <!-- arrays -->
+    <string name="now_playing_back_custom_image">//now_playing_back_custom_image</string>
+
+    <string name="main_lib_back_custom_image">//main_lib_back_custom_image</string>
+
+    <string name="nav_back_custom_image">//nav_back_custom_image</string>
+
+
+    <string name="def_album_art_custom_image">//def_album_art_custom_image</string>
+
+    <string name="pref_disc_rotation">pref_disc_rotation</string>
+
     <!-- now playing back file -->
-        <string name="now_playing_back_custom_image">//now_playing_back_custom_image</string>
-        <string name="main_lib_back_custom_image">//main_lib_back_custom_image</string>
-        <string name="nav_back_custom_image">//nav_back_custom_image</string>
-        <string name="def_album_art_custom_image">//def_album_art_custom_image</string>
+    <string name="pref_data_saver">pref_data_saver</string>
+    <string name="pref_cache_artist_data">pref_cache_artist_data</string>
+    <string name="pref_artist_cache_manual">pref_artist_cache_started_manually</string>
+    <string name="pref_last_equ_setting">pref_equ_setting</string>
 
     <!-- strings for shared preferences -->
-        <string name="pref_disc_rotation">pref_disc_rotation</string>
-        <string name="pref_data_saver">pref_data_saver</string>
-        <string name="pref_cache_artist_data">pref_cache_artist_data</string>
-        <string name="pref_artist_cache_manual">pref_artist_cache_started_manually</string>
-        <string name="pref_last_equ_setting">pref_equ_setting</string>
-        <string name="pref_artinfo_libload">pref_artist_info_load_time</string>
-        <string name="pref_continuous_playback">pref_continuous_playback</string>
-        <string name="pref_disc_rotation_speed">pref_disc_rotation_speed</string>
-        <string name="pref_rate_reward_granted">pref_rate_reward_granted</string>
-        <string name="pref_user_country">user_country</string>
-        <string name="pref_font_already_logged">font_already_logged</string>
-        <string name="pref_already_rated">pref_already_rated</string>
-        <string name="pref_hide_short_clips">pref_hide_short_clips</string>
-        <string name="pref_album_lib_view">pref_album_lib_view</string>
-        <string name="pref_rescan_lib">pref_rescan_lib_view</string>
-        <string name="pref_click_on_notif">pref_click_on_notif</string>
-        <string name="pref_about_us">pref_click_about</string>
-        <string name="pref_about_licenses">pref_click_license</string>
-        <string name="pref_sleep_timer">pref_sleep_timer</string>
-        <string name="pref_disc_size">dis_size</string>
-        <string name="pref_lock_screen_album_Art">lock_screen_art</string>
-        <string name="pref_shake">shake_status</string>
-        <string name="pref_shake_action">shake_action</string>
-        <string name="pref_theme">base_theme</string>
-        <string name="pref_theme_color">primary_color</string>
-        <string name="pref_now_playing_back">pref_now_playing_back</string>
-        <string name="pref_main_library_back">pref_main_library_back</string>
-        <string name="pref_nav_library_back">pref_nav_back</string>
-        <string name="pref_random_theme_current_color">random_theme_current</string>
-        <string name="pref_support_dev">support_dev</string>
-        <string name="pref_hide_tracks_starting_with">hide_tracks_starting_with</string>
-        <string name="pref_hide_tracks_starting_with_1">hide_tracks_starting_with_1</string>
-        <string name="pref_hide_tracks_starting_with_2">hide_tracks_starting_with_2</string>
-        <string name="pref_hide_tracks_starting_with_3">hide_tracks_starting_with_3</string>
-        <string name="pref_reset_pref">reset_pref</string>
-        <string name="pref_opening_tab">opening_tab</string>
-        <string name="pref_text_font">text_font</string>
-        <string name="pref_first_install">first_install</string>
-        <string name="pref_exit_now_playing_at">pref_exit_now_playing_at</string>
-        <string name="pref_never_ask_notitication_permission">pref_n_a_n_p</string>
-        <string name="pref_instant_lyric">pref_instant_lyric</string>
-        <string name="pref_excluded_folders">pref_excluded_folders</string>
-        <string name="pref_reward_points">pref_reward_points</string>
+    <string name="pref_artinfo_libload">pref_artist_info_load_time</string>
+    <string name="pref_continuous_playback">pref_continuous_playback</string>
+    <string name="pref_disc_rotation_speed">pref_disc_rotation_speed</string>
+    <string name="pref_rate_reward_granted">pref_rate_reward_granted</string>
+    <string name="pref_user_country">user_country</string>
+    <string name="pref_font_already_logged">font_already_logged</string>
+    <string name="pref_already_rated">pref_already_rated</string>
+    <string name="pref_hide_short_clips">pref_hide_short_clips</string>
+    <string name="pref_album_lib_view">pref_album_lib_view</string>
+    <string name="pref_rescan_lib">pref_rescan_lib_view</string>
+    <string name="pref_click_on_notif">pref_click_on_notif</string>
+    <string name="pref_about_us">pref_click_about</string>
+    <string name="pref_about_licenses">pref_click_license</string>
+    <string name="pref_sleep_timer">pref_sleep_timer</string>
+    <string name="pref_disc_size">dis_size</string>
+    <string name="pref_lock_screen_album_Art">lock_screen_art</string>
+    <string name="pref_shake">shake_status</string>
+    <string name="pref_shake_action">shake_action</string>
+    <string name="pref_theme">base_theme</string>
+    <string name="pref_theme_color">primary_color</string>
+    <string name="pref_now_playing_back">pref_now_playing_back</string>
+    <string name="pref_main_library_back">pref_main_library_back</string>
+    <string name="pref_nav_library_back">pref_nav_back</string>
+    <string name="pref_random_theme_current_color">random_theme_current</string>
+    <string name="pref_support_dev">support_dev</string>
+    <string name="pref_hide_tracks_starting_with">hide_tracks_starting_with</string>
+    <string name="pref_hide_tracks_starting_with_1">hide_tracks_starting_with_1</string>
+    <string name="pref_hide_tracks_starting_with_2">hide_tracks_starting_with_2</string>
+    <string name="pref_hide_tracks_starting_with_3">hide_tracks_starting_with_3</string>
+    <string name="pref_reset_pref">reset_pref</string>
+    <string name="pref_opening_tab">opening_tab</string>
+    <string name="pref_text_font">text_font</string>
+    <string name="pref_first_install">first_install</string>
+    <string name="pref_exit_now_playing_at">pref_exit_now_playing_at</string>
+    <string name="pref_never_ask_notitication_permission">pref_n_a_n_p</string>
+    <string name="pref_instant_lyric">pref_instant_lyric</string>
+    <string name="pref_excluded_folders">pref_excluded_folders</string>
+    <string name="pref_reward_points">pref_reward_points</string>
+    <string name="pref_album_sort_by">a_sort_by</string>
+    <string name="pref_tracks_sort_by">t_sort_by</string>
+    <string name="pref_artist_sort_by">art_sort_by</string>
+    <string name="pref_genre_sort_by">g_sort_by</string>
+    <string name="pref_order_by">order_by</string>
 
-        <string name="pref_album_sort_by">a_sort_by</string>
-        <string name="pref_tracks_sort_by">t_sort_by</string>
-        <string name="pref_artist_sort_by">art_sort_by</string>
-        <string name="pref_genre_sort_by">g_sort_by</string>
-        <string name="pref_order_by">order_by</string>
-        <string name="pref_version_code">version_code</string>
+    <string name="pref_version_code">version_code</string>
+    <string name="pref_show_edit_track_info_dialog">pref_show_edit_track_info_dialog</string>
+    <string name="pref_show_lock_info_dialog">show_lock_info_dialog</string>
+    <string name="pref_hide_lock_button">hide_music_lock_button</string>
+    <string name="pref_notifications">hide_notifications</string>
+    <string name="pref_swipe_right">pref_swipe_right</string>
 
-        <string name="pref_show_edit_track_info_dialog">pref_show_edit_track_info_dialog</string>
-        <string name="pref_show_lock_info_dialog">show_lock_info_dialog</string>
-        <string name="pref_hide_lock_button">hide_music_lock_button</string>
-        <string name="pref_notifications">hide_notifications</string>
-        <string name="pref_swipe_right">pref_swipe_right</string>
+    <string name="pref_i_lyric_info_shown">pref_i_l_i_s</string>
+    <string name="pref_lock_button_info_shown">pref_lock_button_info_shown</string>
+    <string name="pref_disclaimer_accepted">pref_disc_acceted</string>
+    <string name="pref_mini_player_info_shown">pref_mini_player_info_shown</string>
+    <string name="pref_sorting_info_shown">pref_sorting_info_shown</string>
 
-        <!-- info messages preferences  -->
-        <string name="pref_i_lyric_info_shown">pref_i_l_i_s</string>
-        <string name="pref_lock_button_info_shown">pref_lock_button_info_shown</string>
-        <string name="pref_disclaimer_accepted">pref_disc_acceted</string>
-        <string name="pref_mini_player_info_shown">pref_mini_player_info_shown</string>
-        <string name="pref_sorting_info_shown">pref_sorting_info_shown</string>
-        <string name="pref_feedback">pref_feed_back</string>
-        <string name="pref_fav_info_shown">pref_fav_info_shown</string>
-        <string name="pref_current_queue_info_shown">pref_current_queue_info_shown</string>
-        <string name="pref_swipe_right_shown">pref_swipe_right_shown</string>
-        <string name="pref_never_show_record_permission">pref_n_s_r_p</string>
-        <string name="pref_remove_ads_after_payment">remove_ad</string>
-        <string name="pref_remove_ads_temp">remove_ad_temp</string>
-        <string name="pref_batch_download">batch_download</string>
-        <string name="pref_prefer_system_equ">pref_prefer_system_equ</string>
-        <string name="pref_terms_of_use">pref_terms_use</string>
-        <string name="pref_tab_seq">pref_tab_seq</string>
-        <string name="pref_card_image_links">pref_card_image_links</string>
-        <string name="pref_card_image_saved_at">pref_card_image_saved_at</string>
-        <string name="pref_info_lyric_card_shown">pref_info_lyric_card_shown</string>
+    <!-- info messages preferences  -->
+    <string name="pref_feedback">pref_feed_back</string>
+    <string name="pref_fav_info_shown">pref_fav_info_shown</string>
+    <string name="pref_current_queue_info_shown">pref_current_queue_info_shown</string>
+    <string name="pref_swipe_right_shown">pref_swipe_right_shown</string>
+    <string name="pref_never_show_record_permission">pref_n_s_r_p</string>
+    <string name="pref_remove_ads_after_payment">remove_ad</string>
+    <string name="pref_remove_ads_temp">remove_ad_temp</string>
+    <string name="pref_batch_download">batch_download</string>
+    <string name="pref_prefer_system_equ">pref_prefer_system_equ</string>
+    <string name="pref_terms_of_use">pref_terms_use</string>
+    <string name="pref_tab_seq">pref_tab_seq</string>
+    <string name="pref_card_image_links">pref_card_image_links</string>
+    <string name="pref_card_image_saved_at">pref_card_image_saved_at</string>
+    <string name="pref_info_lyric_card_shown">pref_info_lyric_card_shown</string>
+    <string name="nav_default_album_art">Default Album Art</string>
+    <string name="pref_default_album_art">pef_default_album_art</string>
+    <string name="pref_theme_id">selected_theme_id</string>
+    <string name="summary_pref_theme">Tap to choose theme</string>
+    <string name="transition">transition</string>
 
-        <string name="nav_default_album_art">Default Album Art</string>
-        <string name="pref_default_album_art">pef_default_album_art</string>
-        <string name="pref_theme_id">selected_theme_id</string>
-        <string name="summary_pref_theme">Tap to choose theme</string>
-        <string name="transition">transition</string>
-        <string name="secondary_transition">sec_transition</string>
-
-    <!-- strings for licenses -->
+    <string name="secondary_transition">sec_transition</string>
     <string name="li_title">Third party Libraries used</string>
     <string name="li_libraries"> \ Picasso
         \nSlidingUpPanel by Umano
         \nRecycler-fast-scroller</string>
     <string name="li_apache_lic">All the libraries are licensed under apache license. You can see license on a link given below.</string>
     <string name="li_apache_lic_link">&lt;a href="https://www.apache.org/licenses/LICENSE-2.0">Apache license&lt;/a></string>
-
-    <!-- AdMob ad unit IDs -->
     <string name="banner_main_activity">ca-app-pub-3876828674787345/1978517310</string>
+
+    <!-- strings for licenses -->
     <string name="banner_secondary_activity">ca-app-pub-3876828674787345/3455250515</string>
     <string name="banner_play_queue">ca-app-pub-3876828674787345/1838916512</string>
     <string name="banner_art_info_frag">ca-app-pub-3876828674787345/7885450119</string>
     <string name="banner_lyric_frag">ca-app-pub-3876828674787345/9362183312</string>
+
+    <!-- AdMob ad unit IDs -->
     <string name="banner_settings_activity">ca-app-pub-3876828674787345/3315649710</string>
     <string name="reward_video_ad">ca-app-pub-3876828674787345/7463482972</string>
     <string name="equalizer_banner">ca-app-pub-3876828674787345/4407714848</string>
@@ -962,35 +881,27 @@
     <string name="banner_lyrics_explore">ca-app-pub-3876828674787345/5106014967</string>
     <string name="banner_lyric_view">ca-app-pub-3876828674787345/2111351817</string>
     <string name="banner_tag_editor">ca-app-pub-3876828674787345/7980548178</string>
-    <!--used for now playing now -->
     <string name="inter_settings_activity">ca-app-pub-3876828674787345/6269116115</string>
     <string name="inter_lyric_card_activity">ca-app-pub-3876828674787345/5997989493</string>
-
-
     <string name="inter_about_us_activity">ca-app-pub-3876828674787345/7745849318</string>
-
-    <!--used for instant lyrics now -->
     <string name="inter_licenses_activity">ca-app-pub-3876828674787345/9222582513</string>
     <string name="banner_about_us_activity">ca-app-pub-3876828674787345/4792382919</string>
-
-
+    <!--used for now playing now -->
     <string name="donate_coffee">donate_coffee</string>
     <string name="donate_beer">donate_beer</string>
-    <string name="donate_beer_box">donate_beer_box</string>
-    <string name="remove_ads">remove_ads</string>
 
-   <!-- share app -->
+
+    <string name="donate_beer_box">donate_beer_box</string>
+
+    <!--used for instant lyrics now -->
+    <string name="remove_ads">remove_ads</string>
     <string name="share_app">https://play.google.com/store/apps/details?id=com.bhandari.music</string>
+
+
     <string name="album_art_dir_name">albumArtThumbsABMusic</string>
     <string name="au_email_id">amit.bhandari.c@gmail.com</string>
-
-
-
-    <!--licenses -->
-
     <string name="last_fm_declaration">All the artist bio and images have copyright of last.fm and I claim no ownership
     for those! </string>
-
     <string name="apache_libraries">  \u0020android appcompat-v7 \n android support-v4 \n android support design \n
                                         android support cardview \n com.wang.avi:library  \n com.sothree.slidinguppanel \n
     com.squareup:seismic \n jp.wasabeef:blurry \n com.github.viethoa:fastscroller \n com.squareup.retrofit:retrofit
@@ -998,6 +909,7 @@
     \n com.jakewharton:butterknife \n com.theartofdev.edmodo:android-image-cropper \n com.squareup.leakcanary:leakcanary-android
     </string>
 
+    <!-- share app -->
     <string name="apache_license">Above mentioned libraries are Licensed under the Apache License, Version 2.0 (the "License"); \n
 You may not use this file except in compliance with the License.\n
 You may obtain a copy of the License at\n\n
@@ -1009,9 +921,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</string>
-
     <string name="MIT_libraries">org.jsoup:jsoup \n </string>
-
     <string name="MIT_license">Above libraries are licensed under The MIT License\n\n
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n
@@ -1019,6 +929,9 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. \n
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</string>
+
+
+    <!--licenses -->
 
     <string name="glide_library">bumptech.glide</string>
 
@@ -1118,10 +1031,6 @@ sublicense, and/or sell copies of the Software, and to permit persons who
 receive copies from any such party to do so, with the only requirement being
 that this copyright notice remain intact.</string>
 
-
-
-
-
     <string name="lorem">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 		In mollis est vitae erat laoreet consectetur. Mauris dui mauris,
@@ -1139,7 +1048,91 @@ that this copyright notice remain intact.</string>
 		Aenean ullamcorper dolor non condimentum congue. Aenean mauris nunc, pellentesque at placerat vitae,
 		aliquet quis orci. Curabitur maximus augue ut bibendum sagittis.
 	</string>
+
     <string name="no_saved_lyrics">No saved lyrics :(</string>
+
+    <string-array name="now_playing_back_pref_array">
+        <item>System default</item>
+        <item>Track Artist</item>
+        <item>Album Art</item>
+        <item>Custom</item>
+    </string-array>
+
+    <string-array name="main_lib_back_pref_array">
+        <item>System default</item>
+        <item>Custom</item>
+    </string-array>
+
+    <string-array name="nav_back_pref_array">
+        <item>System default</item>
+        <item>Custom</item>
+    </string-array>
+
+
+    <string-array name="def_album_art_pref_array">
+        <item>System default</item>
+        <item>Custom</item>
+    </string-array>
+    <string-array name="colors">
+        <item>#000000</item>
+        <item>#424242</item>
+        <item>#757575</item>
+        <item>#F5F5F5</item>
+        <item>#ffffff</item>
+
+        <item>#D81B60</item>
+        <item>#E91E63</item>
+        <item>#FF4081</item>
+        <item>#F48FB1</item>
+        <item>#F8BBD0</item>
+
+
+        <item>#9C27B0</item>
+        <item>#AA00FF</item>
+        <item>#E040FB</item>
+        <item>#BA68C8</item>
+        <item>#E1BEE7</item>
+
+        <item>#1A237E</item>
+        <item>#303F9F</item>
+        <item>#3F51B5</item>
+        <item>#5C6BC0</item>
+        <item>#9FA8DA</item>
+
+
+        <item>#2E7D32</item>
+        <item>#00C853</item>
+        <item>#66BB6A</item>
+        <item>#A5D6A7</item>
+        <item>#E8F5E9</item>
+
+        <item>#BF360C</item>
+        <item>#E64A19</item>
+        <item>#FF5722</item>
+        <item>#FF8A65</item>
+        <item>#FFCCBC</item>
+
+        <item>#093145</item>
+        <item>#0c374d</item>
+        <item>#0d3d56</item>
+        <item>#3c6478</item>
+
+        <item>#bca136</item>
+        <item>#d3b53d</item>
+        <item>#ebc944</item>
+        <item>#efd469</item>
+
+
+        <item>#9a2617</item>
+        <item>#ad2a1a</item>
+        <item>#c02f1d</item>
+        <item>#cd594a</item>
+
+        <item>#107896</item>
+        <item>#1287a8</item>
+        <item>#1496bb</item>
+        <item>#43abc9</item>
+    </string-array>
 
 
 </resources>
