@@ -526,7 +526,7 @@
     <string name="title_remove_watermark">Remove Watermark</string>
 
 
-    <string name="whats_new"><![CDATA[ * Changed source of artist images to Spotify now. \n\n* Added lots of new fonts. \n\n* New background images and fonts added in lyrics card screen. \n\n* Bugs removal and performance improvement. ]]></string>
+    <string name="whats_new"><![CDATA[ * Resolved a bug which was causing wrong scrolling of lyrics. \n\n* Bugs removal and performance improvement. ]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
