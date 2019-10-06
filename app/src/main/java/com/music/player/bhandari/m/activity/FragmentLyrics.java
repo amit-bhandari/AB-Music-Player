@@ -191,7 +191,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private void updateLyrics(){
         //hide edit metadata things
         Log.d("FragmentLyrics", "updateLyrics: ");
-        Log.d("FragmentLyrics", "updateLyrics: " + Log.getStackTraceString(new Exception()));
 
         if(!isAdded() || getActivity()==null){
             return;
@@ -434,7 +433,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
         }
         try {
-            scrollLyricsToCurrentLocation();
+            if(!fIsStaticLyrics) scrollLyricsToCurrentLocation();
         }catch (Exception e){
             Log.d("FragmentLyrics", "startLyricUpdater: unable to scroll lyrics to latest position");
         }

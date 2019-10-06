@@ -2,7 +2,6 @@ package com.music.player.bhandari.m.service;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -34,25 +33,25 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 @SuppressWarnings("deprecation")
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class NotificationListenerService extends android.service.notification.NotificationListenerService
-        implements RemoteController.OnClientUpdateListener{
+        implements RemoteController.OnClientUpdateListener {
     private RemoteController mController;
     private boolean isRemoteControllerPlaying;
     private boolean mHasBug = true;
@@ -97,9 +96,9 @@ public class NotificationListenerService extends android.service.notification.No
 
                         if (
                                 "com.google.android.youtube".equals(controller.getPackageName()) ||
-                                "com.bhandari.music".equals(controller.getPackageName()) ||
-                                "com.android.chrome".equals(controller.getPackageName()) ||
-                                "org.videolan.vlc".equals(controller.getPackageName()))
+                                        "com.bhandari.music".equals(controller.getPackageName()) ||
+                                        "com.android.chrome".equals(controller.getPackageName()) ||
+                                        "org.videolan.vlc".equals(controller.getPackageName()))
                             return;
 
                         if (controllerCallback != null)
@@ -109,7 +108,7 @@ public class NotificationListenerService extends android.service.notification.No
                             @Override
                             public void onPlaybackStateChanged(@NonNull PlaybackState state) {
                                 super.onPlaybackStateChanged(state);
-                                //Log.v(TAG, "onPlaybackStateChanged");
+                                if (mNotificationManager == null) return;
                                 boolean isPlaying = state.getState() == PlaybackState.STATE_PLAYING;
 
                                 if (!isPlaying) {
@@ -193,7 +192,7 @@ public class NotificationListenerService extends android.service.notification.No
         MediaMetadata metadata = controller.getMetadata();
         PlaybackState playbackState = controller.getPlaybackState();
         if (metadata == null) {
-            Log.d("NotificationListener", "broadcastControllerState: metadata null " );
+            Log.d("NotificationListener", "broadcastControllerState: metadata null ");
             return;
         }
         String artist = metadata.getString(MediaMetadata.METADATA_KEY_ARTIST);
@@ -212,9 +211,9 @@ public class NotificationListenerService extends android.service.notification.No
 
     private void broadcast(String artist, String track, boolean playing, long duration, long position) {
 
-        if(playing){
-            postNotification(artist,track);
-        }else {
+        if (playing) {
+            postNotification(artist, track);
+        } else {
             mNotificationManager.cancel(Constants.NOTIFICATION_ID.INSTANT_LYRICS);
         }
 
@@ -222,7 +221,7 @@ public class NotificationListenerService extends android.service.notification.No
         String currentArtist = currentMusicInfo.getString("artist", "");
         String currentTrack = currentMusicInfo.getString("track", "");
 
-        Log.v(TAG, track + " : " + artist );
+        Log.v(TAG, track + " : " + artist);
 
 
         try {
@@ -233,7 +232,7 @@ public class NotificationListenerService extends android.service.notification.No
                 //editor.putLong("position", position);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.UPDATE_INSTANT_LYRIC));
             }
-        }catch (NullPointerException ignored){
+        } catch (NullPointerException ignored) {
 
         }
 
@@ -254,7 +253,7 @@ public class NotificationListenerService extends android.service.notification.No
     }
 
 
-    private void postNotification(final String artist , final String track){
+    private void postNotification(final String artist, final String track) {
 
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -297,7 +296,7 @@ public class NotificationListenerService extends android.service.notification.No
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
-        Log.v(TAG,"Notification posted"+sbn.toString());
+        Log.v(TAG, "Notification posted" + sbn.toString());
     }
 
     @Override

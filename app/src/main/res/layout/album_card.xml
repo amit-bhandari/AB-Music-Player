@@ -13,7 +13,8 @@
         android:layout_margin="@dimen/ac_card_margin"
         android:elevation="3dp"
         android:id="@+id/album_library_card"
-        card_view:cardCornerRadius="@dimen/ac_card_album_radius">
+        card_view:cardCornerRadius="@dimen/ac_card_album_radius"
+        tools:ignore="UnusedAttribute">
 
         <!--<ImageView
             android:layout_width="match_parent"
