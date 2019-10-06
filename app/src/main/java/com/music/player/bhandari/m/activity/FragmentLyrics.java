@@ -118,21 +118,12 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private Boolean fIsLyricUpdaterThreadRunning =false;
     private Handler handler ;
 
-/*private boolean fSeekbarThreadCancelled = false;
-    private boolean fSeekbarRunning = false;*/
-
     @BindView(R.id.dynamic_lyrics_recycler_view) RecyclerView recyclerView;
     private LyricsViewAdapter adapter;
     private LinearLayoutManager layoutManager;
     private GestureDetectorCompat gestureDetector;
     private ActionMode actionMode;
     private boolean actionModeActive = false;
-
-    /*@BindView(R.id.pw_playButton) FloatingActionButton playButton;
-    private long mLastClickTime;
-    private Animation playButtonAnimation;*/
-
-    //private BroadcastReceiver mPlayPauseUpdateReceiver;
 
     PlayerService playerService;
 
@@ -148,10 +139,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         }
         playerService = MyApp.getService();
 
-        //bindViews();
-        //initializeMiniPlaybackControlDashboard();
-        //UpdateUI();
-        //showAdIfApplicable();
         initializeListeners();
         return layout;
     }
@@ -160,16 +147,9 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //recyclerView.setFadingEdgeLength(840);
     }
 
     private void initializeListeners() {
-        /*mPlayPauseUpdateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                UpdateUI();
-            }
-        };*/
         buttonUpdateMetadata.setOnClickListener(this);
 
         lyricStatus.setOnClickListener(this);
@@ -183,14 +163,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         };
 
     }
-
-    /*@OnClick(R.id.ad_close)
-    public void close_ad(){
-        if(mAdView!=null){
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
-    }*/
 
     private void updateLyricsIfNeeded() {
 
@@ -520,27 +492,9 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         
         if (isVisibleToUser) {
             startLyricUpdater();
-        }
-        else {
+        } else {
             stopLyricUpdater();
         }
-
-        /*if(isVisibleToUser && seekBar!=null){
-            int per = UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress() / 1000,
-                playerService.getCurrentTrackDuration() / 1000);
-            seekBar.setProgress(per);
-        }*/
-
-        Log.v("frag",isVisibleToUser+"");
-        /*if(isVisibleToUser && mAdView!=null){
-            mAdView.resume();
-        }else {
-            if(mAdView!=null){
-                mAdView.pause();
-            }
-        }*/
-
-        Log.v(Constants.L_TAG,"Called...." + isVisibleToUser);
     }
 
     private void stopLyricUpdater() {
@@ -675,25 +629,17 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     @Override
     public void onDestroy() {
         fLyricUpdaterThreadCancelled =true;
-        //fSeekbarThreadCancelled = true;
         super.onDestroy();
     }
 
     @Override
     public void onDestroyView() {
-        /*if (mAdView != null) {
-            mAdView.destroy();
-        }*/
-
         fLyricUpdaterThreadCancelled =true;
-        //fSeekbarThreadCancelled = true;
         super.onDestroyView();
     }
 
     private void myToggleSelection(int idx) {
         adapter.toggleSelection(idx);
-        //String title = adapter.getSelectedItemCount();
-        //actionMode.setTitle(title);
         if(adapter.getSelectedItemCount()==0){
             actionMode.finish();
             actionMode = null;

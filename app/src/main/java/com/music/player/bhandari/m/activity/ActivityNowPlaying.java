@@ -243,21 +243,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     }
         });
 
-        /*toolbar.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        } else {
-                            toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        }
-
-                        toolbar.getLocationOnScreen(locationToolbar);
-                        Log.d("ActivityNowPlaying", "onGlobalLayout: locationToolbar " + locationToolbar[0] + " : " + locationToolbar[1]);
-                    }
-                });*/
-
         if(!MyApp.getPref().getBoolean("never_show_button_again", false)){
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
@@ -377,13 +362,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             }
 
         });
-        //set gradient as background
 
-        /*GradientDrawable gd = new GradientDrawable(
-                GradientDrawable.Orientation.BR_TL,
-                new int[] {ColorHelper.getColor(R.color.colorBlackThemeBack),0xFF131313});
-        gd.setCornerRadius(0f);
-        slidingUpPanelLayout.setBackgroundColor(ColorHelper.getColor(R.color.blackTransparent));*/
         slidingUpPanelLayout.setDragView(R.id.play_queue_title);
 
         shineButton.init(this);
@@ -400,13 +379,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 UpdateUI(intent);
             }
         };
-
-
-        /*final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        if (pm != null) {
-            this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        }*/
-
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
