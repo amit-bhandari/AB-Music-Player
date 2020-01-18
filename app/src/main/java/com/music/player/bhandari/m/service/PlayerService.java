@@ -214,7 +214,7 @@ public class PlayerService extends Service implements
                 } else {
                     Log.d("PlayerService", "onPrepared: seeking to : " + MyApp.getPref().getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0));
                     try {
-                        mediaPlayer.seekTo(MyApp.getPref().getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0));
+                        seekTrack(MyApp.getPref().getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0));
                     } catch (Exception e) {
                         Log.d("PlayerService", "onPrepared: Unable to seek track");
                     }
@@ -558,7 +558,6 @@ public class PlayerService extends Service implements
             public void onSeekTo(long pos) {
                 Log.d(TAG, "onSeekTo: called " + pos);
                 seekTrack((int) pos);
-                setSessionState();
                 super.onSeekTo(pos);
             }
 
@@ -1408,7 +1407,7 @@ public class PlayerService extends Service implements
         if (((float) getCurrentTrackProgress() / (float) getCurrentTrackDuration())
                 > Constants.PREFERENCE_VALUES.PREV_ACT_TIME_CONSTANT) {
             //start same song from start
-            mediaPlayer.seekTo(0);
+            seekTrack(0);
         } else if (currentTrackPosition > 0) {
             playTrack(currentTrackPosition - 1);
         } else if (currentTrackPosition == 0) {
@@ -1469,6 +1468,7 @@ public class PlayerService extends Service implements
         if (status > STOPPED) {
             try {
                 mediaPlayer.seekTo(p);
+                setSessionState();
             } catch (IllegalStateException ignored) {
 
             }
