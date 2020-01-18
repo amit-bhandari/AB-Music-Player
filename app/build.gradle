@@ -196,6 +196,7 @@ dependencies {
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.0'
 
     //view binding
+    //noinspection AnnotationProcessorOnCompilePath
     implementation 'com.jakewharton:butterknife:8.8.1'
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
 
