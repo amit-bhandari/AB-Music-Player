@@ -94,12 +94,6 @@
         <item name="actionModeBackground">@color/colorBlack</item>
     </style>
 
-    <!--<style name="AppTheme.Toolbar">
-        <item name="android:textColorPrimary">@color/primary_text_color</item>
-        <item name="colorControlNormal">@color/primary_text_color</item>
-        <item name="windowActionModeOverlay">true</item>
-    </style>-->
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"
         />
 
