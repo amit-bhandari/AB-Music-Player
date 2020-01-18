@@ -40,7 +40,7 @@ class MyDialog extends MaterialDialog {
         //but even if you forget, disaster won't happen
         if(getWindow()!=null) {
             getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-            getWindow().setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+            getWindow().setBackgroundDrawable(ColorHelper.getGradientDrawableDark());
         }
 
         super.show();

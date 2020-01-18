@@ -1,7 +1,6 @@
 package com.music.player.bhandari.m.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -13,12 +12,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -94,19 +91,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.music.player.bhandari.m.BuildConfig;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
@@ -125,12 +111,8 @@ import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -433,7 +415,7 @@ public class ActivityMain extends AppCompatActivity
 
         switch (navLbBackground){
             case 0:
-                navViewBack.setBackgroundDrawable(ColorHelper.GetGradientDrawable());
+                navViewBack.setBackgroundDrawable(ColorHelper.getGradientDrawable());
                 break;
 
             case 1:
@@ -505,10 +487,10 @@ public class ActivityMain extends AppCompatActivity
             }
         }
 
-        fab_right_side.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+        fab_right_side.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
         fab_right_side.setOnClickListener(this);
 
-        fab_lock.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+        fab_lock.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
         fab_lock.setOnClickListener(this);
 
         if(MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button),false)){
@@ -2355,7 +2337,7 @@ public class ActivityMain extends AppCompatActivity
         @Override
         public void run() {
             if(!colorChanged) {
-                v.setColorFilter(ColorHelper.GetWidgetColor());
+                v.setColorFilter(ColorHelper.getWidgetColor());
                 colorChanged=true;
                 mHandler.postDelayed(this,200);
             }else {

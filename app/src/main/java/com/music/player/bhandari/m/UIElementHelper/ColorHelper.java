@@ -39,7 +39,7 @@ public class ColorHelper {
             .getString(R.string.pref_theme_color), Constants.PRIMARY_COLOR.BLACK);
     }
 
-    public static int getDarkPrimaryColor(){
+    private static int getDarkPrimaryColor(){
         int color = getPrimaryColor();
         //1int color = Color.parseColor("#E91E63");
         float[] hsv = new float[3];
@@ -108,12 +108,12 @@ public class ColorHelper {
             //window.
         }
 
-        activity.getWindow().setBackgroundDrawable(ColorHelper.GetGradientDrawable());
+        activity.getWindow().setBackgroundDrawable(ColorHelper.getGradientDrawable());
     }
 
     //gradient theme getter
-    public static Drawable GetGradientDrawable(){
-        return GetGradientDrawable(MyApp.getSelectedThemeId());
+    public static Drawable getGradientDrawable(){
+        return getGradientDrawable(MyApp.getSelectedThemeId());
     }
 
     /**
@@ -122,7 +122,7 @@ public class ColorHelper {
      * @param id
      * @return
      */
-    public static Drawable GetGradientDrawable(int id){
+    public static Drawable getGradientDrawable(int id){
         switch (id){
             case 1:
                 return getGradient(getColor(R.color.theme1_color1), getColor(R.color.theme1_color2));
@@ -192,7 +192,7 @@ public class ColorHelper {
         }
     }
 
-    public static Drawable GetGradientDrawableDark(){
+    public static Drawable getGradientDrawableDark(){
         switch (MyApp.getSelectedThemeId()){
             case 1:
                 return getGradient(getDarkColor(getColor(R.color.theme1_color1_dark), 0.5f)
@@ -297,7 +297,7 @@ public class ColorHelper {
      * get color for fabs and stuff
      * @return
      */
-    public static int GetWidgetColor(){
+    public static int getWidgetColor(){
         switch (MyApp.getSelectedThemeId()){
             case 1:
                 return getDarkColor(getColor(R.color.theme1_color2_widget), 1f);
@@ -371,7 +371,7 @@ public class ColorHelper {
      * hardcoded number of themes
      * @return
      */
-    public static int GetNumberOfThemes(){
+    public static int getNumberOfThemes(){
         return 22;
     }
 

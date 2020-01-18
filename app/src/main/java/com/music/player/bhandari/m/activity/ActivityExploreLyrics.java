@@ -3,8 +3,6 @@ package com.music.player.bhandari.m.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,8 +19,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.EditText;
@@ -40,7 +36,6 @@ import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.TopTracksAdapter;
 import com.music.player.bhandari.m.lyricsExplore.OnPopularTracksReady;
 import com.music.player.bhandari.m.lyricsExplore.PopularTrackRepo;
@@ -144,7 +139,7 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }*/
 
-        fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+        fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
         fab.setOnClickListener(this);
 
         try {

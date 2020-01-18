@@ -60,7 +60,7 @@ public class AfterSaveActionDialog extends Dialog {
 
 
         if(getWindow()!=null){
-            getWindow().setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+            getWindow().setBackgroundDrawable(ColorHelper.getGradientDrawableDark());
             getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
         }
     }

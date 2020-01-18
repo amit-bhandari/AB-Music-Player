@@ -118,7 +118,7 @@ public class FileSaveDialog extends Dialog {
         mResponse = response;
 
         if(getWindow()!=null){
-            getWindow().setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
+            getWindow().setBackgroundDrawable(ColorHelper.getGradientDrawableDark());
             getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
         }
     }

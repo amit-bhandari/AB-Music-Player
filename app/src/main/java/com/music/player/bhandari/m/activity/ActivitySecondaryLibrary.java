@@ -466,7 +466,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
 
 
-        miniPlayer.setBackgroundColor(ColorHelper.GetWidgetColor());
+        miniPlayer.setBackgroundColor(ColorHelper.getWidgetColor());
         //collapsingToolbarLayout.setContentScrimColor(ColorHelper.Ge());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -483,9 +483,9 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 }
             }
         });
-        fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+        fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
 
-        collapsingToolbarLayout.setStatusBarScrim(ColorHelper.GetGradientDrawable());
+        collapsingToolbarLayout.setStatusBarScrim(ColorHelper.getGradientDrawable());
 
         setTextAndIconColor();
     }

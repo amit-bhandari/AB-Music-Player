@@ -53,7 +53,6 @@ import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter;
 import com.music.player.bhandari.m.lyricCard.ActivityLyricCard;
 import com.music.player.bhandari.m.model.Constants;
@@ -208,14 +207,14 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     private void initializeListeners(){
         lyricStatus.setOnClickListener(this);
-        saveLyrics.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+        saveLyrics.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
         saveLyrics.setOnClickListener(this);
-        watchVideo.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+        watchVideo.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
         watchVideo.setOnClickListener(this);
         watchVideo.setVisibility(View.VISIBLE);
 
         growShrinkAnimate();
-        viewArtInfoFab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+        viewArtInfoFab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
         viewArtInfoFab.setOnClickListener(this);
         rootView.setBackgroundColor(ColorHelper.getColor(R.color.blackTransparent));
     }
