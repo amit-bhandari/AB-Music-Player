@@ -117,7 +117,10 @@ public class PlayerService extends Service implements
 
     private PendingIntent pendingIntent;
     private PendingIntent pSwipeToDismiss;
-    private PendingIntent ppreviousIntent, pplayIntent, pnextIntent, pdismissIntent, pfavintent;
+    private PendingIntent ppreviousIntent;
+    private PendingIntent pplayIntent;
+    private PendingIntent pnextIntent;
+    private PendingIntent pdismissIntent;
     private NotificationManager mNotificationManager;
 
     //media session and related objects
@@ -505,7 +508,7 @@ public class PlayerService extends Service implements
 
         Intent favIntent = new Intent(this, PlayerService.class);
         favIntent.setAction(Constants.ACTION.FAV_ACTION);
-        pfavintent = PendingIntent.getService(this, 0,
+        PendingIntent pfavintent = PendingIntent.getService(this, 0,
                 favIntent, 0);
 
         Intent previousIntent = new Intent(this, PlayerService.class);
@@ -545,9 +548,7 @@ public class PlayerService extends Service implements
 
             public void onPause() {
                 Log.d(TAG, "onPause called (media button pressed)");
-                //if(!MyApp.isAppVisible) {
                 onPlayPauseButtonClicked();
-                //}
                 super.onPause();
             }
 
@@ -567,6 +568,7 @@ public class PlayerService extends Service implements
             public void onSeekTo(long pos) {
                 Log.d(TAG, "onSeekTo: called " + pos);
                 seekTrack((int) pos);
+                setSessionState();
                 super.onSeekTo(pos);
             }
 
@@ -578,35 +580,25 @@ public class PlayerService extends Service implements
 
             public void onSkipToPrevious() {
                 Log.d(TAG, "onskiptoPrevious called (media button pressed)");
-                //if(!MyApp.isAppVisible) {
                 prevTrack();
-                //notifyUI();
-                //}
                 super.onSkipToPrevious();
             }
 
             public void onSkipToNext() {
                 Log.d(TAG, "onskiptonext called (media button pressed)");
-                //if(!MyApp.isAppVisible) {
                 nextTrack();
-                //notifyUI();
-                //}
                 super.onSkipToNext();
             }
 
             public void onPlay() {
                 Log.d(TAG, "onPlay called (media button pressed)");
-                //if(!MyApp.isAppVisible) {
                 onPlayPauseButtonClicked();
-                //}
                 super.onPlay();
             }
 
             public void onStop() {
-                //if(!MyApp.isAppVisible) {
                 stop();
                 notifyUI();
-                //}
                 Log.d(TAG, "onStop called (media button pressed)");
                 super.onStop();
             }
@@ -628,7 +620,7 @@ public class PlayerService extends Service implements
                 notifyUI();
             }
         });
-        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS | MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS);
         stateBuilder = new PlaybackStateCompat.Builder()
                 .setActions(
                         PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE | PlaybackStateCompat.ACTION_SEEK_TO |
@@ -1268,9 +1260,9 @@ public class PlayerService extends Service implements
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 
             if (status == PLAYING) {
-                stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, 0, 1);
+                stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, getCurrentTrackProgress(), 1);
             } else if (status == PAUSED) {
-                stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, 0, 1);
+                stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, getCurrentTrackProgress(), 1);
             } else {
                 stateBuilder.setState(PlaybackStateCompat.STATE_STOPPED, 0, 1);
             }
