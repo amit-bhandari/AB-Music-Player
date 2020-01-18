@@ -58,6 +58,8 @@
     <color name="reward_points_count">#da202d</color>
     <color name="new_feature">#f73232</color>
 
+    <!--<color name="notification_color_for_no_album_art">#f73232</color>-->
+
     <color name="notification_color_for_no_album_art">#162029</color>
 
     <!-- gradient themes -->
