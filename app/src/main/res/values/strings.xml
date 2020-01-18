@@ -526,7 +526,7 @@
     <string name="title_remove_watermark">Remove Watermark</string>
 
 
-    <string name="whats_new"><![CDATA[ * Resolved a bug which was causing wrong scrolling of lyrics. \n\n* Bugs removal and performance improvement. ]]></string>
+    <string name="whats_new"><![CDATA[ * Now android 10 plus users can seek their tracks from notification ]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>

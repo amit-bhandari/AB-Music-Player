@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.service.PlayerService;
-import com.squareup.leakcanary.LeakCanary;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -59,16 +58,6 @@ public class MyApp extends Application {
 
         selectedThemeId = pref.getInt(getString(R.string.pref_theme_id), Constants.DEFAULT_THEME_ID);
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
-        LeakCanary.install(this);
-
-        /*CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                        .setDefaultFontPath(TypeFaceHelper.getTypeFacePath())
-                        .setFontAttrId(R.attr.fontPath)
-                        .build());*/
-
         int id = TypeFaceHelper.getTypeFacePathId();
 
         if(id!=-1) {
@@ -76,17 +65,6 @@ public class MyApp extends Application {
                     .setDefaultFont(id)
                     .build());
         }
-
-        //this stops crash reports, that's why removed
-        /*Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
-        {
-            @Override
-            public void uncaughtException (Thread thread, Throwable e)
-            {
-                handleUncaughtException (thread, e);
-            }
-        });*/
-
     }
 
     public void handleUncaughtException (Thread thread, Throwable e)

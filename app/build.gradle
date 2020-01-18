@@ -82,20 +82,6 @@ android {
         }
     }
 
-    //does not need, at least for now
-    //task copyApkFiles(type: Copy){
-    //    from 'build/outputs/apk/release'
-    //    into '../apk'
-    //    include mFileName
-    //}
-
-    //afterEvaluate {
-    //    assembleRelease.doLast {
-    //        tasks.copyApkFiles.execute()
-    //    }
-    //}
-
-
     signingConfigs{
        release {
            def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -204,9 +190,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     //leak detection
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
 
     //crop images
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.0'
