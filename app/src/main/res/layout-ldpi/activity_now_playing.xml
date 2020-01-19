@@ -264,9 +264,10 @@
                 android:id="@+id/handle_current_queue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_drag_handle_black_24dp"
                 android:background="@color/colorBlack"
-                />
+                sothree:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/save_queue_button"
@@ -274,7 +275,7 @@
                 android:layout_height="@dimen/action_bar_size_small"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Save Playlist"
+                android:text="@string/save_playlist"
                 android:textSize="@dimen/np_play_queu"
                 android:textColor="@color/colorwhite" />
 

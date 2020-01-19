@@ -1050,6 +1050,7 @@ that this copyright notice remain intact.</string>
 	</string>
 
     <string name="no_saved_lyrics">No saved lyrics :(</string>
+    <string name="save_playlist">Save Playlist</string>
 
     <string-array name="now_playing_back_pref_array">
         <item>System default</item>

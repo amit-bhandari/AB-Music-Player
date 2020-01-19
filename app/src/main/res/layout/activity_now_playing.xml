@@ -255,15 +255,16 @@
                 android:id="@+id/play_queue_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
+                card_view:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:id="@+id/handle_current_queue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_drag_handle_black_24dp"
                     android:background="@color/colorBlack"
-                />
+                    card_view:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/save_queue_button"
@@ -271,20 +272,9 @@
                     android:layout_height="@dimen/action_bar_size"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="Save Playlist"
+                    android:text="@string/save_playlist"
                     android:textSize="@dimen/np_play_queu"
                     android:textColor="@color/colorwhite" />
-
-                <!--
-                <Button
-                    android:id="@+id/save_queue_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/action_bar_size"
-                    android:layout_gravity="center"
-                    android:background="@color/blackTransparent"
-                    android:backgroundTint="@color/blackTransparent"
-                    android:textColor="@color/colorwhite"
-                    android:textSize="@dimen/np_play_queu" /> -->
 
             </LinearLayout>
 
