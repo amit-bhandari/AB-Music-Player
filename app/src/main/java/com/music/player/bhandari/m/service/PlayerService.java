@@ -1275,7 +1275,6 @@ public class PlayerService extends Service implements
         PostNotification();
 
         Intent intent = new Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE);
-        intent.putExtra("skip_adapter_update", true);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         try {
             updateWidget(true);

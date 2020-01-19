@@ -12,11 +12,11 @@ music_player.jks
 signing.properties
 app/google-services.json
 .idea/modules.xml
-keystore.properties
+app/keystore.properties
 app/release/app-release.apk
 app/src/debug/
 app/release/output.json
 app/release/app-release.apk
 app/release
 installDebug.sh
-keystore.properties
+app/keystore.properties
