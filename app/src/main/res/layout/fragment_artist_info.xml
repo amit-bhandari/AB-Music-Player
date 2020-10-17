@@ -94,38 +94,4 @@
 
     </com.music.player.bhandari.m.customViews.MyScrollView>
 
-
-    <LinearLayout
-        android:id="@+id/ad_view_wrapper"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="5dp"
-        android:layout_centerHorizontal="true">
-
-        <TextView
-            android:id="@+id/ad_close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/close"
-            android:textColor="@color/primary_text_color"
-            android:paddingEnd="15dp"
-            android:gravity="end"
-            android:textSize="15sp"
-            android:visibility="gone"
-            android:paddingRight="15dp"
-            card_view:ignore="RtlSymmetry" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_art_info_frag"
-            android:layout_gravity="bottom">
-        </com.google.android.gms.ads.AdView>
-
-    </LinearLayout>
-
 </RelativeLayout>

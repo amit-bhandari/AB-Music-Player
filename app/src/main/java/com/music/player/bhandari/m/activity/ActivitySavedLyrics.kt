@@ -23,8 +23,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.signature.StringSignature
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
@@ -66,7 +64,6 @@ class ActivitySavedLyrics: AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saved_lyrics)
-        showAdIfApplicable()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar_)
         setSupportActionBar(toolbar)
@@ -186,33 +183,6 @@ class ActivitySavedLyrics: AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
-    }
-
-    private fun showAdIfApplicable() {
-        if (/*AppLaunchCountManager.isEligibleForInterstialAd() && */ !UtilityFun.isAdsRemoved() && AppLaunchCountManager.isEligibleForBannerAds()) {
-            MobileAds.initialize(this, getString(R.string.banner_lyric_view))
-            if (UtilityFun.isConnectedToInternet()) {
-                val adRequest = AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
-                        .build()
-                if (adView != null) {
-                    adView.loadAd(adRequest)
-                    adView.visibility = View.VISIBLE
-                    ad_view_wrapper.visibility = View.VISIBLE
-                    ad_close.visibility = View.VISIBLE
-                    ad_close.setOnClickListener {
-                        if (adView != null) {
-                            adView.destroy()
-                        }
-                        ad_view_wrapper.visibility = View.GONE
-                    }
-                }
-            } else {
-                if (adView != null) {
-                    adView.visibility = View.GONE
-                    ad_view_wrapper.visibility = View.GONE
-                }
-            }
-        }
     }
 
     inner class SavedLyricsAdapter: RecyclerView.Adapter<SavedLyricsAdapter.MyViewHolder>() {

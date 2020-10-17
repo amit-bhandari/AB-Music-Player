@@ -77,39 +77,6 @@
         android:layout_centerVertical="true"
          />
 
-    <LinearLayout
-        android:id="@+id/ad_view_wrapper"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_above="@+id/fab_right_side"
-        android:paddingBottom="5dp"
-        android:layout_centerHorizontal="true">
-
-        <TextView
-            android:id="@+id/ad_close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/close"
-            android:textColor="@color/primary_text_color"
-            android:paddingEnd="15dp"
-            android:gravity="end"
-            android:textSize="15sp"
-            android:visibility="gone"
-            android:paddingRight="15dp" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:visibility="visible"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_lyrics_explore">
-        </com.google.android.gms.ads.AdView>
-
-    </LinearLayout>
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_right_side"
         android:layout_alignParentBottom="true"
@@ -122,6 +89,6 @@
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_alignParentRight="true"
-        tools:ignore="RelativeOverlap" />
+        tools:ignore="ContentDescription,RelativeOverlap" />
 
 </RelativeLayout>

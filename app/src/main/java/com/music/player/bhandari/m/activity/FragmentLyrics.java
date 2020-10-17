@@ -41,9 +41,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter;
@@ -57,7 +54,6 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.ViewLyrics;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadLyricThread;
-import com.music.player.bhandari.m.rewards.RewardPoints;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
@@ -76,19 +72,19 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouchListener
@@ -97,28 +93,36 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private static Lyrics mLyrics;
     private View layout;
     private TrackItem item;
-    @BindView(R.id.loading_lyrics_animation) AVLoadingIndicatorView lyricLoadAnimation;
+    @BindView(R.id.loading_lyrics_animation)
+    AVLoadingIndicatorView lyricLoadAnimation;
 
     /*@BindView(R.id.ad_view_wrapper) View adViewWrapper;
     @BindView(R.id.adView)  AdView mAdView;
     @BindView(R.id.ad_close)  TextView adCloseText;*/
 
     private BroadcastReceiver mLyricChange;
-    @BindView(R.id.text_view_lyric_status)  TextView  lyricStatus;
-    @BindView(R.id.update_track_metadata) TextView updateTagsTextView; //, lyricCopyRightText;
-    @BindView(R.id.ll_dynamic_lyric_view) LinearLayout ll_lyric_view;
-    private boolean fIsStaticLyrics =true;
-    @BindView(R.id.track_title_lyric_frag) EditText titleEdit;
-    @BindView(R.id.track_artist_lyric_frag) EditText artistEdit;
-    @BindView(R.id.button_update_metadata)  Button buttonUpdateMetadata;
+    @BindView(R.id.text_view_lyric_status)
+    TextView lyricStatus;
+    @BindView(R.id.update_track_metadata)
+    TextView updateTagsTextView; //, lyricCopyRightText;
+    @BindView(R.id.ll_dynamic_lyric_view)
+    LinearLayout ll_lyric_view;
+    private boolean fIsStaticLyrics = true;
+    @BindView(R.id.track_title_lyric_frag)
+    EditText titleEdit;
+    @BindView(R.id.track_artist_lyric_frag)
+    EditText artistEdit;
+    @BindView(R.id.button_update_metadata)
+    Button buttonUpdateMetadata;
 
-    private boolean isLyricsLoaded=false;
+    private boolean isLyricsLoaded = false;
 
-    private Boolean fLyricUpdaterThreadCancelled =false;
-    private Boolean fIsLyricUpdaterThreadRunning =false;
-    private Handler handler ;
+    private Boolean fLyricUpdaterThreadCancelled = false;
+    private Boolean fIsLyricUpdaterThreadRunning = false;
+    private Handler handler;
 
-    @BindView(R.id.dynamic_lyrics_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.dynamic_lyrics_recycler_view)
+    RecyclerView recyclerView;
     private LyricsViewAdapter adapter;
     private LinearLayoutManager layoutManager;
     private GestureDetectorCompat gestureDetector;
@@ -133,7 +137,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.fragment_lyrics, container, false);
         ButterKnife.bind(this, layout);
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             return layout;
         }
@@ -167,32 +171,32 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private void updateLyricsIfNeeded() {
 
         item = playerService.getCurrentTrack();
-        if(item==null){
+        if (item == null) {
             lyricStatus.setText(getString(R.string.no_music_found_lyrics));
             lyricStatus.setVisibility(View.VISIBLE);
             lyricLoadAnimation.hide();
             return;
         }
-        if(mLyrics!=null){
+        if (mLyrics != null) {
             //if lyrics are already displayed for current song, skip this
-            if(mLyrics.getOriginalTrack().equals(item.getTitle())){
+            if (mLyrics.getOriginalTrack().equals(item.getTitle())) {
                 return;
             }
         }
 
-        if(isLyricsLoaded){
+        if (isLyricsLoaded) {
             return;
         }
 
-        Log.v(Constants.TAG,"Intent Song playing "+playerService.getCurrentTrack().getTitle());
+        Log.v(Constants.TAG, "Intent Song playing " + playerService.getCurrentTrack().getTitle());
         updateLyrics();
     }
 
-    private void updateLyrics(){
+    private void updateLyrics() {
         //hide edit metadata things
         Log.d("FragmentLyrics", "updateLyrics: ");
 
-        if(!isAdded() || getActivity()==null){
+        if (!isAdded() || getActivity() == null) {
             return;
         }
 
@@ -211,63 +215,46 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         //lyricCopyRightText.setVisibility(View.GONE);
         ll_lyric_view.setVisibility(View.GONE);
         //ll_lyric_view.removeAllViews();
-        fLyricUpdaterThreadCancelled =true;
+        fLyricUpdaterThreadCancelled = true;
 
         lyricStatus.setVisibility(View.VISIBLE);
         lyricStatus.setText(getString(R.string.lyrics_loading));
 
-        if(!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted),false)) {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
             lyricStatus.setVisibility(View.VISIBLE);
             lyricStatus.setText(getString(R.string.disclaimer_rejected));
             try {
                 //some exceptions reported in play console, thats why
                 lyricLoadAnimation.hide();
-            }catch (Exception ignored){}
-           // }
-            return;
-        }
-
-        //check if user have reward points, if not, display error
-        if(!UtilityFun.isAdsRemoved() && RewardPoints.getRewardPointsCount()<=0){
-            lyricStatus.setVisibility(View.VISIBLE);
-            lyricStatus.setText(R.string.reward_points_exhausted);
-            try {
-                //some exceptions reported in play console, thats why
-                lyricLoadAnimation.hide();
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
             // }
             return;
         }
 
-        if(mLyrics!=null && mLyrics.getFlag()==Lyrics.POSITIVE_RESULT
-                && mLyrics.getTrackId()!=-1
-                && mLyrics.getTrackId() == item.getId()){
+        if (mLyrics != null && mLyrics.getFlag() == Lyrics.POSITIVE_RESULT
+                && mLyrics.getTrackId() != -1
+                && mLyrics.getTrackId() == item.getId()) {
             onLyricsDownloaded(mLyrics);
             return;
         }
 
-        if(item!=null) {
+        if (item != null) {
 
             //check in offline storage
             mLyrics = OfflineStorageLyrics.getLyricsFromDB(item);
-            if(mLyrics!=null){
-                if(!UtilityFun.isAdsRemoved() ) {
-                    RewardPoints.decrementByRandomInt();
-                }
+            if (mLyrics != null) {
                 onLyricsDownloaded(mLyrics);
                 return;
             }
 
             if (UtilityFun.isConnectedToInternet()) {
-                if(!UtilityFun.isAdsRemoved() ) {
-                    RewardPoints.decrementByRandomInt();
-                }
                 fetchLyrics(item.getArtist(), item.getTitle(), null);
             } else {
                 lyricStatus.setText(getString(R.string.no_connection));
                 lyricLoadAnimation.hide();
             }
-        }else {
+        } else {
             lyricStatus.setText(getString(R.string.no_music_found_lyrics));
             lyricStatus.setVisibility(View.VISIBLE);
             lyricLoadAnimation.hide();
@@ -275,7 +262,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     }
 
     private void fetchLyrics(String... params) {
-        if (getActivity() == null )
+        if (getActivity() == null)
             return;
 
         String artist = params[0];
@@ -298,12 +285,12 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     }
 
     @Override
-    public void onLyricsDownloaded(Lyrics lyrics){
+    public void onLyricsDownloaded(Lyrics lyrics) {
 
         isLyricsLoaded = true;
         //control comes here no matter where lyrics found, in db or online
         //so update the view here
-        if(lyrics==null || getActivity()==null || !isAdded()) {
+        if (lyrics == null || getActivity() == null || !isAdded()) {
             return;
         }
         //Log.v("vlah",lyrics.getTrackId() + " " + playerService.getCurrentTrack().getId());
@@ -314,15 +301,15 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         //background thread already working to fetch latest lyrics
         //track id is -1 if lyrics are downloaded from internet and have
         //id of track from content resolver if lyrics came from offline storage
-        if(lyrics.getTrackId()!=-1 && lyrics.getTrackId() != playerService.getCurrentTrack().getId()){
+        if (lyrics.getTrackId() != -1 && lyrics.getTrackId() != playerService.getCurrentTrack().getId()) {
             return;
         }
 
         lyricLoadAnimation.hide();
 
         mLyrics = lyrics;
-        if(layout!=null){
-            if (lyrics.getFlag() == Lyrics.POSITIVE_RESULT){
+        if (layout != null) {
+            if (lyrics.getFlag() == Lyrics.POSITIVE_RESULT) {
                 //  lrcView.setVisibility(View.VISIBLE);
                 //lrcView.setOriginalLyrics(lyrics);
                 //lrcView.setSourceLrc(lyrics.getText());
@@ -330,21 +317,21 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 //updateLRC();
 
                 //see if timing information available and update view accordingly
-               // if(lyrics.isLRC()){
+                // if(lyrics.isLRC()){
                 lyricStatus.setVisibility(View.GONE);
 
                 fIsStaticLyrics = !mLyrics.isLRC();
 
-                fLyricUpdaterThreadCancelled =false;
+                fLyricUpdaterThreadCancelled = false;
                 ll_lyric_view.setVisibility(View.VISIBLE);
                 lyricStatus.setVisibility(View.GONE);
                 //lyricCopyRightText.setVisibility(View.VISIBLE);
 
                 initializeLyricsView();
-            }else {
+            } else {
                 //in case no lyrics found, set staticLyric flag true as we start lyric thread based on its value
                 //and we dont want our thread to run even if no lyrics found
-                if(playerService.getCurrentTrack()!=null) {
+                if (playerService.getCurrentTrack() != null) {
                     artistEdit.setVisibility(View.VISIBLE);
                     titleEdit.setVisibility(View.VISIBLE);
                     updateTagsTextView.setVisibility(View.VISIBLE);
@@ -353,7 +340,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                     titleEdit.setText(item.getTitle());
                     artistEdit.setText(item.getArtist());
                 }
-                fIsStaticLyrics =true;
+                fIsStaticLyrics = true;
                 lyricStatus.setText(getString(R.string.tap_to_refresh_lyrics));
                 lyricStatus.setVisibility(View.VISIBLE);
                 //lyricCopyRightText.setVisibility(View.GONE);
@@ -361,12 +348,12 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         }
     }
 
-    private void initializeLyricsView(){
-        if(mLyrics==null){
+    private void initializeLyricsView() {
+        if (mLyrics == null) {
             return;
         }
 
-        if(handler==null) {
+        if (handler == null) {
             handler = new Handler(Looper.getMainLooper());
         }
 
@@ -389,10 +376,10 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         gestureDetector =
                 new GestureDetectorCompat(getContext(), new RecyclerViewDemoOnGestureListener());
 
-        layoutManager = (LinearLayoutManager)recyclerView.getLayoutManager();
-        fLyricUpdaterThreadCancelled =false;
+        layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        fLyricUpdaterThreadCancelled = false;
 
-        if(!fIsStaticLyrics && playerService.getStatus()==PlayerService.PLAYING && !fIsLyricUpdaterThreadRunning){
+        if (!fIsStaticLyrics && playerService.getStatus() == PlayerService.PLAYING && !fIsLyricUpdaterThreadRunning) {
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
             scrollLyricsToCurrentLocation();
         }
@@ -403,7 +390,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     @Override
     public void onResume() {
         super.onResume();
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             return;
         }
@@ -413,7 +400,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         startLyricUpdater();
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mLyricChange
-                ,new IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO));
+                , new IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO));
         /*LocalBroadcastManager.getInstance(getContext()).registerReceiver(mPlayPauseUpdateReceiver
                 ,new IntentFilter(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));*/
         //UpdateUI();
@@ -427,14 +414,14 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     }
 
     private void startLyricUpdater() {
-        if(!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && playerService.getStatus()== PlayerService.PLAYING){
+        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && playerService.getStatus() == PlayerService.PLAYING) {
             Log.d("FragmentLyrics", "startLyricUpdater: starting lyric updater");
-            fLyricUpdaterThreadCancelled =false;
+            fLyricUpdaterThreadCancelled = false;
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
         }
         try {
-            if(!fIsStaticLyrics) scrollLyricsToCurrentLocation();
-        }catch (Exception e){
+            if (!fIsStaticLyrics) scrollLyricsToCurrentLocation();
+        } catch (Exception e) {
             Log.d("FragmentLyrics", "startLyricUpdater: unable to scroll lyrics to latest position");
         }
     }
@@ -442,7 +429,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private void scrollLyricsToCurrentLocation() {
         adapter.changeCurrent(playerService.getCurrentTrackProgress());
         final int index = adapter.getCurrentTimeIndex();
-        if(index!=-1){
+        if (index != -1) {
             // without delay lyrics wont scroll to latest position when called from onResume for some reason
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -455,8 +442,8 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         adapter.notifyDataSetChanged();
     }
 
-    public void smoothScrollAfterSeekbarTouched(int progress){
-        if(adapter!=null && !fIsStaticLyrics) {
+    public void smoothScrollAfterSeekbarTouched(int progress) {
+        if (adapter != null && !fIsStaticLyrics) {
             adapter.changeCurrent(UtilityFun.progressToTimer(progress, playerService.getCurrentTrackDuration()));
             int index = adapter.getCurrentTimeIndex();
             if (index != -1) {
@@ -471,7 +458,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     public void onPause() {
 
         Log.d("FragmentLyrics", "onPause: stopping lyric updater threads");
-        if(actionMode!=null){
+        if (actionMode != null) {
             actionMode.finish();
             actionMode = null;
         }
@@ -487,8 +474,8 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if(playerService==null) playerService = MyApp.getService();
-        
+        if (playerService == null) playerService = MyApp.getService();
+
         if (isVisibleToUser) {
             startLyricUpdater();
         } else {
@@ -497,28 +484,28 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     }
 
     private void stopLyricUpdater() {
-        if(fIsLyricUpdaterThreadRunning){
-            fLyricUpdaterThreadCancelled =true;
+        if (fIsLyricUpdaterThreadRunning) {
+            fLyricUpdaterThreadCancelled = true;
             fIsLyricUpdaterThreadRunning = false;
         }
     }
 
-    public void runLyricThread(){
+    public void runLyricThread() {
 
         isLyricsLoaded = false;
-        if(!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning &&playerService.getStatus()==PlayerService.PLAYING){
-            fLyricUpdaterThreadCancelled =false;
+        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && playerService.getStatus() == PlayerService.PLAYING) {
+            fLyricUpdaterThreadCancelled = false;
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
-        }else {
-            fLyricUpdaterThreadCancelled =true;
+        } else {
+            fLyricUpdaterThreadCancelled = true;
         }
     }
 
-    public void clearLyrics(){
+    public void clearLyrics() {
 
-        if (playerService==null) return;
+        if (playerService == null) return;
 
-        if(playerService.getCurrentTrack()!=null) {
+        if (playerService.getCurrentTrack() != null) {
             try {
                 ll_lyric_view.setVisibility(View.GONE);
                 fIsStaticLyrics = true;
@@ -532,7 +519,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                 titleEdit.setVisibility(View.VISIBLE);
                 updateTagsTextView.setVisibility(View.VISIBLE);
 
-            }catch (Exception ignored){
+            } catch (Exception ignored) {
 
             }
         }
@@ -541,15 +528,15 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     //when clicked on this, lyrics are searched again from viewlyrics
     //but this time option is given to select lyrics
-    public void wrongLyrics(){
-        if( mLyrics==null || mLyrics.getFlag()!=Lyrics.POSITIVE_RESULT){
-            if(isAdded() && getActivity()!=null)
-                Toast.makeText(getActivity(),getString(R.string.error_no_lyrics), Toast.LENGTH_SHORT).show();
+    public void wrongLyrics() {
+        if (mLyrics == null || mLyrics.getFlag() != Lyrics.POSITIVE_RESULT) {
+            if (isAdded() && getActivity() != null)
+                Toast.makeText(getActivity(), getString(R.string.error_no_lyrics), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(mLyrics.getSource()==null || (!mLyrics.getSource().equals(ViewLyrics.clientUserAgent) && !mLyrics.getSource().equals("manual"))){
-            if(isAdded() && getActivity()!=null)
+        if (mLyrics.getSource() == null || (!mLyrics.getSource().equals(ViewLyrics.clientUserAgent) && !mLyrics.getSource().equals("manual"))) {
+            if (isAdded() && getActivity() != null)
                 Toast.makeText(getActivity(), "No lyrics from other sources available!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -575,9 +562,9 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     }
 
-    public void shareLyrics(){
-        if( mLyrics==null || mLyrics.getFlag()!=Lyrics.POSITIVE_RESULT || adapter==null){
-            if(getActivity()!=null && isAdded()) {
+    public void shareLyrics() {
+        if (mLyrics == null || mLyrics.getFlag() != Lyrics.POSITIVE_RESULT || adapter == null) {
+            if (getActivity() != null && isAdded()) {
                 Toast.makeText(getActivity(), getString(R.string.error_no_lyrics), Toast.LENGTH_SHORT).show();
             }
             return;
@@ -585,9 +572,9 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
         String shareBody = getString(R.string.lyrics_share_text);
         shareBody += "\n\nTrack : " + mLyrics.getTrack() + "\n" + "Artist : " + mLyrics.getArtist() + "\n\n";
-        if(mLyrics.isLRC() ) {
+        if (mLyrics.isLRC()) {
             shareBody += Html.fromHtml(adapter.getStaticLyrics()).toString();
-        }else {
+        } else {
             shareBody += Html.fromHtml(mLyrics.getText());
         }
 
@@ -599,27 +586,27 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Lyrics");
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-        if(isAdded()){
+        if (isAdded()) {
             startActivity(Intent.createChooser(sharingIntent, "Lyrics share!"));
-        }else {
-            Toast.makeText(getActivity(),getString(R.string.error_sharing_lyrics),Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.error_sharing_lyrics), Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void disclaimerAccepted(){
+    public void disclaimerAccepted() {
         updateLyrics();
     }
 
-    private void playClicked(){
+    private void playClicked() {
         if (getActivity() == null) {
             return;
         }
         playerService.play();
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
 
-        if(!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && playerService.getStatus()==PlayerService.PLAYING){
+        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && playerService.getStatus() == PlayerService.PLAYING) {
             startLyricUpdater();
-        }else {
+        } else {
             stopLyricUpdater();
         }
     }
@@ -627,26 +614,26 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     @Override
     public void onDestroy() {
-        fLyricUpdaterThreadCancelled =true;
+        fLyricUpdaterThreadCancelled = true;
         super.onDestroy();
     }
 
     @Override
     public void onDestroyView() {
-        fLyricUpdaterThreadCancelled =true;
+        fLyricUpdaterThreadCancelled = true;
         super.onDestroyView();
     }
 
     private void myToggleSelection(int idx) {
         adapter.toggleSelection(idx);
-        if(adapter.getSelectedItemCount()==0){
+        if (adapter.getSelectedItemCount() == 0) {
             actionMode.finish();
             actionMode = null;
             return;
         }
         int numberOfItems = adapter.getSelectedItemCount();
-        String selectionString = numberOfItems==1 ? " item selected" : " items selected";
-        String title = numberOfItems  + selectionString;
+        String selectionString = numberOfItems == 1 ? " item selected" : " items selected";
+        String title = numberOfItems + selectionString;
         actionMode.setTitle(title);
     }
 
@@ -688,7 +675,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                     shareTextIntent(getSelectedLyricString().toString());
                     actionMode.finish();
                     actionModeActive = false;
-                }catch (IndexOutOfBoundsException e){
+                } catch (IndexOutOfBoundsException e) {
                     actionMode.finish();
                     actionModeActive = false;
                     Toast.makeText(getActivity(), "Invalid selection, please try again", Toast.LENGTH_SHORT).show();
@@ -729,9 +716,9 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.lyrics_line:
-                if(recyclerView!=null) {
+                if (recyclerView != null) {
                     int idx = recyclerView.getChildLayoutPosition(view);
                     if (actionModeActive) {
                         myToggleSelection(idx);
@@ -742,29 +729,25 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
 
             case R.id.text_view_lyric_status:
-                if(lyricStatus.getText().equals(getString(R.string.reward_points_exhausted))){
-                    startActivity(new Intent(getActivity(), ActivityRewardVideo.class));
-                }else {
-                    lyricStatus.setText(getString(R.string.lyrics_loading));
-                    updateLyrics();
-                }
+                lyricStatus.setText(getString(R.string.lyrics_loading));
+                updateLyrics();
                 break;
 
             case R.id.button_update_metadata:
                 item = playerService.getCurrentTrack();
-                if(item==null){
+                if (item == null) {
                     return;
                 }
                 String edited_title = titleEdit.getText().toString();
                 String edited_artist = artistEdit.getText().toString();
 
-                if(edited_title.isEmpty() || edited_artist.isEmpty()){
-                    Toast.makeText(getContext(),getString(R.string.te_error_empty_field), Toast.LENGTH_SHORT).show();
+                if (edited_title.isEmpty() || edited_artist.isEmpty()) {
+                    Toast.makeText(getContext(), getString(R.string.te_error_empty_field), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if(!edited_title.equals(item.getTitle()) ||
-                        !edited_artist.equals(item.getArtist()) ){
+                if (!edited_title.equals(item.getTitle()) ||
+                        !edited_artist.equals(item.getArtist())) {
 
                     //changes made, save those
                     Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -773,7 +756,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                     values.put(MediaStore.Audio.Media.TITLE, edited_title);
                     values.put(MediaStore.Audio.Media.ARTIST, edited_artist);
                     getContext().getContentResolver()
-                            .update(uri, values, MediaStore.Audio.Media.TITLE +"=?", new String[] {item.getTitle()});
+                            .update(uri, values, MediaStore.Audio.Media.TITLE + "=?", new String[]{item.getTitle()});
 
                     dataItem d = MusicLibrary.getInstance().updateTrackNew(item.getId(), edited_title
                             , edited_artist, item.getAlbum());
@@ -782,7 +765,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                     Intent intent = new Intent(getContext(), ActivityNowPlaying.class);
                     intent.putExtra("refresh", true);
                     intent.putExtra("position", playerService.getCurrentTrackPosition());
-                    intent.putExtra("originalTitle",item.getTitle());
+                    intent.putExtra("originalTitle", item.getTitle());
                     intent.putExtra("title", edited_title);
                     intent.putExtra("artist", edited_artist);
                     intent.putExtra("album", item.getAlbum());
@@ -794,17 +777,17 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                     buttonUpdateMetadata.setVisibility(View.GONE);
                     buttonUpdateMetadata.setClickable(false);
 
-                    if(getActivity()!=null) {
+                    if (getActivity() != null) {
                         if (getActivity().getCurrentFocus() != null) {
                             InputMethodManager imm = (InputMethodManager) getActivity()
                                     .getSystemService(Context.INPUT_METHOD_SERVICE);
-                            if(imm!=null) {
+                            if (imm != null) {
                                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                             }
                         }
                     }
-                }else {
-                    Toast.makeText(getContext(),getString(R.string.change_tags_to_update),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.change_tags_to_update), Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -815,14 +798,14 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            if(view!=null) {
+            if (view != null) {
                 onClick(view);
             }
             return super.onSingleTapConfirmed(e);
         }
 
         public void onLongPress(MotionEvent e) {
-            if(!isAdded() || getActivity()==null) return;
+            if (!isAdded() || getActivity() == null) return;
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
             if (actionModeActive) {
                 return;
@@ -839,15 +822,15 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     private final Runnable lyricUpdater = new Runnable() {
         @Override
         public void run() {
-            while (true){
-                if(fLyricUpdaterThreadCancelled){
+            while (true) {
+                if (fLyricUpdaterThreadCancelled) {
                     break;
                 }
 
-                fIsLyricUpdaterThreadRunning =true;
+                fIsLyricUpdaterThreadRunning = true;
                 //Log.v("FragmentLyrics","Lyric thread running");
 
-                if(getActivity()!=null ){
+                if (getActivity() != null) {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -855,7 +838,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
                             int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
                             int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                            if(index!=-1 && index>firstVisibleItem && index<lastVisibleItem){
+                            if (index != -1 && index > firstVisibleItem && index < lastVisibleItem) {
                                 recyclerView.smoothScrollToPosition(index);
                             }
                         }
@@ -870,7 +853,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
             }
 
             fIsLyricUpdaterThreadRunning = false;
-            Log.v("FragmentLyrics","Lyric thread stopped");
+            Log.v("FragmentLyrics", "Lyric thread stopped");
         }
     };
 }

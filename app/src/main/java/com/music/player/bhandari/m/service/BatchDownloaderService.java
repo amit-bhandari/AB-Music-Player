@@ -27,7 +27,6 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.Of
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadLyricThread;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.rewards.RewardPoints;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.util.ArrayList;
@@ -173,17 +172,10 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
                     mNotificationManager.notify(Constants.NOTIFICATION_ID.BATCH_DOWNLOADER, mBuilder.build());
                     finishStatus = FINISHED;
 
-                    //check if reward points available, if not, skip
-                    if(!UtilityFun.isAdsRemoved() && RewardPoints.getRewardPointsCount()<=0){
-                        continue;
-                    }
-
                     //check if current song present in db
                     if(OfflineStorageLyrics.isLyricsPresentInDB(currentItem.id)){
                         continue;
                     }
-
-
 
                     if (currentItem.artist_name != null && currentItem.title != null) {
                         new DownloadLyricThread(BatchDownloaderService.this, true,
@@ -264,9 +256,6 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
 
     @Override
     public void onLyricsDownloaded(Lyrics lyrics) {
-        if(!UtilityFun.isAdsRemoved() && lyrics.getFlag()==Lyrics.POSITIVE_RESULT){
-            RewardPoints.decrementByOne();
-        }
         subtitleDownloadThreadRunning = false;
     }
 }

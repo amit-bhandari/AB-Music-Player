@@ -28,9 +28,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
@@ -75,10 +72,6 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
     @BindView(R.id.progressBar) ProgressBar progressBar;
     @BindView(R.id.statusTextView) TextView statusText;
     @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.adView) AdView mAdView;
-    @BindView(R.id.ad_view_wrapper) View adViewWrapper;
-    @BindView(R.id.ad_close)  TextView adCloseText;
-
     @BindView(R.id.fab_right_side) FloatingActionButton fab;
     @BindView(R.id.trending_now_text) TextView trendingNow;
     private Handler handler;
@@ -115,7 +108,6 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
         setContentView(R.layout.activity_lyrics_explore);
         ButterKnife.bind(this);
         growShrinkAnimate();
-        showAdIfApplicable();
 
         handler = new Handler(Looper.getMainLooper());
         Toolbar toolbar = findViewById(R.id.toolbar_);
@@ -209,36 +201,6 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
         }, 1000);
     }
 
-    private void showAdIfApplicable(){
-        //noinspection PointlessBooleanExpression
-        if( /*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved() ) {
-            MobileAds.initialize(getApplicationContext(), getString(R.string.banner_lyrics_explore));
-            if (UtilityFun.isConnectedToInternet()) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
-                        .build();
-                if (mAdView != null) {
-                    mAdView.loadAd(adRequest);
-                    mAdView.setVisibility(View.VISIBLE);
-                    adViewWrapper.setVisibility(View.VISIBLE);
-                    adCloseText.setVisibility(View.VISIBLE);
-                }
-            } else {
-                if (mAdView != null) {
-                    mAdView.setVisibility(View.GONE);
-                    adViewWrapper.setVisibility(View.GONE);
-                }
-            }
-        }
-    }
-
-    @OnClick(R.id.ad_close)
-    public void close_ad(){
-        if(mAdView!=null){
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
-    }
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -295,15 +257,6 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
     }
 
     @Override

@@ -32,8 +32,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.ads.AdView;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.TrackItem;

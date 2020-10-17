@@ -1,41 +1,39 @@
-
-
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!-- toolbar -->
     <android.support.v7.widget.Toolbar
-        android:fitsSystemWindows="true"
-        app:titleTextColor="@color/primary_text_color"
-        android:minHeight="@dimen/action_bar_size"
-        app:contentInsetStartWithNavigation="0dp"
         android:id="@+id/toolbar_"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+        android:fitsSystemWindows="true"
+        android:minHeight="@dimen/action_bar_size"
+        app:contentInsetStartWithNavigation="0dp"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:titleTextColor="@color/primary_text_color" />
 
     <ScrollView
-        android:layout_below="@id/toolbar_"
         android:id="@+id/equalizerScrollView"
-        android:background="@color/blackOverlay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_"
+        android:background="@color/blackOverlay">
 
         <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
 
             <LinearLayout
                 android:id="@+id/equalizerLinearLayout"
-                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -46,27 +44,27 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
+                    android:paddingStart="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:paddingStart="5dp">
+                    android:paddingRight="5dp">
 
                     <com.music.player.bhandari.m.customViews.VerticalSeekBar
                         android:id="@+id/equalizer50Hz"
                         android:layout_width="wrap_content"
-                        android:thumb="@drawable/thumb"
                         android:layout_height="150dp"
-                        android:layout_marginTop="30dp"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="30dp"
                         android:max="31"
-                        android:progress="16" />
+                        android:progress="16"
+                        android:thumb="@drawable/thumb" />
 
 
                     <TextView
                         android:id="@+id/text50Hz"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/equalizer50Hz"
                         android:layout_alignStart="@+id/equalizer50Hz"
+                        android:layout_alignLeft="@+id/equalizer50Hz"
                         android:layout_alignTop="@+id/equalizer50Hz"
                         android:layout_marginTop="-25dp"
                         android:ellipsize="marquee"
@@ -78,9 +76,9 @@
                         android:id="@+id/text50HzGain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_below="@+id/equalizer50Hz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:ellipsize="marquee"
                         android:singleLine="true"
                         android:text="0 dB"
@@ -100,20 +98,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="150dp"
                         android:layout_centerHorizontal="true"
-                        android:thumb="@drawable/thumb"
                         android:layout_marginTop="30dp"
                         android:max="31"
-                        android:progress="16" />
+                        android:progress="16"
+                        android:thumb="@drawable/thumb" />
 
                     <TextView
                         android:id="@+id/text130Hz"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentStart="true"
                         android:layout_alignTop="@+id/equalizer130Hz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_marginTop="-25dp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
@@ -124,9 +122,9 @@
                         android:id="@+id/text130HzGain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_below="@+id/equalizer130Hz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:ellipsize="marquee"
                         android:singleLine="true"
                         android:text="0 dB"
@@ -143,23 +141,23 @@
 
                     <com.music.player.bhandari.m.customViews.VerticalSeekBar
                         android:id="@+id/equalizer320Hz"
-                        android:thumb="@drawable/thumb"
                         android:layout_width="wrap_content"
                         android:layout_height="150dp"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="30dp"
                         android:max="31"
-                        android:progress="16" />
+                        android:progress="16"
+                        android:thumb="@drawable/thumb" />
 
                     <TextView
                         android:id="@+id/text320Hz"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentStart="true"
                         android:layout_alignTop="@+id/equalizer320Hz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_marginTop="-25dp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
@@ -170,9 +168,9 @@
                         android:id="@+id/text320HzGain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_below="@+id/equalizer320Hz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:ellipsize="marquee"
                         android:singleLine="true"
                         android:text="0 dB"
@@ -191,21 +189,21 @@
                         android:id="@+id/equalizer800Hz"
                         android:layout_width="wrap_content"
                         android:layout_height="150dp"
-                        android:thumb="@drawable/thumb"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="30dp"
                         android:max="31"
-                        android:progress="16" />
+                        android:progress="16"
+                        android:thumb="@drawable/thumb" />
 
                     <TextView
                         android:id="@+id/text800Hz"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentStart="true"
                         android:layout_alignTop="@+id/equalizer800Hz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_marginTop="-25dp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
@@ -216,9 +214,9 @@
                         android:id="@+id/text800HzGain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_below="@+id/equalizer800Hz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:ellipsize="marquee"
                         android:singleLine="true"
                         android:text="0 dB"
@@ -236,22 +234,22 @@
                     <com.music.player.bhandari.m.customViews.VerticalSeekBar
                         android:id="@+id/equalizer2kHz"
                         android:layout_width="wrap_content"
-                        android:thumb="@drawable/thumb"
                         android:layout_height="150dp"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="30dp"
                         android:max="31"
-                        android:progress="16" />
+                        android:progress="16"
+                        android:thumb="@drawable/thumb" />
 
                     <TextView
                         android:id="@+id/text2kHz"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentStart="true"
                         android:layout_alignTop="@+id/equalizer2kHz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_marginTop="-25dp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
@@ -262,9 +260,9 @@
                         android:id="@+id/text2kHzGain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_below="@+id/equalizer2kHz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:ellipsize="marquee"
                         android:singleLine="true"
                         android:text="0 dB"
@@ -283,21 +281,21 @@
                         android:id="@+id/equalizer5kHz"
                         android:layout_width="wrap_content"
                         android:layout_height="150dp"
-                        android:thumb="@drawable/thumb"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="30dp"
                         android:max="31"
-                        android:progress="16" />
+                        android:progress="16"
+                        android:thumb="@drawable/thumb" />
 
                     <TextView
                         android:id="@+id/text5kHz"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentStart="true"
                         android:layout_alignTop="@+id/equalizer5kHz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_marginTop="-25dp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
@@ -308,9 +306,9 @@
                         android:id="@+id/text5kHzGain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_below="@+id/equalizer5kHz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:ellipsize="marquee"
                         android:singleLine="true"
                         android:text="0 dB"
@@ -329,21 +327,21 @@
                         android:id="@+id/equalizer12_5kHz"
                         android:layout_width="wrap_content"
                         android:layout_height="150dp"
-                        android:thumb="@drawable/thumb"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="30dp"
                         android:max="31"
-                        android:progress="16" />
+                        android:progress="16"
+                        android:thumb="@drawable/thumb" />
 
                     <TextView
                         android:id="@+id/text12_5kHz"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentStart="true"
                         android:layout_alignTop="@+id/equalizer12_5kHz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_marginTop="-25dp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
@@ -354,9 +352,9 @@
                         android:id="@+id/text12_5kHzGain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_below="@+id/equalizer12_5kHz"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:ellipsize="marquee"
                         android:singleLine="true"
                         android:text="0 dB"
@@ -371,7 +369,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/equalizerLinearLayout"
-                android:layout_marginTop="10dp" >
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/enhancer_title_text"
@@ -385,14 +383,14 @@
 
                 <SeekBar
                     android:id="@+id/enhancer_seekbar"
-                    android:layout_below="@id/enhancer_title_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginRight="50dp"
+                    android:layout_below="@id/enhancer_title_text"
                     android:layout_centerHorizontal="true"
-                    android:thumb="@drawable/thumb"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="50dp"
+                    android:thumb="@drawable/thumb" />
 
                 <!--<SeekBar
                     android:id="@+id/virtualizer_seekbar"
@@ -409,26 +407,25 @@
                     android:id="@+id/tv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/enhancer_seekbar"
                     android:layout_alignLeft="@+id/enhancer_seekbar"
                     android:layout_alignTop="@+id/enhancer_title_text"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
                     android:text="-"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_alignStart="@+id/enhancer_seekbar"
-                    android:layout_marginStart="10dp" />
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:id="@+id/tv3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignRight="@+id/enhancer_seekbar"
                     android:layout_alignTop="@+id/enhancer_title_text"
+                    android:layout_alignEnd="@+id/enhancer_seekbar"
+                    android:layout_alignRight="@+id/enhancer_seekbar"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginRight="10dp"
                     android:text="+"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_alignEnd="@+id/enhancer_seekbar"
-                    android:layout_marginEnd="10dp" />
-
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
                 <TextView
@@ -446,35 +443,35 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/virtualizer_title_text"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginRight="50dp"
                     android:layout_centerHorizontal="true"
-                    android:thumb="@drawable/thumb"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="50dp"
+                    android:thumb="@drawable/thumb" />
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/virtualizer_seekbar"
                     android:layout_alignLeft="@+id/virtualizer_seekbar"
                     android:layout_alignTop="@+id/virtualizer_title_text"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
                     android:text="-"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_alignStart="@+id/virtualizer_seekbar"
-                    android:layout_marginStart="10dp" />
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignRight="@+id/virtualizer_seekbar"
                     android:layout_alignTop="@+id/virtualizer_title_text"
+                    android:layout_alignEnd="@+id/virtualizer_seekbar"
+                    android:layout_alignRight="@+id/virtualizer_seekbar"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginRight="10dp"
                     android:text="+"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_alignEnd="@+id/virtualizer_seekbar"
-                    android:layout_marginEnd="10dp" />
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:id="@+id/bass_boost_title_text"
@@ -491,84 +488,60 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/bass_boost_title_text"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginRight="50dp"
-                    android:thumb="@drawable/thumb"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="50dp"
+                    android:thumb="@drawable/thumb" />
 
                 <TextView
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/bass_boost_title_text"
+                    android:layout_alignStart="@+id/textView2"
                     android:layout_alignLeft="@+id/textView2"
+                    android:layout_alignBottom="@+id/bass_boost_title_text"
                     android:text="-"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_alignStart="@+id/textView2" />
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignRight="@+id/textView3"
                     android:layout_alignTop="@+id/bass_boost_title_text"
+                    android:layout_alignEnd="@+id/textView3"
+                    android:layout_alignRight="@+id/textView3"
                     android:text="+"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_alignEnd="@+id/textView3" />
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_below="@+id/bass_boost_seekbar"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_below="@+id/bass_boost_seekbar"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/reverb_title_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/reverb"
                         android:layout_weight="1"
-                        android:textSize="18sp"
                         android:gravity="center"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:text="@string/reverb"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textSize="18sp" />
 
                     <Spinner
                         android:id="@+id/reverb_spinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_gravity="center"
+                        android:layout_weight="1"
                         android:gravity="center" />
 
-
                 </LinearLayout>
-
-               <!-- <TextView
-                    android:id="@+id/reverb_title_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/textView5"
-                    android:layout_below="@+id/bass_boost_seekbar"
-                    android:layout_marginTop="50dp"
-                    android:text="@string/reverb"
-                    android:textSize="18sp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:layout_alignStart="@+id/textView5" />
-
-                <Spinner
-                    android:id="@+id/reverb_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_alignBottom="@+id/reverb_title_text"
-                    android:layout_toRightOf="@+id/reverb_title_text"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toEndOf="@+id/reverb_title_text"
-                    android:layout_marginStart="10dp" />-->
 
             </RelativeLayout>
 
@@ -576,21 +549,21 @@
                 android:id="@+id/equalizerPresetsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
-                android:layout_below="@+id/adView"
+                android:layout_below="@id/audio_fx_layout"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
                 <RelativeLayout
                     android:id="@+id/saveAsPresetButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="1"
-                    android:background="@color/blackTransparent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp" >
+                    android:background="@color/blackTransparent">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -601,12 +574,12 @@
                             android:id="@+id/save_as_preset_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/save_preset"
                             android:layout_centerInParent="true"
-                            android:singleLine="true"
                             android:ellipsize="marquee"
-                            android:textColor="#FFFFFF"
-                            android:padding="5dp" />
+                            android:padding="5dp"
+                            android:singleLine="true"
+                            android:text="@string/save_preset"
+                            android:textColor="#FFFFFF" />
 
                     </RelativeLayout>
 
@@ -616,11 +589,11 @@
                     android:id="@+id/loadPresetButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:background="@color/blackTransparent" >
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/blackTransparent">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -631,12 +604,12 @@
                             android:id="@+id/load_preset_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/load_preset"
                             android:layout_centerInParent="true"
-                            android:singleLine="true"
                             android:ellipsize="marquee"
-                            android:textColor="#FFFFFF"
-                            android:padding="5dp" />
+                            android:padding="5dp"
+                            android:singleLine="true"
+                            android:text="@string/load_preset"
+                            android:textColor="#FFFFFF" />
 
                     </RelativeLayout>
 
@@ -646,11 +619,11 @@
                     android:id="@+id/resetAllButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:background="@color/blackTransparent" >
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/blackTransparent">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -661,12 +634,12 @@
                             android:id="@+id/reset_all_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/reset_all"
                             android:layout_centerInParent="true"
-                            android:singleLine="true"
                             android:ellipsize="marquee"
-                            android:textColor="#FFFFFF"
-                            android:padding="5dp" />
+                            android:padding="5dp"
+                            android:singleLine="true"
+                            android:text="@string/reset_all"
+                            android:textColor="#FFFFFF" />
 
                     </RelativeLayout>
 
@@ -674,19 +647,7 @@
 
             </LinearLayout>
 
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
-                android:paddingTop="10dp"
-                android:layout_below="@+id/audio_fx_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                ads:adSize="BANNER"
-                ads:adUnitId="@string/equalizer_banner">
-
-            </com.google.android.gms.ads.AdView>
-
-    </RelativeLayout>
+        </RelativeLayout>
 
     </ScrollView>
 

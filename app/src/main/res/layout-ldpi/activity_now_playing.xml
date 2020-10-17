@@ -2,64 +2,64 @@
 
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:card_view="http://schemas.android.com/tools"
     xmlns:sothree="http://schemas.android.com/tools"
     android:id="@+id/root_view_now_playing"
-    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<com.sothree.slidinguppanel.SlidingUpPanelLayout
-    android:id="@+id/sliding_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="bottom"
-    android:theme="@style/AppTheme.AppBarOverlay"
-    sothree:umanoShadowHeight="4dp"
-    sothree:umanoParallaxOffset ="200dp"
-    android:background="@color/colorBlack">
-
-    <android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/root_view_test"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
+        android:background="@color/colorBlack"
+        android:gravity="bottom"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:fitsSystemWindows="false">
+        sothree:umanoParallaxOffset="200dp"
+        sothree:umanoShadowHeight="4dp">
 
-
-        <FrameLayout
+        <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/root_view_test"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="false">
-            <!-- full screen image view -->
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:fitsSystemWindows="false"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-            <ImageView
-                android:id="@+id/full_screen_iv"
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                sothree:ignore="ContentDescription" />
+                android:fitsSystemWindows="false">
+                <!-- full screen image view -->
 
-        </FrameLayout>
+                <ImageView
+                    android:id="@+id/full_screen_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    sothree:ignore="ContentDescription" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            </FrameLayout>
 
-            <!-- toolbar -->
-            <android.support.v7.widget.Toolbar
-                android:fitsSystemWindows="true"
-                android:minHeight="@dimen/action_bar_size_small"
-                app:contentInsetStartWithNavigation="0dp"
-                android:id="@+id/toolbar_"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <!-- rest of stuff according to weights -->
+                <!-- toolbar -->
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar_"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    android:minHeight="@dimen/action_bar_size_small"
+                    app:contentInsetStartWithNavigation="0dp"
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+                <!-- rest of stuff according to weights -->
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -94,219 +94,201 @@
 
 
                 <!-- control panel 3-->
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/controls_wrapper"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:paddingBottom="30dp"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/pw_runningTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:gravity="start"
-                    android:textSize="14sp"
-                    android:textColor="@color/colorwhite"
-                    android:typeface="sans"
-                    app:fontFamily="@font/lato"
-                    android:layout_weight="2"
-                    android:text="00:00"
-                    card_view:ignore="HardcodedText" />
-
-
-                <TextView
-                    android:id="@+id/pw_totalTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:layout_gravity="end"
-                    android:textSize="14sp"
-                    android:typeface="sans"
-                    app:fontFamily="@font/lato"
-                    android:textColor="@color/colorwhite"
-                    android:layout_weight="2"
-                    android:text="00:00"
-                    card_view:ignore="HardcodedText" />
-
             </LinearLayout>
 
-            <SeekBar
-                android:id="@+id/seekbar_now_playing"
-                android:layout_margin="5dp"
-                android:thumb="@drawable/thumb"
-                android:progressTint="@color/colorwhite"
-                android:layout_width="match_parent"
-                android:progress="10"
-                android:layout_weight="7"
-                android:layout_height="0dp"
-                card_view:ignore="UnusedAttribute" />
-
             <LinearLayout
-                android:id="@+id/controls"
+                android:id="@+id/controls_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:orientation="horizontal"
-                >
-
-                <ImageView
-                    android:id="@id/pw_ivShuffle"
-                    android:layout_width="@dimen/pw_image_item_size_small"
-                    android:layout_height="@dimen/pw_image_item_size_small"
-                    android:scaleType="centerInside"
-                    android:layout_weight="1"
-                    android:src="@drawable/pw_ic_shuffle_black"
-                    card_view:ignore="ContentDescription" />
-
-                <ImageView
-                    android:id="@id/pw_ivSkipPrevious"
-                    android:layout_weight="1"
-                    android:layout_width="@dimen/pw_image_item_size"
-                    android:layout_height="@dimen/pw_image_item_size"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/pw_ic_skip_previous"
-                    card_view:ignore="ContentDescription" />
+                android:layout_gravity="bottom|center"
+                android:orientation="vertical"
+                android:paddingBottom="30dp">
 
                 <LinearLayout
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/ring_border">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:orientation="horizontal">
 
-                    <ImageButton
-                        android:id="@+id/pw_playButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="8dp"
-                        android:scaleType="fitCenter"
-                        android:background="@color/colorTransparent"
-                        android:src="@drawable/pw_play"
-                        card_view:ignore="ContentDescription" />
+                    <TextView
+                        android:id="@+id/pw_runningTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="2"
+                        android:gravity="start"
+                        android:text="00:00"
+                        android:textColor="@color/colorwhite"
+                        android:textSize="14sp"
+                        android:typeface="sans"
+                        app:fontFamily="@font/lato"
+                        card_view:ignore="HardcodedText" />
+
+
+                    <TextView
+                        android:id="@+id/pw_totalTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_weight="2"
+                        android:gravity="end"
+                        android:text="00:00"
+                        android:textColor="@color/colorwhite"
+                        android:textSize="14sp"
+                        android:typeface="sans"
+                        app:fontFamily="@font/lato"
+                        card_view:ignore="HardcodedText" />
 
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@id/pw_ivSkipNext"
-                    android:layout_width="@dimen/pw_image_item_size"
-                    android:layout_height="@dimen/pw_image_item_size"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/pw_ic_skip_next"
-                    card_view:ignore="ContentDescription" />
+                <SeekBar
+                    android:id="@+id/seekbar_now_playing"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="7"
+                    android:progress="10"
+                    android:progressTint="@color/colorwhite"
+                    android:thumb="@drawable/thumb"
+                    card_view:ignore="UnusedAttribute" />
 
-                <FrameLayout
-                    android:layout_weight="1"
-                    android:layout_width="@dimen/pw_image_item_size_small"
-                    android:layout_height="@dimen/pw_image_item_size_small"
-                    android:layout_gravity="center"
-                    >
+                <LinearLayout
+                    android:id="@+id/controls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@id/pw_ivRepeat"
-                        android:layout_gravity="center"
+                        android:id="@id/pw_ivShuffle"
+                        android:layout_width="@dimen/pw_image_item_size_small"
+                        android:layout_height="@dimen/pw_image_item_size_small"
+                        android:layout_weight="1"
                         android:scaleType="centerInside"
-                        android:src="@drawable/pw_ic_repeat_black"
-                        card_view:ignore="ContentDescription"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent" />
+                        android:src="@drawable/pw_ic_shuffle_black"
+                        card_view:ignore="ContentDescription" />
 
-                    <TextView
-                        android:id="@+id/text_in_repeat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="7sp"
+                    <ImageView
+                        android:id="@id/pw_ivSkipPrevious"
+                        android:layout_width="@dimen/pw_image_item_size"
+                        android:layout_height="@dimen/pw_image_item_size"
+                        android:layout_weight="1"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/pw_ic_skip_previous"
+                        card_view:ignore="ContentDescription" />
+
+                    <LinearLayout
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/ring_border">
+
+                        <ImageButton
+                            android:id="@+id/pw_playButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/colorTransparent"
+                            android:padding="8dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/pw_play"
+                            card_view:ignore="ContentDescription" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@id/pw_ivSkipNext"
+                        android:layout_width="@dimen/pw_image_item_size"
+                        android:layout_height="@dimen/pw_image_item_size"
+                        android:layout_weight="1"
                         android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"
-                        card_view:ignore="SmallSp" />
+                        android:scaleType="centerInside"
+                        android:src="@drawable/pw_ic_skip_next"
+                        card_view:ignore="ContentDescription" />
 
-                </FrameLayout>
+                    <FrameLayout
+                        android:layout_width="@dimen/pw_image_item_size_small"
+                        android:layout_height="@dimen/pw_image_item_size_small"
+                        android:layout_gravity="center"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@id/pw_ivRepeat"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/pw_ic_repeat_black"
+                            card_view:ignore="ContentDescription" />
+
+                        <TextView
+                            android:id="@+id/text_in_repeat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textSize="7sp"
+                            android:textStyle="bold"
+                            card_view:ignore="SmallSp" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
+        </android.support.design.widget.CoordinatorLayout>
 
-        </LinearLayout>
-
-    </android.support.design.widget.CoordinatorLayout>
-
-    <RelativeLayout
-        android:id="@+id/root_view_current_playlist"
-        android:gravity="center|top"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:id="@+id/play_queue_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            >
-
-            <ImageView
-                android:id="@+id/handle_current_queue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_drag_handle_black_24dp"
-                android:background="@color/colorBlack"
-                sothree:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/save_queue_button"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/action_bar_size_small"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/save_playlist"
-                android:textSize="@dimen/np_play_queu"
-                android:textColor="@color/colorwhite" />
-
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewForCurrentTracklist"
-            android:layout_below="@+id/play_queue_title"
-            android:layout_above="@+id/adView"
+        <RelativeLayout
+            android:id="@+id/root_view_current_playlist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?android:selectableItemBackground"
-            />
+            android:gravity="center|top"
+            android:orientation="vertical">
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_play_queue"
-            android:layout_gravity="bottom">
+            <LinearLayout
+                android:id="@+id/play_queue_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
 
-        </com.google.android.gms.ads.AdView>
+                >
 
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/handle_current_queue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorBlack"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_drag_handle_black_24dp"
+                    sothree:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/save_queue_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/action_bar_size_small"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/save_playlist"
+                    android:textColor="@color/colorwhite"
+                    android:textSize="@dimen/np_play_queu" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewForCurrentTracklist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/play_queue_title"
+                android:background="?android:selectableItemBackground" />
+
+        </RelativeLayout>
 
 
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

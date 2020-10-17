@@ -78,9 +78,6 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -99,7 +96,6 @@ import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.customViews.RoundedImageView;
 import com.music.player.bhandari.m.model.Constants;
-import com.music.player.bhandari.m.rewards.RewardPoints;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.model.MusicLibrary;
@@ -148,7 +144,6 @@ public class ActivityMain extends AppCompatActivity
     final static String AB_REMOTE_WALL_URL = "https://play.google.com/store/apps/details?id=in.thetechguru.walle.remote.abremotewallpaperchanger&hl=en";
 
     private long mLastClickTime = 0;
-    @BindView(R.id.adView) AdView mAdView;
 
     //to receive broadcast to update mini player
     private  BroadcastReceiver mReceiverForMiniPLayerUpdate;
@@ -301,23 +296,6 @@ public class ActivityMain extends AppCompatActivity
 
         //Sets the duration of inactivity that terminates the current session. The default value is 1800000 (30 minutes).
         firebaseAnalytics.setSessionTimeoutDuration(10000);
-
-
-        if( /*AppLaunchCountManager.isEligibleForInterstialAd() &&*/AppLaunchCountManager.isEligibleForBannerAds() && !UtilityFun.isAdsRemoved() ) {
-                MobileAds.initialize(getApplicationContext(), getString(R.string.banner_main_activity));
-                if (UtilityFun.isConnectedToInternet()) {
-                    AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
-                            .build();
-                    if (mAdView != null) {
-                        mAdView.loadAd(adRequest);
-                        mAdView.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    if (mAdView != null) {
-                        mAdView.setVisibility(View.GONE);
-                    }
-                }
-        }
 
         navigationView.setNavigationItemSelectedListener(this);
         disableNavigationViewScrollbars();
@@ -515,9 +493,6 @@ public class ActivityMain extends AppCompatActivity
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-        //throw new NullPointerException();
-        Log.d("ActivityMain", "onCreate: reward point count is :" + RewardPoints.getRewardPointsCount());
 
         setTextAndIconColor();
     }
@@ -1276,23 +1251,16 @@ public class ActivityMain extends AppCompatActivity
                     .putExtra("ad",true));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
-        } else  if (id == R.id.nav_remove_ads){
-            startActivity(new Intent(this, ActivityRemoveAds.class));
-            //finish();
         } else if(id==R.id.nav_share){
             shareApp();
         } else if(id==R.id.nav_rate){
             setRateDialog();
-        } else if(id==R.id.nav_feedback){
-            feedbackEmail();
         } else if(id==R.id.nav_website){
             openUrl(Uri.parse(WEBSITE));
         } else if(id==R.id.nav_signup){
             signIn();
         } else if(id==R.id.nav_logout){
             signOut();
-        } else if(id==R.id.nav_rewards){
-            rewardDialog();
         } else if(id==R.id.nav_explore_lyrics){
             startActivity(new Intent(this, ActivityExploreLyrics.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -1300,8 +1268,6 @@ public class ActivityMain extends AppCompatActivity
             devMessageDialog();
         } else if(id==R.id.nav_instagram){
             openUrl(Uri.parse(INSTA_WEBSITE));
-        } else if(id==R.id.nav_try_new_app){
-            tryApp();
         } else if(id == R.id.nav_lyric_card){
             lyricCardDialog();
         } else if(id==192){
@@ -1515,10 +1481,6 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
-    private void rewardDialog(){
-        startActivity(new Intent(this, ActivityRewardVideo.class));
-    }
-
     private void feedbackEmail() {
         String myDeviceModel = "Model : " + Build.MODEL + " Version : " + Build.VERSION.RELEASE;
 
@@ -1632,11 +1594,6 @@ public class ActivityMain extends AppCompatActivity
                         } catch (ActivityNotFoundException anfe) {
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
                         }
-
-                        /*
-                        leftAppForRating = true;
-                        timeOfLeavingForRating = System.currentTimeMillis();
-                        Toast.makeText(ActivityMain.this, "Rate 5* to claim your reward!", Toast.LENGTH_SHORT).show();*/
                     }
                 })
                 .customView(linear,true)
@@ -1776,7 +1733,6 @@ public class ActivityMain extends AppCompatActivity
             viewPager = null;
             viewPagerAdapter = null;
             navigationView.setNavigationItemSelectedListener(null);
-            mAdView.destroy();
         }catch (NullPointerException e){
             Log.d("TAG", "onDestroy: destroy called because of null player service");
         }
@@ -2226,12 +2182,6 @@ public class ActivityMain extends AppCompatActivity
             navigationView.inflateMenu(R.menu.drawer_menu_logged_in);
         }else {
             navigationView.inflateMenu(R.menu.drawer_menu_logged_out);
-        }
-
-        if(UtilityFun.isAdsRemoved()) {
-            navigationView.getMenu().removeItem(R.id.nav_rewards);
-            navigationView.getMenu().removeItem(R.id.nav_remove_ads);
-            //navigationView.getMenu().removeItem(R.id.nav_remove_ads_free);
         }
 
         //set red dot if new developer message arrives

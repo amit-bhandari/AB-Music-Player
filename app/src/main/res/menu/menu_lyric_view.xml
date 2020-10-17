@@ -27,11 +27,4 @@
         android:title="@string/action_wrong_lyrics"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_remove_ads"
-        android:orderInCategory="100"
-        android:icon="@drawable/ic_assessment_black_24dp"
-        app:showAsAction="never"
-        android:title="@string/nav_remove_ads" />
-
 </menu>

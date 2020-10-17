@@ -39,7 +39,6 @@
     <string name="system_playlists">System playlists</string>
 
     <!-- drawer menu -->
-    <string name="nav_remove_ads">Remove Ads</string>
     <string name="nav_rewards">Rewards</string>
     <string name="nav_sleep_timer">Sleep Timer</string>
     <string name="nav_share">Share</string>
@@ -502,7 +501,7 @@
     <string name="title_library">Library</string>
     <string name="title_about">About</string>
     <string name="title_reset">Reset</string>
-    <string name="title_find_me_on_instagram">Let\'s be Friends</string>
+    <string name="title_find_me_on_instagram">Connect</string>
     <string name="title_contribute">Contribute</string>
     <string name="title_remove_ads_for_free">Remove Ads for Free</string>
     <string name="title_instant_lyric">Instant Lyrics</string>

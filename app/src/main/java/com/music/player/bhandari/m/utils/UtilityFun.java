@@ -473,8 +473,9 @@ public class UtilityFun {
     }
 
     public static boolean isAdsRemoved(){
+        return true;
         //boolean hideAdsTemp = MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_temp),false);
-        return MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_after_payment),false);
+        //return MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_after_payment),false);
     }
 
     public static void logEvent(@NonNull Bundle bundle){

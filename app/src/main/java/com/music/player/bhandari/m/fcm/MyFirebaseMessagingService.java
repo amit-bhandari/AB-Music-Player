@@ -27,7 +27,6 @@ import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.activity.ActivityExploreLyrics;
 import com.music.player.bhandari.m.activity.ActivityLyricView;
-import com.music.player.bhandari.m.activity.ActivityRemoveAds;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
@@ -209,15 +208,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
 
         //helper methods to build specific notifications
         private void discountNotif(){
-
-            Intent notificationIntent = new Intent(MyApp.getContext(), ActivityRemoveAds.class);
-            notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
-            notificationIntent.putExtra("from_notif", true);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent contentIntent = PendingIntent.getActivity(MyApp.getContext(), 0,
-                    notificationIntent, 0);
-
-            builder.setContentIntent(contentIntent);
 
         }
 

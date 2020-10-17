@@ -1,140 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-        <LinearLayout
+    <!-- dynamic lyric view -->
+    <LinearLayout
+        android:id="@+id/ll_dynamic_lyric_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.music.player.bhandari.m.customViews.MyRecyclerView
+            android:id="@+id/dynamic_lyrics_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:fadingEdgeLength="200dp"
+            android:requiresFadingEdge="horizontal|vertical">
 
-            <!-- dynamic lyric view -->
-            <LinearLayout
-                android:id="@+id/ll_dynamic_lyric_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+        </com.music.player.bhandari.m.customViews.MyRecyclerView>
 
-                <com.music.player.bhandari.m.customViews.MyRecyclerView
-                    android:requiresFadingEdge="horizontal|vertical"
-                    android:fadingEdgeLength="200dp"
-                    android:layout_gravity="center"
-                    android:id="@+id/dynamic_lyrics_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                </com.music.player.bhandari.m.customViews.MyRecyclerView>
-
-
-            </LinearLayout>
-
-            <!-- lyric status  view -->
-            <TextView
-                android:id="@+id/text_view_lyric_status"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:gravity="center"
-                android:paddingBottom="20dp"
-                android:text="@string/tap_to_refresh_lyrics"
-                android:textColor="@color/primary_text_color"
-                android:textSize="20sp" />
-
-            <com.wang.avi.AVLoadingIndicatorView
-                android:id="@+id/loading_lyrics_animation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                app:indicatorName="BallScaleMultipleIndicator"
-                />
-
-            <EditText
-                android:id="@+id/track_title_lyric_frag"
-                android:visibility="gone"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textColor="@color/primary_text_color"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:inputType="textNoSuggestions" />
-
-            <EditText
-                android:id="@+id/track_artist_lyric_frag"
-                android:visibility="gone"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_width="match_parent"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:textColor="@color/primary_text_color"
-                android:layout_height="wrap_content"
-                android:inputType="textNoSuggestions" />
-
-            <Button
-                android:id="@+id/button_update_metadata"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textColor="@color/primary_text_color"
-                android:background="@color/colorTransparent"
-                android:foreground="@drawable/border_1dp"
-                android:text="@string/update_tags"/>
-
-            <TextView
-                android:visibility="gone"
-                android:paddingTop="10dp"
-                android:id="@+id/update_track_metadata"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:text="@string/tag_update"
-                android:textColor="@color/primary_text_color"
-                />
-
-
-        </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ad_view_wrapper"
-        android:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:paddingBottom="5dp"
-        android:layout_centerHorizontal="true">
-
-        <TextView
-            android:id="@+id/ad_close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/close"
-            android:textColor="@color/primary_text_color"
-            android:paddingEnd="15dp"
-            android:gravity="end"
-            android:textSize="15sp"
-            android:visibility="gone"
-            android:paddingRight="15dp"
-            card_view:ignore="RtlSymmetry" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_lyric_frag"
-            android:layout_gravity="bottom">
-        </com.google.android.gms.ads.AdView>
 
     </LinearLayout>
 
-</RelativeLayout>
+    <!-- lyric status  view -->
+    <TextView
+        android:id="@+id/text_view_lyric_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:text="@string/tap_to_refresh_lyrics"
+        android:textColor="@color/primary_text_color"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/loading_lyrics_animation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:indicatorName="BallScaleMultipleIndicator" />
+
+    <EditText
+        android:id="@+id/track_title_lyric_frag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:inputType="textNoSuggestions"
+        android:textColor="@color/primary_text_color"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/track_artist_lyric_frag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:inputType="textNoSuggestions"
+        android:textColor="@color/primary_text_color"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/button_update_metadata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/colorTransparent"
+        android:foreground="@drawable/border_1dp"
+        android:text="@string/update_tags"
+        android:textColor="@color/primary_text_color"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/update_track_metadata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:text="@string/tag_update"
+        android:textColor="@color/primary_text_color"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+</LinearLayout>

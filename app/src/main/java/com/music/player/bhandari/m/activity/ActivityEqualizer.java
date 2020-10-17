@@ -2,7 +2,6 @@ package com.music.player.bhandari.m.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.media.audiofx.PresetReverb;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -18,8 +16,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
@@ -31,9 +27,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
@@ -42,7 +35,6 @@ import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.customViews.VerticalSeekBar;
 import com.music.player.bhandari.m.equalizer.EqualizerSetting;
 import com.music.player.bhandari.m.model.Constants;
-import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.util.ArrayList;
@@ -177,9 +169,6 @@ public class ActivityEqualizer extends AppCompatActivity {
     @BindView(R.id.reverb_title_text)
      TextView reverbTitle;
 
-    @BindView(R.id.adView)
-     AdView mAdView;
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -214,8 +203,6 @@ public class ActivityEqualizer extends AppCompatActivity {
 
         setContentView(R.layout.activity_equalizer);
         ButterKnife.bind(this);
-
-        showAdIfApplicable();
 
         //action bar
         Toolbar toolbar = findViewById(R.id.toolbar_);
@@ -343,26 +330,9 @@ public class ActivityEqualizer extends AppCompatActivity {
         }
     };
 
-    private void showAdIfApplicable() {
-        if( /*AppLaunchCountManager.isEligibleForInterstialAd() &&*/ !UtilityFun.isAdsRemoved() ) {
-            MobileAds.initialize(this, getString(R.string.banner_about_us_activity));
-
-            if (UtilityFun.isConnectedToInternet()) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
-                        .build();
-                mAdView.loadAd(adRequest);
-                mAdView.setVisibility(View.VISIBLE);
-            } else {
-                mAdView.setVisibility(View.GONE);
-            }
-
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        mAdView.resume();
         MyApp.isAppVisible = true;
     }
 
@@ -372,20 +342,11 @@ public class ActivityEqualizer extends AppCompatActivity {
             EqualizerSetting equalizerSetting = getCurrentEquSetting();
             MyApp.getService().getEqualizerHelper().storeLastEquSetting(equalizerSetting);
             Log.d("ActivityEqualizer", "onPause: stored equ setting : " + equalizerSetting.toString());
-            mAdView.pause();
             MyApp.isAppVisible = false;
         }catch (Exception ignore){
 
         }
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(mAdView!=null) {
-            mAdView.destroy();
-        }
     }
 
     @NonNull

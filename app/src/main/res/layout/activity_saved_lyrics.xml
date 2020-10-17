@@ -48,40 +48,4 @@
         android:layout_centerInParent="true"
         android:text="@string/no_saved_lyrics"/>
 
-    <LinearLayout
-        android:id="@+id/ad_view_wrapper"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:paddingBottom="5dp"
-        android:layout_centerHorizontal="true">
-
-        <TextView
-            android:id="@+id/ad_close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/close"
-            android:textColor="@color/primary_text_color"
-            android:paddingEnd="15dp"
-            android:gravity="end"
-            android:textSize="15sp"
-            android:visibility="gone"
-            android:paddingRight="15dp"
-            card_view:ignore="RtlSymmetry" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:visibility="visible"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_lyric_view">
-
-        </com.google.android.gms.ads.AdView>
-
-    </LinearLayout>
-
 </RelativeLayout>

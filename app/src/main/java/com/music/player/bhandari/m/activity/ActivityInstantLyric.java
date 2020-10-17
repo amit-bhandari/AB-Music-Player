@@ -16,7 +16,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -51,17 +50,11 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter;
 import com.music.player.bhandari.m.lyricCard.ActivityLyricCard;
 import com.music.player.bhandari.m.model.Constants;
@@ -73,7 +66,6 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.Of
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArtInfoThread;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadLyricThread;
-import com.music.player.bhandari.m.rewards.RewardPoints;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.nshmura.snappysmoothscroller.SnapType;
@@ -92,53 +84,58 @@ import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class ActivityInstantLyric extends AppCompatActivity implements RecyclerView.OnItemTouchListener, Lyrics.Callback
-,ActionMode.Callback, View.OnClickListener, ArtistInfo.Callback{
+        , ActionMode.Callback, View.OnClickListener, ArtistInfo.Callback {
 
     private Lyrics mLyrics;
     private ArtistInfo artistInfo;
 
 
-    @BindView(R.id.text_view_lyric_status) TextView lyricStatus;
-    @BindView(R.id.text_view_artist_info) TextView artInfoTextView;
-    @BindView(R.id.lyric_view_wrapper) View lyricWrapper;
-    @BindView(R.id.view_artist_info) FloatingActionButton viewArtInfoFab;
-    @BindView(R.id.fab_save_lyrics) FloatingActionButton saveLyrics;
-    @BindView(R.id.loading_lyrics_animation)  AVLoadingIndicatorView lyricLoadAnimation;
-    @BindView(R.id.dynamic_lyrics_recycler_view)  RecyclerView recyclerView;
-    @BindView(R.id.root_view_instant_lyrics)  View rootView;
-    @BindView(R.id.fab_video) FloatingActionButton watchVideo;
-
-    @BindView(R.id.ad_view_wrapper) View adViewWrapper;
-    @BindView(R.id.ad_close)  TextView adCloseText;
+    @BindView(R.id.text_view_lyric_status)
+    TextView lyricStatus;
+    @BindView(R.id.text_view_artist_info)
+    TextView artInfoTextView;
+    @BindView(R.id.lyric_view_wrapper)
+    View lyricWrapper;
+    @BindView(R.id.view_artist_info)
+    FloatingActionButton viewArtInfoFab;
+    @BindView(R.id.fab_save_lyrics)
+    FloatingActionButton saveLyrics;
+    @BindView(R.id.loading_lyrics_animation)
+    AVLoadingIndicatorView lyricLoadAnimation;
+    @BindView(R.id.dynamic_lyrics_recycler_view)
+    RecyclerView recyclerView;
+    @BindView(R.id.root_view_instant_lyrics)
+    View rootView;
+    @BindView(R.id.fab_video)
+    FloatingActionButton watchVideo;
 
     private boolean isLyricsShown = true, isLyricsSaved = false;
 
-    private Boolean fThreadCancelled =false;
-    private Boolean fIsThreadRunning =false;
+    private Boolean fThreadCancelled = false;
+    private Boolean fIsThreadRunning = false;
 
     private LyricsViewAdapter adapter;
-    private boolean fIsStaticLyrics =true;
+    private boolean fIsStaticLyrics = true;
     private LinearLayoutManager layoutManager;
 
     private SharedPreferences currentMusicInfo;
@@ -154,12 +151,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     private boolean actionModeActive = false;
     private GestureDetectorCompat gestureDetector;
 
-    private static final int LAUNCH_COUNT_BEFORE_POPUP=7;
-    private InterstitialAd mInterstitialAd;
-
     private Handler handler;
-
-    @BindView(R.id.adView) AdView mAdView;
 
     //private PowerManager.WakeLock mWakeLock;
 
@@ -174,7 +166,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         ColorHelper.setStatusBarGradiant(this);
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-        switch (themeSelector){
+        switch (themeSelector) {
             case Constants.PRIMARY_COLOR.DARK:
                 setTheme(R.style.AppThemeDark);
                 break;
@@ -193,7 +185,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -217,13 +209,13 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             public void onReceive(Context context, Intent intent) {
 
                 //make sure lyrics view is shown if artist info was being shown
-                isLyricsShown=false;
+                isLyricsShown = false;
                 toggleLyricsArtInfoView();
                 updateLyrics(false);
             }
         };
 
-        if(!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted),false)){
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
             showDisclaimerDialog();
         }
 
@@ -236,14 +228,14 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             Bundle bundle = new Bundle();
             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "instant_lyric_launched");
             UtilityFun.logEvent(bundle);
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
         }
 
     }
 
     private void growShrinkAnimate() {
-        final ScaleAnimation growAnim = new ScaleAnimation(1.0f, 1.15f, 1.0f, 1.15f,Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        final ScaleAnimation shrinkAnim = new ScaleAnimation(1.15f, 1.0f, 1.15f, 1.0f,Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        final ScaleAnimation growAnim = new ScaleAnimation(1.0f, 1.15f, 1.0f, 1.15f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        final ScaleAnimation shrinkAnim = new ScaleAnimation(1.15f, 1.0f, 1.15f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
         growAnim.setDuration(500);
         shrinkAnim.setDuration(500);
@@ -251,32 +243,32 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         watchVideo.setAnimation(growAnim);
         growAnim.start();
 
-        growAnim.setAnimationListener(new Animation.AnimationListener()
-        {
+        growAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation){}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animation animation){}
+            public void onAnimationRepeat(Animation animation) {
+            }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
                 watchVideo.setAnimation(shrinkAnim);
                 shrinkAnim.start();
             }
         });
-        shrinkAnim.setAnimationListener(new Animation.AnimationListener()
-        {
+        shrinkAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation){}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animation animation){}
+            public void onAnimationRepeat(Animation animation) {
+            }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
                 watchVideo.setAnimation(growAnim);
                 growAnim.start();
             }
@@ -294,62 +286,18 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putParcelable("lyrics",mLyrics);
-        savedInstanceState.putParcelable("artInfo",artistInfo);
+        savedInstanceState.putParcelable("lyrics", mLyrics);
+        savedInstanceState.putParcelable("artInfo", artistInfo);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mLyrics=savedInstanceState.getParcelable("lyrics");
-        artistInfo=savedInstanceState.getParcelable("artInfo");
+        mLyrics = savedInstanceState.getParcelable("lyrics");
+        artistInfo = savedInstanceState.getParcelable("artInfo");
     }
 
-    private void showAdIfApplicable() {
-        if(!UtilityFun.isAdsRemoved() && AppLaunchCountManager.isEligibleForBannerAds()) {
-            MobileAds.initialize(this, getString(R.string.banner_lyric_view));
-
-            if(AppLaunchCountManager.isEligibleForInterstialAd() &&
-                    (AppLaunchCountManager.getInstantLyricsCount()%LAUNCH_COUNT_BEFORE_POPUP==0)) {
-                mInterstitialAd = new InterstitialAd(this);
-                mInterstitialAd.setAdUnitId(getString(R.string.inter_licenses_activity));
-
-                mInterstitialAd.setAdListener(new AdListener() {
-                    @Override
-                    public void onAdClosed() {
-                    }
-
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        mInterstitialAd.show();
-                    }
-                });
-
-                requestNewInterstitial();
-            }
-
-            /*if (UtilityFun.isConnectedToInternet() ) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
-                        .build();
-                Log.d("ActivityInstantLyric", "showAdIfApplicable: adview is null " + (mAdView==null));
-                if (mAdView != null) {
-                    mAdView.loadAd(adRequest);
-                    mAdView.setVisibility(View.VISIBLE);
-                    adViewWrapper.setVisibility(View.VISIBLE);
-                    adCloseText.setVisibility(View.VISIBLE);
-
-                }
-            } else {
-                if (mAdView != null) {
-                    mAdView.setVisibility(View.GONE);
-                    adViewWrapper.setVisibility(View.GONE);
-                }
-            }*/
-        }
-    }
-
-    private void initializeListeners(){
+    private void initializeListeners() {
         lyricStatus.setOnClickListener(this);
         saveLyrics.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getColor(R.color.fab_Colors_lyric_view)));
         saveLyrics.setOnClickListener(this);
@@ -366,12 +314,12 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         super.onPause();
 
         MyApp.isAppVisible = false;
-        if(actionMode!=null){
+        if (actionMode != null) {
             actionMode.finish();
             actionMode = null;
         }
 
-        if(fIsThreadRunning){
+        if (fIsThreadRunning) {
             fThreadCancelled = true;
         }
         acquireWindowPowerLock(false);
@@ -383,14 +331,13 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     protected void onResume() {
         super.onResume();
         MyApp.isAppVisible = true;
-        showAdIfApplicable();
 
-        if(!fIsStaticLyrics && !fIsThreadRunning && currentMusicInfo.getBoolean("playing",false)){
-            fThreadCancelled=false;
+        if (!fIsStaticLyrics && !fIsThreadRunning && currentMusicInfo.getBoolean("playing", false)) {
+            fThreadCancelled = false;
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
         }
 
-        if(!fIsStaticLyrics){
+        if (!fIsStaticLyrics) {
             Log.d("ActivityInstantLyric", "onResume: scrolling lyrics to current location");
             acquireWindowPowerLock(true);
             scrollLyricsToCurrentLocation();
@@ -401,18 +348,18 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         track = currentMusicInfo.getString("track", "");
         artist = currentMusicInfo.getString("artist", "");
 
-        if(mLyrics!=null
+        if (mLyrics != null
                 && mLyrics.getOriginalArtist().toLowerCase().equals(artist.toLowerCase())
-                && mLyrics.getOriginalTrack().toLowerCase().equals(track.toLowerCase())){
+                && mLyrics.getOriginalTrack().toLowerCase().equals(track.toLowerCase())) {
             onLyricsDownloaded(mLyrics);
-        }else {
+        } else {
             updateLyrics(false);
         }
 
         AppLaunchCountManager.instantLyricsLaunched();
     }
 
-    private void acquireWindowPowerLock(boolean acquire){
+    private void acquireWindowPowerLock(boolean acquire) {
         /*if(acquire) {
             if (mWakeLock != null && !mWakeLock.isHeld()) {
                 this.mWakeLock.acquire(10*60*1000L); // /*10 minutes
@@ -432,17 +379,17 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         }
     }
 
-    private void updateLyrics(boolean discardCache, @NonNull String... param){
+    private void updateLyrics(boolean discardCache, @NonNull String... param) {
 
-        if(param.length==2){
+        if (param.length == 2) {
             track = param[0];
             artist = param[1];
-        }else {
+        } else {
             track = currentMusicInfo.getString("track", "");
             artist = currentMusicInfo.getString("artist", "");
         }
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(track);
             getSupportActionBar().setSubtitle(artist);
         }
@@ -458,45 +405,32 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         String artist = item.getArtist();
         artist = loadArtistInfo(artist);
 
-        if(!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted),false)) {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
             lyricStatus.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
             lyricStatus.setText(getString(R.string.disclaimer_rejected));
             try {
                 //some exceptions reported in play console, thats why
                 lyricLoadAnimation.hide();
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
             // }
             return;
         }
 
-        //check if user have reward points, if not, display error
-        if(!UtilityFun.isAdsRemoved() && RewardPoints.getRewardPointsCount()<=0){
-            lyricStatus.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            lyricStatus.setText(R.string.reward_points_exhausted);
-            try {
-                //some exceptions reported in play console, that's why
-                lyricLoadAnimation.hide();
-            }catch (Exception ignored){}
-            // }
-            return;
-        }
-
-        if(mLyrics!=null
+        if (mLyrics != null
                 && mLyrics.getOriginalArtist().toLowerCase().equals(artist.toLowerCase())
-                && mLyrics.getOriginalTrack().toLowerCase().equals(track.toLowerCase())){
+                && mLyrics.getOriginalTrack().toLowerCase().equals(track.toLowerCase())) {
             onLyricsDownloaded(mLyrics);
             return;
         }
 
 
-
-        if(mLyrics==null){
-            Log.d("RewardPoints", "updateLyrics: null lyrics");
-        }else {
-            Log.d("RewardPoints", "updateLyrics: " + mLyrics.getOriginalArtist().toLowerCase() + " : " + artist);
-            Log.d("RewardPoints", "updateLyrics: " + mLyrics.getOriginalTrack().toLowerCase() + " : " + track);
+        if (mLyrics == null) {
+            Log.d("Lyrics", "updateLyrics: null lyrics");
+        } else {
+            Log.d("Lyrics", "updateLyrics: " + mLyrics.getOriginalArtist().toLowerCase() + " : " + artist);
+            Log.d("Lyrics", "updateLyrics: " + mLyrics.getOriginalTrack().toLowerCase() + " : " + track);
         }
 
         //set loading animation
@@ -505,28 +439,21 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
         //lyricCopyRightText.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
-        fThreadCancelled =true;
+        fThreadCancelled = true;
 
         lyricStatus.setVisibility(View.VISIBLE);
         lyricStatus.setText(getString(R.string.lyrics_loading));
 
 
-
         //check in offline storage
         //for saved lyrics
         mLyrics = OfflineStorageLyrics.getInstantLyricsFromDB(item);
-        if(mLyrics!=null){
-            if(!UtilityFun.isAdsRemoved()) {
-                RewardPoints.decrementByRandomInt();
-            }
+        if (mLyrics != null) {
             onLyricsDownloaded(mLyrics);
             return;
         }
 
-        if(!discardCache) {
-            if(!UtilityFun.isAdsRemoved()) {
-                RewardPoints.decrementByRandomInt();
-            }
+        if (!discardCache) {
             mLyrics = OfflineStorageLyrics.getLyricsFromCache(item);
             if (mLyrics != null) {
                 onLyricsDownloaded(mLyrics);
@@ -535,9 +462,6 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         }
 
         if (UtilityFun.isConnectedToInternet()) {
-            if(!UtilityFun.isAdsRemoved()) {
-                RewardPoints.decrementByRandomInt();
-            }
             fetchLyrics(item.getArtist(), item.getTitle(), null);
         } else {
             lyricStatus.setText(getString(R.string.no_connection));
@@ -551,9 +475,9 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         Log.d("ActivityInstantLyric", "updateLyrics: artist : " + artist);
 
         artistInfo = OfflineStorageArtistBio.getArtistInfoFromCache(artist);
-        if(artistInfo!=null){
+        if (artistInfo != null) {
             onArtInfoDownloaded(artistInfo);
-        }else {
+        } else {
             new DownloadArtInfoThread(this, artist, null).start();
         }
         return artist;
@@ -580,14 +504,14 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     }
 
     @Override
-    public void onLyricsDownloaded(Lyrics lyrics){
+    public void onLyricsDownloaded(Lyrics lyrics) {
 
-        Log.d("ActivityInstantLyric", "onLyricsDownloaded: lyrics downloaded " + (lyrics.getFlag()==Lyrics.POSITIVE_RESULT));
+        Log.d("ActivityInstantLyric", "onLyricsDownloaded: lyrics downloaded " + (lyrics.getFlag() == Lyrics.POSITIVE_RESULT));
         Log.d("ActivityInstantLyric", "onLyricsDownloaded: " + lyrics.getOriginalArtist() + " : " + lyrics.getOriginalTrack());
         Log.d("ActivityInstantLyric", "onLyricsDownloaded: " + artist + " : " + track);
         Log.d("ActivityInstantLyric", "onLyricsDownloaded: " + lyrics.getArtist() + " : " + lyrics.getTrack());
 
-        if(!lyrics.getOriginalTrack().equals(track)){
+        if (!lyrics.getOriginalTrack().equals(track)) {
             return;
         }
 
@@ -598,31 +522,31 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
         lyricLoadAnimation.hide();
         mLyrics = lyrics;
-        if (lyrics.getFlag() == Lyrics.POSITIVE_RESULT){
+        if (lyrics.getFlag() == Lyrics.POSITIVE_RESULT) {
 
-            Log.d("ActivityInstantLyric", "onLyricsDownloaded: "+lyrics.getArtist() + " : "+lyrics.getTrack());
+            Log.d("ActivityInstantLyric", "onLyricsDownloaded: " + lyrics.getArtist() + " : " + lyrics.getTrack());
 
             lyricStatus.setVisibility(View.GONE);
             fIsStaticLyrics = !mLyrics.isLRC();
-            if(!fIsStaticLyrics){
+            if (!fIsStaticLyrics) {
                 acquireWindowPowerLock(true);
             }
-            fThreadCancelled=false;
+            fThreadCancelled = false;
             recyclerView.setVisibility(View.VISIBLE);
             lyricStatus.setVisibility(View.GONE);
             initializeLyricsView();
 
-            if (getSupportActionBar() != null){
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(lyrics.getTrack());
                 getSupportActionBar().setSubtitle(lyrics.getArtist());
             }
 
-            if(!lyrics.getArtist().equals(lyrics.getOriginalArtist())){
+            if (!lyrics.getArtist().equals(lyrics.getOriginalArtist())) {
                 loadArtistInfo(lyrics.getArtist());
             }
 
 
-        }else {
+        } else {
             lyricStatus.setText(getString(R.string.tap_to_refresh_lyrics));
             lyricStatus.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -636,19 +560,18 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         });
 
 
-
     }
 
     private void updateSaveDeleteFabDrawable() {
         final Drawable drawable;
-        if(OfflineStorageLyrics.isLyricsPresentInDB(track, (mLyrics==null) ? -1 : mLyrics.getTrackId())){
-            isLyricsSaved=true;
+        if (OfflineStorageLyrics.isLyricsPresentInDB(track, (mLyrics == null) ? -1 : mLyrics.getTrackId())) {
+            isLyricsSaved = true;
             drawable = getResources().getDrawable(R.drawable.ic_delete_black_24dp);
 
 
-        }else {
-            isLyricsSaved=false;
-            drawable=getResources().getDrawable(R.drawable.ic_save_black_24dp);
+        } else {
+            isLyricsSaved = false;
+            drawable = getResources().getDrawable(R.drawable.ic_save_black_24dp);
         }
 
         handler.post(new Runnable() {
@@ -661,8 +584,8 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
     @Override
     public void onArtInfoDownloaded(ArtistInfo artistInfo) {
-        this.artistInfo =artistInfo;
-        if(artistInfo.getArtistContent().equals("")){
+        this.artistInfo = artistInfo;
+        if (artistInfo.getArtistContent().equals("")) {
             artInfoTextView.setText(R.string.artist_info_no_result);
             return;
         }
@@ -670,8 +593,8 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         new SetBlurryImagetask().execute(artistInfo);
     }
 
-    private void initializeLyricsView(){
-        if(mLyrics==null){
+    private void initializeLyricsView() {
+        if (mLyrics == null) {
             return;
         }
 
@@ -689,10 +612,10 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         gestureDetector =
                 new GestureDetectorCompat(this, new RecyclerViewDemoOnGestureListener());
 
-        layoutManager = (LinearLayoutManager)recyclerView.getLayoutManager();
-        fThreadCancelled =false;
+        layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        fThreadCancelled = false;
 
-        if(!fIsStaticLyrics && !fIsThreadRunning){
+        if (!fIsStaticLyrics && !fIsThreadRunning) {
             Executors.newSingleThreadExecutor().execute(lyricUpdater);
             scrollLyricsToCurrentLocation();
         }
@@ -709,7 +632,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         final int index = adapter.getCurrentTimeIndex();
 
         Log.d("ActivityInstantLyric", "scrollLyricsToCurrentLocation: index " + index);
-        if(index!=-1){
+        if (index != -1) {
             // without delay lyrics wont scroll to latest position when called from onResume for some reason
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -721,7 +644,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         adapter.notifyDataSetChanged();
     }
 
-    private void syncProblemDialog(){
+    private void syncProblemDialog() {
         new MyDialogBuilder(this)
                 .title(getString(R.string.lyric_sync_error_title))
                 .content(getString(R.string.lyric_sync_error_content))
@@ -729,8 +652,8 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 .show();
     }
 
-    private void shareLyrics(){
-        if( mLyrics==null || mLyrics.getFlag()!=Lyrics.POSITIVE_RESULT){
+    private void shareLyrics() {
+        if (mLyrics == null || mLyrics.getFlag() != Lyrics.POSITIVE_RESULT) {
             Snackbar.make(rootView, getString(R.string.error_no_lyrics)
                     , Snackbar.LENGTH_SHORT).show();
             return;
@@ -738,9 +661,9 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
         String shareBody = getString(R.string.lyrics_share_text);
         shareBody += "\n\nTrack : " + mLyrics.getTrack() + "\n" + "Artist : " + mLyrics.getArtist() + "\n\n";
-        if(mLyrics.isLRC()) {
+        if (mLyrics.isLRC()) {
             shareBody += Html.fromHtml(adapter.getStaticLyrics()).toString();
-        }else {
+        } else {
             shareBody += Html.fromHtml(mLyrics.getText());
         }
 
@@ -759,14 +682,14 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         adapter.toggleSelection(idx);
         //String title = adapter.getSelectedItemCount();
         //actionMode.setTitle(title);
-        if(adapter.getSelectedItemCount()==0){
+        if (adapter.getSelectedItemCount() == 0) {
             actionMode.finish();
             actionMode = null;
             return;
         }
         int numberOfItems = adapter.getSelectedItemCount();
-        String selectionString = numberOfItems==1 ? " item selected" : " items selected";
-        String title = numberOfItems  + selectionString;
+        String selectionString = numberOfItems == 1 ? " item selected" : " items selected";
+        String title = numberOfItems + selectionString;
         actionMode.setTitle(title);
     }
 
@@ -794,7 +717,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             case R.id.menu_lyric_card:
                 Intent intent = new Intent(this, ActivityLyricCard.class);
                 intent.putExtra("lyric", getSelectedLyricString().toString())
-                        .putExtra("artist",mLyrics.getArtist())
+                        .putExtra("artist", mLyrics.getArtist())
                         .putExtra("track", mLyrics.getTrack());
                 startActivity(intent);
                 break;
@@ -825,7 +748,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.fab_save_lyrics:
                 Executors.newSingleThreadExecutor().execute(new Runnable() {
                     @Override
@@ -837,7 +760,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
             case R.id.view_artist_info:
                 //clear offline stored lyrics if any and reload
-                if(artistInfo==null){
+                if (artistInfo == null) {
                     Snackbar.make(rootView, getString(R.string.art_info_not_available)
                             , Snackbar.LENGTH_SHORT).show();
                     return;
@@ -847,7 +770,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 break;
 
             case R.id.lyrics_line:
-                if(recyclerView!=null) {
+                if (recyclerView != null) {
                     int idx = recyclerView.getChildLayoutPosition(view);
                     if (actionModeActive) {
                         myToggleSelection(idx);
@@ -857,29 +780,24 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 break;
 
             case R.id.text_view_lyric_status:
-
-                if(lyricStatus.getText().equals(getString(R.string.reward_points_exhausted))){
-                    startActivity(new Intent(this, ActivityRewardVideo.class));
-                }else {
-                    mLyrics = null;
-                    updateLyrics(true);
-                    break;
-                }
+                mLyrics = null;
+                updateLyrics(true);
+                break;
 
             case R.id.fab_video:
-                UtilityFun.LaunchYoutube(this,track + " - " + artist);
+                UtilityFun.LaunchYoutube(this, track + " - " + artist);
                 break;
         }
     }
 
     private void toggleLyricsArtInfoView() {
-        if(isLyricsShown) {
+        if (isLyricsShown) {
             lyricWrapper.setVisibility(View.GONE);
             findViewById(R.id.artist_info_wrapper).setVisibility(View.VISIBLE);
             artInfoTextView.setText(artistInfo.getArtistContent());
             isLyricsShown = false;
             viewArtInfoFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_subject_black_24dp));
-        }else {
+        } else {
             lyricWrapper.setVisibility(View.VISIBLE);
             findViewById(R.id.artist_info_wrapper).setVisibility(View.GONE);
             isLyricsShown = true;
@@ -887,39 +805,22 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
-        super.onDestroy();
-    }
-
-    @OnClick(R.id.ad_close)
-    public void close_ad(){
-        if(mAdView!=null){
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
-    }
-
     private void saveOrDeleteLyrics() {
-        if(isLyricsSaved){
-            if(OfflineStorageLyrics.clearLyricsFromDB(track)){
+        if (isLyricsSaved) {
+            if (OfflineStorageLyrics.clearLyricsFromDB(track)) {
                 updateSaveDeleteFabDrawable();
                 Snackbar.make(rootView, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT).show();
             }
-        }else {
+        } else {
             if (mLyrics != null && mLyrics.getOriginalTrack().equals(track) && mLyrics.getOriginalArtist().equals(artist)) {
                 TrackItem item = new TrackItem();
                 item.setArtist(artist);
                 item.setTitle(track);
                 item.setId(-1);
-                if(OfflineStorageLyrics.putInstantLyricsInDB(mLyrics, item)){
+                if (OfflineStorageLyrics.putInstantLyricsInDB(mLyrics, item)) {
                     updateSaveDeleteFabDrawable();
                     Snackbar.make(rootView, getString(R.string.lyrics_saved), Snackbar.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Snackbar.make(rootView, getString(R.string.error_saving_instant_lyrics)
                             , Snackbar.LENGTH_SHORT).show();
                 }
@@ -946,21 +847,13 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
     }
 
-    private void setBlurryBackground(Bitmap b){
+    private void setBlurryBackground(Bitmap b) {
         Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         fadeIn.setDuration(2000);
         findViewById(R.id.full_screen_iv).startAnimation(fadeIn);
 
         Blurry.with(this).radius(1).color(Color.argb(100
                 , 50, 0, 0)).from(b).into(((ImageView) findViewById(R.id.full_screen_iv)));
-    }
-
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                //.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
-                .build();
-
-        mInterstitialAd.loadAd(adRequest);
     }
 
     @Override
@@ -971,20 +864,15 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
-        if(UtilityFun.isAdsRemoved()){
-            menu.removeItem(R.id.action_reward_points);
-        }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(this,ActivityMain.class));
-                overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                startActivity(new Intent(this, ActivityMain.class));
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 //finish();
                 break;
 
@@ -996,11 +884,6 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 syncProblemDialog();
                 break;
 
-            case R.id.action_remove_ads:
-                startActivity(new Intent(this, ActivityRemoveAds.class));
-                finish();
-                break;
-
             case R.id.action_search:
                 searchLyricDialog();
                 break;
@@ -1009,12 +892,8 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 wrongLyrics();
                 break;
 
-            case R.id.action_reward_points:
-                startActivity(new Intent(this, ActivityRewardVideo.class));
-                break;
-
             case R.id.action_reload:
-                if((System.currentTimeMillis() - lastClicked) < 2000){
+                if ((System.currentTimeMillis() - lastClicked) < 2000) {
                     return super.onOptionsItemSelected(item);
                 }
                 TrackItem trackItem = new TrackItem();
@@ -1022,7 +901,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 trackItem.setTitle(track);
                 trackItem.setId(-1);
                 OfflineStorageLyrics.clearLyricsFromDB(trackItem);
-                mLyrics=null;
+                mLyrics = null;
                 updateLyrics(true);
                 lastClicked = System.currentTimeMillis();
                 break;
@@ -1030,15 +909,15 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         return super.onOptionsItemSelected(item);
     }
 
-    private void searchLyricDialog(){
+    private void searchLyricDialog() {
         MaterialDialog.Builder builder = new MyDialogBuilder(this)
-               .title(R.string.title_search_lyrics)
+                .title(R.string.title_search_lyrics)
                 .customView(R.layout.lyric_search_dialog, true)
                 .positiveText(R.string.pos_search_lyric)
                 .negativeText(R.string.cancel)
                 .autoDismiss(false);
 
-        View layout =  builder.build().getCustomView();
+        View layout = builder.build().getCustomView();
         final EditText trackTitleEditText = layout.findViewById(R.id.track_title_edit);
         final EditText artistEditText = layout.findViewById(R.id.artist_edit);
 
@@ -1050,8 +929,8 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN , 0, 0, 0));
-                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP , 0, 0, 0));
+                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0));
+                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 0, 0, 0));
             }
         }, 200);
 
@@ -1064,19 +943,19 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             @Override
             public void onClick(@NonNull final MaterialDialog dialog, @NonNull DialogAction which) {
 
-                if(trackTitleEditText.getText().toString().equals(track)
-                        && artistEditText.getText().toString().equals(artist)){
+                if (trackTitleEditText.getText().toString().equals(track)
+                        && artistEditText.getText().toString().equals(artist)) {
                     dialog.dismiss();
                     return;
                 }
 
-                if(trackTitleEditText.getText().toString().equals("")){
+                if (trackTitleEditText.getText().toString().equals("")) {
                     trackTitleEditText.setError(getString(R.string.error_empty_title_lyric_search));
                     return;
                 }
 
                 String artistName = artistEditText.getText().toString();
-                if(artistName.equals("")){
+                if (artistName.equals("")) {
                     artistName = getString(R.string.unknown_artist);
                 }
                 progressBar.setVisibility(View.VISIBLE);
@@ -1101,13 +980,13 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         builder.build().show();
     }
 
-    public void wrongLyrics(){
-        if( mLyrics==null || mLyrics.getFlag()!=Lyrics.POSITIVE_RESULT){
-            Toast.makeText(this,getString(R.string.error_no_lyrics), Toast.LENGTH_SHORT).show();
+    public void wrongLyrics() {
+        if (mLyrics == null || mLyrics.getFlag() != Lyrics.POSITIVE_RESULT) {
+            Toast.makeText(this, getString(R.string.error_no_lyrics), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(mLyrics.getSource()==null || !mLyrics.getSource().equals(ViewLyrics.clientUserAgent)){
+        if (mLyrics.getSource() == null || !mLyrics.getSource().equals(ViewLyrics.clientUserAgent)) {
             Toast.makeText(this, "No lyrics from other sources available!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -1129,13 +1008,13 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
     }
 
-    private String filterTitleString(String title){
+    private String filterTitleString(String title) {
 
         title = title.replaceAll("\\(.*\\)", "");
         return title;
     }
 
-    private void showDisclaimerDialog(){
+    private void showDisclaimerDialog() {
         new MyDialogBuilder(this)
                 .title(getString(R.string.lyrics_disclaimer_title))
                 .content(getString(R.string.lyrics_disclaimer_content))
@@ -1144,7 +1023,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_disclaimer_accepted),true).apply();
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_disclaimer_accepted), true).apply();
                         updateLyrics(false);
                     }
                 })
@@ -1157,13 +1036,12 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     }
 
 
-
     private class RecyclerViewDemoOnGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            if(view!=null) {
+            if (view != null) {
                 onClick(view);
             }
             return super.onSingleTapConfirmed(e);
@@ -1186,20 +1064,20 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     @SuppressLint("StaticFieldLeak")
     private class SetBlurryImagetask extends AsyncTask<ArtistInfo, String, Bitmap> {
 
-        Bitmap b ;
+        Bitmap b;
 
         @Override
         protected Bitmap doInBackground(ArtistInfo... params) {
 
             //store file in cache with artist id as name
             //create folder in cache for artist images
-            String CACHE_ART_THUMBS = MyApp.getContext().getCacheDir()+"/art_thumbs/";
-            String actual_file_path = CACHE_ART_THUMBS+params[0].getOriginalArtist();
+            String CACHE_ART_THUMBS = MyApp.getContext().getCacheDir() + "/art_thumbs/";
+            String actual_file_path = CACHE_ART_THUMBS + params[0].getOriginalArtist();
             File f = new File(CACHE_ART_THUMBS);
-            if(!f.exists()){
+            if (!f.exists()) {
                 f.mkdir();
             }
-            if(!new File(actual_file_path).exists()){
+            if (!new File(actual_file_path).exists()) {
                 //create file
                 FileOutputStream fos = null;
                 try {
@@ -1208,8 +1086,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                     InputStream inputStream = url.openConnection().getInputStream();
                     byte[] buffer = new byte[1024];
                     int bufferLength = 0;
-                    while ( (bufferLength = inputStream.read(buffer)) > 0 )
-                    {
+                    while ((bufferLength = inputStream.read(buffer)) > 0) {
                         fos.write(buffer, 0, bufferLength);
                     }
                     fos.close();
@@ -1221,12 +1098,12 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
             }
 
-            b= BitmapFactory.decodeFile(actual_file_path);
+            b = BitmapFactory.decodeFile(actual_file_path);
             return b;
         }
 
         protected void onPostExecute(Bitmap b) {
-            if(b!=null) {
+            if (b != null) {
                 setBlurryBackground(b);
             }
         }
@@ -1235,19 +1112,19 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     private final Runnable lyricUpdater = new Runnable() {
         @Override
         public void run() {
-            while (true){
-                if(fThreadCancelled){
+            while (true) {
+                if (fThreadCancelled) {
                     break;
                 }
 
-                fIsThreadRunning =true;
+                fIsThreadRunning = true;
                 //Log.v(Constants.L_TAG,"Lyric thread running");
 
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
 
-                        if(!currentMusicInfo.getBoolean("playing", false)){
+                        if (!currentMusicInfo.getBoolean("playing", false)) {
                             return;
                         }
 
@@ -1258,7 +1135,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                         int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
                         int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                        if(index!=-1 && index>firstVisibleItem && index<lastVisibleItem){
+                        if (index != -1 && index > firstVisibleItem && index < lastVisibleItem) {
                             recyclerView.smoothScrollToPosition(index);
                         }
                     }
@@ -1272,7 +1149,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             }
 
             fIsThreadRunning = false;
-            Log.v(Constants.L_TAG,"Lyric thread stopped");
+            Log.v(Constants.L_TAG, "Lyric thread stopped");
         }
     };
 }

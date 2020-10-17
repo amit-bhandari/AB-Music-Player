@@ -44,9 +44,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
@@ -64,7 +61,6 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.Of
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArtInfoThread;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadLyricThread;
-import com.music.player.bhandari.m.rewards.RewardPoints;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.nshmura.snappysmoothscroller.SnapType;
@@ -88,40 +84,46 @@ import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class ActivityLyricView extends AppCompatActivity implements View.OnClickListener, RecyclerView.OnItemTouchListener, Lyrics.Callback
-        ,ActionMode.Callback, ArtistInfo.Callback {
+        , ActionMode.Callback, ArtistInfo.Callback {
 
     private Handler handler;
-    private String trackTitle="";
-    private String artist="";
+    private String trackTitle = "";
+    private String artist = "";
 
-    @BindView(R.id.text_view_lyric_status) TextView lyricStatus;
-    @BindView(R.id.text_view_artist_info) TextView artInfoTextView;
-    @BindView(R.id.lyric_view_wrapper) View lyricWrapper;
-    @BindView(R.id.view_artist_info) FloatingActionButton viewArtInfoFab;
-    @BindView(R.id.fab_save_lyrics) FloatingActionButton saveLyrics;
-    @BindView(R.id.fab_video) FloatingActionButton watchVideo;
-    @BindView(R.id.loading_lyrics_animation)  AVLoadingIndicatorView lyricLoadAnimation;
-    @BindView(R.id.dynamic_lyrics_recycler_view)  RecyclerView recyclerView;
-    @BindView(R.id.root_view_instant_lyrics)  View rootView;
-    @BindView(R.id.adView) AdView mAdView;
-    @BindView(R.id.ad_view_wrapper) View adViewWrapper;
-    @BindView(R.id.ad_close)  TextView adCloseText;
+    @BindView(R.id.text_view_lyric_status)
+    TextView lyricStatus;
+    @BindView(R.id.text_view_artist_info)
+    TextView artInfoTextView;
+    @BindView(R.id.lyric_view_wrapper)
+    View lyricWrapper;
+    @BindView(R.id.view_artist_info)
+    FloatingActionButton viewArtInfoFab;
+    @BindView(R.id.fab_save_lyrics)
+    FloatingActionButton saveLyrics;
+    @BindView(R.id.fab_video)
+    FloatingActionButton watchVideo;
+    @BindView(R.id.loading_lyrics_animation)
+    AVLoadingIndicatorView lyricLoadAnimation;
+    @BindView(R.id.dynamic_lyrics_recycler_view)
+    RecyclerView recyclerView;
+    @BindView(R.id.root_view_instant_lyrics)
+    View rootView;
 
     private ActionMode actionMode;
     private boolean actionModeActive = false;
@@ -141,7 +143,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
         ColorHelper.setStatusBarGradiant(this);
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-        switch (themeSelector){
+        switch (themeSelector) {
             case Constants.PRIMARY_COLOR.DARK:
                 setTheme(R.style.AppThemeDark);
                 break;
@@ -157,12 +159,11 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_instant_lyrics);
         ButterKnife.bind(this);
 
-        showAdIfApplicable();
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -183,29 +184,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         initializeListeners();
     }
 
-    private void showAdIfApplicable() {
-        if(/*AppLaunchCountManager.isEligibleForInterstialAd() && */ !UtilityFun.isAdsRemoved()
-                &&AppLaunchCountManager.isEligibleForBannerAds()) {
-            MobileAds.initialize(this, getString(R.string.banner_lyric_view));
-            if (UtilityFun.isConnectedToInternet()) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
-                        .build();
-                if (mAdView != null) {
-                    mAdView.loadAd(adRequest);
-                    mAdView.setVisibility(View.VISIBLE);
-                    adViewWrapper.setVisibility(View.VISIBLE);
-                    adCloseText.setVisibility(View.VISIBLE);
-                }
-            } else {
-                if (mAdView != null) {
-                    mAdView.setVisibility(View.GONE);
-                    adViewWrapper.setVisibility(View.GONE);
-                }
-            }
-        }
-    }
-
-    private void initializeListeners(){
+    private void initializeListeners() {
         lyricStatus.setOnClickListener(this);
         saveLyrics.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
         saveLyrics.setOnClickListener(this);
@@ -220,8 +199,8 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
     }
 
     private void growShrinkAnimate() {
-        final ScaleAnimation growAnim = new ScaleAnimation(1.0f, 1.15f, 1.0f, 1.15f,Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        final ScaleAnimation shrinkAnim = new ScaleAnimation(1.15f, 1.0f, 1.15f, 1.0f,Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        final ScaleAnimation growAnim = new ScaleAnimation(1.0f, 1.15f, 1.0f, 1.15f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        final ScaleAnimation shrinkAnim = new ScaleAnimation(1.15f, 1.0f, 1.15f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
         growAnim.setDuration(500);
         shrinkAnim.setDuration(500);
@@ -229,32 +208,32 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         watchVideo.setAnimation(growAnim);
         growAnim.start();
 
-        growAnim.setAnimationListener(new Animation.AnimationListener()
-        {
+        growAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation){}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animation animation){}
+            public void onAnimationRepeat(Animation animation) {
+            }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
                 watchVideo.setAnimation(shrinkAnim);
                 shrinkAnim.start();
             }
         });
-        shrinkAnim.setAnimationListener(new Animation.AnimationListener()
-        {
+        shrinkAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation){}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animation animation){}
+            public void onAnimationRepeat(Animation animation) {
+            }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
                 watchVideo.setAnimation(growAnim);
                 growAnim.start();
             }
@@ -263,7 +242,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.fab_save_lyrics:
                 Executors.newSingleThreadExecutor().execute(new Runnable() {
                     @Override
@@ -275,7 +254,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
             case R.id.view_artist_info:
                 //clear offline stored lyrics if any and reload
-                if(artistInfo==null){
+                if (artistInfo == null) {
                     Snackbar.make(rootView, getString(R.string.art_info_not_available)
                             , Snackbar.LENGTH_SHORT).show();
                     return;
@@ -293,19 +272,14 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.text_view_lyric_status:
-
-                if(lyricStatus.getText().equals(getString(R.string.reward_points_exhausted))){
-                    startActivity(new Intent(this, ActivityRewardVideo.class));
-                }else {
-                    mLyrics = null;
-                    updateLyrics(true);
-                    break;
-                }
+                mLyrics = null;
+                updateLyrics(true);
+                break;
 
             case R.id.fab_video:
-                if(artistInfo!=null) {
+                if (artistInfo != null) {
                     UtilityFun.LaunchYoutube(this, trackTitle + " - " + artistInfo.getCorrectedArtist());
-                }else {
+                } else {
                     UtilityFun.LaunchYoutube(this, trackTitle + " - " + artist);
                 }
                 break;
@@ -314,21 +288,21 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
 
     private void saveOrDeleteLyrics() {
-        if(isLyricsSaved){
-            if(OfflineStorageLyrics.clearLyricsFromDB(trackTitle)){
+        if (isLyricsSaved) {
+            if (OfflineStorageLyrics.clearLyricsFromDB(trackTitle)) {
                 updateSaveDeleteFabDrawable();
                 Snackbar.make(rootView, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT).show();
             }
-        }else {
+        } else {
             if (mLyrics != null && mLyrics.getOriginalTrack().equals(trackTitle) && mLyrics.getOriginalArtist().equals(artist)) {
                 TrackItem item = new TrackItem();
                 item.setArtist(artist);
                 item.setTitle(trackTitle);
                 item.setId(-1);
-                if(OfflineStorageLyrics.putInstantLyricsInDB(mLyrics, item)){
+                if (OfflineStorageLyrics.putInstantLyricsInDB(mLyrics, item)) {
                     updateSaveDeleteFabDrawable();
                     Snackbar.make(rootView, getString(R.string.lyrics_saved), Snackbar.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Snackbar.make(rootView, getString(R.string.error_saving_instant_lyrics)
                             , Snackbar.LENGTH_SHORT).show();
                 }
@@ -340,13 +314,13 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
     }
 
     private void toggleLyricsArtInfoView() {
-        if(isLyricsShown) {
+        if (isLyricsShown) {
             lyricWrapper.setVisibility(View.GONE);
             findViewById(R.id.artist_info_wrapper).setVisibility(View.VISIBLE);
             artInfoTextView.setText(artistInfo.getArtistContent());
             isLyricsShown = false;
             viewArtInfoFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_subject_black_24dp));
-        }else {
+        } else {
             lyricWrapper.setVisibility(View.VISIBLE);
             findViewById(R.id.artist_info_wrapper).setVisibility(View.GONE);
             isLyricsShown = true;
@@ -358,7 +332,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
     protected void onPause() {
         super.onPause();
         MyApp.isAppVisible = false;
-        if(actionMode!=null){
+        if (actionMode != null) {
             actionMode.finish();
             actionMode = null;
         }
@@ -367,15 +341,15 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putParcelable("lyrics",mLyrics);
-        savedInstanceState.putParcelable("artInfo",artistInfo);
+        savedInstanceState.putParcelable("lyrics", mLyrics);
+        savedInstanceState.putParcelable("artInfo", artistInfo);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mLyrics=savedInstanceState.getParcelable("lyrics");
-        artistInfo=savedInstanceState.getParcelable("artInfo");
+        mLyrics = savedInstanceState.getParcelable("lyrics");
+        artistInfo = savedInstanceState.getParcelable("artInfo");
     }
 
     @Override
@@ -390,17 +364,17 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
         MyApp.isAppVisible = true;
 
-        if(getIntent().getExtras()==null){
+        if (getIntent().getExtras() == null) {
             finish();
             return;
         }
 
-        if(getIntent().getExtras().getBoolean("from_notif")){
+        if (getIntent().getExtras().getBoolean("from_notif")) {
             try {
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification_clicked");
                 UtilityFun.logEvent(bundle);
-            }catch (Exception ignored){
+            } catch (Exception ignored) {
             }
         }
 
@@ -420,11 +394,6 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
-        if(UtilityFun.isAdsRemoved()){
-            menu.removeItem(R.id.action_reward_points);
-        }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -433,12 +402,12 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         super.onBackPressed();
         finish();
         //startActivity(new Intent(this, ActivityExploreLyrics.class));
-        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
@@ -447,17 +416,8 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
                 shareLyrics();
                 break;
 
-            case R.id.action_remove_ads:
-                startActivity(new Intent(this, ActivityRemoveAds.class));
-                finish();
-                break;
-
             case R.id.action_wrong_lyrics:
                 wrongLyrics();
-                break;
-
-            case R.id.action_reward_points:
-                startActivity(new Intent(this, ActivityRewardVideo.class));
                 break;
 
             case R.id.action_search:
@@ -467,7 +427,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         return super.onOptionsItemSelected(item);
     }
 
-    private void searchLyricDialog(){
+    private void searchLyricDialog() {
         MaterialDialog.Builder builder = new MyDialogBuilder(this)
                 .title(R.string.title_search_lyrics)
                 .customView(R.layout.lyric_search_dialog, true)
@@ -475,7 +435,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
                 .negativeText(R.string.cancel)
                 .autoDismiss(false);
 
-        View layout =  builder.build().getCustomView();
+        View layout = builder.build().getCustomView();
         final EditText trackTitleEditText = layout.findViewById(R.id.track_title_edit);
         final EditText artistTextView = layout.findViewById(R.id.artist_edit);
 
@@ -487,8 +447,8 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN , 0, 0, 0));
-                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP , 0, 0, 0));
+                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0));
+                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 0, 0, 0));
             }
         }, 200);
 
@@ -500,12 +460,12 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         builder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull final MaterialDialog dialog, @NonNull DialogAction which) {
-                if(trackTitleEditText.getText().toString().equals("")){
+                if (trackTitleEditText.getText().toString().equals("")) {
                     trackTitleEditText.setError(getString(R.string.error_empty_title_lyric_search));
                     return;
                 }
                 String artistName = artistTextView.getText().toString();
-                if(artistName.equals("")){
+                if (artistName.equals("")) {
                     artistName = getString(R.string.unknown_artist);
                 }
                 progressBar.setVisibility(View.VISIBLE);
@@ -534,13 +494,13 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         builder.build().show();
     }
 
-    public void wrongLyrics(){
-        if( mLyrics==null || mLyrics.getFlag()!=Lyrics.POSITIVE_RESULT){
-            Toast.makeText(this,getString(R.string.error_no_lyrics), Toast.LENGTH_SHORT).show();
+    public void wrongLyrics() {
+        if (mLyrics == null || mLyrics.getFlag() != Lyrics.POSITIVE_RESULT) {
+            Toast.makeText(this, getString(R.string.error_no_lyrics), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(mLyrics.getSource()==null || !mLyrics.getSource().equals(ViewLyrics.clientUserAgent)){
+        if (mLyrics.getSource() == null || !mLyrics.getSource().equals(ViewLyrics.clientUserAgent)) {
             Toast.makeText(this, "No lyrics from other sources available!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -560,8 +520,8 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void shareLyrics(){
-        if( mLyrics==null || mLyrics.getFlag()!=Lyrics.POSITIVE_RESULT){
+    private void shareLyrics() {
+        if (mLyrics == null || mLyrics.getFlag() != Lyrics.POSITIVE_RESULT) {
             Snackbar.make(rootView, getString(R.string.error_no_lyrics)
                     , Snackbar.LENGTH_SHORT).show();
             return;
@@ -569,9 +529,9 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
         String shareBody = getString(R.string.lyrics_share_text);
         shareBody += "\n\nTrack : " + mLyrics.getTrack() + "\n" + "Artist : " + mLyrics.getArtist() + "\n\n";
-        if(mLyrics.isLRC()) {
+        if (mLyrics.isLRC()) {
             shareBody += Html.fromHtml(adapter.getStaticLyrics()).toString();
-        }else {
+        } else {
             shareBody += Html.fromHtml(mLyrics.getText());
         }
 
@@ -586,9 +546,9 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         startActivity(Intent.createChooser(sharingIntent, "Lyrics share!"));
     }
 
-    private void updateLyrics(boolean discardCache){
+    private void updateLyrics(boolean discardCache) {
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(trackTitle);
             getSupportActionBar().setSubtitle(artist);
         }
@@ -600,24 +560,9 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         item.setTitle(trackTitle);
         item.setId(-1);
 
-        //String artist = fetchArtistImage(item.getArtist());
-
-
-        //check if user have reward points, if not, display error
-        if(!UtilityFun.isAdsRemoved() && RewardPoints.getRewardPointsCount()<=0){
-            lyricStatus.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            lyricStatus.setText(R.string.reward_points_exhausted);
-            try {
-                //some exceptions reported in play console, that's why
-                lyricLoadAnimation.hide();
-            }catch (Exception ignored){}
-            return;
-        }
-
-        if(mLyrics!=null
+        if (mLyrics != null
                 && mLyrics.getOriginalArtist().toLowerCase().equals(artist.toLowerCase())
-                && mLyrics.getOriginalTrack().toLowerCase().equals(trackTitle.toLowerCase())){
+                && mLyrics.getOriginalTrack().toLowerCase().equals(trackTitle.toLowerCase())) {
             onLyricsDownloaded(mLyrics);
             return;
         }
@@ -635,18 +580,12 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         //check in offline storage
         //for saved lyrics
         mLyrics = OfflineStorageLyrics.getInstantLyricsFromDB(item);
-        if(mLyrics!=null){
-            if(!UtilityFun.isAdsRemoved()) {
-                RewardPoints.decrementByRandomInt();
-            }
+        if (mLyrics != null) {
             onLyricsDownloaded(mLyrics);
             return;
         }
 
-        if(!discardCache) {
-            if(!UtilityFun.isAdsRemoved()) {
-                RewardPoints.decrementByRandomInt();
-            }
+        if (!discardCache) {
             mLyrics = OfflineStorageLyrics.getLyricsFromCache(item);
             if (mLyrics != null) {
                 onLyricsDownloaded(mLyrics);
@@ -655,9 +594,6 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         }
 
         if (UtilityFun.isConnectedToInternet()) {
-            if(!UtilityFun.isAdsRemoved()) {
-                RewardPoints.decrementByRandomInt();
-            }
             fetchLyrics(item.getArtist(), item.getTitle(), null);
         } else {
             lyricStatus.setText(getString(R.string.no_connection));
@@ -669,9 +605,9 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         artist = UtilityFun.filterArtistString(artist);
 
         artistInfo = OfflineStorageArtistBio.getArtistInfoFromCache(artist);
-        if(artistInfo!=null){
+        if (artistInfo != null) {
             onArtInfoDownloaded(artistInfo);
-        }else {
+        } else {
             new DownloadArtInfoThread(this, artist, null).start();
         }
     }
@@ -698,7 +634,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onLyricsDownloaded(Lyrics lyrics) {
-        if(!(lyrics.getOriginalArtist().toLowerCase().equals(artist.toLowerCase()) && lyrics.getOriginalTrack().toLowerCase().equals(trackTitle.toLowerCase()))){
+        if (!(lyrics.getOriginalArtist().toLowerCase().equals(artist.toLowerCase()) && lyrics.getOriginalTrack().toLowerCase().equals(trackTitle.toLowerCase()))) {
             return;
         }
 
@@ -707,22 +643,22 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
         lyricLoadAnimation.hide();
         mLyrics = lyrics;
-        if (lyrics.getFlag() == Lyrics.POSITIVE_RESULT){
+        if (lyrics.getFlag() == Lyrics.POSITIVE_RESULT) {
             lyricStatus.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             lyricStatus.setVisibility(View.GONE);
 
-            if (getSupportActionBar() != null){
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(lyrics.getTrack());
                 getSupportActionBar().setSubtitle(lyrics.getArtist());
             }
 
             //if(!lyrics.getArtist().equals(mLyrics.getArtist())){
-                fetchArtistImage(lyrics.getArtist());
+            fetchArtistImage(lyrics.getArtist());
             //}
 
             initializeLyricsView();
-        }else {
+        } else {
             lyricStatus.setText(getString(R.string.tap_to_refresh_lyrics));
             lyricStatus.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -736,8 +672,8 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         });
     }
 
-    private void initializeLyricsView(){
-        if(mLyrics==null){
+    private void initializeLyricsView() {
+        if (mLyrics == null) {
             return;
         }
 
@@ -764,12 +700,12 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     private void updateSaveDeleteFabDrawable() {
         final Drawable drawable;
-        if(OfflineStorageLyrics.isLyricsPresentInDB(trackTitle , (mLyrics==null) ? -1 : mLyrics.getTrackId())){
-            isLyricsSaved=true;
+        if (OfflineStorageLyrics.isLyricsPresentInDB(trackTitle, (mLyrics == null) ? -1 : mLyrics.getTrackId())) {
+            isLyricsSaved = true;
             drawable = getResources().getDrawable(R.drawable.ic_delete_black_24dp);
-        }else {
-            isLyricsSaved=false;
-            drawable=getResources().getDrawable(R.drawable.ic_save_black_24dp);
+        } else {
+            isLyricsSaved = false;
+            drawable = getResources().getDrawable(R.drawable.ic_save_black_24dp);
         }
 
         handler.post(new Runnable() {
@@ -780,7 +716,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         });
     }
 
-    private void setBlurryBackground(Bitmap b){
+    private void setBlurryBackground(Bitmap b) {
         Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         fadeIn.setDuration(2000);
         findViewById(R.id.full_screen_iv).startAnimation(fadeIn);
@@ -791,8 +727,8 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onArtInfoDownloaded(ArtistInfo artistInfo) {
-        this.artistInfo =artistInfo;
-        if(artistInfo.getArtistContent().equals("")){
+        this.artistInfo = artistInfo;
+        if (artistInfo.getArtistContent().equals("")) {
             artInfoTextView.setText(R.string.artist_info_no_result);
             return;
         }
@@ -805,7 +741,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            if(view!=null) {
+            if (view != null) {
                 onClick(view);
             }
             return super.onSingleTapConfirmed(e);
@@ -829,34 +765,34 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         adapter.toggleSelection(idx);
         //String title = adapter.getSelectedItemCount();
         //actionMode.setTitle(title);
-        if(adapter.getSelectedItemCount()==0){
+        if (adapter.getSelectedItemCount() == 0) {
             actionMode.finish();
             actionMode = null;
             return;
         }
         int numberOfItems = adapter.getSelectedItemCount();
-        String selectionString = numberOfItems==1 ? " item selected" : " items selected";
-        String title = numberOfItems  + selectionString;
+        String selectionString = numberOfItems == 1 ? " item selected" : " items selected";
+        String title = numberOfItems + selectionString;
         actionMode.setTitle(title);
     }
 
     @SuppressLint("StaticFieldLeak")
     private class SetBlurryImagetask extends AsyncTask<ArtistInfo, String, Bitmap> {
 
-        Bitmap b ;
+        Bitmap b;
 
         @Override
         protected Bitmap doInBackground(ArtistInfo... params) {
 
             //store file in cache with artist id as name
             //create folder in cache for artist images
-            String CACHE_ART_THUMBS = MyApp.getContext().getCacheDir()+"/art_thumbs/";
-            String actual_file_path = CACHE_ART_THUMBS+params[0].getOriginalArtist();
+            String CACHE_ART_THUMBS = MyApp.getContext().getCacheDir() + "/art_thumbs/";
+            String actual_file_path = CACHE_ART_THUMBS + params[0].getOriginalArtist();
             File f = new File(CACHE_ART_THUMBS);
-            if(!f.exists()){
+            if (!f.exists()) {
                 f.mkdir();
             }
-            if(!new File(actual_file_path).exists()){
+            if (!new File(actual_file_path).exists()) {
                 //create file
                 FileOutputStream fos = null;
                 try {
@@ -865,8 +801,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
                     InputStream inputStream = url.openConnection().getInputStream();
                     byte[] buffer = new byte[1024];
                     int bufferLength = 0;
-                    while ( (bufferLength = inputStream.read(buffer)) > 0 )
-                    {
+                    while ((bufferLength = inputStream.read(buffer)) > 0) {
                         fos.write(buffer, 0, bufferLength);
                     }
                     fos.close();
@@ -878,12 +813,12 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
             }
 
-            b= BitmapFactory.decodeFile(actual_file_path);
+            b = BitmapFactory.decodeFile(actual_file_path);
             return b;
         }
 
         protected void onPostExecute(Bitmap b) {
-            if(b!=null) {
+            if (b != null) {
                 setBlurryBackground(b);
             }
         }
@@ -909,6 +844,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
     }
+
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
@@ -933,7 +869,7 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
             case R.id.menu_lyric_card:
                 Intent intent = new Intent(this, ActivityLyricCard.class);
                 intent.putExtra("lyric", getSelectedLyricString().toString())
-                        .putExtra("artist",mLyrics.getArtist())
+                        .putExtra("artist", mLyrics.getArtist())
                         .putExtra("track", mLyrics.getTrack());
                 startActivity(intent);
                 break;
@@ -960,23 +896,5 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
         actionMode.finish();
         actionModeActive = false;
         adapter.clearSelections();
-    }
-
-    @OnClick(R.id.ad_close)
-    public void close_ad(){
-        if(mAdView!=null){
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onDestroy() {
-        watchVideo.clearAnimation();
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
-        super.onDestroy();
     }
 }

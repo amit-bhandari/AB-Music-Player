@@ -46,9 +46,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
@@ -97,10 +94,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  */
 
 public class ActivitySecondaryLibrary extends AppCompatActivity implements View.OnClickListener, ArtistInfo.Callback {
-
-    @BindView(R.id.ad_view_wrapper) View adViewWrapper;
-    @BindView(R.id.adView)  AdView mAdView;
-    @BindView(R.id.ad_close)  TextView adCloseText;
 
     @BindView(R.id.secondaryLibraryList) RecyclerView mRecyclerView;
     @BindView(R.id.albumsInArtistFrag) RecyclerView mAlbumsRecyclerView;
@@ -198,33 +191,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
         setContentView(R.layout.activity_secondary_library);
         ButterKnife.bind(this);
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setupSharedElementTransitions();
-        }*/
-
-        //Drawable batmanDrawable = ContextCompat.getDrawable(this, R.drawable.ic_batman_1).mutate();
-        //batmanDrawable.setColorFilter(ColorHelper.getPrimaryColor(), PorterDuff.Mode.OVERLAY);
-
-        if(/*AppLaunchCountManager.isEligibleForInterstialAd() && */ !UtilityFun.isAdsRemoved()
-                &&AppLaunchCountManager.isEligibleForBannerAds()) {
-            MobileAds.initialize(getApplicationContext(), getString(R.string.banner_secondary_activity));
-            if (UtilityFun.isConnectedToInternet()) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
-                        .build();
-                if (mAdView != null) {
-                    mAdView.loadAd(adRequest);
-                    mAdView.setVisibility(View.VISIBLE);
-                    adViewWrapper.setVisibility(View.VISIBLE);
-                    adCloseText.setVisibility(View.VISIBLE);
-                }
-            } else {
-                if (mAdView != null) {
-                    mAdView.setVisibility(View.GONE);
-                    adViewWrapper.setVisibility(View.GONE);
-                }
-            }
-        }
 
         final Toolbar toolbar = findViewById(R.id.toolbar_);
         try {
@@ -508,14 +474,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .into(mainBackdrop);
-    }
-
-    @OnClick(R.id.ad_close)
-    public void close_ad(){
-        if(mAdView!=null){
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
     }
 
     @Override
@@ -809,9 +767,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     @Override
     public void onDestroy() {
         mRecyclerView=null;
-        if(mAdView!=null) {
-            mAdView.destroy();
-        }
         super.onDestroy(); //get search icon back on action bar
     }
 

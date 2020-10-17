@@ -5,9 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -19,7 +17,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
@@ -31,18 +28,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.StringSignature;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.Constants;
+import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.model.TrackItem;
-import com.music.player.bhandari.m.model.MusicLibrary;
-import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.dataItem;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
@@ -76,7 +69,6 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
     @BindView(R.id.artist_te)  EditText artist;
     @BindView(R.id.album_te)  EditText album;
     @BindView(R.id.album_art_te)  ImageView album_art;
-    @BindView(R.id.adView) AdView mAdView;
 
     private int song_id;
     private String original_title, original_artist, original_album;
@@ -122,7 +114,6 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         setContentView(R.layout.activity_tag_editor);
         ButterKnife.bind(this);
 
-        showAdIfApplicable();
         //show info dialog
         showInfoDialog();
 
@@ -167,32 +158,6 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-    }
-
-    private void showAdIfApplicable(){
-        if( false /*AppLaunchCountManager.isEligibleForInterstialAd() &&AppLaunchCountManager.isEligibleForBannerAds() && !UtilityFun.isAdsRemoved()*/ ) {
-            MobileAds.initialize(getApplicationContext(), getString(R.string.banner_tag_editor));
-            mAdView = findViewById(R.id.adView);
-            if (UtilityFun.isConnectedToInternet()) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("C6CC5AB32A15AF9EFB67D507C151F23E")
-                        .build();
-                if (mAdView != null) {
-                    mAdView.loadAd(adRequest);
-                    mAdView.setVisibility(View.VISIBLE);
-                }
-            } else {
-                if (mAdView != null) {
-                    mAdView.setVisibility(View.GONE);
-                }
-            }
-        }
-    }
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));

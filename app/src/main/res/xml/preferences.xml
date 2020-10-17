@@ -182,42 +182,6 @@
 
          </Preference>
 
-         <!--
-         <Preference
-             android:title="@string/title_licenses"
-             android:key="@string/pref_about_licenses">
-
-         </Preference>
-
-         <Preference
-             android:title="@string/title_terms_of_use"
-             android:key="@string/pref_terms_of_use">
-
-         </Preference>
-
-         <Preference
-             android:title="@string/title_feedback"
-             android:key="@string/pref_feedback">
-         </Preference>
-
-         <Preference
-             android:title="@string/title_support_dev"
-             android:key="@string/pref_support_dev">
-         </Preference>
--->
-
-         <Preference
-             android:title="@string/title_remove_ads"
-             android:key="@string/pref_remove_ads_after_payment">
-         </Preference>
-
-         <!--
-         <Preference
-             android:title="@string/title_reward_points"
-             android:key="@string/pref_reward_points">
-         </Preference> -->
-
-
      </PreferenceCategory>
 
      <PreferenceCategory

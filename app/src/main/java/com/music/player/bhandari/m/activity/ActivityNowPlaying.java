@@ -5,25 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -52,7 +46,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -63,11 +56,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -75,35 +63,30 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
+import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener;
+import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback;
 import com.music.player.bhandari.m.adapter.CurrentTracklistAdapter;
+import com.music.player.bhandari.m.customViews.CustomViewPager;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
+import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics;
+import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.trackInfo.TrackInfoActivity;
-import com.music.player.bhandari.m.trackInfo.models.FetchTrackInfo;
-import com.music.player.bhandari.m.trackInfo.models.RESULT;
-import com.music.player.bhandari.m.trackInfo.models.TrackInfo;
 import com.music.player.bhandari.m.transition.MorphMiniToNowPlaying;
 import com.music.player.bhandari.m.transition.MorphNowPlayingToMini;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
-import com.music.player.bhandari.m.customViews.CustomViewPager;
-import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener;
-import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback;
-import com.music.player.bhandari.m.service.PlayerService;
-import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.utils.SignUp;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.sackcentury.shinebuttonlib.ShineButton;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -117,7 +100,6 @@ import butterknife.OnClick;
 import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-import static android.support.v7.widget.DividerItemDecoration.HORIZONTAL;
 import static com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics.POSITIVE_RESULT;
 
 /**
@@ -139,7 +121,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         View.OnClickListener, OnStartDragListener {
 
     int screenWidth, screenHeight;
-    private InterstitialAd mInterstitialAd;
     private static final int LAUNCH_COUNT_BEFORE_POPUP=15;
     private static final int RC_SIGN_IN = 7;
     private long mLastClickTime;
@@ -257,33 +238,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     })
                     .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                     .build();
-        }
-
-
-        //noinspection PointlessBooleanExpression
-        if( /*AppLaunchCountManager.isEligibleForInterstialAd() && */ !UtilityFun.isAdsRemoved()) {
-
-            MobileAds.initialize(getApplicationContext(), getString(R.string.banner_play_queue));
-
-            if((AppLaunchCountManager.isEligibleForInterstialAd() &&
-                    AppLaunchCountManager.getNowPlayingLaunchCount()%LAUNCH_COUNT_BEFORE_POPUP==0)) {
-                mInterstitialAd = new InterstitialAd(this);
-                mInterstitialAd.setAdUnitId(getString(R.string.inter_settings_activity));
-
-                mInterstitialAd.setAdListener(new AdListener() {
-                    @Override
-                    public void onAdClosed() {
-                    }
-
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        mInterstitialAd.show();
-                    }
-                });
-
-                requestNewInterstitial();
-            }
         }
 
         if(getIntent().getAction()!=null) {
@@ -1439,14 +1393,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for "+myDeviceModel);
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello AndroidDevs, \n\n");
         startActivity(Intent.createChooser(emailIntent, "Send Feedback"));
-    }
-
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                //.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
-                .build();
-
-        mInterstitialAd.loadAd(adRequest);
     }
 
     private void InitializeControlsUI(){

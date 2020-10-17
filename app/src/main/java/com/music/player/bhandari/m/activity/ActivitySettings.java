@@ -42,16 +42,12 @@ import com.afollestad.materialdialogs.Theme;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.Constants;
-import com.music.player.bhandari.m.rewards.RewardPoints;
 import com.music.player.bhandari.m.service.BatchDownloaderService;
 import com.music.player.bhandari.m.service.NotificationListenerService;
 import com.music.player.bhandari.m.service.PlayerService;
@@ -90,7 +86,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class ActivitySettings extends AppCompatActivity {
 
     private  int launchedFrom = 0;
-    private AdView mAdView;
     private PlayerService playerService;
 
     //flag to know for which background, crop image is invoked
@@ -140,26 +135,6 @@ public class ActivitySettings extends AppCompatActivity {
 
         launchedFrom = getIntent().getIntExtra("launchedFrom",0);
         setContentView(R.layout.acitivty_settings);
-
-        if(false/*AppLaunchCountManager.isEligibleForInterstialAd() && !UtilityFun.isAdsRemoved()
-                && AppLaunchCountManager.isEligibleForBannerAds()*/) {
-
-            //banner ad
-            MobileAds.initialize(getApplicationContext(), getString(R.string.banner_settings_activity));
-             mAdView = (AdView) findViewById(R.id.adView);
-            if (UtilityFun.isConnectedToInternet()) {
-                AdRequest adRequest = new AdRequest.Builder()//.addTestDevice("F40E78AED9B7FE233362079AC4C05B61")
-                        .build();
-                if (mAdView != null) {
-                    mAdView.loadAd(adRequest);
-                    mAdView.setVisibility(View.VISIBLE);
-                }
-            } else {
-                if (mAdView != null) {
-                    mAdView.setVisibility(View.GONE);
-                }
-            }
-        }
 
         //findViewById(R.id.root_view_settings).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
@@ -333,15 +308,6 @@ public class ActivitySettings extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-        super.onDestroy();
-    }
-
     @SuppressLint("validFragment")
     public static class MyPreferenceFragment extends PreferenceFragment
       implements  OnStartDragListener{
@@ -349,10 +315,6 @@ public class ActivitySettings extends AppCompatActivity {
         final String PLAY_PAUSE = "Play/Pause Current Track";
         final String NEXT = "Play Next Track";
         final String PREVIOUS = "Play Previous Track";
-
-        final String DARK = "Dark";
-        final String LIGHT = "Light";
-        final String GLOSSY = "Glossy";
 
         final String MONOSPACE = "Monospace";
         final String SOFIA = "Sofia";
@@ -953,50 +915,11 @@ public class ActivitySettings extends AppCompatActivity {
             Preference batchDownload = findPreference(getString(R.string.pref_batch_download));
             batchDownload.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-
                     if(MyApp.isBatchServiceRunning){
                         Toast.makeText(getActivity(),getString(R.string.error_batch_download_running), Toast.LENGTH_LONG).show();
                         return false;
                     }
 
-                    //check if number of songs equals reward points, if not, give error
-                    if(!UtilityFun.isAdsRemoved()) {
-
-                        int numberOfTracks = MusicLibrary.getInstance().getDataItemsForTracks().size();
-                        int rewardPoints = RewardPoints.getRewardPointsCount();
-                        if(rewardPoints<numberOfTracks) {
-                            new MyDialogBuilder(getActivity())
-                                    .title(R.string.title_not_enough_reward_points)
-                                    .content(String.format(getString(R.string.not_enough_reward_points_for_batch_lyrics)
-                                            ,rewardPoints, numberOfTracks))
-                                    .positiveText(R.string.pos_not_enough_reward_points)
-                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            startActivity(new Intent(getActivity(), ActivityRewardVideo.class));
-                                            dialog.dismiss();
-                                        }
-                                    })
-                                    .negativeText(R.string.neu_not_enough_reward_points)
-                                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            getActivity().startService(new Intent(getActivity(),BatchDownloaderService.class));
-                                            Toast.makeText(getActivity(),getString(R.string.batch_download_started), Toast.LENGTH_LONG).show();
-                                            dialog.dismiss();
-                                        }
-                                    })
-                                    .neutralText(R.string.cancel)
-                                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            dialog.dismiss();
-                                        }
-                                    })
-                                    .theme(Theme.DARK).show();
-                            return false;
-                        }
-                    }
                     getActivity().startService(new Intent(getActivity(),BatchDownloaderService.class));
                     Toast.makeText(getActivity(),getString(R.string.batch_download_started), Toast.LENGTH_LONG).show();
                     return true;
@@ -1008,18 +931,6 @@ public class ActivitySettings extends AppCompatActivity {
             resetPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     resetPrefDialog();
-                    return true;
-                }
-            });
-
-            //remove ads
-            Preference removeAdPref = findPreference(getString(R.string.pref_remove_ads_after_payment));
-            removeAdPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                   // removeAdsDialog();
-                    startActivity(new Intent(getActivity(), ActivityRemoveAds.class));
-                    getActivity().finish();
                     return true;
                 }
             });
