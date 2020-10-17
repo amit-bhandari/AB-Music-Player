@@ -29,7 +29,8 @@ android {
     if (!versionPropsFile.exists()) {                  //create if does not exist
         versionProps['VERSION_PATCH'] = "0"
         versionProps['VERSION_NUMBER'] = "0"
-        versionProps['VERSION_BUILD'] = "-1" // I set it to minus one so the first build is 0 which isn't super important.
+        versionProps['VERSION_BUILD'] = "-1"
+        // I set it to minus one so the first build is 0 which isn't super important.
         versionProps.store(versionPropsFile.newWriter(), null)
     }
 
@@ -82,19 +83,19 @@ android {
         }
     }
 
-    signingConfigs{
-       release {
-           def keystorePropertiesFile = rootProject.file("keystore.properties")
+    signingConfigs {
+        release {
+            def keystorePropertiesFile = rootProject.file("keystore.properties")
 
-           if(keystorePropertiesFile.exists()){
-               def keystoreProperties = new Properties()
-               keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+            if (keystorePropertiesFile.exists()) {
+                def keystoreProperties = new Properties()
+                keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-               storeFile file(keystoreProperties['storeFile'])
-               storePassword keystoreProperties['storePassword']
-               keyAlias keystoreProperties['keyAlias']
-               keyPassword keystoreProperties['keyPassword']
-           }
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
         }
     }
 
@@ -107,13 +108,13 @@ android {
             multiDexEnabled false
         }
 
-        debug{
+        debug {
             applicationIdSuffix ".dev"
             multiDexEnabled true
         }
     }
 
-    lintOptions{
+    lintOptions {
         abortOnError = false
         disable 'MissingTranslation'
     }
@@ -124,6 +125,11 @@ android {
 
     kapt {
         generateStubs = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
