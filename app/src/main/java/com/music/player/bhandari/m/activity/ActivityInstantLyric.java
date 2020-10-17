@@ -153,7 +153,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
     private Handler handler;
 
-    //private PowerManager.WakeLock mWakeLock;
+    private DownloadLyricThread lyricThread;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -497,9 +497,10 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
         if (artist != null && title != null) {
             if (url == null)
-                new DownloadLyricThread(this, true, null, artist, title).start();
+                lyricThread = new DownloadLyricThread(this, true, null, artist, title);
             else
-                new DownloadLyricThread(this, true, null, url, artist, title).start();
+                lyricThread = new DownloadLyricThread(this, true, null, url, artist, title);
+            lyricThread.start();
         }
     }
 
@@ -743,6 +744,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     public void onDestroyActionMode(ActionMode actionMode) {
         actionMode.finish();
         actionModeActive = false;
+        lyricThread.setCallback(null);
         adapter.clearSelections();
     }
 

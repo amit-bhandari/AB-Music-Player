@@ -137,6 +137,8 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
     LyricsViewAdapter adapter;
 
+    private DownloadLyricThread lyricThread;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -626,9 +628,10 @@ public class ActivityLyricView extends AppCompatActivity implements View.OnClick
 
         if (artist != null && title != null) {
             if (url == null)
-                new DownloadLyricThread(this, true, null, artist, title).start();
+                lyricThread = new DownloadLyricThread(this, true, null, artist, title);
             else
-                new DownloadLyricThread(this, true, null, url, artist, title).start();
+                lyricThread = new DownloadLyricThread(this, true, null, url, artist, title);
+            lyricThread.start();
         }
     }
 

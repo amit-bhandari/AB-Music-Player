@@ -131,6 +131,8 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
     PlayerService playerService;
 
+    private DownloadLyricThread lyricThread;
+
 
     @Nullable
     @Override
@@ -278,9 +280,10 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         Log.d("Fragment lyrics", "fetchLyrics: download lyric thread starting!");
         if (artist != null && title != null) {
             if (url == null)
-                new DownloadLyricThread(this, true, item, artist, title).start();
+                lyricThread = new DownloadLyricThread(this, true, item, artist, title);
             else
-                new DownloadLyricThread(this, true, item, url, artist, title).start();
+                lyricThread = new DownloadLyricThread(this, true, item, url, artist, title);
+            lyricThread.start();
         }
     }
 
@@ -597,24 +600,11 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
         updateLyrics();
     }
 
-    private void playClicked() {
-        if (getActivity() == null) {
-            return;
-        }
-        playerService.play();
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
-
-        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && playerService.getStatus() == PlayerService.PLAYING) {
-            startLyricUpdater();
-        } else {
-            stopLyricUpdater();
-        }
-    }
-
 
     @Override
     public void onDestroy() {
         fLyricUpdaterThreadCancelled = true;
+        lyricThread.setCallback(null);
         super.onDestroy();
     }
 
