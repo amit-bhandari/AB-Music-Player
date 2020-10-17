@@ -14,10 +14,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -53,7 +53,6 @@ import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  Copyright 2017 Amit Bhandari AB

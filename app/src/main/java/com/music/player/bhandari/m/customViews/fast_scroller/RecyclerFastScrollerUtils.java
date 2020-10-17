@@ -5,8 +5,8 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.AttrRes;
-import android.support.annotation.ColorInt;
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorInt;
 import android.view.View;
 
 /**

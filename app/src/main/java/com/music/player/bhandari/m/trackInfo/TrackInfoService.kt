@@ -1,6 +1,6 @@
 package com.music.player.bhandari.m.trackInfo.models
 
-import android.support.annotation.Keep
+import androidx.annotation.Keep
 import com.music.player.bhandari.m.trackInfo.models.album.AlbumWrap
 import com.music.player.bhandari.m.trackInfo.models.similar.SimilartracksWrap
 import com.music.player.bhandari.m.trackInfo.models.track.TrackWrap

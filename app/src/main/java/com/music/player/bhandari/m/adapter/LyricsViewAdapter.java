@@ -3,7 +3,7 @@ package com.music.player.bhandari.m.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.music.player.bhandari.m.R;
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics;
 import com.music.player.bhandari.m.MyApp;

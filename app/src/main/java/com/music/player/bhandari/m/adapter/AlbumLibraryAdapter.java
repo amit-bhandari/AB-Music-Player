@@ -1,21 +1,19 @@
 package com.music.player.bhandari.m.adapter;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -33,13 +30,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
-import com.music.player.bhandari.m.activity.ActivityMain;
 import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.TrackItem;
@@ -52,7 +46,6 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 

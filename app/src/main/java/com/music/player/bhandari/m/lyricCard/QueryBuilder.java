@@ -16,8 +16,8 @@
 
 package com.music.player.bhandari.m.lyricCard;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  Copyright 2017 Amit Bhandari AB

@@ -3,8 +3,8 @@ package com.music.player.bhandari.m.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,14 +14,8 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.music.player.bhandari.m.R;
-import com.music.player.bhandari.m.activity.ActivityExploreLyrics;
 import com.music.player.bhandari.m.activity.ActivityLyricView;
-import com.music.player.bhandari.m.customViews.RoundedImageView;
 import com.music.player.bhandari.m.lyricsExplore.Track;
 import com.music.player.bhandari.m.utils.UtilityFun;
 

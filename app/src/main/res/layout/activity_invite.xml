@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,7 +15,7 @@
 
 
     <!-- toolbar -->
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:fitsSystemWindows="true"
         android:minHeight="@dimen/action_bar_size"
         app:contentInsetStartWithNavigation="0dp"
@@ -43,7 +43,7 @@
             android:layout_marginBottom="20dp"
             android:text="@string/invite_text"/>
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/invite_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,23 +64,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
             android:layout_above="@+id/invited_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="10dp">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
             />
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/invite_more_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -111,4 +111,4 @@
 
 </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

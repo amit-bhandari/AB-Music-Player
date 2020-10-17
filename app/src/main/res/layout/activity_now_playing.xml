@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     xmlns:card_view="http://schemas.android.com/tools"
@@ -18,7 +18,7 @@
         sothree:umanoShadowHeight="4dp"
         sothree:umanoParallaxOffset ="200dp">
 
-        <android.support.design.widget.CoordinatorLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -51,7 +51,7 @@
                 android:layout_height="match_parent">
 
                 <!-- toolbar -->
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:fitsSystemWindows="true"
                     android:minHeight="@dimen/action_bar_size"
                     app:contentInsetStartWithNavigation="0dp"
@@ -240,7 +240,7 @@
 
             </LinearLayout>
 
-        </android.support.design.widget.CoordinatorLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <RelativeLayout
             android:id="@+id/root_view_current_playlist"
@@ -278,7 +278,7 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewForCurrentTracklist"
                 android:layout_below="@+id/play_queue_title"
                 android:layout_width="match_parent"
@@ -290,4 +290,4 @@
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

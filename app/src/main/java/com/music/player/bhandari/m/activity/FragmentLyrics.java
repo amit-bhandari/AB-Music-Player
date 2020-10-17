@@ -9,16 +9,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.view.GestureDetectorCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.ActionMode;
@@ -30,14 +28,10 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,20 +50,17 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.Of
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadLyricThread;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.nshmura.snappysmoothscroller.SnapType;
 import com.nshmura.snappysmoothscroller.SnappyLayoutManager;
 import com.nshmura.snappysmoothscroller.SnappyLinearLayoutManager;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Copyright 2017 Amit Bhandari AB

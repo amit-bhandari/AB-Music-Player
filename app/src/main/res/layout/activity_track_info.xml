@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_"
         app:titleTextColor="@color/primary_text_color"
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
         android:foregroundGravity="center"
         android:layout_centerInParent="true"/>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_below="@+id/toolbar_"
         android:background="@color/blackOverlay"
         android:layout_width="match_parent"
@@ -132,14 +132,14 @@
                     android:layout_marginLeft="20dp"
                     android:text="Tags"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerTrackTags"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <com.music.player.bhandari.m.customViews.ExpandableTextView
                     android:id="@+id/trackWiki"
@@ -204,14 +204,14 @@
                     android:textColor="@color/primary_text_color"
                     android:text="Tags"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerAlbumTags"
                     android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
 
                 <com.music.player.bhandari.m.customViews.ExpandableTextView
@@ -238,12 +238,12 @@
                     android:layout_marginTop="10dp"
                     android:text="Album Tracklist"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerAlbumTracks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
 
@@ -268,17 +268,17 @@
                     android:layout_marginBottom="10dp"
                     android:text="Similar Tracks"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerSimilarTracks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
 
         </RelativeLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>

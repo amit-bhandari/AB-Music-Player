@@ -7,19 +7,19 @@
     android:background="@color/colorTransparent"
     android:theme="@style/AppTheme.AppBarOverlay">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/toolbar_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorTransparent">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_size"
             app:titleTextColor="@color/primary_text_color" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

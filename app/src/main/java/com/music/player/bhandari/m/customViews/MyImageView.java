@@ -28,7 +28,7 @@ import com.music.player.bhandari.m.R;
  limitations under the License.
  */
 
-public class MyImageView extends android.support.v7.widget.AppCompatImageView {
+public class MyImageView extends androidx.appcompat.widget.AppCompatImageView {
 
     public String getUrl() {
         return url;

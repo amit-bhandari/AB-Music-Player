@@ -3,21 +3,21 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/text_lyric"
         android:hint="@string/hint_lyric"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/text_artist"
         android:hint="@string/hint_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/text_track"
         android:hint="@string/hint_track"
         android:layout_width="match_parent"

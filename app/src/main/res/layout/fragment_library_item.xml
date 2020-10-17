@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/libraryItem"
@@ -22,7 +22,7 @@
             android:scaleType="centerCrop">
         </com.music.player.bhandari.m.customViews.RoundedImageView> -->
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             app:cardBackgroundColor="@color/colorTransparent"
             android:layout_margin="5dp"
             android:layout_width="60dp"
@@ -42,7 +42,7 @@
                 tools:ignore="ContentDescription">
             </ImageView>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <ImageView
             android:visibility="gone"
@@ -120,4 +120,4 @@
 
     </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

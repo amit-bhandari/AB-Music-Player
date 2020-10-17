@@ -2,16 +2,15 @@ package com.music.player.bhandari.m.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,15 +19,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
-import com.music.player.bhandari.m.activity.ActivityMain;
 import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.dataItem;
@@ -36,11 +32,9 @@ import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
-import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  Copyright 2017 Amit Bhandari AB

@@ -41,9 +41,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.ResultReceiver;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -874,7 +876,7 @@ public class PlayerService extends Service implements
 
                 final Notification notification;
 
-                android.support.v4.media.app.NotificationCompat.MediaStyle mediaStyle = new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                androidx.media.app.NotificationCompat.MediaStyle mediaStyle = new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0, 1, 2);
 
                 if (mMediaSession != null) {
@@ -918,12 +920,10 @@ public class PlayerService extends Service implements
                 builder.addAction(new NotificationCompat.Action(R.drawable.ic_close_white_24dp, "Close", pdismissIntent));
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+                    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
                 }
 
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                    builder.setPriority(Notification.PRIORITY_MAX);
-                }
+                builder.setPriority(Notification.PRIORITY_MAX);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     builder.setChannelId(getString(R.string.notification_channel));

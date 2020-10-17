@@ -18,7 +18,7 @@
          android:scaleType="centerCrop">
      </com.music.player.bhandari.m.customViews.RoundedImageView> -->
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         app:cardBackgroundColor="@color/colorTransparent"
         android:layout_margin="5dp"
         android:layout_width="60dp"
@@ -38,7 +38,7 @@
             tools:ignore="ContentDescription">
         </ImageView>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:visibility="gone"

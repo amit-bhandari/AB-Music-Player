@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 
 /**
  Copyright 2017 Amit Bhandari AB

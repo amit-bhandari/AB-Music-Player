@@ -14,18 +14,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -64,7 +64,6 @@ import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
-import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.util.ArrayList;
@@ -74,7 +73,6 @@ import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**

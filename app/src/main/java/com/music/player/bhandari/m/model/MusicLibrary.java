@@ -10,8 +10,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -22,7 +22,6 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.BulkArtInfo
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
-import java.io.File;
 import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;

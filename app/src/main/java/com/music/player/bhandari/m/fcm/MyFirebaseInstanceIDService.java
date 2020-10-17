@@ -16,17 +16,11 @@ package com.music.player.bhandari.m.fcm;
  limitations under the License.
  */
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 

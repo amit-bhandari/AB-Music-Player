@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     xmlns:card_view="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_"
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_size"
@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:background="@color/blackOverlay"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSavedLyrics"
         android:layout_below="@id/toolbar_"
         android:visibility="gone"
@@ -31,7 +31,7 @@
         android:layout_height="match_parent">
 
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <ProgressBar
         android:layout_width="wrap_content"

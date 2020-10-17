@@ -2,8 +2,8 @@ package com.afollestad.materialdialogs.internal;
 
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import com.afollestad.materialdialogs.GravityEnum;
 
 /**

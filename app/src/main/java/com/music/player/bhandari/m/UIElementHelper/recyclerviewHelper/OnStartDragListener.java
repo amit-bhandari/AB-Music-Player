@@ -16,7 +16,7 @@
 
 package com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Listener for manual initiation of a drag.

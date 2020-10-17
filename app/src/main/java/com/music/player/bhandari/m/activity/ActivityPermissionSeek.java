@@ -12,10 +12,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,18 +36,13 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.fcm.CountryInfo;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.service.NotificationListenerService;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.trackInfo.models.FetchTrackInfo;
-import com.music.player.bhandari.m.trackInfo.models.TrackInfo;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 

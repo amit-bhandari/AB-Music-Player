@@ -39,7 +39,7 @@ import android.view.MotionEvent;
  */
 
 //Creates a Vertical SeekBar using Android's basic UI elements.
-public class VerticalSeekBar extends android.support.v7.widget.AppCompatSeekBar {
+public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
 
     public VerticalSeekBar(Context context) {
         super(context);

@@ -9,7 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_size"
@@ -147,7 +147,7 @@
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_colors"
             android:layout_weight="1"
             android:layout_marginStart="10dp"
@@ -156,9 +156,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_images"
             android:layout_weight="1"
             android:layout_marginBottom="10dp"
@@ -167,7 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 

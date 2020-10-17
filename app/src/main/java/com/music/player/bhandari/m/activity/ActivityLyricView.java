@@ -14,14 +14,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.view.GestureDetectorCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.ActionMode;
 import android.view.GestureDetector;
@@ -61,7 +61,6 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.Of
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArtInfoThread;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadLyricThread;
-import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.nshmura.snappysmoothscroller.SnapType;
 import com.nshmura.snappysmoothscroller.SnappyLayoutManager;
@@ -79,7 +78,6 @@ import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import jp.wasabeef.blurry.Blurry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 

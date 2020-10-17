@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +17,11 @@ import android.view.ViewGroup;
 
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.FastScroller;
 import com.music.player.bhandari.m.adapter.MainLibraryAdapter;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.model.dataItem;
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.ArrayList;
 

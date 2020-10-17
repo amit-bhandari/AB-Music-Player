@@ -1,6 +1,6 @@
 package com.music.player.bhandari.m.utils;
 
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 
 /**
  Copyright 2017 Amit Bhandari AB

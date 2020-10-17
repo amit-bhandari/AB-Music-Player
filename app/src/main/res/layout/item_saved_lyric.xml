@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     android:id="@+id/root_view_item_saved_lyrics"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginLeft="2dp"
@@ -82,4 +82,4 @@
 
     </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>
