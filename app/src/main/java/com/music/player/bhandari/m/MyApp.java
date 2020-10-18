@@ -10,22 +10,25 @@ import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.service.PlayerService;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class MyApp extends Application {
@@ -41,13 +44,13 @@ public class MyApp extends Application {
     public static boolean isAppVisible;
 
     //batch lyrics download service status flag
-    public static boolean isBatchServiceRunning=false;
+    public static boolean isBatchServiceRunning = false;
 
     //user signed in or not status flag
-    public static boolean hasUserSignedIn=false;
+    public static boolean hasUserSignedIn = false;
 
     //current selected theme id
-    private static int selectedThemeId=0;
+    private static int selectedThemeId = 0;
 
     @Override
     public void onCreate() {
@@ -58,48 +61,45 @@ public class MyApp extends Application {
 
         selectedThemeId = pref.getInt(getString(R.string.pref_theme_id), Constants.DEFAULT_THEME_ID);
 
-        int id = TypeFaceHelper.getTypeFacePathId();
-
-        if(id!=-1) {
-            CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                    .setDefaultFont(id)
+        String path = TypeFaceHelper.getTypeFacePath();
+        if (path != null) {
+            ViewPump.init(ViewPump.builder()
+                    .addInterceptor(new CalligraphyInterceptor(
+                            new CalligraphyConfig.Builder()
+                                    .setDefaultFontPath(path)
+                                    .setFontAttrId(R.attr.fontPath)
+                                    .build()))
                     .build());
         }
-    }
-
-    public void handleUncaughtException (Thread thread, Throwable e)
-    {
-        e.printStackTrace(); // not all Android versions will print the stack trace automatically
-        Intent intent = new Intent ();
-        intent.setAction ("com.bhandari.music.SEND_LOG"); // see step 5.
-        intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK); // required when starting from Application
-        startActivity (intent);
-        System.exit(1); // kill off the crashed app
     }
 
     public static MyApp getInstance() {
         return instance;
     }
 
-    public static Context getContext(){
+    public static Context getContext() {
         return instance;
     }
 
-    public static SharedPreferences getPref(){
+    public static SharedPreferences getPref() {
         return pref;
     }
 
-    public  static void setService(PlayerService s){
+    public static void setService(PlayerService s) {
         service = s;
     }
 
-    public static  PlayerService getService(){
-        return  service;
+    public static PlayerService getService() {
+        return service;
     }
 
-    public static boolean isLocked(){return isLocked;}
+    public static boolean isLocked() {
+        return isLocked;
+    }
 
-    public static void setLocked(boolean lock){isLocked = lock;}
+    public static void setLocked(boolean lock) {
+        isLocked = lock;
+    }
 
     public static int getSelectedThemeId() {
         return selectedThemeId;

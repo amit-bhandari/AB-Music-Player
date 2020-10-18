@@ -110,8 +110,7 @@
                             android:paddingRight="@dimen/abm_title_and_art_padd"
                             android:scrollHorizontally="true"
                             android:textColor="@color/colorwhite"
-                            android:textSize="@dimen/abm_mini_player_artist"
-                            app:fontFamily="@font/raleway_medium" />
+                            android:textSize="@dimen/abm_mini_player_artist"/>
 
                     </LinearLayout>
 

@@ -27,7 +27,7 @@ public class TypeFaceHelper {
 
     private static Typeface typeface = null;
     private static String typefacePath = "";
-    private static int typefaceId = R.font.manrope;
+    //private static int typefaceId = R.font.manrope;
 
     public static Typeface getTypeFace(Context context) {
         if (typeface == null) {
@@ -52,9 +52,9 @@ public class TypeFaceHelper {
                     typeface = Typeface.createFromAsset(context.getAssets(), "fonts/asap.ttf");
                     break;
 
-                case Constants.TYPEFACE.ACME:
+                /*case Constants.TYPEFACE.ACME:
                     typeface = Typeface.createFromAsset(context.getAssets(), "fonts/acme.ttf");
-                    break;
+                    break;*/
             }
         }
         return typeface;
@@ -70,10 +70,6 @@ public class TypeFaceHelper {
                 typefacePath = "fonts/manrope.ttf";
                 break;
 
-            case Constants.TYPEFACE.SYSTEM_DEFAULT:
-                typefacePath = "null";
-                break;
-
             case Constants.TYPEFACE.MONOSPACE:
                 typefacePath = "fonts/monospace.ttf";
                 break;
@@ -82,15 +78,23 @@ public class TypeFaceHelper {
                 typefacePath = "fonts/asap.ttf";
                 break;
 
-            case Constants.TYPEFACE.ACME:
+            /*case Constants.TYPEFACE.ACME:
                 typefacePath = "fonts/acme.ttf";
+                break;*/
+
+            case Constants.TYPEFACE.ROBOTO:
+                typefacePath = "fonts/robot-regular.ttf";
+                break;
+
+            case Constants.TYPEFACE.SYSTEM_DEFAULT:
+                typefacePath = "null";
                 break;
         }
 
         return typefacePath;
     }
 
-    public static int getTypeFacePathId() {
+    /*public static int getTypeFacePathId() {
         switch (MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE)){
             case Constants.TYPEFACE.SOFIA:
                 typefaceId = R.font.sofia;
@@ -112,7 +116,7 @@ public class TypeFaceHelper {
                 typefaceId = R.font.asap;
                 break;
 
-            case Constants.TYPEFACE.ACME:
+            *//*case Constants.TYPEFACE.ACME:
                 typefaceId = R.font.acme;
                 break;
 
@@ -215,9 +219,9 @@ public class TypeFaceHelper {
 
             case Constants.TYPEFACE.SOURCE_SANS_PRO:
                 typefaceId = R.font.source_sans_pro;
-                break;
+                break;*//*
         }
 
         return typefaceId;
-    }
+    }*/
 }

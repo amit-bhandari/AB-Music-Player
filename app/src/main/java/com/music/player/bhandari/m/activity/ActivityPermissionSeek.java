@@ -45,8 +45,7 @@ import com.music.player.bhandari.m.utils.UtilityFun;
 
 
 import java.util.ArrayList;
-
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -304,7 +303,7 @@ public class ActivityPermissionSeek extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 
     private void RequestPermission(){

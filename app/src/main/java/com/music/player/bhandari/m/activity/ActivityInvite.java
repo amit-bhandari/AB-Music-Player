@@ -42,7 +42,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -226,7 +226,7 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
     class SentInvitationAdapter extends RecyclerView.Adapter<SentInvitationAdapter.MyViewHolder> {
 

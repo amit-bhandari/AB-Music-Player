@@ -124,9 +124,9 @@ public class Constants {
         int MANROPE = 2;
         int ASAP = 3;
         int SYSTEM_DEFAULT = 4;
-        int ACME = 5;
+        int ROBOTO = 14;
 
-
+        /*int ACME = 5;
         int ACLONICA = 6;
         int CHEERYSWASH = 7;
         int CORBEN = 8;
@@ -153,7 +153,7 @@ public class Constants {
         int PT_SANS_CAPTION = 28;
         int RALEWAY = 29;
         int SLABO = 30;
-        int SOURCE_SANS_PRO = 31;
+        int SOURCE_SANS_PRO = 31;*/
     }
     public interface PREF_LAUNCHED_FROM{
         int MAIN = 0;

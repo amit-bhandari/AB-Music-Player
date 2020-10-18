@@ -3,7 +3,6 @@ package com.music.player.bhandari.m.activity;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -13,13 +12,6 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import androidx.annotation.NonNull;
-import androidx.core.view.MotionEventCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,61 +28,67 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MotionEventCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
-import com.music.player.bhandari.m.model.Constants;
-import com.music.player.bhandari.m.service.BatchDownloaderService;
-import com.music.player.bhandari.m.service.NotificationListenerService;
-import com.music.player.bhandari.m.service.PlayerService;
-import com.music.player.bhandari.m.model.MusicLibrary;
-import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.utils.UtilityFun;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.ItemTouchHelperAdapter;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener;
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback;
+import com.music.player.bhandari.m.model.Constants;
+import com.music.player.bhandari.m.model.MusicLibrary;
+import com.music.player.bhandari.m.service.BatchDownloaderService;
+import com.music.player.bhandari.m.service.NotificationListenerService;
+import com.music.player.bhandari.m.service.PlayerService;
+import com.music.player.bhandari.m.utils.UtilityFun;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class ActivitySettings extends AppCompatActivity {
 
-    private  int launchedFrom = 0;
+    private int launchedFrom = 0;
     private PlayerService playerService;
-
-    //flag to know for which background, crop image is invoked
-    //true = main library
-    //false = now playing
-    private static boolean isMainLibraryBackground;
 
     private static final int MAIN_LIB = 0;
     private static final int NOW_PLAYING = 1;
@@ -100,11 +98,10 @@ public class ActivitySettings extends AppCompatActivity {
     private static int backgroundSelectionStatus = -1;
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState)
-    {
+    protected void onCreate(final Bundle savedInstanceState) {
 
         //if player service not running, kill the app
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             finish();
             return;
@@ -116,7 +113,7 @@ public class ActivitySettings extends AppCompatActivity {
         ColorHelper.setStatusBarGradiant(this);
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-        switch (themeSelector){
+        switch (themeSelector) {
             case Constants.PRIMARY_COLOR.DARK:
                 setTheme(R.style.AppThemeDarkPref);
                 break;
@@ -132,7 +129,7 @@ public class ActivitySettings extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        launchedFrom = getIntent().getIntExtra("launchedFrom",0);
+        launchedFrom = getIntent().getIntExtra("launchedFrom", 0);
         setContentView(R.layout.acitivty_settings);
 
         //findViewById(R.id.root_view_settings).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
@@ -141,7 +138,7 @@ public class ActivitySettings extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -160,12 +157,12 @@ public class ActivitySettings extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 
     @Override
     public void onBackPressed() {
-        switch (launchedFrom){
+        switch (launchedFrom) {
             case Constants.PREF_LAUNCHED_FROM.MAIN:
                 startActivity(new Intent(this, ActivityMain.class));
                 break;
@@ -182,7 +179,7 @@ public class ActivitySettings extends AppCompatActivity {
                 startActivity(new Intent(this, ActivityMain.class));
                 break;
         }
-        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         super.onBackPressed();
     }
 
@@ -194,7 +191,7 @@ public class ActivitySettings extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             finish();
         }
@@ -233,7 +230,7 @@ public class ActivitySettings extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
@@ -251,7 +248,7 @@ public class ActivitySettings extends AppCompatActivity {
                 File fromFile = new File(resultUri.getPath());
 
                 String savePath;
-                switch (backgroundSelectionStatus){
+                switch (backgroundSelectionStatus) {
                     case MAIN_LIB:
                         savePath = MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image);
                         break;
@@ -272,35 +269,35 @@ public class ActivitySettings extends AppCompatActivity {
 
                 File toFile = new File(savePath);
                 boolean b = fromFile.renameTo(toFile);
-                Log.d(Constants.TAG, "onActivityResult: saved custom image size : " + toFile.length()/(1024));
+                Log.d(Constants.TAG, "onActivityResult: saved custom image size : " + toFile.length() / (1024));
 
 
-                if(b){
-                    switch (backgroundSelectionStatus){
+                if (b) {
+                    switch (backgroundSelectionStatus) {
                         case MAIN_LIB:
-                            MyApp.getPref().edit().putInt(getString(R.string.pref_main_library_back),1).apply();
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_main_library_back), 1).apply();
                             break;
 
                         case NOW_PLAYING:
-                            MyApp.getPref().edit().putInt(getString(R.string.pref_now_playing_back),3).apply();
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_now_playing_back), 3).apply();
                             break;
 
                         case DEFAULT_ALBUM_ART:
-                            MyApp.getPref().edit().putInt(getString(R.string.pref_default_album_art),1).apply();
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_default_album_art), 1).apply();
                             break;
 
                         case NAVIGATION_DRAWER:
                         default:
-                            MyApp.getPref().edit().putInt(getString(R.string.pref_nav_library_back),1).apply();
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_nav_library_back), 1).apply();
                             break;
                     }
 
                     Toast.makeText(this, "Background successfully updated!", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(this, "Failed to save file, try some different image!", Toast.LENGTH_SHORT).show();
                 }
 
-                Log.d(Constants.TAG, "onActivityResult: "+result.toString());
+                Log.d(Constants.TAG, "onActivityResult: " + result.toString());
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Toast.makeText(this, "Failed to select image, try again!", Toast.LENGTH_SHORT).show();
             }
@@ -309,7 +306,7 @@ public class ActivitySettings extends AppCompatActivity {
 
     @SuppressLint("validFragment")
     public static class MyPreferenceFragment extends PreferenceFragment
-      implements  OnStartDragListener{
+            implements OnStartDragListener {
 
         final String PLAY_PAUSE = "Play/Pause Current Track";
         final String NEXT = "Play Next Track";
@@ -320,7 +317,9 @@ public class ActivitySettings extends AppCompatActivity {
         final String MANROPE = "Manrope (Recommended)";
         final String ASAP = "Asap";
         final String SYSTEM_DEFAULT = "System Default";
-        final String ACLONICA = "Aclonica";
+        final String ROBOTO = "Roboto";
+
+        /*final String ACLONICA = "Aclonica";
         final String CHERRY_SWASH = "Cherry Swash";
         final String CORBEN = "Corben";
         final String NOVA_ROUND = "Nova (Round)";
@@ -328,7 +327,6 @@ public class ActivitySettings extends AppCompatActivity {
         final String PACIFITO = "Pacifito";
         final String PURPLE_PURSE = "Purple Purse";
         final String QUANTICO = "Quantico";
-        final String ROBOTO = "Roboto";
         final String ROBOTO_C = "Roboto (Condensed)";
         final String ROBOTO_M = "Roboto (Mono)";
         final String TRADE_WINDS = "Trade Winds";
@@ -346,7 +344,7 @@ public class ActivitySettings extends AppCompatActivity {
         final String PT_SANS = "PT Sans";
         final String RALEWAY = "Raleway";
         final String SLABO = "Slabo";
-        final String SOURCE_SANS_PRO = "Source Sans Pro";
+        final String SOURCE_SANS_PRO = "Source Sans Pro";*/
 
 
         final String LIST = "List View";
@@ -360,14 +358,14 @@ public class ActivitySettings extends AppCompatActivity {
         public void onResume() {
             super.onResume();
 
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 setInstantLyricStatus();
             }
 
         }
 
         private void setInstantLyricStatus() {
-            if(instantLyricStatus!=null) {
+            if (instantLyricStatus != null) {
                 if (NotificationListenerService.isListeningAuthorized(MyApp.getContext())) {
                     MyApp.getPref().edit().putBoolean(getString(R.string.pref_instant_lyric), true).apply();
                     instantLyricStatus.setChecked(true);
@@ -387,59 +385,45 @@ public class ActivitySettings extends AppCompatActivity {
             //Theme color
             Preference primaryColorPref = findPreference(getString(R.string.pref_theme_color));
 
-            primaryColorPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    //open browser or intent here
-                    //PrimarySelectionDialog();
-                    themeSelectionDialog();
-                    return true;
-                }
+            primaryColorPref.setOnPreferenceClickListener(preference -> {
+                //open browser or intent here
+                //PrimarySelectionDialog();
+                themeSelectionDialog();
+                return true;
             });
 
             //now playing back
             final Preference nowPlayingBackPref = findPreference(getString(R.string.pref_now_playing_back));
-            nowPlayingBackPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    nowPlayingBackDialog();
-                    return true;
-                }
+            nowPlayingBackPref.setOnPreferenceClickListener(preference -> {
+                nowPlayingBackDialog();
+                return true;
             });
 
             //Main library back
             final Preference mainLibBackPref = findPreference(getString(R.string.pref_main_library_back));
-            mainLibBackPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    mainLibBackDialog();
-                    return true;
-                }
+            mainLibBackPref.setOnPreferenceClickListener(preference -> {
+                mainLibBackDialog();
+                return true;
             });
 
             //Main library back
             final Preference navLibBackPref = findPreference(getString(R.string.pref_nav_library_back));
-            navLibBackPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    navBackDialog();
-                    return true;
-                }
+            navLibBackPref.setOnPreferenceClickListener(preference -> {
+                navBackDialog();
+                return true;
             });
 
             //Main library back
             final Preference defAlbumArtPref = findPreference(getString(R.string.pref_default_album_art));
-            defAlbumArtPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    defAlbumArtDialog();
-                    return true;
-                }
+            defAlbumArtPref.setOnPreferenceClickListener(preference -> {
+                defAlbumArtDialog();
+                return true;
             });
 
             //text font
             Preference fontPref = findPreference(getString(R.string.pref_text_font));
             int textFontPref = MyApp.getPref().getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE);
-            switch (textFontPref){
+            switch (textFontPref) {
 
                 case Constants.TYPEFACE.MONOSPACE:
                     findPreference(getString(R.string.pref_text_font)).setSummary(MONOSPACE);
@@ -461,7 +445,11 @@ public class ActivitySettings extends AppCompatActivity {
                     findPreference(getString(R.string.pref_text_font)).setSummary(ASAP);
                     break;
 
-                case Constants.TYPEFACE.ACLONICA:
+                case Constants.TYPEFACE.ROBOTO:
+                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO);
+                    break;
+
+                /*case Constants.TYPEFACE.ACLONICA:
                     findPreference(getString(R.string.pref_text_font)).setSummary(ACLONICA);
                     break;
 
@@ -491,10 +479,6 @@ public class ActivitySettings extends AppCompatActivity {
 
                 case Constants.TYPEFACE.QUATICO:
                     findPreference(getString(R.string.pref_text_font)).setSummary(QUANTICO);
-                    break;
-
-                case Constants.TYPEFACE.ROBOTO:
-                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO);
                     break;
 
                 case Constants.TYPEFACE.ROBOTO_C:
@@ -563,173 +547,178 @@ public class ActivitySettings extends AppCompatActivity {
 
                 case Constants.TYPEFACE.SOURCE_SANS_PRO:
                     findPreference(getString(R.string.pref_text_font)).setSummary(SOURCE_SANS_PRO);
-                    break;
+                    break;*/
             }
-            fontPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    //open browser or intent here
-                    fontPrefSelectionDialog();
-                    return true;
-                }
+            fontPref.setOnPreferenceClickListener(preference -> {
+                //open browser or intent here
+                fontPrefSelectionDialog();
+                return true;
             });
 
             //lockscreen albumName art
-            CheckBoxPreference lockScreenArt = (CheckBoxPreference)findPreference(getString(R.string.pref_lock_screen_album_Art));
+            CheckBoxPreference lockScreenArt = (CheckBoxPreference) findPreference(getString(R.string.pref_lock_screen_album_Art));
 
-            lockScreenArt.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
+            lockScreenArt.setOnPreferenceChangeListener((preference, newValue) -> {
 
-                    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
-                        Toast.makeText(getActivity(),"Feature is only available on lollipop and above!", Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
-                    if(((boolean) newValue)){
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art),true).apply();
-                        MyApp.getService().setMediaSessionMetadata(true);
-                    }else {
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art),false).apply();
-                        MyApp.getService().setMediaSessionMetadata(false);
-                    }
-                    return true;
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    Toast.makeText(getActivity(), "Feature is only available on lollipop and above!", Toast.LENGTH_LONG).show();
+                    return false;
                 }
+
+                if (((boolean) newValue)) {
+                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art), true).apply();
+                    MyApp.getService().setMediaSessionMetadata(true);
+                } else {
+                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_screen_album_Art), false).apply();
+                    MyApp.getService().setMediaSessionMetadata(false);
+                }
+                return true;
             });
 
             //prefer system equalizer
             Preference albumLibView = findPreference(getString(R.string.pref_album_lib_view));
-            if(MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view), true)){
+            if (MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view), true)) {
                 albumLibView.setSummary(GRID);
-            }else {
+            } else {
                 albumLibView.setSummary(LIST);
             }
 
-            albumLibView.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    albumViewDialog();
-                    return true;
-                }
+            albumLibView.setOnPreferenceClickListener(preference -> {
+                albumViewDialog();
+                return true;
             });
 
             //prefer system equalizer
-            CheckBoxPreference prefPrefSystemEqu = (CheckBoxPreference)findPreference(getString(R.string.pref_prefer_system_equ));
+            CheckBoxPreference prefPrefSystemEqu = (CheckBoxPreference) findPreference(getString(R.string.pref_prefer_system_equ));
 
-            prefPrefSystemEqu.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    if(((boolean) newValue)){
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_prefer_system_equ),true).apply();
-                    }else {
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_prefer_system_equ),false).apply();
-                    }
-                    return true;
+            prefPrefSystemEqu.setOnPreferenceChangeListener((preference, newValue) -> {
+                if (((boolean) newValue)) {
+                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_prefer_system_equ), true).apply();
+                } else {
+                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_prefer_system_equ), false).apply();
                 }
+                return true;
             });
 
             //notifcations
-            final CheckBoxPreference notifications = (CheckBoxPreference)findPreference(getString(R.string.pref_notifications));
+            final CheckBoxPreference notifications = (CheckBoxPreference) findPreference(getString(R.string.pref_notifications));
 
-            notifications.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    String pos_text = "Turn On";
-                    if (((boolean) newValue)) {
-                        pos_text = getString(R.string.turn_on);
-                    } else {
-                        pos_text = getString(R.string.turn_off);
-                    }
-                    new MyDialogBuilder(getActivity())
-                            .title(R.string.notifications_title)
-                            .content(R.string.notification_content)
-                            .positiveText(pos_text)
-                            .negativeText(getString(R.string.cancel))
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    String country = MyApp.getPref().getString(MyApp.getContext().getString(R.string.pref_user_country),"");
-                                    if(MyApp.getPref().getBoolean(getString(R.string.pref_notifications), true)) {
-                                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_notifications), false).apply();
-                                        try {
-                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(country);
-                                            FirebaseMessaging.getInstance().unsubscribeFromTopic("ab_music");
-                                        }catch (Exception ignored){}
-                                        notifications.setChecked(false);
-                                    }else {
-                                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_notifications), true).apply();
-                                        notifications.setChecked(true);
-                                        try {
-                                            FirebaseMessaging.getInstance().subscribeToTopic(country);
-                                            FirebaseMessaging.getInstance().subscribeToTopic("ab_music");
-                                        }catch (Exception ignored){}
-                                    }
-                                }
-                            })
-                            .show();
-                    return false;
+            notifications.setOnPreferenceChangeListener((preference, newValue) -> {
+                String pos_text;
+                if (((boolean) newValue)) {
+                    pos_text = getString(R.string.turn_on);
+                } else {
+                    pos_text = getString(R.string.turn_off);
                 }
+                new MyDialogBuilder(getActivity())
+                        .title(R.string.notifications_title)
+                        .content(R.string.notification_content)
+                        .positiveText(pos_text)
+                        .negativeText(getString(R.string.cancel))
+                        .onPositive((dialog, which) -> {
+                            String country = MyApp.getPref().getString(MyApp.getContext().getString(R.string.pref_user_country), "");
+                            if (MyApp.getPref().getBoolean(getString(R.string.pref_notifications), true)) {
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_notifications), false).apply();
+                                try {
+                                    FirebaseMessaging.getInstance().unsubscribeFromTopic(country);
+                                    FirebaseMessaging.getInstance().unsubscribeFromTopic("ab_music");
+                                } catch (Exception ignored) {
+                                }
+                                notifications.setChecked(false);
+                            } else {
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_notifications), true).apply();
+                                notifications.setChecked(true);
+                                try {
+                                    FirebaseMessaging.getInstance().subscribeToTopic(country);
+                                    FirebaseMessaging.getInstance().subscribeToTopic("ab_music");
+                                } catch (Exception ignored) {
+                                }
+                            }
+                        })
+                        .show();
+                return false;
             });
 
             //shake
-            CheckBoxPreference shakeStatus = (CheckBoxPreference)findPreference(getString(R.string.pref_shake));
-            shakeStatus.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
+            CheckBoxPreference shakeStatus = (CheckBoxPreference) findPreference(getString(R.string.pref_shake));
+            shakeStatus.setOnPreferenceChangeListener((preference, newValue) -> {
 
-                    if(((boolean) newValue)){
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_shake),true).apply();
-                        PlayerService.setShakeListener(true);
-                    }else {
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_shake),false).apply();
-                        PlayerService.setShakeListener(false);
-                    }
-                    return true;
+                if (((boolean) newValue)) {
+                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_shake), true).apply();
+                    PlayerService.setShakeListener(true);
+                } else {
+                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_shake), false).apply();
+                    PlayerService.setShakeListener(false);
                 }
+                return true;
             });
 
             final CheckBoxPreference continuousPlaybackPref = (CheckBoxPreference) findPreference(getString(R.string.pref_continuous_playback));
-            continuousPlaybackPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, final Object newValue) {
-                    String pos_text = "Turn On";
-                    if (((boolean) newValue)) {
-                        pos_text = getString(R.string.turn_on);
-                    } else {
-                        pos_text = getString(R.string.turn_off);
-                    }
-
-                    MaterialDialog dialog = new MyDialogBuilder(getActivity())
-                            .title(R.string.title_continous_playback)
-                            .content(R.string.cont_playback_content)
-                            .positiveText(pos_text)
-                            .negativeText(getString(R.string.cancel))
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    if (((boolean) newValue)) {
-                                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_continuous_playback), true).apply();
-                                        continuousPlaybackPref.setChecked(true);
-                                    } else {
-                                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_continuous_playback), false).apply();
-                                        continuousPlaybackPref.setChecked(false);
-                                    }
-                                }
-                            })
-                            .build();
-
-                    //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
-                    dialog.show();
-
-                    return false;
+            continuousPlaybackPref.setOnPreferenceChangeListener((preference, newValue) -> {
+                String pos_text;
+                if (((boolean) newValue)) {
+                    pos_text = getString(R.string.turn_on);
+                } else {
+                    pos_text = getString(R.string.turn_off);
                 }
+
+                MaterialDialog dialog = new MyDialogBuilder(getActivity())
+                        .title(R.string.title_continous_playback)
+                        .content(R.string.cont_playback_content)
+                        .positiveText(pos_text)
+                        .negativeText(getString(R.string.cancel))
+                        .onPositive((dialog12, which) -> {
+                            if (((boolean) newValue)) {
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_continuous_playback), true).apply();
+                                continuousPlaybackPref.setChecked(true);
+                            } else {
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_continuous_playback), false).apply();
+                                continuousPlaybackPref.setChecked(false);
+                            }
+                        })
+                        .build();
+
+                dialog.show();
+
+                return false;
             });
 
             final CheckBoxPreference dataSaverPref = (CheckBoxPreference) findPreference(getString(R.string.pref_data_saver));
-            dataSaverPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, final Object newValue) {
-                    String pos_text = "Turn On";
+            dataSaverPref.setOnPreferenceChangeListener((preference, newValue) -> {
+                String pos_text;
+                if (((boolean) newValue)) {
+                    pos_text = getString(R.string.turn_on);
+                } else {
+                    pos_text = getString(R.string.turn_off);
+                }
+
+                MaterialDialog dialog = new MyDialogBuilder(getActivity())
+                        .title(R.string.title_data_Saver)
+                        .content(R.string.data_saver_content)
+                        .positiveText(pos_text)
+                        .negativeText(getString(R.string.cancel))
+                        .onPositive((dialog13, which) -> {
+                            if (((boolean) newValue)) {
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_data_saver), true).apply();
+                                dataSaverPref.setChecked(true);
+                            } else {
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_data_saver), false).apply();
+                                dataSaverPref.setChecked(false);
+                            }
+                        })
+                        .build();
+
+                dialog.show();
+
+                return false;
+            });
+
+            instantLyricStatus = (CheckBoxPreference) findPreference(getString(R.string.pref_instant_lyric));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                //instant lyric
+                instantLyricStatus.setOnPreferenceChangeListener((preference, newValue) -> {
+
+                    String pos_text;
                     if (((boolean) newValue)) {
                         pos_text = getString(R.string.turn_on);
                     } else {
@@ -737,159 +726,96 @@ public class ActivitySettings extends AppCompatActivity {
                     }
 
                     MaterialDialog dialog = new MyDialogBuilder(getActivity())
-                            .title(R.string.title_data_Saver)
-                            .content(R.string.data_saver_content)
+                            .title(R.string.instant_lyrics_title)
+                            .content(R.string.instant_lyrics_content)
                             .positiveText(pos_text)
                             .negativeText(getString(R.string.cancel))
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    if (((boolean) newValue)) {
-                                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_data_saver), true).apply();
-                                        dataSaverPref.setChecked(true);
-                                    } else {
-                                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_data_saver), false).apply();
-                                        dataSaverPref.setChecked(false);
-                                    }
+                            .onPositive((dialog1, which) -> {
+                                if (((boolean) newValue)) {
+                                    Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                                    startActivity(intent);
+                                    Toast.makeText(MyApp.getContext(), "Click on AB Music to enable!", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                                    startActivity(intent);
+                                    Toast.makeText(MyApp.getContext(), "Click on AB Music to disable!", Toast.LENGTH_LONG).show();
                                 }
                             })
                             .build();
 
-                    //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
                     dialog.show();
 
                     return false;
-                }
-            });
-
-            instantLyricStatus = (CheckBoxPreference) findPreference(getString(R.string.pref_instant_lyric));
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                //instant lyric
-                instantLyricStatus.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference preference, final Object newValue) {
-
-                        String pos_text = "Turn On";
-                        if (((boolean) newValue)) {
-                            pos_text = getString(R.string.turn_on);
-                        } else {
-                            pos_text = getString(R.string.turn_off);
-                        }
-
-                        MaterialDialog dialog = new MyDialogBuilder(getActivity())
-                                .title(R.string.instant_lyrics_title)
-                                .content(R.string.instant_lyrics_content)
-                                .positiveText(pos_text)
-                                .negativeText(getString(R.string.cancel))
-                                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                    @Override
-                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                        if (((boolean) newValue)) {
-                                            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-                                            startActivity(intent);
-                                            Toast.makeText(MyApp.getContext(), "Click on AB Music to enable!", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-                                            startActivity(intent);
-                                            Toast.makeText(MyApp.getContext(), "Click on AB Music to disable!", Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                })
-                                .build();
-
-                        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
-                        dialog.show();
-
-                        return false;
-                    }
                 });
-            }else {
-                instantLyricStatus.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
-                        Toast.makeText(getActivity(),"Feature is only available on Jelly Bean MR2 and above!", Toast.LENGTH_LONG).show();
-                        return false;
-                    }
+            } else {
+                instantLyricStatus.setOnPreferenceChangeListener((preference, newValue) -> {
+                    Toast.makeText(getActivity(), "Feature is only available on Jelly Bean MR2 and above!", Toast.LENGTH_LONG).show();
+                    return false;
                 });
             }
 
             //shake
             Preference shakeAction = findPreference(getString(R.string.pref_shake_action));
-            int shakeActionRead = MyApp.getPref().getInt(getString(R.string.pref_shake_action),Constants.SHAKE_ACTIONS.NEXT);
-            if(shakeActionRead==Constants.SHAKE_ACTIONS.NEXT){
+            int shakeActionRead = MyApp.getPref().getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT);
+            if (shakeActionRead == Constants.SHAKE_ACTIONS.NEXT) {
                 shakeAction.setSummary(NEXT);
-            }else if(shakeActionRead==Constants.SHAKE_ACTIONS.PLAY_PAUSE){
+            } else if (shakeActionRead == Constants.SHAKE_ACTIONS.PLAY_PAUSE) {
                 shakeAction.setSummary(PLAY_PAUSE);
-            }else {
+            } else {
                 shakeAction.setSummary(PREVIOUS);
             }
-            shakeAction.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    //open browser or intent here
-                    ShakeActionDialog();
-                    return true;
-                }
+            shakeAction.setOnPreferenceClickListener(preference -> {
+                //open browser or intent here
+                ShakeActionDialog();
+                return true;
             });
 
 
             //hide short clips preference
             Preference hideShortClipsPref = findPreference(getString(R.string.pref_hide_short_clips));
-            String summary = String.valueOf(MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips),10)) + " seconds";
+            String summary = MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips), 10) + " seconds";
             hideShortClipsPref.setSummary(summary);
-            hideShortClipsPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    //open browser or intent here
-                    shortClipDialog();
-                    return true;
-                }
+            hideShortClipsPref.setOnPreferenceClickListener(preference -> {
+                //open browser or intent here
+                shortClipDialog();
+                return true;
             });
 
             //excluded folders preference
             Preference excludedFoldersPref = findPreference(getString(R.string.pref_excluded_folders));
-            excludedFoldersPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    //open browser or intent here
-                    displayExcludedFolders();
-                    return true;
-                }
+            excludedFoldersPref.setOnPreferenceClickListener(preference -> {
+                //open browser or intent here
+                displayExcludedFolders();
+                return true;
             });
 
             Preference hideByStartPref = findPreference(getString(R.string.pref_hide_tracks_starting_with));
-            String text1 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_1),"");
-            String text2 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_2),"");
-            String text3 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_3),"");
-            hideByStartPref.setSummary(text1+", "+text2+", "+text3);
-            hideByStartPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    //open browser or intent here
-                    hideByStartDialog();
-                    return true;
-                }
+            String text1 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_1), "");
+            String text2 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_2), "");
+            String text3 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_3), "");
+            hideByStartPref.setSummary(text1 + ", " + text2 + ", " + text3);
+            hideByStartPref.setOnPreferenceClickListener(preference -> {
+                //open browser or intent here
+                hideByStartDialog();
+                return true;
             });
 
 
             //opening tab preference
             Preference openingTabPref = findPreference(getString(R.string.pref_opening_tab));
-            openingTabPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    //open browser or intent here
-                    tabSeqDialog();
-                    return true;
-                }
+            openingTabPref.setOnPreferenceClickListener(preference -> {
+                //open browser or intent here
+                tabSeqDialog();
+                return true;
             });
-
 
 
             //about us  preference
             Preference aboutUs = findPreference(getString(R.string.pref_about_us));
-            aboutUs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    //open browser or intent here
-                    getActivity().startActivity(new Intent(getActivity(), ActivityAboutUs.class));
-                    return true;
-                }
+            aboutUs.setOnPreferenceClickListener(preference -> {
+                //open browser or intent here
+                getActivity().startActivity(new Intent(getActivity(), ActivityAboutUs.class));
+                return true;
             });
 
             //cache artist data
@@ -912,283 +838,222 @@ public class ActivitySettings extends AppCompatActivity {
 
             //batch download  preference
             Preference batchDownload = findPreference(getString(R.string.pref_batch_download));
-            batchDownload.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    if(MyApp.isBatchServiceRunning){
-                        Toast.makeText(getActivity(),getString(R.string.error_batch_download_running), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
-                    getActivity().startService(new Intent(getActivity(),BatchDownloaderService.class));
-                    Toast.makeText(getActivity(),getString(R.string.batch_download_started), Toast.LENGTH_LONG).show();
-                    return true;
+            batchDownload.setOnPreferenceClickListener(preference -> {
+                if (MyApp.isBatchServiceRunning) {
+                    Toast.makeText(getActivity(), getString(R.string.error_batch_download_running), Toast.LENGTH_LONG).show();
+                    return false;
                 }
+
+                getActivity().startService(new Intent(getActivity(), BatchDownloaderService.class));
+                Toast.makeText(getActivity(), getString(R.string.batch_download_started), Toast.LENGTH_LONG).show();
+                return true;
             });
 
             //reset  preference
             final Preference resetPref = findPreference(getString(R.string.pref_reset_pref));
-            resetPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    resetPrefDialog();
-                    return true;
-                }
+            resetPref.setOnPreferenceClickListener(preference -> {
+                resetPrefDialog();
+                return true;
             });
         }
 
-        private void albumViewDialog(){
+        private void albumViewDialog() {
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_album_lib_view))
                     .items((CharSequence[]) new String[]{LIST, GRID})
-                    .itemsCallback(new MaterialDialog.ListCallback() {
-                        @Override
-                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            switch (text.toString()){
-                                case LIST:
-                                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), false).apply();
-                                    findPreference(getString(R.string.pref_album_lib_view)).setSummary(LIST);
-                                    break;
+                    .itemsCallback((MaterialDialog.ListCallback) (dialog1, view, which, text) -> {
+                        switch (text.toString()) {
+                            case LIST:
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), false).apply();
+                                findPreference(getString(R.string.pref_album_lib_view)).setSummary(LIST);
+                                break;
 
-                                case GRID:
-                                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), true).apply();
-                                    findPreference(getString(R.string.pref_album_lib_view)).setSummary(GRID);
-                                    break;
-                            }
+                            case GRID:
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), true).apply();
+                                findPreference(getString(R.string.pref_album_lib_view)).setSummary(GRID);
+                                break;
                         }
                     })
                     .build();
 
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
             dialog.show();
         }
 
-        private void navBackDialog(){
+        private void navBackDialog() {
             ///get current setting
             // 0 - System default   2 - custom
-            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back),0);
+            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back), 0);
 
-            MaterialDialog dialog =new MyDialogBuilder(getActivity())
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(R.string.title_nav_back)
                     .items(R.array.nav_back_pref_array)
-                    .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
-                        @Override
-                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            /**
-                             * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
-                             * returning false here won't allow the newly selected radio button to actually be selected.
-                             **/
+                    .itemsCallbackSingleChoice(currentSelection, (dialog1, view, which, text) -> {
+                        switch (which) {
+                            //for 0, change the pref and move on, no need to confirm anything
+                            case 0:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_nav_library_back), which).apply();
+                                break;
 
+                            //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                            case 1:
+                                backgroundSelectionStatus = NAVIGATION_DRAWER;
+                                CropImage.activity()
+                                        .setGuidelines(CropImageView.Guidelines.ON)
+                                        .setAspectRatio(11, 16)
+                                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                                        .setOutputCompressQuality(80)
+                                        .start(getActivity());
+                                dialog1.dismiss();
+                                break;
 
-                            switch (which){
-                                //for 0, change the pref and move on, no need to confirm anything
-                                case 0:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_nav_library_back),which).apply();
-                                    break;
-
-                                //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
-                                case 1:
-                                    backgroundSelectionStatus = NAVIGATION_DRAWER;
-                                    CropImage.activity()
-                                            .setGuidelines(CropImageView.Guidelines.ON)
-                                            .setAspectRatio(11,16)
-                                            .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                                            .setOutputCompressQuality(80)
-                                            .start(getActivity());
-                                    dialog.dismiss();
-                                    break;
-
-                            }
-                            return true;
                         }
+                        return true;
                     })
                     .positiveText(R.string.okay)
                     .build();
 
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
             dialog.show();
         }
 
-        private void defAlbumArtDialog(){
+        private void defAlbumArtDialog() {
             ///get current setting
             // 0 - System default   2 - custom
-            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_default_album_art),0);
+            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
 
-            MaterialDialog dialog =new MyDialogBuilder(getActivity())
+            MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(R.string.nav_default_album_art)
                     .items(R.array.def_album_art_pref_array)
-                    .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
-                        @Override
-                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            /**
-                             * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
-                             * returning false here won't allow the newly selected radio button to actually be selected.
-                             **/
+                    .itemsCallbackSingleChoice(currentSelection, (dialog1, view, which, text) -> {
+                        switch (which) {
+                            //for 0, change the pref and move on, no need to confirm anything
+                            case 0:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_default_album_art), which).apply();
+                                break;
 
+                            //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                            case 1:
+                                backgroundSelectionStatus = DEFAULT_ALBUM_ART;
+                                CropImage.activity()
+                                        .setGuidelines(CropImageView.Guidelines.ON)
+                                        .setAspectRatio(1, 1)
+                                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                                        .setOutputCompressQuality(80)
+                                        .start(getActivity());
+                                dialog1.dismiss();
+                                break;
 
-                            switch (which){
-                                //for 0, change the pref and move on, no need to confirm anything
-                                case 0:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_default_album_art),which).apply();
-                                    break;
-
-                                //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
-                                case 1:
-                                    backgroundSelectionStatus = DEFAULT_ALBUM_ART;
-                                    CropImage.activity()
-                                            .setGuidelines(CropImageView.Guidelines.ON)
-                                            .setAspectRatio(1,1)
-                                            .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                                            .setOutputCompressQuality(80)
-                                            .start(getActivity());
-                                    dialog.dismiss();
-                                    break;
-
-                            }
-                            return true;
                         }
+                        return true;
                     })
                     .positiveText(R.string.okay)
                     .build();
 
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
             dialog.show();
         }
 
-        private void mainLibBackDialog(){
+        private void mainLibBackDialog() {
             ///get current setting
             // 0 - System default   2 - custom
-            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_main_library_back),0);
+            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_main_library_back), 0);
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(R.string.title_main_library_back)
                     .items(R.array.main_lib_back_pref_array)
-                    .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
-                        @Override
-                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            /**
-                             * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
-                             * returning false here won't allow the newly selected radio button to actually be selected.
-                             **/
+                    .itemsCallbackSingleChoice(currentSelection, (dialog1, view, which, text) -> {
+                        switch (which) {
+                            //for 0, change the pref and move on, no need to confirm anything
+                            case 0:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_main_library_back), which).apply();
+                                break;
 
+                            //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                            case 1:
+                                backgroundSelectionStatus = MAIN_LIB;
+                                CropImage.activity()
+                                        .setGuidelines(CropImageView.Guidelines.ON)
+                                        .setAspectRatio(11, 16)
+                                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                                        .setOutputCompressQuality(50)
+                                        .start(getActivity());
+                                dialog1.dismiss();
+                                break;
 
-                            switch (which){
-                                //for 0, change the pref and move on, no need to confirm anything
-                                case 0:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_main_library_back),which).apply();
-                                    break;
-
-                                //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
-                                case 1:
-                                    backgroundSelectionStatus = MAIN_LIB;
-                                    CropImage.activity()
-                                            .setGuidelines(CropImageView.Guidelines.ON)
-                                            .setAspectRatio(11,16)
-                                            .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                                            .setOutputCompressQuality(50)
-                                            .start(getActivity());
-                                    dialog.dismiss();
-                                    break;
-
-                            }
-                            return true;
                         }
+                        return true;
                     })
                     .positiveText(R.string.okay)
                     .build();
 
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
             dialog.show();
         }
 
-        private void nowPlayingBackDialog(){
+        private void nowPlayingBackDialog() {
 
             ///get current setting
             // 0 - System default   1 - artist image  2 - album art 3 - custom  4- custom (if Artist image unavailable)
-            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back),1);
+            int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back), 1);
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(R.string.title_now_playing_back)
                     .items(R.array.now_playing_back_pref_array)
-                    .itemsCallbackSingleChoice(currentSelection, new MaterialDialog.ListCallbackSingleChoice() {
-                        @Override
-                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            /**
-                             * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
-                             * returning false here won't allow the newly selected radio button to actually be selected.
-                             **/
+                    .itemsCallbackSingleChoice(currentSelection, (dialog1, view, which, text) -> {
+                        switch (which) {
+                            //for 0 and 1 and 2, change the pref and move on, no need to confirm anything
+                            case 0:
+                            case 1:
+                            case 2:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_now_playing_back), which).apply();
+                                break;
 
-
-                            switch (which){
-                                //for 0 and 1 and 2, change the pref and move on, no need to confirm anything
-                                case 0:
-                                case 1:
-                                case 2:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_now_playing_back),which).apply();
-                                    break;
-
-                                //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
-                                case 3:
-                                    backgroundSelectionStatus = NOW_PLAYING;
-                                    CropImage.activity()
-                                            .setGuidelines(CropImageView.Guidelines.ON)
-                                            .setAspectRatio(9,16)
-                                            .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                                            .setOutputCompressQuality(50)
-                                            .start(getActivity());
-                                    dialog.dismiss();
-                                    break;
-                            }
-                            return true;
+                            //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                            case 3:
+                                backgroundSelectionStatus = NOW_PLAYING;
+                                CropImage.activity()
+                                        .setGuidelines(CropImageView.Guidelines.ON)
+                                        .setAspectRatio(9, 16)
+                                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                                        .setOutputCompressQuality(50)
+                                        .start(getActivity());
+                                dialog1.dismiss();
+                                break;
                         }
+                        return true;
                     })
                     .positiveText(R.string.okay)
                     .build();
 
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
             dialog.show();
         }
 
-        private void displayExcludedFolders(){
-            String excludedFoldersString = MyApp.getPref().getString(getString(R.string.pref_excluded_folders),"");
+        private void displayExcludedFolders() {
+            String excludedFoldersString = MyApp.getPref().getString(getString(R.string.pref_excluded_folders), "");
             String[] excludedFolders = excludedFoldersString.split(",");
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(R.string.title_excluded_folders)
                     .items(excludedFolders)
                     .positiveText(getString(R.string.add))
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            dialog.dismiss();
-                            new MyDialogBuilder(getActivity())
-                                    .title(getString(R.string.title_how_to_add))
-                                    .content(getString(R.string.content_how_to_add))
-                                    .positiveText(getString(R.string.pos_how_to_add))
-                                    .show();
-                        }
+                    .onPositive((dialog12, which) -> {
+                        dialog12.dismiss();
+                        new MyDialogBuilder(getActivity())
+                                .title(getString(R.string.title_how_to_add))
+                                .content(getString(R.string.content_how_to_add))
+                                .positiveText(getString(R.string.pos_how_to_add))
+                                .show();
                     })
                     .negativeText(getString(R.string.reset))
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            MyApp.getPref().edit().putString(getString(R.string.pref_excluded_folders),"").apply();
-                            MusicLibrary.getInstance().RefreshLibrary();
-                            Toast.makeText(getActivity(), "Excluded folders reset, refreshing Music Library..", Toast.LENGTH_SHORT).show();
-                        }
+                    .onNegative((dialog1, which) -> {
+                        MyApp.getPref().edit().putString(getString(R.string.pref_excluded_folders), "").apply();
+                        MusicLibrary.getInstance().RefreshLibrary();
+                        Toast.makeText(getActivity(), "Excluded folders reset, refreshing Music Library..", Toast.LENGTH_SHORT).show();
                     })
                     .build();
-
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
 
         }
 
-        private void tabSeqDialog(){
+        private void tabSeqDialog() {
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.tab_sequence_preference, null);
@@ -1202,27 +1067,22 @@ public class ActivitySettings extends AppCompatActivity {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.setting_tab_seqe_title))
-                    .customView(dialogView,false)
-                    .dismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            int[] temp = tsa.getData();
-                            StringBuilder str = new StringBuilder();
-                            for (int aTemp : temp) {
-                                str.append(aTemp).append(",");
-                            }
-                            MyApp.getPref().edit().putString(getString(R.string.pref_tab_seq), str.toString()).apply();
+                    .customView(dialogView, false)
+                    .dismissListener(dialog1 -> {
+                        int[] temp = tsa.getData();
+                        StringBuilder str = new StringBuilder();
+                        for (int aTemp : temp) {
+                            str.append(aTemp).append(",");
                         }
+                        MyApp.getPref().edit().putString(getString(R.string.pref_tab_seq), str.toString()).apply();
                     })
                     .build();
-
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
 
         }
 
-        private void themeSelectionDialog(){
+        private void themeSelectionDialog() {
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.theme_selector_dialog, null);
@@ -1237,49 +1097,30 @@ public class ActivitySettings extends AppCompatActivity {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title("Select theme")
-                    .customView(dialogView,false)
-                    .dismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            //@todo do something yo
-                        }
+                    .customView(dialogView, false)
+                    .dismissListener(dialog12 -> {
+                        //@todo do something yo
                     })
                     .positiveText("Apply")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            restartSettingsActivity();
-                        }
-                    })
+                    .onPositive((dialog1, which) -> restartSettingsActivity())
                     .build();
-
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
 
         }
 
-        private void RescanLibrary(){
+        private void RescanLibrary() {
             MusicLibrary.getInstance().RefreshLibrary();
             final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
                     getString(R.string.library_rescan), true);
-            Executors.newSingleThreadExecutor().execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    dialog.dismiss();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getActivity(),getString(R.string.main_act_lib_refreshed), Toast.LENGTH_SHORT).show();
-                           // Snackbar.make(rootView, "Library Refreshed", Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
+            Executors.newSingleThreadExecutor().execute(() -> {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                dialog.dismiss();
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), getString(R.string.main_act_lib_refreshed), Toast.LENGTH_SHORT).show());
             });
         }
 
@@ -1288,21 +1129,21 @@ public class ActivitySettings extends AppCompatActivity {
 
             linear.setOrientation(LinearLayout.VERTICAL);
             final TextView text = new TextView(getActivity());
-            String summary = String.valueOf(MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips),10)) + " seconds";
+            String summary = String.valueOf(MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips), 10)) + " seconds";
             text.setText(summary);
             text.setTypeface(TypeFaceHelper.getTypeFace(MyApp.getContext()));
-            text.setPadding(0, 10,0,0);
+            text.setPadding(0, 10, 0, 0);
             text.setGravity(Gravity.CENTER);
 
             SeekBar seek = new SeekBar(getActivity());
-            seek.setPadding(40,10,40,10);
+            seek.setPadding(40, 10, 40, 10);
             seek.setMax(100);
-            seek.setProgress(MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips),10));
+            seek.setProgress(MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips), 10));
 
             seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    text.setText(progress+" seconds");
+                    text.setText(progress + " seconds");
                 }
 
                 @Override
@@ -1313,8 +1154,8 @@ public class ActivitySettings extends AppCompatActivity {
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
                     int progress = seekBar.getProgress();
-                    MyApp.getPref().edit().putInt(getString(R.string.pref_hide_short_clips),progress).apply();
-                    findPreference(getString(R.string.pref_hide_short_clips)).setSummary(progress+ " seconds");
+                    MyApp.getPref().edit().putInt(getString(R.string.pref_hide_short_clips), progress).apply();
+                    findPreference(getString(R.string.pref_hide_short_clips)).setSummary(progress + " seconds");
                 }
             });
 
@@ -1323,31 +1164,23 @@ public class ActivitySettings extends AppCompatActivity {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_hide_short_clips))
-                    // .content(getString(R.string.lyric_art_info_content))
                     .positiveText(getString(R.string.okay))
                     .negativeText(getString(R.string.cancel))
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            RescanLibrary();
-                        }
-                    })
-                    .customView(linear,false)
+                    .onPositive((dialog1, which) -> RescanLibrary())
+                    .customView(linear, false)
                     .build();
-
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
 
-        private void hideByStartDialog(){
+        private void hideByStartDialog() {
 
-            String text1 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_1),"");
-            String text2 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_2),"");
-            String text3 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_3),"");
-            findPreference(getString(R.string.pref_hide_tracks_starting_with)).setSummary(text1+", "+text2+", "+text3);
+            String text1 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_1), "");
+            String text2 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_2), "");
+            String text3 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_3), "");
+            findPreference(getString(R.string.pref_hide_tracks_starting_with)).setSummary(text1 + ", " + text2 + ", " + text3);
             LinearLayout linear = new LinearLayout(getActivity());
-            linear.setPadding(10,10,10,0);
+            linear.setPadding(10, 10, 10, 0);
 
             final EditText myEditText1 = new EditText(getActivity()); // Pass it an Activity or Context
             myEditText1.setLayoutParams(new LinearLayout.LayoutParams
@@ -1362,7 +1195,7 @@ public class ActivitySettings extends AppCompatActivity {
             myEditText2.setLayoutParams(new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
             myEditText2.setText(text2);
-           // myEditText2.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            // myEditText2.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             myEditText2.setMaxLines(1);
             myEditText2.setInputType(InputType.TYPE_CLASS_TEXT);
             linear.addView(myEditText2);
@@ -1379,7 +1212,7 @@ public class ActivitySettings extends AppCompatActivity {
             TextView tv = new TextView(getActivity());
             tv.setText(getString(R.string.case_sensitive_text));
             tv.setTypeface(TypeFaceHelper.getTypeFace(MyApp.getContext()));
-            tv.setPadding(0,10,0,0);
+            tv.setPadding(0, 10, 0, 0);
             linear.addView(tv);
 
             linear.setOrientation(LinearLayout.VERTICAL);
@@ -1387,321 +1220,298 @@ public class ActivitySettings extends AppCompatActivity {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_hide_tracks_starting_with))
-                    // .content(getString(R.string.lyric_art_info_content))
                     .positiveText(getString(R.string.okay))
                     .negativeText(getString(R.string.cancel))
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            String text1 = myEditText1.getText().toString().trim();
-                            MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_1),text1).apply();
+                    .onPositive((dialog1, which) -> {
+                        String text11 = myEditText1.getText().toString().trim();
+                        MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_1), text11).apply();
 
-                            String text2 = myEditText2.getText().toString().trim();
-                            MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_2),text2).apply();
+                        String text21 = myEditText2.getText().toString().trim();
+                        MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_2), text21).apply();
 
-                            String text3 = myEditText3.getText().toString().trim();
-                            MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_3),text3).apply();
+                        String text31 = myEditText3.getText().toString().trim();
+                        MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_3), text31).apply();
 
-                            findPreference(getString(R.string.pref_hide_tracks_starting_with)).setSummary(text1+", "+text2+", "+text3);
+                        findPreference(getString(R.string.pref_hide_tracks_starting_with)).setSummary(text11 + ", " + text21 + ", " + text31);
 
-                            RescanLibrary();
-                        }
+                        RescanLibrary();
                     })
-                    .customView(linear,true)
+                    .customView(linear, true)
                     .build();
-
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
 
-        private void ShakeActionDialog(){
+        private void ShakeActionDialog() {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_shake_action))
-                    .items((CharSequence[]) new String[]{NEXT,PLAY_PAUSE,PREVIOUS})
-                    .itemsCallback(new MaterialDialog.ListCallback() {
-                        @Override
-                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            switch (text.toString()){
+                    .items((CharSequence[]) new String[]{NEXT, PLAY_PAUSE, PREVIOUS})
+                    .itemsCallback((MaterialDialog.ListCallback) (dialog1, view, which, text) -> {
+                        switch (text.toString()) {
 
-                                case NEXT:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action)
-                                            ,Constants.SHAKE_ACTIONS.NEXT).apply();
-                                    findPreference(getString(R.string.pref_shake_action)).setSummary(NEXT);
-                                    break;
+                            case NEXT:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action)
+                                        , Constants.SHAKE_ACTIONS.NEXT).apply();
+                                findPreference(getString(R.string.pref_shake_action)).setSummary(NEXT);
+                                break;
 
-                                case PLAY_PAUSE:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action)
-                                            ,Constants.SHAKE_ACTIONS.PLAY_PAUSE).apply();
-                                    findPreference(getString(R.string.pref_shake_action)).setSummary(PLAY_PAUSE);
-                                    break;
+                            case PLAY_PAUSE:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action)
+                                        , Constants.SHAKE_ACTIONS.PLAY_PAUSE).apply();
+                                findPreference(getString(R.string.pref_shake_action)).setSummary(PLAY_PAUSE);
+                                break;
 
-                                case PREVIOUS:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action)
-                                            ,Constants.SHAKE_ACTIONS.PREVIOUS).apply();
-                                    findPreference(getString(R.string.pref_shake_action)).setSummary(PREVIOUS);
-                                    break;
-                            }
+                            case PREVIOUS:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action)
+                                        , Constants.SHAKE_ACTIONS.PREVIOUS).apply();
+                                findPreference(getString(R.string.pref_shake_action)).setSummary(PREVIOUS);
+                                break;
                         }
                     })
                     .build();
 
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
             dialog.show();
         }
 
-        private void resetPrefDialog(){
+        private void resetPrefDialog() {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_reset_pref) + " ?")
                     // .content(getString(R.string.lyric_art_info_content))
                     .positiveText(getString(R.string.yes))
                     .negativeText(getString(R.string.cancel))
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    .onPositive((dialog1, which) -> {
 
-                            SharedPreferences.Editor editor= MyApp.getPref().edit();
+                        SharedPreferences.Editor editor = MyApp.getPref().edit();
 
-                            editor.putInt(getString(R.string.pref_theme)
-                                    , Constants.PRIMARY_COLOR.GLOSSY);
+                        editor.putInt(getString(R.string.pref_theme)
+                                , Constants.PRIMARY_COLOR.GLOSSY);
 
-                            editor.putInt(getString(R.string.pref_text_font)
-                                    , Constants.TYPEFACE.SOFIA);
+                        editor.putInt(getString(R.string.pref_text_font)
+                                , Constants.TYPEFACE.SOFIA);
 
-                            editor.remove(getString(R.string.pref_tab_seq));
+                        editor.remove(getString(R.string.pref_tab_seq));
 
-                            editor.putBoolean(getString(R.string.pref_lock_screen_album_Art),true);
+                        editor.putBoolean(getString(R.string.pref_lock_screen_album_Art), true);
 
-                            editor.putBoolean(getString(R.string.pref_shake),false);
+                        editor.putBoolean(getString(R.string.pref_shake), false);
 
-                            editor.putInt(getString(R.string.pref_hide_short_clips),10);
+                        editor.putInt(getString(R.string.pref_hide_short_clips), 10);
 
-                            editor.putString(getString(R.string.pref_hide_tracks_starting_with_1),"");
-                            editor.putString(getString(R.string.pref_hide_tracks_starting_with_2),"");
-                            editor.putString(getString(R.string.pref_hide_tracks_starting_with_3),"");
+                        editor.putString(getString(R.string.pref_hide_tracks_starting_with_1), "");
+                        editor.putString(getString(R.string.pref_hide_tracks_starting_with_2), "");
+                        editor.putString(getString(R.string.pref_hide_tracks_starting_with_3), "");
 
-                            editor.putString(getString(R.string.pref_excluded_folders),"");
+                        editor.putString(getString(R.string.pref_excluded_folders), "");
 
-                            editor.putBoolean(getString(R.string.pref_prefer_system_equ ), true);
+                        editor.putBoolean(getString(R.string.pref_prefer_system_equ), true);
 
-                            editor.putInt(getString(R.string.pref_main_library_back), 0);
+                        editor.putInt(getString(R.string.pref_main_library_back), 0);
 
-                            editor.putInt(getString(R.string.pref_now_playing_back), 0);
+                        editor.putInt(getString(R.string.pref_now_playing_back), 0);
 
-                            editor.putBoolean(getString(R.string.pref_hide_lock_button),false);
+                        editor.putBoolean(getString(R.string.pref_hide_lock_button), false);
 
-                            editor.putBoolean(getString(R.string.pref_notifications), true);
+                        editor.putBoolean(getString(R.string.pref_notifications), true);
 
-                            editor.putBoolean(getString(R.string.pref_continuous_playback), false);
+                        editor.putBoolean(getString(R.string.pref_continuous_playback), false);
 
-                            editor.putBoolean(getString(R.string.pref_data_saver), false);
+                        editor.putBoolean(getString(R.string.pref_data_saver), false);
 
-                            editor.apply();
+                        editor.apply();
 
 
-                            restartSettingsActivity();
-                        }
+                        restartSettingsActivity();
                     })
-                   // .customView(linear,false)
                     .build();
-
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
 
-        private void fontPrefSelectionDialog(){
+        private void fontPrefSelectionDialog() {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_text_font))
-                    .items((CharSequence[]) new String[]{ MANROPE, ASAP, ROBOTO, SOFIA, ROBOTO_C, ROBOTO_M,SOURCE_SANS_PRO,  ACLONICA,
+                    .items((CharSequence[]) new String[]{MANROPE, ROBOTO, ASAP, SOFIA, MONOSPACE, SYSTEM_DEFAULT,
+                            /*ROBOTO_C, ROBOTO_M, SOURCE_SANS_PRO, ACLONICA,
                             CONCERT_ONE, LATO, LATO_ITALIC, LORA, MONTSERRAT, OPEN_SANS_LIGHT, OSWALD, PROMPT
-                            ,PROMPY_MEDIUM, PT_SANS, RALEWAY,SLABO,CHERRY_SWASH
-                            , CORBEN, NOVA_ROUND, NOVA_SCRIPT, PACIFITO,  QUANTICO, TRADE_WINDS, UBUNTU
-                            , MONOSPACE, PURPLE_PURSE, SYSTEM_DEFAULT})
-                    .itemsCallback(new MaterialDialog.ListCallback() {
-                        @Override
-                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            switch (text.toString()){
-                                case MONOSPACE:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONOSPACE).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(MONOSPACE);
-                                    break;
+                            , PROMPY_MEDIUM, PT_SANS, RALEWAY, SLABO, CHERRY_SWASH
+                            , CORBEN, NOVA_ROUND, NOVA_SCRIPT, PACIFITO, QUANTICO, TRADE_WINDS, UBUNTU, PURPLE_PURSE*/})
+                    .itemsCallback((MaterialDialog.ListCallback) (dialog1, view, which, text) -> {
+                        switch (text.toString()) {
+                            case MANROPE:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(MANROPE);
+                                break;
 
-                                case SOFIA:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOFIA).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(SOFIA);
-                                    break;
+                            case ROBOTO:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO);
+                                break;
 
-                                case MANROPE:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(MANROPE);
-                                    break;
+                            case MONOSPACE:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONOSPACE).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(MONOSPACE);
+                                break;
 
-                                case ASAP:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(ASAP);
-                                    break;
+                            case ASAP:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(ASAP);
+                                break;
 
-                                case ROBOTO:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO);
-                                    break;
+                            case SOFIA:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOFIA).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(SOFIA);
+                                break;
 
-                                case ROBOTO_C:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO_C).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO_C);
-                                    break;
+                            /*case ROBOTO_C:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO_C).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO_C);
+                                break;
 
-                                case ROBOTO_M:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO_M).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO_M);
-                                    break;
+                            case ROBOTO_M:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO_M).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO_M);
+                                break;
 
-                                case ACLONICA:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ACLONICA).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(ACLONICA);
-                                    break;
+                            case ACLONICA:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ACLONICA).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(ACLONICA);
+                                break;
 
-                                case CHERRY_SWASH:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.CHEERYSWASH).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(CHERRY_SWASH);
-                                    break;
+                            case CHERRY_SWASH:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.CHEERYSWASH).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(CHERRY_SWASH);
+                                break;
 
-                                case CORBEN:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.CORBEN).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(CORBEN);
-                                    break;
+                            case CORBEN:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.CORBEN).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(CORBEN);
+                                break;
 
-                                case NOVA_ROUND:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.NOVA_R).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(NOVA_ROUND);
-                                    break;
+                            case NOVA_ROUND:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.NOVA_R).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(NOVA_ROUND);
+                                break;
 
-                                case NOVA_SCRIPT:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.NOVA_S).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(NOVA_SCRIPT);
-                                    break;
+                            case NOVA_SCRIPT:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.NOVA_S).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(NOVA_SCRIPT);
+                                break;
 
-                                case PACIFITO:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PACFITO).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(PACIFITO);
-                                    break;
+                            case PACIFITO:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PACFITO).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(PACIFITO);
+                                break;
 
-                                case PURPLE_PURSE:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PURPLEPURSE).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(PURPLE_PURSE);
-                                    break;
+                            case PURPLE_PURSE:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PURPLEPURSE).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(PURPLE_PURSE);
+                                break;
 
-                                case QUANTICO:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.QUATICO).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(QUANTICO);
-                                    break;
+                            case QUANTICO:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.QUATICO).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(QUANTICO);
+                                break;
 
-                                case TRADE_WINDS:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.TRADE_WINDS).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(TRADE_WINDS);
-                                    break;
+                            case TRADE_WINDS:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.TRADE_WINDS).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(TRADE_WINDS);
+                                break;
 
-                                case UBUNTU:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.UBUNTU).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(UBUNTU);
-                                    break;
+                            case UBUNTU:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.UBUNTU).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(UBUNTU);
+                                break;
 
-                                case CONCERT_ONE:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.CONCERT_ONCE).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(CONCERT_ONE);
-                                    break;
+                            case CONCERT_ONE:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.CONCERT_ONCE).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(CONCERT_ONE);
+                                break;
 
-                                case LATO:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.LATO).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(LATO);
-                                    break;
+                            case LATO:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.LATO).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(LATO);
+                                break;
 
-                                case LATO_ITALIC:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.LATO_ITALIC).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(LATO_ITALIC);
-                                    break;
+                            case LATO_ITALIC:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.LATO_ITALIC).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(LATO_ITALIC);
+                                break;
 
-                                case LORA:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.LORA).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(LORA);
-                                    break;
+                            case LORA:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.LORA).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(LORA);
+                                break;
 
-                                case MONTSERRAT:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONTESERRAT).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(MONTSERRAT);
-                                    break;
+                            case MONTSERRAT:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONTESERRAT).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(MONTSERRAT);
+                                break;
 
-                                case OPEN_SANS_LIGHT:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.OPEN_SANS_LIGHT).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(OPEN_SANS_LIGHT);
-                                    break;
+                            case OPEN_SANS_LIGHT:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.OPEN_SANS_LIGHT).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(OPEN_SANS_LIGHT);
+                                break;
 
-                                case OSWALD:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.OSWALD).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(OSWALD);
-                                    break;
+                            case OSWALD:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.OSWALD).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(OSWALD);
+                                break;
 
-                                case PROMPT:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PROMPT).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(PROMPT);
-                                    break;
+                            case PROMPT:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PROMPT).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(PROMPT);
+                                break;
 
-                                case PROMPY_MEDIUM:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PROMPT_MEDIUM).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(PROMPY_MEDIUM);
-                                    break;
+                            case PROMPY_MEDIUM:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PROMPT_MEDIUM).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(PROMPY_MEDIUM);
+                                break;
 
-                                case PT_SANS:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PT_SANS_CAPTION).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(PT_SANS);
-                                    break;
+                            case PT_SANS:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.PT_SANS_CAPTION).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(PT_SANS);
+                                break;
 
-                                case RALEWAY:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.RALEWAY).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(RALEWAY);
-                                    break;
+                            case RALEWAY:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.RALEWAY).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(RALEWAY);
+                                break;
 
-                                case SLABO:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SLABO).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(SLABO);
-                                    break;
+                            case SLABO:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SLABO).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(SLABO);
+                                break;
 
-                                case SOURCE_SANS_PRO:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOURCE_SANS_PRO).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(SOURCE_SANS_PRO);
-                                    break;
+                            case SOURCE_SANS_PRO:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOURCE_SANS_PRO).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(SOURCE_SANS_PRO);
+                                break;*/
 
-                                case SYSTEM_DEFAULT:
-                                    MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SYSTEM_DEFAULT).apply();
-                                    findPreference(getString(R.string.pref_text_font)).setSummary(SYSTEM_DEFAULT);
-                                    break;
-                            }
-
-                            MyApp.getPref().edit().putBoolean(getString(R.string.pref_font_already_logged), false).apply();
-
-                            /*CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                                    .setDefaultFontPath(TypeFaceHelper.getTypeFacePath())
-                                    .setFontAttrId(R.attr.fontPath)
-                                    .build());*/
-
-                            int id = TypeFaceHelper.getTypeFacePathId();
-                            if(id!=-1) {
-                                CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                                        .setDefaultFont(id)
-                                        .build());
-                            }
-
-                            restartSettingsActivity();
+                            case SYSTEM_DEFAULT:
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SYSTEM_DEFAULT).apply();
+                                findPreference(getString(R.string.pref_text_font)).setSummary(SYSTEM_DEFAULT);
+                                break;
                         }
+
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_font_already_logged), false).apply();
+
+                        String path = TypeFaceHelper.getTypeFacePath();
+                        if (path != null) {
+                            ViewPump.init(ViewPump.builder()
+                                    .addInterceptor(new CalligraphyInterceptor(
+                                            new CalligraphyConfig.Builder()
+                                                    .setDefaultFontPath(path)
+                                                    .setFontAttrId(R.attr.fontPath)
+                                                    .build()))
+                                    .build());
+                        }
+
+                        restartSettingsActivity();
                     })
                     .build();
-
-            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
             dialog.show();
         }
@@ -1721,13 +1531,12 @@ public class ActivitySettings extends AppCompatActivity {
     }
 
     private static class TabSequenceAdapter extends RecyclerView.Adapter<TabSequenceAdapter.MyViewHolder>
-            implements ItemTouchHelperAdapter{
+            implements ItemTouchHelperAdapter {
 
-        private LayoutInflater inflater;
         int[] data = new int[Constants.TABS.NUMBER_OF_TABS];
-        private OnStartDragListener mDragStartListener;
+        private final OnStartDragListener mDragStartListener;
 
-        TabSequenceAdapter(OnStartDragListener dragStartListener){
+        TabSequenceAdapter(OnStartDragListener dragStartListener) {
             mDragStartListener = dragStartListener;
             String savedTabSeq = MyApp.getPref().getString(MyApp.getContext().getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ);
             StringTokenizer st = new StringTokenizer(savedTabSeq, ",");
@@ -1736,51 +1545,50 @@ public class ActivitySettings extends AppCompatActivity {
             }
         }
 
+        @NotNull
         @Override
-        public TabSequenceAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            inflater=LayoutInflater.from(MyApp.getContext());
+        public TabSequenceAdapter.MyViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(MyApp.getContext());
             final View view = inflater.inflate(R.layout.tab_sequence_item, parent, false);
             return new MyViewHolder(view);
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
-        public void onBindViewHolder(final TabSequenceAdapter.MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NotNull final TabSequenceAdapter.MyViewHolder holder, int position) {
             //holder.title.setText(data.get(0));
-                switch (data[position]) {
-                    case Constants.TABS.ALBUMS:
-                        holder.title.setText(MyApp.getContext().getString(R.string.tab_album));
-                        break;
+            switch (data[position]) {
+                case Constants.TABS.ALBUMS:
+                    holder.title.setText(MyApp.getContext().getString(R.string.tab_album));
+                    break;
 
-                    case Constants.TABS.ARTIST:
-                        holder.title.setText(MyApp.getContext().getString(R.string.tab_artist));
-                        break;
+                case Constants.TABS.ARTIST:
+                    holder.title.setText(MyApp.getContext().getString(R.string.tab_artist));
+                    break;
 
-                    case Constants.TABS.FOLDER:
-                        holder.title.setText(MyApp.getContext().getString(R.string.tab_folder));
-                        break;
+                case Constants.TABS.FOLDER:
+                    holder.title.setText(MyApp.getContext().getString(R.string.tab_folder));
+                    break;
 
-                    case Constants.TABS.GENRE:
-                        holder.title.setText(MyApp.getContext().getString(R.string.tab_genre));
-                        break;
+                case Constants.TABS.GENRE:
+                    holder.title.setText(MyApp.getContext().getString(R.string.tab_genre));
+                    break;
 
-                    case Constants.TABS.PLAYLIST:
-                        holder.title.setText(MyApp.getContext().getString(R.string.tab_playlist));
-                        break;
+                case Constants.TABS.PLAYLIST:
+                    holder.title.setText(MyApp.getContext().getString(R.string.tab_playlist));
+                    break;
 
-                    case Constants.TABS.TRACKS:
-                        holder.title.setText(MyApp.getContext().getString(R.string.tab_track));
-                        break;
+                case Constants.TABS.TRACKS:
+                    holder.title.setText(MyApp.getContext().getString(R.string.tab_track));
+                    break;
+            }
+
+            holder.handle.setOnTouchListener((view, motionEvent) -> {
+                if (MotionEventCompat.getActionMasked(motionEvent) ==
+                        MotionEvent.ACTION_DOWN) {
+                    mDragStartListener.onStartDrag(holder);
                 }
-
-            holder.handle.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (MotionEventCompat.getActionMasked(motionEvent) ==
-                            MotionEvent.ACTION_DOWN) {
-                        mDragStartListener.onStartDrag(holder);
-                    }
-                    return false;
-                }
+                return false;
             });
         }
 
@@ -1792,9 +1600,9 @@ public class ActivitySettings extends AppCompatActivity {
         @Override
         public boolean onItemMove(int fromPosition, int toPosition) {
             int temp = data[fromPosition];
-            data[fromPosition]=data[toPosition];
-            data[toPosition]=temp;
-            notifyItemMoved(fromPosition,toPosition);
+            data[fromPosition] = data[toPosition];
+            data[toPosition] = temp;
+            notifyItemMoved(fromPosition, toPosition);
             return true;
         }
 
@@ -1803,10 +1611,11 @@ public class ActivitySettings extends AppCompatActivity {
             notifyItemChanged(position);
         }
 
-        public int[] getData(){
+        public int[] getData() {
             return data;
         }
-        class MyViewHolder extends RecyclerView.ViewHolder{
+
+        static class MyViewHolder extends RecyclerView.ViewHolder {
             TextView title;
             ImageView handle;
 
@@ -1821,37 +1630,33 @@ public class ActivitySettings extends AppCompatActivity {
         }
     }
 
-    private static class ThemeSelectorAdapter extends RecyclerView.Adapter<ThemeSelectorAdapter.MyViewHolder>{
+    private static class ThemeSelectorAdapter extends RecyclerView.Adapter<ThemeSelectorAdapter.MyViewHolder> {
 
-        private LayoutInflater inflater;
         private int currentSelectedItem;
 
-        ThemeSelectorAdapter(){
+        ThemeSelectorAdapter() {
             currentSelectedItem = MyApp.getSelectedThemeId();
         }
 
         @NonNull
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            inflater=LayoutInflater.from(MyApp.getContext());
+            LayoutInflater inflater = LayoutInflater.from(MyApp.getContext());
             final View view = inflater.inflate(R.layout.theme_selection_item, parent, false);
-            return new ThemeSelectorAdapter.MyViewHolder(view);
+            return new MyViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
             holder.view.setBackgroundDrawable(ColorHelper.getGradientDrawable(position));
-            holder.view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    currentSelectedItem = holder.getAdapterPosition();
-                    MyApp.setSelectedThemeId(holder.getAdapterPosition());
-                    notifyDataSetChanged();
-                }
+            holder.view.setOnClickListener(view -> {
+                currentSelectedItem = holder.getAdapterPosition();
+                MyApp.setSelectedThemeId(holder.getAdapterPosition());
+                notifyDataSetChanged();
             });
-            if(currentSelectedItem==position){
+            if (currentSelectedItem == position) {
                 holder.tick.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.tick.setVisibility(View.INVISIBLE);
             }
         }
@@ -1861,7 +1666,7 @@ public class ActivitySettings extends AppCompatActivity {
             return ColorHelper.getNumberOfThemes();
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder{
+        static class MyViewHolder extends RecyclerView.ViewHolder {
             View view;
             View tick;
 

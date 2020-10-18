@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Html;
 import android.util.Log;
 import android.view.ActionMode;
@@ -595,7 +597,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     @Override
     public void onDestroy() {
         fLyricUpdaterThreadCancelled = true;
-        lyricThread.setCallback(null);
+        if (lyricThread != null) lyricThread.setCallback(null);
         super.onDestroy();
     }
 

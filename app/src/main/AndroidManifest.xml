@@ -45,9 +45,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/notification_channel"/>
-        <meta-data
+        <!--<meta-data
             android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+            android:resource="@array/preloaded_fonts" />-->
 
         <activity
             android:name=".activity.ActivityMain"
