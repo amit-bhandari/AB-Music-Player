@@ -823,8 +823,7 @@ public class PlayerService extends Service implements
 
                 Bitmap b = null;
                 try {
-                    b = UtilityFun.decodeUri(getApplication()
-                            , MusicLibrary.getInstance().getAlbumArtUri(getCurrentTrack().getAlbumId()), 200);
+                    b = MusicLibrary.getInstance().getAlbumArtFromTrack(getCurrentTrack().getId());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1051,8 +1050,7 @@ public class PlayerService extends Service implements
         if (loadBitmap) {
             Bitmap b = null;
             try {
-                b = UtilityFun.decodeUri(this
-                        , MusicLibrary.getInstance().getAlbumArtUri(getCurrentTrack().getAlbumId()), 200);
+                b = MusicLibrary.getInstance().getAlbumArtFromTrack(getCurrentTrack().getId());
             } catch (Exception e) {
                 //e.printStackTrace();
             }
@@ -1142,34 +1140,30 @@ public class PlayerService extends Service implements
 
     @TargetApi(21)
     public void setMediaSessionMetadata(final boolean enable) {
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (currentTrack == null) return;
-                MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, currentTrack.getTitle());
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, currentTrack.getArtist());
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, currentTrack.getAlbum());
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI
-                        , MusicLibrary.getInstance().getAlbumArtUri(currentTrack.getAlbumId()).toString());
-                metadataBuilder.putLong(MediaMetadata.METADATA_KEY_DURATION, currentTrack.getDurInt());
-                metadataBuilder.putString(MediaMetadata.METADATA_KEY_GENRE, currentTrack.getGenre());
-                if (MyApp.getPref().getBoolean(getString(R.string.pref_lock_screen_album_Art), true)) {
-                    if (enable) {
-                        Bitmap b = null;
-                        try {
-                            b = UtilityFun.decodeUri(getApplication()
-                                    , MusicLibrary.getInstance().getAlbumArtUri(getCurrentTrack().getAlbumId()), 200);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, b);
-                    } else {
-                        metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, null);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            if (currentTrack == null) return;
+            MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
+            metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, currentTrack.getTitle());
+            metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, currentTrack.getArtist());
+            metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM, currentTrack.getAlbum());
+            /*metadataBuilder.putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI
+                    , MusicLibrary.getInstance().getAlbumArtFromTrack(currentTrack.getId()).toString());*/
+            metadataBuilder.putLong(MediaMetadata.METADATA_KEY_DURATION, currentTrack.getDurInt());
+            metadataBuilder.putString(MediaMetadata.METADATA_KEY_GENRE, currentTrack.getGenre());
+            if (MyApp.getPref().getBoolean(getString(R.string.pref_lock_screen_album_Art), true)) {
+                if (enable) {
+                    Bitmap b = null;
+                    try {
+                        b = MusicLibrary.getInstance().getAlbumArtFromTrack(getCurrentTrack().getId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, b);
+                } else {
+                    metadataBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, null);
                 }
-                mMediaSession.setMetadata(metadataBuilder.build());
             }
+            mMediaSession.setMetadata(metadataBuilder.build());
         });
     }
 

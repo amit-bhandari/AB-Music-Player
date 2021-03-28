@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
@@ -14,11 +15,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
+
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -26,6 +36,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -40,12 +51,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
@@ -74,6 +81,8 @@ import java.util.concurrent.Executors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -378,7 +387,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                                                 .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
                                                 .centerCrop()
                                                 .placeholder(R.drawable.ic_batman_1)
-                                                .crossFade()
+                                                .transition(withCrossFade())
                                                 .into(mainBackdrop);
                                         break;
 
@@ -388,7 +397,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                                                 .centerCrop()
                                                 .placeholder(UtilityFun.getDefaultAlbumArtDrawable())
                                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                .crossFade().diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                .transition(withCrossFade())
+                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                                 .into(mainBackdrop);
                                         break;
                                 }
@@ -428,22 +438,17 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
 
 
-
-
         miniPlayer.setBackgroundColor(ColorHelper.getWidgetColor());
         //collapsingToolbarLayout.setContentScrimColor(ColorHelper.Ge());
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(status==Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT && adapter.getItemCount()<=2){
-                    startActivity(new Intent(ActivitySecondaryLibrary.this,ActivityMain.class)
-                            .putExtra("move_to_tab",Constants.TABS.TRACKS));
-                   }else {
-                    if (adapter.getItemCount() <= 0) {
-                        Toast.makeText(ActivitySecondaryLibrary.this, "Empty Track List", Toast.LENGTH_SHORT).show();
-                    } else {
-                        adapter.shuffleAll();
-                    }
+        fab.setOnClickListener(view -> {
+            if (status == Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT && adapter.getItemCount() <= 2) {
+                startActivity(new Intent(ActivitySecondaryLibrary.this, ActivityMain.class)
+                        .putExtra("move_to_tab", Constants.TABS.TRACKS));
+            } else {
+                if (adapter.getItemCount() <= 0) {
+                    Toast.makeText(ActivitySecondaryLibrary.this, "Empty Track List", Toast.LENGTH_SHORT).show();
+                } else {
+                    adapter.shuffleAll();
                 }
             }
         });
@@ -466,7 +471,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         Glide
                 .with(getApplicationContext())
                 .load(url)
-                .crossFade()
+                .transition(withCrossFade())
                 .placeholder(R.drawable.ic_batman_1)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -484,63 +489,33 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             if (playerService != null) {
                 if (playerService.getCurrentTrack() != null) {
 
-                    final DrawableRequestBuilder<Uri> request = Glide.with(this)
-                            .load(MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()))
+                    final RequestBuilder<Drawable> request = Glide.with(this)
+                            .load(MusicLibrary.getInstance().getAlbumArtFromTrack(playerService.getCurrentTrack().getId()))
                             .centerCrop()
-                            .crossFade()
+                            .transition(withCrossFade())
                             .diskCacheStrategy(DiskCacheStrategy.ALL);
 
-                    int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
-                    switch (defaultAlbumArtSetting) {
-                        case 0:
-                           request.listener(new RequestListener<Uri, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            //Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if(UtilityFun.isConnectedToInternet() &&
-                                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null)
-                                                    request.load(Uri.parse(url))
-                                                            .into(albumArtIv);
-                                                return true;
-                                            }
-                                            return false;
-                                        }
+                    RequestBuilder<Drawable> builder = null;
+                    String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
 
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            return false;
-                                        }
-                                    })
-                                    .placeholder(R.drawable.ic_batman_1);
-                            break;
+                    if (url != null) {
+                        int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+                        switch (defaultAlbumArtSetting) {
+                            case 0:
+                                builder = Glide.with(this)
+                                        .load(Uri.parse(url))
+                                        .placeholder(R.drawable.ic_batman_1);
+                                break;
 
-                        case 1:
-                            request.listener(new RequestListener<Uri, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            //Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if(UtilityFun.isConnectedToInternet() &&
-                                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null)
-                                                    request.load(Uri.parse(url))
-                                                            .into(albumArtIv);
-                                                return true;
-                                            }
-                                            return false;
-                                        }
-
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            return false;
-                                        }
-                                    })
-                                    .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
-                            break;
+                            case 1:
+                                builder = Glide.with(this)
+                                        .load(Uri.parse(url))
+                                        .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
+                                break;
+                        }
                     }
 
+                    request.error(builder);
                     request.into(albumArtIv);
 
                     //albumArtIv.setImageBitmap(playerService.getAlbumArt());
@@ -560,7 +535,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 System.exit(0);
             }
         }catch (Exception ignored){
-
+            ignored.printStackTrace();
         }
     }
 

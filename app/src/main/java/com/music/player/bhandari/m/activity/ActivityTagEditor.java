@@ -27,7 +27,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.signature.ObjectKey;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
@@ -183,8 +183,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
             case 0:
                 Glide.with(this)
                         .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
-                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                        .animate(AnimationUtils.loadAnimation(this, R.anim.fade_in))
+                        .signature(new ObjectKey(String.valueOf(System.currentTimeMillis())))
                         .placeholder(R.drawable.ic_batman_1)
                         .into(album_art);
                 break;
@@ -192,8 +191,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
             case 1:
                 Glide.with(this)
                         .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
-                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                        .animate(AnimationUtils.loadAnimation(this, R.anim.fade_in))
+                        .signature(new ObjectKey(String.valueOf(System.currentTimeMillis())))
                         .placeholder(UtilityFun.getDefaultAlbumArtDrawable()).diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(album_art);
                 break;

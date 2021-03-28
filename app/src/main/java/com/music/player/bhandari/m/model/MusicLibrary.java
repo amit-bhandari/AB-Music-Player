@@ -8,11 +8,16 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.util.Log;
+import android.util.Size;
 import android.util.SparseArray;
 
 import com.music.player.bhandari.m.BuildConfig;
@@ -22,7 +27,9 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.BulkArtInfo
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -703,37 +710,43 @@ public class MusicLibrary{
         return null;
     }
 
-    public Uri getAlbumArtUri(int album_id){
-        Uri songCover = Uri.parse("content://media/external/audio/albumart");
-        Uri uriSongCover = ContentUris.withAppendedId(songCover, album_id);
-        //Log.d("MusicLibrary", "getAlbumArtUri: path " + new File(uriSongCover.getPath()).length());
-        if(uriSongCover==null){
-            //String packageName = context.getPackageName();
-            //Uri uri = Uri.parse("android.resource://"+packageName+"/drawable/ic_batman_1");
-            return null;
-            //return getUriToDrawable(context,R.drawable.ic_batman_1);
+    public Uri getAlbumArtUri(int album_id) {
+        return Uri.fromFile(new File(MyApp.getInstance().getFilesDir().getAbsolutePath() + "random.png"));
+        /*Uri songCover = Uri.parse("content://media/external/audio/albumart");
+        return ContentUris.withAppendedId(songCover, album_id);*/
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public Bitmap getAlbumArtFromTrack(int trackId) {
+        //This will get you the uri of the track, if you already have the track id
+        Uri trackUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, trackId);
+        Bitmap bm = null;
+        try {
+            bm = MyApp.getContext().getContentResolver().loadThumbnail(trackUri, new Size(512, 512), null);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return uriSongCover;
+        return bm;
     }
 
-    interface INDEX_FOR_TRACK_CURSOR{
-        int _ID=0;
-        int TITLE=1;
-        int DATA_PATH=2;
-        int ARTIST=3;
-        int ALBUM=4;
-        int DURATION=5;
-        int ALBUM_ID=6;
+    interface INDEX_FOR_TRACK_CURSOR {
+        int _ID = 0;
+        int TITLE = 1;
+        int DATA_PATH = 2;
+        int ARTIST = 3;
+        int ALBUM = 4;
+        int DURATION = 5;
+        int ALBUM_ID = 6;
 
     }
 
-    interface INDEX_FOR_GENRE_CURSOR{
-        int _ID=0;
-        int GENRE=1;
-        int NUMBER_OF_TRACKS=2;
+    interface INDEX_FOR_GENRE_CURSOR {
+        int _ID = 0;
+        int GENRE = 1;
+        int NUMBER_OF_TRACKS = 2;
     }
 
-    private synchronized void updateArtistInfo(){
+    private synchronized void updateArtistInfo() {
         artistUrls.clear();
         artistUrls.putAll(OfflineStorageArtistBio.getArtistImageUrls());
     }

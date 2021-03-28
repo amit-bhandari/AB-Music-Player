@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
@@ -194,15 +193,9 @@ class ActivitySavedLyrics: AppCompatActivity() {
             holder.itemView.delete?.isEnabled = true
             Glide.with(this@ActivitySavedLyrics)
                     .load(artistImageUrls[lyrics[position].originalArtist])
-                    .asBitmap()
                     .thumbnail(0.5f)
-                    //.signature(StringSignature(System.currentTimeMillis().toString()))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(object: SimpleTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                            holder.itemView.imageView.setImageBitmap(resource)
-                        }
-                    })
+                    .into(holder.itemView.imageView)
         }
 
         private var lyrics: MutableList<Lyrics> = mutableListOf()

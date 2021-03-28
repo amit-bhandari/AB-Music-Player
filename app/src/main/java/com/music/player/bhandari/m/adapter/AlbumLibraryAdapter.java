@@ -3,17 +3,9 @@ package com.music.player.bhandari.m.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.appcompat.app.AlertDialog;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,24 +15,29 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.google.android.material.snackbar.Snackbar;
+import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary;
 import com.music.player.bhandari.m.model.Constants;
+import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.model.dataItem;
-import com.music.player.bhandari.m.model.MusicLibrary;
 import com.music.player.bhandari.m.service.PlayerService;
-import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
@@ -48,6 +45,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -174,40 +173,25 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         holder.title.setText(filteredDataItems.get(position).albumName);
+        RequestBuilder<Bitmap> builder = null;
+        if (!MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) {
+            final String url = MusicLibrary.getInstance().getArtistUrls().get(filteredDataItems.get(position).artist_name);
+            builder = Glide
+                    .with(context)
+                    .asBitmap()
+                    .load(url)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .override(200, 200)
+                    .placeholder(batmanDrawable);
+        }
 
-        final String url = MusicLibrary.getInstance().getArtistUrls().get(filteredDataItems.get(position).artist_name);
-        final Uri uri = MusicLibrary.getInstance().getAlbumArtUri(filteredDataItems.get(position).album_id);
-
+        final Bitmap bm = MusicLibrary.getInstance().getAlbumArtFromTrack(filteredDataItems.get(position).album_id);
         Glide
                 .with(context)
-                .load(uri)
-                //.crossFade(500)
-                .listener(new RequestListener<Uri, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        //Log.d("AlbumLibraryAdapter", "onException: ");
-                        if(UtilityFun.isConnectedToInternet() &&
-                                !MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) {
-                            Glide
-                                    .with(context)
-                                    .load(url)
-                                    .centerCrop()
-                                    .crossFade(500)
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .override(200, 200)
-                                    .placeholder(batmanDrawable)
-                                    .into(holder.thumbnail);
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        return false;
-                    }
-                })
-                //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                .asBitmap()
+                .load(bm)
+                .error(builder)
                 .centerCrop()
                 .placeholder(batmanDrawable)
                 .into(holder.thumbnail);

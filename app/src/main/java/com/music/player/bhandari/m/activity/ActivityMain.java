@@ -11,19 +11,24 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
+
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.internal.NavigationMenuView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -66,16 +71,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.auth.api.Auth;
@@ -524,7 +521,7 @@ public class ActivityMain extends AppCompatActivity
         customBackOverlay.setVisibility(View.VISIBLE);
         Glide.with(this)
                 .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image))))
-                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                .signature(new ObjectKey(String.valueOf(System.currentTimeMillis())))
                 //.placeholder(R.drawable.back2)
                 //.centerCrop()
                 .into(((ImageView) findViewById(R.id.image_view_view_pager)));
@@ -533,9 +530,7 @@ public class ActivityMain extends AppCompatActivity
     public void setBlurryBackgroundForNav(){
         Glide.with(this)
                 .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.nav_back_custom_image))))
-                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                //.placeholder(R.drawable.back1)
-                //.centerCrop()
+                .signature(new ObjectKey(String.valueOf(System.currentTimeMillis())))
                 .into(navViewBack);
     }
 
@@ -768,90 +763,42 @@ public class ActivityMain extends AppCompatActivity
         try {
             if (playerService != null) {
                 if (playerService.getCurrentTrack() != null) {
-                    final Uri uri = MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId());
 
-                    final DrawableRequestBuilder<Uri> request = Glide.with(this)
-                            .load(uri)
-                            .centerCrop()
-                            .crossFade()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL);
+                    RequestBuilder<Drawable> builder = null;
+                    final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
 
-                    int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
-                    switch (defaultAlbumArtSetting){
-                        case 0:
-                            request
-                                    .listener(new RequestListener<Uri, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if(UtilityFun.isConnectedToInternet() &&
-                                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null && !url.isEmpty())
-                                                    request.load(Uri.parse(url))
-                                                            .into(albumArt);
-                                                return true;
-                                            }
-                                            return false;
-                                        }
+                    if (url != null) {
+                        int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+                        switch (defaultAlbumArtSetting) {
+                            case 0:
+                                builder = Glide.with(this).load(Uri.parse(url)).placeholder(R.drawable.ic_batman_1);
+                                break;
 
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            return false;
-                                        }
-                                    })
-                                    .placeholder(R.drawable.ic_batman_1);
-                            break;
-
-                        case 1:
-                            request
-                                    .listener(new RequestListener<Uri, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if(UtilityFun.isConnectedToInternet() &&
-                                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null && !url.isEmpty())
-                                                    request.load(Uri.parse(url))
-                                                            .into(albumArt);
-                                                return true;
-                                            }
-                                            return false;
-                                        }
-
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            return false;
-                                        }
-                                    })
-                                    .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
-                            break;
+                            case 1:
+                                builder = Glide.with(this).load(Uri.parse(url)).placeholder(UtilityFun.getDefaultAlbumArtDrawable());
+                                break;
+                        }
                     }
 
-                    request.into(albumArt);
+                    Glide.with(this)
+                            .load(MusicLibrary.getInstance().getAlbumArtFromTrack(playerService.getCurrentTrack().getId()))
+                            .dontAnimate()
+                            .error(builder)
+                            .placeholder(R.drawable.ic_batman_1)
+                            .into(albumArt);
 
-                    if (playerService.getStatus() == PlayerService.PLAYING) {
+                    if (playerService.getStatus() == PlayerService.PLAYING)
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
-                    } else {
+                    else
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp));
-                    }
+
                     setTextAndIconColor();
 
                     songNameMiniPlayer.setText(playerService.getCurrentTrack().getTitle());
                     artistNameMiniPlayer.setText(playerService.getCurrentTrack().getArtist());
-                    if(expandNeeded) {
+                    if (expandNeeded)
                         ((AppBarLayout) findViewById(R.id.app_bar_layout)).setExpanded(true);
-                    }
-
                 }
-
-                /*if (playerService.getStatus() == PlayerService.PLAYING) {
-                    startUpdateTask();
-                } else {
-                    stopUpdateTask();
-                }*/
-
             } else {
                 //this should not happen
                 //restart app
@@ -859,7 +806,7 @@ public class ActivityMain extends AppCompatActivity
             finish();
             }
         }catch (Exception ignored){
-
+            ignored.printStackTrace();
         }
     }
 
@@ -1447,14 +1394,7 @@ public class ActivityMain extends AppCompatActivity
             Glide.with(this)
                     .load(link)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    //.centerCrop()
-                    .into(new GlideDrawableImageViewTarget(iv) {
-                        @Override
-                        public void onResourceReady(GlideDrawable drawable, GlideAnimation anim) {
-                            super.onResourceReady(drawable, anim);
-                            iv.setVisibility(View.VISIBLE);
-                        }
-                    });
+                    .into(iv);
         }
 
         //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
@@ -2155,15 +2095,9 @@ public class ActivityMain extends AppCompatActivity
         final RoundedImageView imageView = navigationView.getHeaderView(0).findViewById(R.id.navHeaderImageView);
         if(personPhotoUrl!=null) {
             Glide.with(getApplicationContext()).load(personPhotoUrl)
-                    .asBitmap()
                     .thumbnail(0.5f)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new SimpleTarget<Bitmap>(300, 300) {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                            imageView.setImageBitmap(resource);
-                        }
-                    });
+                    .into(imageView);
         }else {
             int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
             switch (defaultAlbumArtSetting){

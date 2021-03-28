@@ -157,8 +157,7 @@ dependencies {
     implementation 'com.squareup:seismic:1.0.2'
 
     //glide
-    //noinspection GradleDependency
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
 
     //blur images
     implementation 'jp.wasabeef:blurry:2.1.0'

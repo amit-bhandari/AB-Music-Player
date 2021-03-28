@@ -4,13 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +21,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.music.player.bhandari.m.R;
@@ -33,6 +37,8 @@ import com.music.player.bhandari.m.utils.UtilityFun;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -159,68 +165,58 @@ public class FragmentAlbumArt extends Fragment{
             albumArt.setImageBitmap(null);
         }else {
 
-            final DrawableRequestBuilder<Uri> request = Glide.with(this)
-                    .load(MusicLibrary.getInstance().getAlbumArtUri(playerService.getCurrentTrack().getAlbumId()))
+            final RequestBuilder<Drawable> request = Glide.with(this)
+                    .load(MusicLibrary.getInstance().getAlbumArtFromTrack(playerService.getCurrentTrack().getId()))
                     .centerCrop()
-                    .crossFade()
+                    .transition(withCrossFade())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
 
             int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
 
-            final int[] retryCount = {0};
-
-            switch (defaultAlbumArtSetting){
+            switch (defaultAlbumArtSetting) {
                 case 0:
-                    request.listener(new RequestListener<Uri, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    //Log.d("AlbumLibraryAdapter", "onException: ");
-                                    if(UtilityFun.isConnectedToInternet() &&
-                                            !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                        final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                        if(url!=null && !url.isEmpty())
-                                            request.load(Uri.parse(url))
-                                                    .into(albumArt);
-                                        return true;
-                                    }
-                                    return false;
-                                }
+                    request.listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            //Log.d("AlbumLibraryAdapter", "onException: ");
+                            if (UtilityFun.isConnectedToInternet() &&
+                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
+                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
+                                if (url != null && !url.isEmpty())
+                                    request.load(Uri.parse(url))
+                                            .into(albumArt);
+                                return true;
+                            }
+                            return false;
+                        }
 
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    //if(retryCount[0]>0) return true;
-                                    //retryCount[0]++;
-                                    return false;
-                                }
-                            })
-                            .placeholder(R.drawable.ic_batman_1);
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    }).placeholder(R.drawable.ic_batman_1);
                     break;
 
                 case 1:
-                   request.listener(new RequestListener<Uri, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    //Log.d("AlbumLibraryAdapter", "onException: ");
-                                    if(UtilityFun.isConnectedToInternet() &&
-                                            !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                        final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                        if(url!=null && !url.isEmpty())
-                                            request.load(Uri.parse(url))
-                                                    .into(albumArt);
-                                        return true;
-                                    }
-                                    return false;
-                                }
+                    request.listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            if (UtilityFun.isConnectedToInternet() &&
+                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
+                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
+                                if (url != null && !url.isEmpty())
+                                    request.load(Uri.parse(url))
+                                            .into(albumArt);
+                                return true;
+                            }
+                            return false;
+                        }
 
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    //if(retryCount[0]>0) return true;
-                                    //retryCount[0]++;
-                                    return false;
-                                }
-                            })
-                            .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
-
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    }).placeholder(UtilityFun.getDefaultAlbumArtDrawable());
                     break;
             }
 

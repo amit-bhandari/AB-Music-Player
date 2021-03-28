@@ -7,12 +7,23 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
+
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -29,10 +40,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
@@ -56,6 +63,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Executors;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -122,34 +131,22 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
     public void filter(String searchQuery){
         if(!searchQuery.equals("")){
             filteredDataItems.clear();
-            switch (fl.getStatus()){
+            switch (fl.getStatus()) {
                 case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                    for(dataItem d:dataItems){
-                        if(d.title.toLowerCase().contains(searchQuery)){
-                            filteredDataItems.add(d);
-                        }
-                    }
-                    break;
-
-                case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                    for(dataItem d:dataItems){
-                        if(d.title.toLowerCase().contains(searchQuery)){
-                            filteredDataItems.add(d);
-                        }
-                    }
-                    break;
 
                 case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                    for(dataItem d:dataItems){
-                        if(d.title.toLowerCase().contains(searchQuery)){
+
+                case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
+                    for (dataItem d : dataItems) {
+                        if (d.title.toLowerCase().contains(searchQuery)) {
                             filteredDataItems.add(d);
                         }
                     }
                     break;
 
                 case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
-                    for(dataItem d:dataItems){
-                        if(d.title.toLowerCase().contains(searchQuery)
+                    for (dataItem d : dataItems) {
+                        if (d.title.toLowerCase().contains(searchQuery)
                                 || d.artist_name.toLowerCase().contains(searchQuery)
                                 || d.albumName.toLowerCase().contains(searchQuery)){
                             filteredDataItems.add(d);
@@ -187,38 +184,25 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
        // mItemHeight = holder.itemView.getMeasuredHeight();
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
+                RequestBuilder<Drawable> builder = null;
+                if (!MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false))
+                    builder = Glide
+                            .with(context)
+                            .load(url)
+                            .centerCrop()
+                            .transition(withCrossFade())
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .override(100, 100)
+                            .placeholder(batmanDrawable);
+
                 Glide
                         .with(context)
                         .load(MusicLibrary.getInstance().getAlbumArtUri(filteredDataItems.get(position).album_id))
-                        .listener(new RequestListener<Uri, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                //Log.d("AlbumLibraryAdapter", "onException: ");
-                                if(UtilityFun.isConnectedToInternet() &&
-                                        !MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) {
-                                    Glide
-                                            .with(context)
-                                            .load(url)
-                                            .centerCrop()
-                                            .crossFade(500)
-                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                            .override(100, 100)
-                                            .placeholder(batmanDrawable)
-                                            .into(holder.image);
-                                    return true;
-                                }
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
+                        .error(builder)
                         .placeholder(batmanDrawable)
-                        .crossFade()
-                        .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                        .override(100,100)
+                        .transition(withCrossFade())
+                        .signature(new ObjectKey(String.valueOf(System.currentTimeMillis())))
+                        .override(100, 100)
                         .into(holder.image);
 
                 holder.title.setText(filteredDataItems.get(position).title);
@@ -264,7 +248,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             .with(context)
                             .load(url)
                             .placeholder(R.drawable.person_blue)
-                            .crossFade()
+                            .transition(withCrossFade())
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .override(100, 100)
                             .into(holder.image);

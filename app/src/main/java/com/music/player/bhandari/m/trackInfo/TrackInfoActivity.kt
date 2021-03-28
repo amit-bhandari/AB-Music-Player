@@ -23,8 +23,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -105,8 +104,10 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
         }
         progressBar.visibility = View.GONE
         if(trackInfo.result == RESULT.POSITIVE){
-            //Glide.with(this).load("").crossFade().into(backgroundImage)
-            Glide.with(this).load(trackInfo.track?.album?.image?.last()?.text ?: "").crossFade().into(backgroundImage)
+            Glide.with(this)
+                .load(trackInfo.track?.album?.image?.last()?.text ?: "")
+                .transition(withCrossFade())
+                .into(backgroundImage)
 
             trackSection.visibility = View.VISIBLE
             albumSection.visibility = View.VISIBLE
