@@ -191,72 +191,41 @@ public class ActivityPermissionSeek extends AppCompatActivity {
         //logFont();
     }
 
-    private void initializeRemoteConfig(){
+    private void initializeRemoteConfig() {
 
         final FirebaseRemoteConfig mRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings remoteConfigSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(true)
+                .setMinimumFetchIntervalInSeconds(60)
                 .build();
-        mRemoteConfig.setConfigSettings(remoteConfigSettings);
-        mRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+        mRemoteConfig.setConfigSettingsAsync(remoteConfigSettings);
+        mRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
         // cache expiration in seconds
         long cacheExpiration = 3600L;   //1 hour
 
         //expire the cache immediately for development mode .
-        if (mRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+        /*if (mRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
             cacheExpiration = 0;
-        }
+        }*/
 
         // fetch
         mRemoteConfig.fetch(cacheExpiration)
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("ActivityPermissionSeek", "onComplete: ");
-                        if(task.isSuccessful()){
-                            mRemoteConfig.activateFetched();
+                .addOnCompleteListener(this, task -> {
+                    Log.d("ActivityPermissionSeek", "onComplete: ");
+                    if (task.isSuccessful()) {
+                        mRemoteConfig.fetchAndActivate();
 
-                            final String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
+                        final String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
 
-                            //new developer message, update UI
-                            if(!MyApp.getPref().getString("developer_message", "").equals(message)) {
-                                MyApp.getPref().edit().putString("developer_message", message).apply();
-                                MyApp.getPref().edit().putBoolean("new_dev_message", true).apply();
-                            }
+                        //new developer message, update UI
+                        if (!MyApp.getPref().getString("developer_message", "").equals(message)) {
+                            MyApp.getPref().edit().putString("developer_message", message).apply();
+                            MyApp.getPref().edit().putBoolean("new_dev_message", true).apply();
                         }
                     }
                 });
     }
 
-    private void checkForDeepLink(){
-        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData data) {
-                        if (data == null) {
-                            Log.d("ActivityMain", "getInvitation: no data");
-                            return;
-                        }
-                        // Extract invite
-                        FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
-                        if (invite != null) {
-                            String invitationId = invite.getInvitationId();
-                            Toast.makeText(ActivityPermissionSeek.this, R.string.referral_succeessful
-                                    , Toast.LENGTH_LONG).show();
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            final DatabaseReference myRef = database.getReference("invites");
-                            myRef.child(invitationId).setValue(true);
-                        }
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("ActivityMain", "getDynamicLink:onFailure", e);
-                    }
-                });
-    }
 
 
     private void permissionDetailsDialog(){
