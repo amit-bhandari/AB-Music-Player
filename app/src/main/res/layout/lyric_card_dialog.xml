@@ -22,7 +22,6 @@
 
         <ImageView
             android:id="@+id/sample_album_card"
-            android:visibility="invisible"
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:scaleType="fitCenter"

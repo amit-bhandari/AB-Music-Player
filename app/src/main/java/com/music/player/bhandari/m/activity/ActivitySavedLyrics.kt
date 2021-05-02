@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.target.SimpleTarget
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
@@ -192,10 +193,11 @@ class ActivitySavedLyrics: AppCompatActivity() {
             holder.itemView.playCount?.text = lyrics[position].artist
             holder.itemView.delete?.isEnabled = true
             Glide.with(this@ActivitySavedLyrics)
-                    .load(artistImageUrls[lyrics[position].originalArtist])
-                    .thumbnail(0.5f)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(holder.itemView.imageView)
+                .load(artistImageUrls[lyrics[position].originalArtist])
+                .thumbnail(0.5f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .transition(withCrossFade())
+                .into(holder.itemView.imageView)
         }
 
         private var lyrics: MutableList<Lyrics> = mutableListOf()

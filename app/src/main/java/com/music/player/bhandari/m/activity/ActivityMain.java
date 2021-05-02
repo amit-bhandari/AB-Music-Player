@@ -111,6 +111,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 /**
  Copyright 2017 Amit Bhandari AB
 
@@ -1352,28 +1354,15 @@ public class ActivityMain extends AppCompatActivity
                 .positiveText(R.string.dialog_lyric_card_pos)
                 .negativeText(getString(R.string.cancel))
                 .neutralText("Know more")
-                .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        openUrl(Uri.parse(LYRIC_CARD_GIF));
-                    }
+                .onNeutral((dialog1, which) -> openUrl(Uri.parse(LYRIC_CARD_GIF)))
+                .onPositive((dialog12, which) -> {
+                    Intent searchLyricIntent = new Intent(MyApp.getContext(), ActivityExploreLyrics.class);
+                    searchLyricIntent.setAction(Constants.ACTION.MAIN_ACTION);
+                    searchLyricIntent.putExtra("search_on_launch", true);
+                    searchLyricIntent.putExtra("from_notif", false);
+                    startActivity(searchLyricIntent);
                 })
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Intent searchLyricIntent = new Intent(MyApp.getContext(), ActivityExploreLyrics.class);
-                        searchLyricIntent.setAction(Constants.ACTION.MAIN_ACTION);
-                        searchLyricIntent.putExtra("search_on_launch", true);
-                        searchLyricIntent.putExtra("from_notif", false);
-                        startActivity(searchLyricIntent);
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                }).build();
+                .onNegative((dialog13, which) -> dialog13.dismiss()).build();
 
         if (dialog.getCustomView() != null) {
             final ImageView iv = dialog.getCustomView().findViewById(R.id.sample_album_card);
@@ -1394,6 +1383,7 @@ public class ActivityMain extends AppCompatActivity
             Glide.with(this)
                     .load(link)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .transition(withCrossFade())
                     .into(iv);
         }
 
@@ -1403,15 +1393,6 @@ public class ActivityMain extends AppCompatActivity
 
     }
 
-    private void tryApp(){
-        final String appPackageName = "in.thetechguru.walle.remote.abremotewallpaperchanger"; // getPackageName() from Context or Activity object
-        try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-        } catch (ActivityNotFoundException anfe) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-        }
-    }
-
     private void openUrl(Uri parse) {
         try {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, parse);
@@ -1419,18 +1400,6 @@ public class ActivityMain extends AppCompatActivity
         } catch (Exception e) {
             Snackbar.make(rootView, getString(R.string.error_opening_browser), Snackbar.LENGTH_SHORT).show();
         }
-    }
-
-    private void feedbackEmail() {
-        String myDeviceModel = "Model : " + Build.MODEL + " Version : " + Build.VERSION.RELEASE;
-
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto",getString(R.string.au_email_id), null));
-        String[] address = new String[]{getString(R.string.au_email_id)};
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, address);
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "¯\\_(ツ)_/¯ AB Music ¯\\_(ツ)_/¯  : " + myDeviceModel);
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello AB, \n\n You are coolest person I know on the planet and I just want to say that ");
-        startActivity(Intent.createChooser(emailIntent, "Write me"));
     }
 
     private void shareApp() {
