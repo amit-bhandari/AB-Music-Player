@@ -1,3 +1,6 @@
+# NOT MAINTAINED ANYMORE. ANDROID SCOPED STORAGE MECHANISM HAS BROKEN AB MUSIC AND IT MIGHT NOT WORK PROPERLY IN YOUR DEVICE #
+
+
 # AB-Music-Player
 Lightweight Offline Music Player for Android (Downloaded over 90k times on store, rated 4.5)
 
