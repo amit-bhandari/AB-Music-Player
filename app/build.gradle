@@ -19,8 +19,7 @@ buildscript {
 apply plugin: 'com.github.triplet.play'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '29.0.3'
+    compileSdk 31
 
     def versionPropsFile = file('version.properties')  //maintains version number of apk
     def value = 0
@@ -61,7 +60,7 @@ android {
         defaultConfig {
             applicationId 'com.bhandari.music'
             minSdkVersion 16
-            targetSdkVersion 30
+            targetSdkVersion 31
             versionCode versionProps['VERSION_NUMBER'].toInteger()
             versionName "${mVersionName} Build: ${versionProps['VERSION_BUILD']}"
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
