@@ -269,7 +269,8 @@
 
         <service android:name=".fcm.MyFirebaseMessagingService$generatePictureStyleNotification$NotificationActionService" />
 
-        <receiver android:name="com.music.player.bhandari.m.widget.WidgetReceiver" >
+        <receiver android:name="com.music.player.bhandari.m.widget.WidgetReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
