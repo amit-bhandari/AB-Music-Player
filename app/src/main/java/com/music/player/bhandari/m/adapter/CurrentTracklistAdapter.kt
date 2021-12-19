@@ -3,11 +3,25 @@ package com.music.player.bhandari.m.adapter
 import android.content.Context
 import android.os.Handler
 import android.os.SystemClock
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
-import com.afollestad.materialdialogs.DialogAction
+import androidx.core.view.MotionEventCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.music.player.bhandari.m.R
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.ItemTouchHelperAdapter
+import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener
 import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.model.MusicLibrary
+import com.music.player.bhandari.m.model.dataItem
+import com.music.player.bhandari.m.service.PlayerService
+import java.util.*
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -31,7 +45,7 @@ class CurrentTracklistAdapter constructor(
     PopupMenu.OnMenuItemClickListener {
     private val playerService: PlayerService?
     private var mLastClickTime: Long = 0
-    private val mDragStartListener: OnStartDragListener
+    private val mDragStartListener: OnStartDragListener = dragStartListener
     private val context: Context
     private val inflater: LayoutInflater
 
@@ -44,30 +58,24 @@ class CurrentTracklistAdapter constructor(
     fun fillData() {
         if (playerService == null) return
         dataItems.clear()
-        Executors.newSingleThreadExecutor().execute(object : Runnable {
-            public override fun run() {
-                val temp: ArrayList<Int> = playerService.getTrackList()
-                //HashMap<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
-                try {
-                    for (id: Int in temp) {
-                        val d: dataItem? =
-                            MusicLibrary.getInstance().getDataItemsForTracks().get(id)
-                        if (d != null) {
-                            dataItems.add(d)
-                        }
+        Executors.newSingleThreadExecutor().execute {
+            val temp: ArrayList<Int> = playerService.getTrackList()
+            //HashMap<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
+            try {
+                for (id: Int in temp) {
+                    val d: dataItem? =
+                        MusicLibrary.instance!!.getDataItemsForTracks().get(id)
+                    if (d != null) {
+                        dataItems.add(d)
                     }
-                    Log.d("CurrentTrack", "run: queue ready")
-                    handler.post(object : Runnable {
-                        public override fun run() {
-                            notifyDataSetChanged()
-                        }
-                    })
-                } catch (ignored: Exception) {
-                    //ignore for now
-                    Log.e("Notify", "notify")
                 }
+                Log.d("CurrentTrack", "run: queue ready")
+                handler.post { notifyDataSetChanged() }
+            } catch (ignored: Exception) {
+                //ignore for now
+                Log.e("Notify", "notify")
             }
-        })
+        }
     }
 
     public override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -79,7 +87,7 @@ class CurrentTracklistAdapter constructor(
         if (dataItems.get(position) == null) return
         holder.title.setText(dataItems.get(position).title)
         holder.secondary.setText(dataItems.get(position).artist_name)
-        holder.handle.setOnTouchListener(object : OnTouchListener {
+        holder.handle.setOnTouchListener(object : View.OnTouchListener {
             public override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
                 if (MotionEventCompat.getActionMasked(motionEvent) ==
                     MotionEvent.ACTION_DOWN
@@ -112,18 +120,18 @@ class CurrentTracklistAdapter constructor(
         return dataItems.size
     }
 
-    fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         //no need to update list of in player service.
         //listOfHeader is reference for that list itself
         //it will automatically reflect in current tracklist in player service class
-        Log.d("CurrentTracklistAdapter", "onItemMove: from to " + fromPosition + " : " + toPosition)
+        Log.d("CurrentTracklistAdapter", "onItemMove: from to $fromPosition : $toPosition")
         playerService.swapPosition(fromPosition, toPosition)
         Collections.swap(dataItems, fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
         return true
     }
 
-    fun onItemDismiss(position: Int) {
+    override fun onItemDismiss(position: Int) {
         if (playerService.getCurrentTrackPosition() !== position) {
             //listOfHeader.remove(position);
             playerService.removeTrack(position)
@@ -334,7 +342,6 @@ class CurrentTracklistAdapter constructor(
     }
 
     init {
-        mDragStartListener = dragStartListener
         if (MyApp.Companion.getService() == null) {
             UtilityFun.restartApp()
             return

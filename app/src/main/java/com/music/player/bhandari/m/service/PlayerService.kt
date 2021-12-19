@@ -19,21 +19,53 @@ package com.music.player.bhandari.m.service
  * limitations under the License.
  */
 import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
-import android.content.Context
-import android.os.Build
-import android.os.Handler
-import android.os.ResultReceiver
+import android.appwidget.AppWidgetManager
+import android.bluetooth.BluetoothAdapter
+import android.content.*
+import android.graphics.Bitmap
+import android.hardware.SensorManager
+import android.media.AudioManager
+import android.media.MediaMetadata
+import android.media.MediaPlayer
+import android.media.audiofx.PresetReverb
+import android.os.*
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyManager
+import android.util.Log
+import android.widget.RemoteViews
+import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.app.NotificationCompat
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.activity.ActivityMain
+import com.music.player.bhandari.m.activity.ActivityNowPlaying
+import com.music.player.bhandari.m.activity.ActivityPermissionSeek
+import com.music.player.bhandari.m.equalizer.EqualizerHelper
+import com.music.player.bhandari.m.equalizer.EqualizerSetting
 import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.model.MusicLibrary
+import com.music.player.bhandari.m.model.PlaylistManager
 import com.music.player.bhandari.m.model.TrackItem
+import com.music.player.bhandari.m.utils.UtilityFun
+import com.music.player.bhandari.m.widget.WidgetReceiver
+import com.squareup.seismic.ShakeDetector
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
-import kotlin.Comparator
 import kotlin.collections.ArrayList
 
-class PlayerService constructor() : Service(), OnAudioFocusChangeListener, ShakeDetector.Listener {
+class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeDetector.Listener {
     private var mAudioManager: AudioManager? = null
     private var mediaPlayer: MediaPlayer? = null
     private var playAfterPrepare: Boolean = false
@@ -73,7 +105,8 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
 
     //Bluetooth callback receivers
     var bluetoothReceiver: BroadcastReceiver = BluetoothReceiver()
-    public override fun onCreate() {
+
+    override fun onCreate() {
         // MyApp.getPref().edit().putBoolean(getString(R.string.pref_remove_ads),true).apply();
         Log.d("PlayerService", "onCreate: ")
         super.onCreate()
@@ -98,7 +131,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         mAudioManager = this.getSystemService(AUDIO_SERVICE) as AudioManager?
         mediaPlayer = MediaPlayer()
         mediaPlayer.setOnCompletionListener(object : OnCompletionListener {
-            public override fun onCompletion(arg0: MediaPlayer) {
+            override fun onCompletion(arg0: MediaPlayer) {
                 Log.d("PlayerService", "onCompletion: " + arg0)
                 if (currentTrackPosition == trackList.size - 1) {
                     if (MyApp.Companion.getPref().getInt(Constants.PREFERENCES.REPEAT,
@@ -116,7 +149,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                         ) {
                             if (trackList.size < 10) {
                                 val dataItems: List<Int> =
-                                    MusicLibrary.getInstance().getDefaultTracklistNew()
+                                    MusicLibrary.instance!!.defaultTracklistNew
                                 Collections.shuffle(dataItems)
                                 trackList.addAll(dataItems)
                                 playTrack(currentTrackPosition + 1)
@@ -128,7 +161,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                             stop()
                         }
                     }
-                } else if (MyApp.Companion.getPref().getInt(Constants.PREFERENCES.REPEAT,
+                } else if (MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT,
                         0) == Constants.PREFERENCE_VALUES.REPEAT_ONE
                 ) {
                     playTrack(currentTrackPosition)
@@ -141,35 +174,32 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                 PostNotification()
             }
         })
-        mediaPlayer.setOnPreparedListener(object : OnPreparedListener {
-            public override fun onPrepared(mp: MediaPlayer) {
-                if (playAfterPrepare) {
-                    mediaPlayer.start()
-                } else {
+        mediaPlayer!!.setOnPreparedListener {
+            when {
+                playAfterPrepare -> {
+                    mediaPlayer!!.start()
+                }
+                else -> {
                     Log.d("PlayerService",
-                        "onPrepared: seeking to : " + MyApp.Companion.getPref().getInt(
-                            Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0))
+                        "onPrepared: seeking to : " + MyApp.getPref()!!
+                            .getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0))
                     try {
-                        seekTrack(MyApp.Companion.getPref()
+                        seekTrack(MyApp.getPref()!!
                             .getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0))
                     } catch (e: Exception) {
                         Log.d("PlayerService", "onPrepared: Unable to seek track")
                     }
                 }
             }
+        }
+        mediaPlayer!!.setOnErrorListener(MediaPlayer.OnErrorListener { mediaPlayer, i, i1 ->
+            Log.d("PlayerService", "onError: $mediaPlayer $i $i1")
+            false
         })
-        mediaPlayer.setOnErrorListener(object : MediaPlayer.OnErrorListener {
-            public override fun onError(mediaPlayer: MediaPlayer, i: Int, i1: Int): Boolean {
-                Log.d("PlayerService", "onError: " + mediaPlayer + " " + i + " " + i1)
-                return false
-            }
-        })
-        mediaPlayer.setOnInfoListener(object : MediaPlayer.OnInfoListener {
-            public override fun onInfo(mediaPlayer: MediaPlayer, i: Int, i1: Int): Boolean {
-                Log.d("PlayerService", "onInfo: " + mediaPlayer)
-                return false
-            }
-        })
+        mediaPlayer!!.setOnInfoListener { mediaPlayer, i, i1 ->
+            Log.d("PlayerService", "onInfo: $mediaPlayer")
+            false
+        }
         currentTrackPosition = -1
         setStatus(STOPPED)
         playerBinder = PlayerBinder()
@@ -180,39 +210,40 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         }
         this.registerReceiver(mReceiverHeadset, headsetFilter)
         phoneStateListener = object : PhoneStateListener() {
-            public override fun onCallStateChanged(state: Int, incomingNumber: String) {
-                if (state == TelephonyManager.CALL_STATE_RINGING) {
-                    //Incoming call: Pause music
-                    Log.v(Constants.TAG, "Ringing")
-                    if (status == PLAYING) {
-                        pause()
-                        notifyUI()
-                        musicPausedBecauseOfCall = true
+            override fun onCallStateChanged(state: Int, incomingNumber: String) {
+                when (state) {
+                    TelephonyManager.CALL_STATE_RINGING -> {
+                        //Incoming call: Pause music
+                        Log.v(Constants.TAG, "Ringing")
+                        if (status == PLAYING) {
+                            pause()
+                            notifyUI()
+                            musicPausedBecauseOfCall = true
+                        }
                     }
-                } else if (state == TelephonyManager.CALL_STATE_IDLE) {
-                    //Not in call: Play music
-                    Log.v(Constants.TAG, "Idle")
-                    if (musicPausedBecauseOfCall) {
-                        play()
-                        notifyUI()
-                        musicPausedBecauseOfCall = false
+                    TelephonyManager.CALL_STATE_IDLE -> {
+                        //Not in call: Play music
+                        Log.v(Constants.TAG, "Idle")
+                        if (musicPausedBecauseOfCall) {
+                            play()
+                            notifyUI()
+                            musicPausedBecauseOfCall = false
+                        }
                     }
-                } else if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                    //A call is dialing, active or on hold
-                    Log.v(Constants.TAG, "Dialling")
-                    if (status == PLAYING) {
-                        pause()
-                        notifyUI()
-                        musicPausedBecauseOfCall = true
+                    TelephonyManager.CALL_STATE_OFFHOOK -> {
+                        //A call is dialing, active or on hold
+                        Log.v(Constants.TAG, "Dialling")
+                        if (status == PLAYING) {
+                            pause()
+                            notifyUI()
+                            musicPausedBecauseOfCall = true
+                        }
                     }
                 }
                 super.onCallStateChanged(state, incomingNumber)
             }
         }
-        val mgr: TelephonyManager? = getSystemService(TELEPHONY_SERVICE) as TelephonyManager?
-        if (mgr != null) {
-            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
-        }
+        (getSystemService(TELEPHONY_SERVICE) as TelephonyManager?)?.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
         initAudioFX()
         try {
             applyMediaPlayerEQ()
@@ -230,13 +261,13 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         }
     }
 
-    public override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (MyApp.Companion.getService() == null) {
-            MyApp.Companion.setService(this)
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        if (MyApp.getService() == null) {
+            MyApp.setService(this)
         }
-        if (intent != null && intent.getAction() != null) {
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent)
-            Log.d("PlayerService", "onStartCommand: " + intent.getAction())
+        if (intent.action != null) {
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+            Log.d("PlayerService", "onStartCommand: " + intent.action)
         } else {
             Log.d("PlayerService", "onStartCommand: null intent or no action in intent")
         }
@@ -255,8 +286,8 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
 
     private fun InitializeReceiver() {
         mReceiver = object : BroadcastReceiver() {
-            public override fun onReceive(context: Context, intent: Intent) {
-                val action: String? = intent.getAction()
+            override fun onReceive(context: Context, intent: Intent) {
+                val action: String? = intent.action
                 Log.d("PlayerService", "onReceive: action " + action)
                 if (action == null) {
                     return
@@ -324,7 +355,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                     Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET -> {
                         Log.v(Constants.TAG, "Luaanch now playing from service")
                         //permission seek activity is used here to show splash screen
-                        startActivity(Intent(getApplicationContext(),
+                        startActivity(Intent(applicationContext,
                             ActivityPermissionSeek::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                     }
                     Constants.ACTION.SHUFFLE_WIDGET -> {
@@ -345,34 +376,35 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                         updateWidget(false)
                     }
                     Constants.ACTION.REPEAT_WIDGET -> {
-                        val pref: SharedPreferences = MyApp.Companion.getPref()
-                        if (pref.getInt(Constants.PREFERENCES.REPEAT,
-                                0) == Constants.PREFERENCE_VALUES.NO_REPEAT
-                        ) {
-                            pref.edit().putInt(Constants.PREFERENCES.REPEAT,
-                                Constants.PREFERENCE_VALUES.REPEAT_ALL).apply()
-                        } else if (pref.getInt(Constants.PREFERENCES.REPEAT,
-                                0) == Constants.PREFERENCE_VALUES.REPEAT_ALL
-                        ) {
-                            pref.edit().putInt(Constants.PREFERENCES.REPEAT,
-                                Constants.PREFERENCE_VALUES.REPEAT_ONE).apply()
-                        } else if (pref.getInt(Constants.PREFERENCES.REPEAT,
-                                0) == Constants.PREFERENCE_VALUES.REPEAT_ONE
-                        ) {
-                            pref.edit().putInt(Constants.PREFERENCES.REPEAT,
-                                Constants.PREFERENCE_VALUES.NO_REPEAT).apply()
+                        val pref: SharedPreferences = MyApp.getPref()!!
+                        when {
+                            pref.getInt(Constants.PREFERENCES.REPEAT,
+                                0) == Constants.PREFERENCE_VALUES.NO_REPEAT -> {
+                                pref.edit().putInt(Constants.PREFERENCES.REPEAT,
+                                    Constants.PREFERENCE_VALUES.REPEAT_ALL).apply()
+                            }
+                            pref.getInt(Constants.PREFERENCES.REPEAT,
+                                0) == Constants.PREFERENCE_VALUES.REPEAT_ALL -> {
+                                pref.edit().putInt(Constants.PREFERENCES.REPEAT,
+                                    Constants.PREFERENCE_VALUES.REPEAT_ONE).apply()
+                            }
+                            pref.getInt(Constants.PREFERENCES.REPEAT,
+                                0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
+                                pref.edit().putInt(Constants.PREFERENCES.REPEAT,
+                                    Constants.PREFERENCE_VALUES.NO_REPEAT).apply()
+                            }
                         }
                         updateWidget(false)
                     }
                     Constants.ACTION.FAV_WIDGET -> {
                         if (getCurrentTrack() == null) return
-                        if (PlaylistManager.getInstance(getApplicationContext()).isFavNew(
+                        if (PlaylistManager.getInstance(applicationContext).isFavNew(
                                 getCurrentTrack()!!.id)
                         ) {
-                            PlaylistManager.getInstance(getApplicationContext()).RemoveFromFavNew(
+                            PlaylistManager.getInstance(applicationContext).RemoveFromFavNew(
                                 getCurrentTrack()!!.id)
                         } else {
-                            PlaylistManager.getInstance(getApplicationContext())
+                            PlaylistManager.getInstance(applicationContext)
                                 .addSongToFav(getCurrentTrack()!!.id)
                         }
                         updateWidget(false)
@@ -380,7 +412,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                 }
             }
         }
-        val intentFilter: IntentFilter = IntentFilter()
+        val intentFilter = IntentFilter()
         intentFilter.addAction(Constants.ACTION.PLAY_PAUSE_ACTION)
         intentFilter.addAction(Constants.ACTION.PREV_ACTION)
         intentFilter.addAction(Constants.ACTION.NEXT_ACTION)
@@ -392,8 +424,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         intentFilter.addAction(Constants.ACTION.SHUFFLE_WIDGET)
         intentFilter.addAction(Constants.ACTION.REPEAT_WIDGET)
         intentFilter.addAction(Constants.ACTION.FAV_WIDGET)
-        LocalBroadcastManager.getInstance(getApplicationContext())
-            .registerReceiver(mReceiver, intentFilter)
+        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(mReceiver!!, intentFilter)
     }
 
     private fun InitializeIntents() {
@@ -403,100 +434,93 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                 Constants.CLICK_ON_NOTIF.OPEN_LIBRARY_VIEW) == Constants.CLICK_ON_NOTIF.OPEN_LIBRARY_VIEW
         ) {
             notificationIntent = Intent(this, ActivityMain::class.java)
-            notificationIntent.setAction(Constants.ACTION.MAIN_ACTION)
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            notificationIntent.action = Constants.ACTION.MAIN_ACTION
+            notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0)
         } else if (MyApp.Companion.getPref().getInt(getString(R.string.pref_click_on_notif),
                 Constants.CLICK_ON_NOTIF.OPEN_LIBRARY_VIEW) == Constants.CLICK_ON_NOTIF.OPEN_DISC_VIEW
         ) {
             notificationIntent = Intent(this, ActivityNowPlaying::class.java)
-            notificationIntent.setAction(Constants.ACTION.MAIN_ACTION)
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            notificationIntent.action = Constants.ACTION.MAIN_ACTION
+            notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0)
         }
         val favIntent: Intent = Intent(this, PlayerService::class.java)
-        favIntent.setAction(Constants.ACTION.FAV_ACTION)
-        val pfavintent: PendingIntent = PendingIntent.getService(this, 0,
-            favIntent, 0)
+        favIntent.action = Constants.ACTION.FAV_ACTION
+        val pfavintent: PendingIntent = PendingIntent.getService(this, 0, favIntent, 0)
         val previousIntent: Intent = Intent(this, PlayerService::class.java)
-        previousIntent.setAction(Constants.ACTION.PREV_ACTION)
-        ppreviousIntent = PendingIntent.getService(this, 0,
-            previousIntent, 0)
+        previousIntent.action = Constants.ACTION.PREV_ACTION
+        ppreviousIntent = PendingIntent.getService(this, 0, previousIntent, 0)
         val playIntent: Intent = Intent(this, PlayerService::class.java)
-        playIntent.setAction(Constants.ACTION.PLAY_PAUSE_ACTION)
-        pplayIntent = PendingIntent.getService(this, 0,
-            playIntent, 0)
+        playIntent.action = Constants.ACTION.PLAY_PAUSE_ACTION
+        pplayIntent = PendingIntent.getService(this, 0, playIntent, 0)
         val nextIntent: Intent = Intent(this, PlayerService::class.java)
-        nextIntent.setAction(Constants.ACTION.NEXT_ACTION)
-        pnextIntent = PendingIntent.getService(this, 0,
-            nextIntent, 0)
+        nextIntent.action = Constants.ACTION.NEXT_ACTION
+        pnextIntent = PendingIntent.getService(this, 0, nextIntent, 0)
         val dismissIntent: Intent = Intent(this, PlayerService::class.java)
-        dismissIntent.setAction(Constants.ACTION.DISMISS_EVENT)
-        pdismissIntent = PendingIntent.getService(this, 0,
-            dismissIntent, 0)
+        dismissIntent.action = Constants.ACTION.DISMISS_EVENT
+        pdismissIntent = PendingIntent.getService(this, 0, dismissIntent, 0)
         val swipeToDismissIntent: Intent = Intent(this, PlayerService::class.java)
-        swipeToDismissIntent.setAction(Constants.ACTION.SWIPE_TO_DISMISS)
+        swipeToDismissIntent.action = Constants.ACTION.SWIPE_TO_DISMISS
         pSwipeToDismiss = PendingIntent.getService(this, 0, swipeToDismissIntent, 0)
     }
 
-    @TargetApi(21)
     private fun InitializeMediaSession() {
-        mMediaSession =
-            MediaSessionCompat(getApplicationContext(), getPackageName() + "." + ContentValues.TAG)
-        mMediaSession.setCallback(object : MediaSessionCompat.Callback() {
-            public override fun onMediaButtonEvent(mediaButtonIntent: Intent): Boolean {
-                Log.d(ContentValues.TAG, "onMediaButtonEvent called: " + mediaButtonIntent)
+        mMediaSession = MediaSessionCompat(applicationContext, packageName + "." + ContentValues.TAG)
+        mMediaSession!!.setCallback(object : MediaSessionCompat.Callback() {
+            override fun onMediaButtonEvent(mediaButtonIntent: Intent): Boolean {
+                Log.d(ContentValues.TAG, "onMediaButtonEvent called: $mediaButtonIntent")
                 return super.onMediaButtonEvent(mediaButtonIntent)
             }
 
-            public override fun onPause() {
+            override fun onPause() {
                 Log.d(ContentValues.TAG, "onPause called (media button pressed)")
                 onPlayPauseButtonClicked()
                 super.onPause()
             }
 
-            public override fun onFastForward() {
+            override fun onFastForward() {
                 Log.d(ContentValues.TAG, "onFastForward: called")
                 super.onFastForward()
             }
 
-            public override fun onCommand(command: String, extras: Bundle, cb: ResultReceiver) {
-                Log.d(ContentValues.TAG, "onCommand: " + command)
+            override fun onCommand(command: String, extras: Bundle, cb: ResultReceiver) {
+                Log.d(ContentValues.TAG, "onCommand: $command")
                 super.onCommand(command, extras, cb)
             }
 
-            public override fun onSeekTo(pos: Long) {
-                Log.d(ContentValues.TAG, "onSeekTo: called " + pos)
+            override fun onSeekTo(pos: Long) {
+                Log.d(ContentValues.TAG, "onSeekTo: called $pos")
                 seekTrack(pos.toInt())
                 super.onSeekTo(pos)
             }
 
-            public override fun onRewind() {
+            override fun onRewind() {
                 Log.d(ContentValues.TAG, "onRewind: called")
                 super.onRewind()
             }
 
-            public override fun onSkipToPrevious() {
+            override fun onSkipToPrevious() {
                 Log.d(ContentValues.TAG, "onskiptoPrevious called (media button pressed)")
                 prevTrack()
                 super.onSkipToPrevious()
             }
 
-            public override fun onSkipToNext() {
+            override fun onSkipToNext() {
                 Log.d(ContentValues.TAG, "onskiptonext called (media button pressed)")
                 nextTrack()
                 super.onSkipToNext()
             }
 
-            public override fun onPlay() {
+            override fun onPlay() {
                 Log.d(ContentValues.TAG, "onPlay called (media button pressed)")
                 onPlayPauseButtonClicked()
                 super.onPlay()
             }
 
-            public override fun onStop() {
+            override fun onStop() {
                 stop()
                 notifyUI()
                 Log.d(ContentValues.TAG, "onStop called (media button pressed)")
@@ -508,7 +532,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                 //if pressed multiple times in 500 ms, skip to next song
                 val currentTime: Long = System.currentTimeMillis()
                 Log.d(ContentValues.TAG,
-                    "onPlay: " + lastTimePlayPauseClicked + " current " + currentTime)
+                    "onPlay: $lastTimePlayPauseClicked current $currentTime")
                 if (currentTime - lastTimePlayPauseClicked < 500) {
                     Log.d(ContentValues.TAG, "onPlay: nextTrack on multiple play pause click")
                     nextTrack()
@@ -520,17 +544,17 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                 notifyUI()
             }
         })
-        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS or MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
+        mMediaSession!!.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS or MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS)
         stateBuilder = PlaybackStateCompat.Builder()
             .setActions(
                 (PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_SEEK_TO or
                         PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or PlaybackStateCompat.ACTION_PAUSE or
                         PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS))
-        val state: PlaybackStateCompat = stateBuilder
+        val state: PlaybackStateCompat = stateBuilder!!
             .setState(PlaybackStateCompat.STATE_STOPPED, 0, 1f)
             .build()
-        mMediaSession.setPlaybackState(state)
-        mMediaSession.setActive(true)
+        mMediaSession!!.setPlaybackState(state)
+        mMediaSession!!.setActive(true)
     }
 
     /**
@@ -540,8 +564,8 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         try {
             //Instatiate the equalizer helper object.
             mEqualizerHelper =
-                EqualizerHelper(getApplicationContext(), mediaPlayer.getAudioSessionId(),
-                    MyApp.Companion.getPref().getBoolean("pref_equ_enabled", true))
+                EqualizerHelper(applicationContext, mediaPlayer.getAudioSessionId(),
+                    MyApp.getPref()!!.getBoolean("pref_equ_enabled", true))
         } catch (e: UnsupportedOperationException) {
             e.printStackTrace()
         } catch (e: Exception) {
@@ -550,11 +574,9 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     }
 
     private fun applyMediaPlayerEQ() {
-        if (mEqualizerHelper == null || !mEqualizerHelper.isEqualizerSupported()) return
-        val equalizerSetting: EqualizerSetting? = mEqualizerHelper.getLastEquSetting()
-        if (equalizerSetting == null) return
-        Log.d("PlayerService",
-            "applyMediaPlayerEQ: applying equ setting " + equalizerSetting.toString())
+        if (mEqualizerHelper == null || !mEqualizerHelper!!.isEqualizerSupported()) return
+        val equalizerSetting: EqualizerSetting = mEqualizerHelper!!.getLastEquSetting()
+        Log.d("PlayerService", "applyMediaPlayerEQ: applying equ setting $equalizerSetting")
         val fiftyHertzBandValue: Int = equalizerSetting.getFiftyHertz()
         val oneThirtyHertzBandValue: Int = equalizerSetting.getFiftyHertz()
         val threeTwentyHertzBandValue: Int = equalizerSetting.getFiftyHertz()
@@ -603,118 +625,140 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         }
 
         //320Hz Band.
-        if (threeTwentyHertzBandValue == 16) {
-            mEqualizerHelper.getEqualizer().setBandLevel(threeTwentyHertzBand, 0.toShort())
-        } else if (threeTwentyHertzBandValue < 16) {
-            if (threeTwentyHertzBandValue == 0) {
-                mEqualizerHelper.getEqualizer()
-                    .setBandLevel(threeTwentyHertzBand, (-1500).toShort())
-            } else {
-                mEqualizerHelper.getEqualizer().setBandLevel(threeTwentyHertzBand,
-                    (-(16 - threeTwentyHertzBandValue) * 100).toShort())
+        when {
+            threeTwentyHertzBandValue == 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand, 0.toShort())
             }
-        } else if (threeTwentyHertzBandValue > 16) {
-            mEqualizerHelper.getEqualizer().setBandLevel(threeTwentyHertzBand,
-                ((threeTwentyHertzBandValue - 16) * 100).toShort())
+            threeTwentyHertzBandValue < 16 -> {
+                if (threeTwentyHertzBandValue == 0) {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand, (-1500).toShort())
+                } else {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand,
+                        (-(16 - threeTwentyHertzBandValue) * 100).toShort())
+                }
+            }
+            threeTwentyHertzBandValue > 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand,
+                    ((threeTwentyHertzBandValue - 16) * 100).toShort())
+            }
         }
 
         //800Hz Band.
-        if (eightHundredHertzBandValue == 16) {
-            mEqualizerHelper.getEqualizer().setBandLevel(eightHundredHertzBand, 0.toShort())
-        } else if (eightHundredHertzBandValue < 16) {
-            if (eightHundredHertzBandValue == 0) {
-                mEqualizerHelper.getEqualizer()
-                    .setBandLevel(eightHundredHertzBand, (-1500).toShort())
-            } else {
-                mEqualizerHelper.getEqualizer().setBandLevel(eightHundredHertzBand,
-                    (-(16 - eightHundredHertzBandValue) * 100).toShort())
+        when {
+            eightHundredHertzBandValue == 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand, 0.toShort())
             }
-        } else if (eightHundredHertzBandValue > 16) {
-            mEqualizerHelper.getEqualizer().setBandLevel(eightHundredHertzBand,
-                ((eightHundredHertzBandValue - 16) * 100).toShort())
+            eightHundredHertzBandValue < 16 -> {
+                if (eightHundredHertzBandValue == 0) {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand, (-1500).toShort())
+                } else {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand,
+                        (-(16 - eightHundredHertzBandValue) * 100).toShort())
+                }
+            }
+            eightHundredHertzBandValue > 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand,
+                    ((eightHundredHertzBandValue - 16) * 100).toShort())
+            }
         }
 
         //2kHz Band.
-        if (twoKilohertzBandValue == 16) {
-            mEqualizerHelper.getEqualizer().setBandLevel(twoKilohertzBand, 0.toShort())
-        } else if (twoKilohertzBandValue < 16) {
-            if (twoKilohertzBandValue == 0) {
-                mEqualizerHelper.getEqualizer().setBandLevel(twoKilohertzBand, (-1500).toShort())
-            } else {
-                mEqualizerHelper.getEqualizer()
-                    .setBandLevel(twoKilohertzBand, (-(16 - twoKilohertzBandValue) * 100).toShort())
+        when {
+            twoKilohertzBandValue == 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, 0.toShort())
             }
-        } else if (twoKilohertzBandValue > 16) {
-            mEqualizerHelper.getEqualizer()
-                .setBandLevel(twoKilohertzBand, ((twoKilohertzBandValue - 16) * 100).toShort())
+            twoKilohertzBandValue < 16 -> {
+                if (twoKilohertzBandValue == 0) {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, (-1500).toShort())
+                } else {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, (-(16 - twoKilohertzBandValue) * 100).toShort())
+                }
+            }
+            twoKilohertzBandValue > 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, ((twoKilohertzBandValue - 16) * 100).toShort())
+            }
         }
 
         //5kHz Band.
-        if (fiveKilohertzBandValue == 16) {
-            mEqualizerHelper.getEqualizer().setBandLevel(fiveKilohertzBand, 0.toShort())
-        } else if (fiveKilohertzBandValue < 16) {
-            if (fiveKilohertzBandValue == 0) {
-                mEqualizerHelper.getEqualizer().setBandLevel(fiveKilohertzBand, (-1500).toShort())
-            } else {
-                mEqualizerHelper.getEqualizer().setBandLevel(fiveKilohertzBand,
-                    (-(16 - fiveKilohertzBandValue) * 100).toShort())
+        when {
+            fiveKilohertzBandValue == 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, 0.toShort())
             }
-        } else if (fiveKilohertzBandValue > 16) {
-            mEqualizerHelper.getEqualizer()
-                .setBandLevel(fiveKilohertzBand, ((fiveKilohertzBandValue - 16) * 100).toShort())
+            fiveKilohertzBandValue < 16 -> {
+                if (fiveKilohertzBandValue == 0) {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, (-1500).toShort())
+                } else {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand,
+                        (-(16 - fiveKilohertzBandValue) * 100).toShort())
+                }
+            }
+            fiveKilohertzBandValue > 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, ((fiveKilohertzBandValue - 16) * 100).toShort())
+            }
         }
 
         //12.5kHz Band.
-        if (twelvePointFiveKilohertzBandValue == 16) {
-            mEqualizerHelper.getEqualizer().setBandLevel(twelvePointFiveKilohertzBand, 0.toShort())
-        } else if (twelvePointFiveKilohertzBandValue < 16) {
-            if (twelvePointFiveKilohertzBandValue == 0) {
-                mEqualizerHelper.getEqualizer()
-                    .setBandLevel(twelvePointFiveKilohertzBand, (-1500).toShort())
-            } else {
-                mEqualizerHelper.getEqualizer().setBandLevel(twelvePointFiveKilohertzBand,
-                    (-(16 - twelvePointFiveKilohertzBandValue) * 100).toShort())
+        when {
+            twelvePointFiveKilohertzBandValue == 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand, 0.toShort())
             }
-        } else if (twelvePointFiveKilohertzBandValue > 16) {
-            mEqualizerHelper.getEqualizer().setBandLevel(twelvePointFiveKilohertzBand,
-                ((twelvePointFiveKilohertzBandValue - 16) * 100).toShort())
+            twelvePointFiveKilohertzBandValue < 16 -> {
+                if (twelvePointFiveKilohertzBandValue == 0) {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand, (-1500).toShort())
+                } else {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand,
+                        (-(16 - twelvePointFiveKilohertzBandValue) * 100).toShort())
+                }
+            }
+            twelvePointFiveKilohertzBandValue > 16 -> {
+                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand,
+                    ((twelvePointFiveKilohertzBandValue - 16) * 100).toShort())
+            }
         }
 
         //Set the audioFX values.
-        mEqualizerHelper.getVirtualizer().setStrength(equalizerSetting.getVirtualizer())
-        mEqualizerHelper.getBassBoost().setStrength(equalizerSetting.getBassBoost())
-        if (reverbValue.toInt() == 0) {
-            mEqualizerHelper.getPresetReverb().setPreset(PresetReverb.PRESET_NONE)
-        } else if (reverbValue.toInt() == 1) {
-            mEqualizerHelper.getPresetReverb().setPreset(PresetReverb.PRESET_LARGEHALL)
-        } else if (reverbValue.toInt() == 2) {
-            mEqualizerHelper.getPresetReverb().setPreset(PresetReverb.PRESET_LARGEROOM)
-        } else if (reverbValue.toInt() == 3) {
-            mEqualizerHelper.getPresetReverb().setPreset(PresetReverb.PRESET_MEDIUMHALL)
-        } else if (reverbValue.toInt() == 4) {
-            mEqualizerHelper.getPresetReverb().setPreset(PresetReverb.PRESET_MEDIUMROOM)
-        } else if (reverbValue.toInt() == 5) {
-            mEqualizerHelper.getPresetReverb().setPreset(PresetReverb.PRESET_SMALLROOM)
-        } else if (reverbValue.toInt() == 6) {
-            mEqualizerHelper.getPresetReverb().setPreset(PresetReverb.PRESET_PLATE)
+        mEqualizerHelper!!.getVirtualizer()!!.setStrength(equalizerSetting.getVirtualizer())
+        mEqualizerHelper!!.getBassBoost()!!.setStrength(equalizerSetting.getBassBoost())
+        when {
+            reverbValue.toInt() == 0 -> {
+                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_NONE
+            }
+            reverbValue.toInt() == 1 -> {
+                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_LARGEHALL
+            }
+            reverbValue.toInt() == 2 -> {
+                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_LARGEROOM
+            }
+            reverbValue.toInt() == 3 -> {
+                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_MEDIUMHALL
+            }
+            reverbValue.toInt() == 4 -> {
+                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_MEDIUMROOM
+            }
+            reverbValue.toInt() == 5 -> {
+                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_SMALLROOM
+            }
+            reverbValue.toInt() == 6 -> {
+                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_PLATE
+            }
         }
     }
 
     fun PostNotification() {
         Executors.newSingleThreadExecutor().execute(object : Runnable {
-            public override fun run() {
+            override fun run() {
                 if (currentTrack == null) {
                     return
                 }
                 var b: Bitmap? = null
                 try {
-                    b = MusicLibrary.getInstance().getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                    b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
                 if (b != null) {
-                    var width: Int = b.getWidth()
-                    var height: Int = b.getHeight()
+                    var width: Int = b.width
+                    var height: Int = b.height
                     val maxWidth: Int = 300
                     val maxHeight: Int = 300
                     if (width > height) {
@@ -746,9 +790,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                         secondaryText += getString(R.string.empty_queue)
                     } else {
                         try {
-                            secondaryText += MusicLibrary.getInstance()
-                                .getTrackItemFromId(trackList.get(currentTrackPosition + 1))
-                                .getTitle()
+                            secondaryText += MusicLibrary.instance!!.getTrackItemFromId(trackList.get(currentTrackPosition + 1))!!.title
                         } catch (e: IndexOutOfBoundsException) {
                             Log.v(Constants.TAG, e.toString())
                         } catch (ignored: Exception) {
@@ -778,14 +820,14 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                 //posting notification fails for huawei devices in case of mediastyle notification
                 val isHuawei: Boolean = ((Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1
                         || Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
-                        && Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("huawei"))
+                        && Build.MANUFACTURER.lowercase(Locale.getDefault()).contains("huawei"))
                 if (!isHuawei) {
                     builder.setStyle(mediaStyle)
                 }
                 if (b != null) {
                     builder.setLargeIcon(b)
                 } else {
-                    builder.setColor(ColorHelper.getWidgetColor())
+                    builder.color = ColorHelper.getWidgetColor()
                 }
                 builder.addAction(androidx.core.app.NotificationCompat.Action(R.drawable.ic_skip_previous_black_24dp,
                     "Prev",
@@ -805,10 +847,8 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                 builder.addAction(androidx.core.app.NotificationCompat.Action(R.drawable.ic_close_white_24dp,
                     "Close",
                     pdismissIntent))
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    builder.setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
-                }
-                builder.setPriority(Notification.PRIORITY_MAX)
+                builder.setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
+                builder.priority = Notification.PRIORITY_MAX
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     builder.setChannelId(getString(R.string.notification_channel))
                 }
@@ -828,9 +868,9 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     //get played song position, shuffle the list and get the played song at first position
     //this will be called when song is played from music library
     private fun shuffleTracklist(position: Int) {
-        if (!trackList.isEmpty()) {
+        if (trackList.isNotEmpty()) {
             val originalSongPlayed: Int = trackList.get(position)
-            Collections.shuffle(trackList)
+            trackList.shuffle()
             trackList.remove(originalSongPlayed)
             trackList.add(position, originalSongPlayed)
         }
@@ -838,44 +878,41 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
 
     //this will be called when clicked on shuffle button on now playing
     fun shuffle(shuffleStatus: Boolean) {
-        if (!trackList.isEmpty()) {
-            val currentSongPlaying: Int = trackList.get(currentTrackPosition)
+        if (trackList.isNotEmpty()) {
+            val currentSongPlaying: Int = trackList[currentTrackPosition]
             if (shuffleStatus) {
-                Collections.shuffle(trackList)
+                trackList.shuffle()
                 trackList.remove(currentSongPlaying)
                 trackList.add(0, currentSongPlaying)
                 currentTrackPosition = 0
             } else {
                 val time: Long = System.currentTimeMillis()
-                Collections.sort<Int>(trackList, object : Comparator<Int?> {
-                    public override fun compare(integer: Int?, t1: Int?): Int {
-                        try {
-                            return MusicLibrary.getInstance().getTrackMap().get(integer)
-                                .compareToIgnoreCase(MusicLibrary.getInstance().getTrackMap()
-                                    .get(t1))
-                        } catch (e: NullPointerException) {
-                            return 0
-                        }
+                trackList.sortWith { integer, t1 ->
+                    try {
+                        MusicLibrary.instance!!.getTrackMap().get(integer)
+                            .compareToIgnoreCase(MusicLibrary.instance!!.getTrackMap()
+                                .get(t1))
+                    } catch (e: NullPointerException) {
+                        0
                     }
-                })
-                Log.d(ContentValues.TAG,
-                    "shuffle: sorted in " + (System.currentTimeMillis() - time))
+                }
+                Log.d(ContentValues.TAG, "shuffle: sorted in " + (System.currentTimeMillis() - time))
                 currentTrackPosition = trackList.indexOf(currentSongPlaying)
             }
         }
     }
 
-    public override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent): IBinder? {
         return playerBinder
     }
 
-    public override fun onUnbind(intent: Intent): Boolean {
+    override fun onUnbind(intent: Intent): Boolean {
         return super.onUnbind(intent)
     }
 
     fun swapPosition(from: Int, to: Int) {
-        if (!trackList.isEmpty()) {
-            val currentTrack: Int = trackList.get(currentTrackPosition)
+        if (trackList.isNotEmpty()) {
+            val currentTrack: Int = trackList[currentTrackPosition]
             Collections.swap(trackList, from, to)
             currentTrackPosition = trackList.indexOf(currentTrack)
         }
@@ -903,8 +940,8 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
 
     private fun notifyUI() {
         val UIIntent: Intent = Intent()
-        UIIntent.setAction(Constants.ACTION.COMPLETE_UI_UPDATE)
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(UIIntent)
+        UIIntent.action = Constants.ACTION.COMPLETE_UI_UPDATE
+        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(UIIntent)
         try {
             updateWidget(true)
         } catch (ignored: Exception) {
@@ -921,13 +958,13 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
             return
         }
         val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(context)
-        val views: RemoteViews = RemoteViews(context.getPackageName(), R.layout.wigdet)
+        val views: RemoteViews = RemoteViews(context.packageName, R.layout.wigdet)
         views.setTextViewText(R.id.song_name_widget, getCurrentTrack()!!.title)
         views.setTextViewText(R.id.artist_widget, getCurrentTrack()!!.getArtist())
         if (loadBitmap) {
             var b: Bitmap? = null
             try {
-                b = MusicLibrary.getInstance().getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
             } catch (e: Exception) {
                 //e.printStackTrace();
             }
@@ -944,7 +981,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         } else {
             views.setImageViewResource(R.id.widget_Play, R.drawable.ic_play_arrow_black_24dp)
         }
-        if (MyApp.Companion.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
+        if (MyApp.getPref()!!.getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
             views.setInt(R.id.widget_shuffle,
                 "setColorFilter",
                 ColorHelper.getColor(R.color.colorwhite))
@@ -952,34 +989,30 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
             views.setInt(R.id.widget_shuffle, "setColorFilter", ColorHelper.getColor(R.color.gray3))
         }
         views.setTextColor(R.id.text_in_repeat_widget, ColorHelper.getColor(R.color.colorwhite))
-        if (MyApp.Companion.getPref()
-                .getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL
-        ) {
-            views.setTextViewText(R.id.text_in_repeat_widget, "A")
-            views.setInt(R.id.widget_repeat,
-                "setColorFilter",
-                ColorHelper.getColor(R.color.colorwhite))
-        } else if (MyApp.Companion.getPref()
-                .getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE
-        ) {
-            views.setTextViewText(R.id.text_in_repeat_widget, "1")
-            views.setInt(R.id.text_in_repeat_widget,
-                "setTextColor",
-                ColorHelper.getColor(R.color.colorwhite))
-            views.setInt(R.id.widget_repeat,
-                "setColorFilter",
-                ColorHelper.getColor(R.color.colorwhite))
-        } else if (MyApp.Companion.getPref()
-                .getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.NO_REPEAT
-        ) {
-            views.setTextViewText(R.id.text_in_repeat_widget, "")
-            views.setInt(R.id.widget_repeat,
-                "setColorFilter",
-                ColorHelper.getColor(R.color.dark_gray3))
+        when {
+            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL -> {
+                views.setTextViewText(R.id.text_in_repeat_widget, "A")
+                views.setInt(R.id.widget_repeat,
+                    "setColorFilter",
+                    ColorHelper.getColor(R.color.colorwhite))
+            }
+            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
+                views.setTextViewText(R.id.text_in_repeat_widget, "1")
+                views.setInt(R.id.text_in_repeat_widget,
+                    "setTextColor",
+                    ColorHelper.getColor(R.color.colorwhite))
+                views.setInt(R.id.widget_repeat,
+                    "setColorFilter",
+                    ColorHelper.getColor(R.color.colorwhite))
+            }
+            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.NO_REPEAT -> {
+                views.setTextViewText(R.id.text_in_repeat_widget, "")
+                views.setInt(R.id.widget_repeat,
+                    "setColorFilter",
+                    ColorHelper.getColor(R.color.dark_gray3))
+            }
         }
-        if (getCurrentTrack() != null && PlaylistManager.getInstance(getApplicationContext())
-                .isFavNew(
-                    getCurrentTrack()!!.id)
+        if (getCurrentTrack() != null && PlaylistManager.getInstance(applicationContext)!!.isFavNew(getCurrentTrack()!!.id)
         ) {
             //views.setInt(R.id.widget_fav, "setColorFilter", ColorHelper.GetWidgetColor());
             views.setImageViewResource(R.id.widget_fav, R.drawable.ic_favorite_black_24dp)
@@ -1005,10 +1038,13 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     }
 
     fun getCurrentTrack(): TrackItem? {
-        if (currentTrackPosition < 0) {
-            return null
-        } else {
-            return currentTrack
+        return when {
+            currentTrackPosition < 0 -> {
+                null
+            }
+            else -> {
+                currentTrack
+            }
         }
     }
 
@@ -1020,10 +1056,9 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         return trackList
     }
 
-    @TargetApi(21)
     fun setMediaSessionMetadata(enable: Boolean) {
-        Executors.newSingleThreadExecutor().execute(Runnable({
-            if (currentTrack == null) return@execute
+        Executors.newSingleThreadExecutor().execute(Runnable {
+            if (currentTrack == null) return@Runnable
             val metadataBuilder: MediaMetadataCompat.Builder = MediaMetadataCompat.Builder()
             metadataBuilder.putString(MediaMetadata.METADATA_KEY_TITLE, currentTrack!!.title)
             metadataBuilder.putString(MediaMetadata.METADATA_KEY_ARTIST, currentTrack!!.getArtist())
@@ -1033,13 +1068,12 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
             MediaMetadata.METADATA_KEY_DURATION,
             currentTrack!!.durInt.toLong())
             metadataBuilder.putString(MediaMetadata.METADATA_KEY_GENRE, currentTrack!!.genre)
-            if (MyApp.Companion.getPref()
-                    .getBoolean(getString(R.string.pref_lock_screen_album_Art), true)
+            if (MyApp.getPref()!!.getBoolean(getString(R.string.pref_lock_screen_album_Art), true)
             ) {
                 if (enable) {
                     var b: Bitmap? = null
                     try {
-                        b = MusicLibrary.getInstance().getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                        b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -1049,32 +1083,30 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
                 }
             }
             mMediaSession.setMetadata(metadataBuilder.build())
-        }))
+        })
     }
 
     fun playTrack(pos: Int) {
         try {
-            trackList.get(pos)
+            trackList[pos]
         } catch (ignored: Exception) {
             return
         }
-        val temp: TrackItem? = MusicLibrary.getInstance().getTrackItemFromId(trackList.get(pos))
+        val temp: TrackItem? = MusicLibrary.instance!!.getTrackItemFromId(trackList[pos])
         if (temp == null) {
-            val h: Handler = Handler(getApplicationContext().getMainLooper())
-            h.post(object : Runnable {
-                public override fun run() {
-                    Toast.makeText(getApplicationContext(),
-                        getString(R.string.error_playing_track),
-                        Toast.LENGTH_LONG).show()
-                }
-            })
+            val h = Handler(applicationContext.mainLooper)
+            h.post {
+                Toast.makeText(applicationContext,
+                    getString(R.string.error_playing_track),
+                    Toast.LENGTH_LONG).show()
+            }
             return
         }
         currentTrack = temp
 
 
         //here
-        PlaylistManager.getInstance(getApplicationContext())
+        PlaylistManager.getInstance(applicationContext)
             .AddToRecentlyPlayedAndUpdateCount(trackList.get(pos))
         val result: Int = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
             AudioManager.AUDIOFOCUS_GAIN)
@@ -1090,8 +1122,8 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         val file: FileInputStream
         try {
             file = FileInputStream(File(currentTrack!!.getFilePath()))
-            mediaPlayer.setDataSource(file.getFD())
-            mediaPlayer.prepareAsync()
+            mediaPlayer!!.setDataSource(file.fd)
+            mediaPlayer!!.prepareAsync()
             playAfterPrepare = true
             //mediaPlayer.prepare();
         } catch (e: FileNotFoundException) {
@@ -1107,10 +1139,8 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         }
         currentTrackPosition = pos
         setStatus(PLAYING)
-        if (currentTrack != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setSessionState()
-            setMediaSessionMetadata(true)
-        }
+        setSessionState()
+        setMediaSessionMetadata(true)
 
         //sometimes player may shut down abruptly, make sure you save the current queue every time song changes
         //storeTracklist();
@@ -1118,24 +1148,24 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
 
     private fun setSessionState() {
         //set state play
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (status == PLAYING) {
-                stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+        when (status) {
+            PLAYING -> {
+                stateBuilder!!.setState(PlaybackStateCompat.STATE_PLAYING,
                     getCurrentTrackProgress().toLong(),
                     1f)
-            } else if (status == PAUSED) {
-                stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                    getCurrentTrackProgress().toLong(),
-                    1f)
-            } else {
-                stateBuilder.setState(PlaybackStateCompat.STATE_STOPPED, 0, 1f)
             }
-            mMediaSession.setPlaybackState(stateBuilder.build())
+            PAUSED -> {
+                stateBuilder!!.setState(PlaybackStateCompat.STATE_PAUSED, getCurrentTrackProgress().toLong(), 1f)
+            }
+            else -> {
+                stateBuilder!!.setState(PlaybackStateCompat.STATE_STOPPED, 0, 1f)
+            }
         }
+        mMediaSession!!.setPlaybackState(stateBuilder!!.build())
     }
 
     fun playAtPosition(position: Int) {
-        if (MyApp.Companion.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
+        if (MyApp.getPref()!!.getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
             shuffleTracklist(position)
             playTrack(position)
         } else {
@@ -1149,7 +1179,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         playTrack(position)
         PostNotification()
         val intent: Intent = Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE)
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent)
+        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
         try {
             updateWidget(true)
         } catch (ignored: Exception) {
@@ -1157,14 +1187,14 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     }
 
     fun play() {
-        Log.d("PlayerService", "play: current status " + status)
+        Log.d("PlayerService", "play: current status $status")
         when (status) {
-            STOPPED -> if (!trackList.isEmpty()) {
+            STOPPED -> if (trackList.isNotEmpty()) {
                 playTrack(currentTrackPosition)
                 notifyUI()
             }
             PLAYING -> try {
-                mediaPlayer.pause()
+                mediaPlayer!!.pause()
                 setStatus(PAUSED)
                 setSessionState()
             } catch (ignored: IllegalStateException) {
@@ -1196,11 +1226,11 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
 
     fun stop() {
         try {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause()
+            if (mediaPlayer!!.isPlaying) {
+                mediaPlayer!!.pause()
             }
-            mediaPlayer.stop()
-            mediaPlayer.reset()
+            mediaPlayer!!.stop()
+            mediaPlayer!!.reset()
             setStatus(STOPPED)
         } catch (e: IllegalStateException) {
             setStatus(STOPPED)
@@ -1209,9 +1239,9 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     }
 
     fun shuffleAll() {
-        val tempList: ArrayList<Int>? = MusicLibrary.getInstance().getDefaultTracklistNew()
+        val tempList: ArrayList<Int>? = MusicLibrary.instance!!.defaultTracklistNew
         if (tempList != null) {
-            Collections.shuffle(tempList)
+            tempList.shuffle()
             setTrackList(tempList)
             playTrack(0)
             notifyUI()
@@ -1231,7 +1261,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         try {
             trackList.add(addPosition + 1, clickedOn)
         } catch (e: ArrayIndexOutOfBoundsException) {
-            Toast.makeText(getApplicationContext(),
+            Toast.makeText(applicationContext,
                 getString(R.string.error_adding_song_to_q),
                 Toast.LENGTH_LONG).show()
         }
@@ -1240,37 +1270,36 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     fun nextTrack() {
 
 //        Log.v(Constants.TAG,"Next "+Log.getStackTraceString(new Exception()));
-        if (MyApp.Companion.getPref()
-                .getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE
-        ) {
-            playTrack(currentTrackPosition)
-        } else if (currentTrackPosition < trackList.size - 1) {
-            playTrack(currentTrackPosition + 1)
-        } else if (currentTrackPosition == trackList.size - 1) {
-            //if repeat all on, play first song
-            if (MyApp.Companion.getPref().getInt(Constants.PREFERENCES.REPEAT,
-                    0) == Constants.PREFERENCE_VALUES.REPEAT_ALL
-            ) {
-                playTrack(0)
-                currentTrackPosition = 0
-            } else {
-                if (MyApp.Companion.getPref()
-                        .getBoolean(getString(R.string.pref_continuous_playback), false)
-                ) {
-                    if (trackList.size < 10) {
-                        val dataItems: List<Int> =
-                            MusicLibrary.getInstance().getDefaultTracklistNew()
-                        Collections.shuffle(dataItems)
-                        trackList.addAll(dataItems)
-                        playTrack(currentTrackPosition + 1)
-                    } else {
-                        playTrack(0)
-                        currentTrackPosition = 0
-                    }
+        when {
+            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
+                playTrack(currentTrackPosition)
+            }
+            currentTrackPosition < trackList.size - 1 -> {
+                playTrack(currentTrackPosition + 1)
+            }
+            currentTrackPosition == trackList.size - 1 -> {
+                //if repeat all on, play first song
+                if (MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL) {
+                    playTrack(0)
+                    currentTrackPosition = 0
                 } else {
-                    Toast.makeText(getApplicationContext(),
-                        getString(R.string.empty_queue),
-                        Toast.LENGTH_LONG).show()
+                    if (MyApp.Companion.getPref()!!.getBoolean(getString(R.string.pref_continuous_playback), false)
+                    ) {
+                        if (trackList.size < 10) {
+                            val dataItems: List<Int> =
+                                MusicLibrary.instance!!.defaultTracklistNew
+                            Collections.shuffle(dataItems)
+                            trackList.addAll(dataItems)
+                            playTrack(currentTrackPosition + 1)
+                        } else {
+                            playTrack(0)
+                            currentTrackPosition = 0
+                        }
+                    } else {
+                        Toast.makeText(applicationContext,
+                            getString(R.string.empty_queue),
+                            Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }
@@ -1279,24 +1308,27 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     }
 
     fun prevTrack() {
-        if (((getCurrentTrackProgress().toFloat() / getCurrentTrackDuration().toFloat())
-                    > Constants.PREFERENCE_VALUES.PREV_ACT_TIME_CONSTANT)
-        ) {
-            //start same song from start
-            seekTrack(0)
-        } else if (currentTrackPosition > 0) {
-            playTrack(currentTrackPosition - 1)
-        } else if (currentTrackPosition == 0) {
-            //if repeat all on, play first song
-            if (MyApp.Companion.getPref().getInt(Constants.PREFERENCES.REPEAT,
-                    0) == Constants.PREFERENCE_VALUES.REPEAT_ALL
-            ) {
-                playTrack(trackList.size - 1)
-                currentTrackPosition = trackList.size - 1
-            } else {
-                Toast.makeText(getApplicationContext(),
-                    getString(R.string.empty_queue),
-                    Toast.LENGTH_LONG).show()
+        when {
+            (getCurrentTrackProgress().toFloat() / getCurrentTrackDuration().toFloat())
+                    > Constants.PREFERENCE_VALUES.PREV_ACT_TIME_CONSTANT -> {
+                //start same song from start
+                seekTrack(0)
+            }
+            currentTrackPosition > 0 -> {
+                playTrack(currentTrackPosition - 1)
+            }
+            currentTrackPosition == 0 -> {
+                //if repeat all on, play first song
+                if (MyApp.Companion.getPref()!!.getInt(Constants.PREFERENCES.REPEAT,
+                        0) == Constants.PREFERENCE_VALUES.REPEAT_ALL
+                ) {
+                    playTrack(trackList.size - 1)
+                    currentTrackPosition = trackList.size - 1
+                } else {
+                    Toast.makeText(applicationContext,
+                        getString(R.string.empty_queue),
+                        Toast.LENGTH_LONG).show()
+                }
             }
         }
         PostNotification()
@@ -1330,10 +1362,13 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
 
     //returns duration of current item in ms
     fun getCurrentTrackDuration(): Int {
-        if (currentTrackPosition != -1 && currentTrack != null) {
-            return currentTrack!!.durInt
-        } else {
-            return 0
+        return when {
+            currentTrackPosition != -1 && currentTrack != null -> {
+                currentTrack!!.durInt
+            }
+            else -> {
+                0
+            }
         }
     }
 
@@ -1342,10 +1377,10 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     }
 
     fun seekTrack(p: Int) {
-        Log.d("Seek to", "Seek to " + p)
+        Log.d("Seek to", "Seek to $p")
         if (status > STOPPED) {
             try {
-                mediaPlayer.seekTo(p)
+                mediaPlayer!!.seekTo(p)
                 setSessionState()
             } catch (ignored: IllegalStateException) {
             }
@@ -1372,11 +1407,11 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
             return
         }
         val runnable: Runnable = object : Runnable {
-            public override fun run() {
+            override fun run() {
                 if (sleepTimerMinutes == ++sleepTimeAlreadyOver) {
-                    LocalBroadcastManager.getInstance(getApplicationContext())
+                    LocalBroadcastManager.getInstance(applicationContext)
                         .sendBroadcast(Intent().setAction(Constants.ACTION.DISMISS_EVENT))
-                    Toast.makeText(getApplicationContext(),
+                    Toast.makeText(applicationContext,
                         getString(R.string.timer_over),
                         Toast.LENGTH_LONG).show()
                     MyApp.Companion.getPref().edit().putInt(getString(R.string.pref_sleep_timer), 0)
@@ -1394,11 +1429,11 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         sleepTimerHandler.post(runnable)
     }
 
-    public override fun onTaskRemoved(rootIntent: Intent) {
+    override fun onTaskRemoved(rootIntent: Intent) {
         super.onTaskRemoved(rootIntent)
         if (getStatus() != PLAYING) {
-            if (MyApp.Companion.getPref().getInt(getString(R.string.pref_sleep_timer), 0) != 0) {
-                MyApp.Companion.getPref().edit().putInt(getString(R.string.pref_sleep_timer), 0)
+            if (MyApp.getPref()!!.getInt(getString(R.string.pref_sleep_timer), 0) != 0) {
+                MyApp.getPref()!!.edit().putInt(getString(R.string.pref_sleep_timer), 0)
                     .apply()
                 sleepTimerHandler.removeCallbacksAndMessages(null)
             }
@@ -1408,48 +1443,40 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         }
     }
 
-    public override fun onDestroy() {
+    override fun onDestroy() {
         Log.d("PlayerService", "onDestroy: ")
         updateWidget(false)
         storeTracklist()
         //mNotificationManager.cancelAll();
-        mNotificationManager.cancel(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE)
+        mNotificationManager!!.cancel(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE)
         if (mEqualizerHelper != null) {
-            mEqualizerHelper.releaseEqObjects()
+            mEqualizerHelper!!.releaseEqObjects()
             mEqualizerHelper = null
         }
-        mediaPlayer.stop()
-        mediaPlayer.reset()
-        mediaPlayer.release()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setStatus(STOPPED)
-            setSessionState()
-            mMediaSession.setActive(false)
-            mMediaSession.release()
-        }
+        mediaPlayer!!.stop()
+        mediaPlayer!!.reset()
+        mediaPlayer!!.release()
+        setStatus(STOPPED)
+        setSessionState()
+        mMediaSession.setActive(false)
+        mMediaSession.release()
         shakeDetector.stop()
         unregisterReceiver(mReceiverHeadset)
-        val mgr: TelephonyManager? = getSystemService(TELEPHONY_SERVICE) as TelephonyManager?
-        if (mgr != null) {
-            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
-        }
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mReceiver)
-        mAudioManager.abandonAudioFocus(this)
+        (getSystemService(TELEPHONY_SERVICE) as TelephonyManager?)?.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE)
+        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(mReceiver!!)
+        mAudioManager!!.abandonAudioFocus(this)
         unregisterReceiver(bluetoothReceiver)
-        MyApp.Companion.setService(null)
+        MyApp.setService(null)
         super.onDestroy()
     }
 
     fun storeTracklist() {
 
         //send copy to avoid concurrent modification
-        PlaylistManager.getInstance(getApplicationContext())
-            .StoreLastPlayingQueueNew(ArrayList<E>(trackList))
+        PlaylistManager.getInstance(applicationContext)!!.StoreLastPlayingQueueNew(ArrayList<E>(trackList))
         try {
-            MyApp.Companion.getPref().edit()
-                .putString(Constants.PREFERENCES.STORED_SONG_ID, currentTrack!!.id + "").apply()
-            MyApp.Companion.getPref().edit()
-                .putInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION,
+            MyApp.getPref()!!.edit().putString(Constants.PREFERENCES.STORED_SONG_ID, currentTrack!!.id + "").apply()
+            MyApp.getPref()!!.edit().putInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION,
                     getCurrentTrackProgress()).apply()
             Log.d("PlayerService", "storeTracklist: " + currentTrack!!.id)
         } catch (ignored: Exception) {
@@ -1457,11 +1484,9 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     }
 
     private fun restoreTracklist() {
-        trackList.addAll(PlaylistManager.getInstance(getApplicationContext())
-            .RestoreLastPlayingQueueNew())
-        val id_string: String =
-            MyApp.Companion.getPref().getString(Constants.PREFERENCES.STORED_SONG_ID, "")
-        Log.d("PlayerService", "restoreTracklist: restored song id : " + id_string)
+        trackList.addAll(PlaylistManager.getInstance(applicationContext)!!.RestoreLastPlayingQueueNew())
+        val id_string = MyApp.getPref()!!.getString(Constants.PREFERENCES.STORED_SONG_ID, "")
+        Log.d("PlayerService", "restoreTracklist: restored song id : $id_string")
         var id: Int = 0
         try {
             id = Integer.valueOf(id_string)
@@ -1476,20 +1501,20 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
             Log.d("PlayerService", "restoreTracklist: load default list")
             trackList.clear()
             try {
-                trackList.addAll(MusicLibrary.getInstance().getDefaultTracklistNew())
+                trackList.addAll(MusicLibrary.instance!!.defaultTracklistNew)
             } catch (e: Exception) {
                 trackList.clear()
                 Log.v(Constants.TAG, e.toString())
             }
-            if (!trackList.isEmpty()) {
+            if (trackList.isNotEmpty()) {
                 if (trackList.size == 1) {
                     //to avoid sending 0 to nextInt function
-                    currentTrack = MusicLibrary.getInstance().getTrackItemFromId(trackList.get(0))
+                    currentTrack = MusicLibrary.instance!!.getTrackItemFromId(trackList.get(0))
                     currentTrackPosition = 1
                 } else {
                     val random: Int = Random().nextInt(trackList.size - 1)
                     currentTrack =
-                        MusicLibrary.getInstance().getTrackItemFromId(trackList.get(random))
+                        MusicLibrary.instance!!.getTrackItemFromId(trackList.get(random))
                     currentTrackPosition = random
                 }
             } else {
@@ -1499,9 +1524,9 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         } else {
             currentTrackPosition = trackList.indexOf(id)
             try {
-                currentTrack = MusicLibrary.getInstance().getTrackItemFromId(id)
+                currentTrack = MusicLibrary.instance!!.getTrackItemFromId(id)
             } catch (e: Exception) {
-                Log.e(Constants.TAG, Arrays.toString(e.getStackTrace()), e)
+                Log.e(Constants.TAG, Arrays.toString(e.stackTrace), e)
             }
             Log.d("PlayerService", "restoreTracklist: " + currentTrack!!.title)
         }
@@ -1511,7 +1536,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         val file: FileInputStream
         try {
             file = FileInputStream(File(currentTrack!!.getFilePath()))
-            mediaPlayer.setDataSource(file.getFD())
+            mediaPlayer.setDataSource(file.fd)
             mediaPlayer.prepareAsync()
             playAfterPrepare = false
             setStatus(PAUSED)
@@ -1528,43 +1553,46 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         Log.d("PlayerService", "restoreTracklist: restored track item : " + currentTrack!!.id)
     }
 
-    public override fun onAudioFocusChange(focusChange: Int) {
-        Log.v(Constants.TAG, "focus" + focusChange)
-        if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-            if (status == PLAYING) {
-                pause()
-                notifyUI()
-                musicPuasedBecauseOfFocusLoss = true
-            }
-        } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-            if (musicPuasedBecauseOfFocusLoss) {
-                if (status == PAUSED) {
-                    play()
+    override fun onAudioFocusChange(focusChange: Int) {
+        Log.v(Constants.TAG, "focus$focusChange")
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                if (status == PLAYING) {
+                    pause()
                     notifyUI()
-                    musicPuasedBecauseOfFocusLoss = false
+                    musicPuasedBecauseOfFocusLoss = true
                 }
             }
-        } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-            if (status == PLAYING) {
-                pause()
-                notifyUI()
-                musicPuasedBecauseOfFocusLoss = true
+            AudioManager.AUDIOFOCUS_GAIN -> {
+                if (musicPuasedBecauseOfFocusLoss) {
+                    if (status == PAUSED) {
+                        play()
+                        notifyUI()
+                        musicPuasedBecauseOfFocusLoss = false
+                    }
+                }
+            }
+            AudioManager.AUDIOFOCUS_LOSS -> {
+                if (status == PLAYING) {
+                    pause()
+                    notifyUI()
+                    musicPuasedBecauseOfFocusLoss = true
+                }
             }
         }
     }
 
-    public override fun hearShake() {
-        when (MyApp.Companion.getPref()
-            .getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT)) {
+    override fun hearShake() {
+        when (MyApp.getPref()!!.getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT)) {
             Constants.SHAKE_ACTIONS.NEXT -> if (status == PLAYING) {
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(Intent(
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(
                     Constants.ACTION.NEXT_ACTION))
             }
             Constants.SHAKE_ACTIONS.PLAY_PAUSE -> LocalBroadcastManager.getInstance(
-                getApplicationContext())
+                applicationContext)
                 .sendBroadcast(Intent(Constants.ACTION.PLAY_PAUSE_ACTION))
             Constants.SHAKE_ACTIONS.PREVIOUS -> if (status == PLAYING) {
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(Intent(
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(
                     Constants.ACTION.PREV_ACTION))
             }
         }
@@ -1590,7 +1618,7 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     }
 
     private val gradualVolumeRaiseRunnable: Runnable = object : Runnable {
-        public override fun run() {
+        override fun run() {
             try {
                 if (mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC) < currentVolume) {
                     fVolumeIsBeingChanged = true
@@ -1608,19 +1636,19 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
         }
     }
 
-    inner class PlayerBinder constructor() : Binder() {
+    inner class PlayerBinder : Binder() {
         fun getService(): PlayerService {
             return this@PlayerService
         }
     }
 
-    private inner class HeadSetReceiver constructor() : BroadcastReceiver() {
-        public override fun onReceive(context: Context, intent: Intent) {
-            if (intent.getAction() == null) return
-            if ((intent.getAction() == Intent.ACTION_HEADSET_PLUG)) {
+    private inner class HeadSetReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == null) return
+            if ((intent.action == Intent.ACTION_HEADSET_PLUG)) {
                 val state: Int = intent.getIntExtra("state", -1)
                 when (state) {
-                    0 -> if (!isInitialStickyBroadcast()) //this is for removing any sticky headset broadcast in system
+                    0 -> if (!isInitialStickyBroadcast) //this is for removing any sticky headset broadcast in system
                     {
                         if (status == PLAYING) {
                             pause()
@@ -1635,11 +1663,11 @@ class PlayerService constructor() : Service(), OnAudioFocusChangeListener, Shake
     }
 
     //receiver which handles pausing music upon bluetooth disconnection
-    private inner class BluetoothReceiver constructor() : BroadcastReceiver() {
-        public override fun onReceive(context: Context, intent: Intent) {
-            if (intent.getAction() != null) {
-                Log.d("BluetoothReceiver", "onReceive: " + intent.getAction())
-                when (intent.getAction()) {
+    private inner class BluetoothReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action != null) {
+                Log.d("BluetoothReceiver", "onReceive: " + intent.action)
+                when (intent.action) {
                     BluetoothAdapter.ACTION_STATE_CHANGED -> when (intent.getIntExtra(
                         BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.STATE_OFF)) {

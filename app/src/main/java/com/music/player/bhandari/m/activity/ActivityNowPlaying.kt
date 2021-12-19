@@ -1,20 +1,57 @@
 package com.music.player.bhandari.m.activity
 
-import android.R
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.media.AudioManager
+import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
 import android.transition.ArcMotion
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.SeekBar
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.afollestad.materialdialogs.DialogAction
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
+import butterknife.BindView
+import butterknife.ButterKnife
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.GoogleApiClient
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener
+import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback
+import com.music.player.bhandari.m.adapter.CurrentTracklistAdapter
+import com.music.player.bhandari.m.customViews.CustomViewPager
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.TrackItem
+import com.music.player.bhandari.m.service.PlayerService
+import com.music.player.bhandari.m.transition.MorphMiniToNowPlaying
+import com.music.player.bhandari.m.transition.MorphNowPlayingToMini
+import com.music.player.bhandari.m.utils.UtilityFun
+import com.sackcentury.shinebuttonlib.ShineButton
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import java.util.concurrent.Executors
 
 /**
@@ -32,8 +69,7 @@ import java.util.concurrent.Executors
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListener,
-    OnStartDragListener {
+class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDragListener {
     var screenWidth: Int = 0
     var screenHeight: Int = 0
     private var mLastClickTime: Long = 0
@@ -106,7 +142,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
     //location of controls wrapper
     var yControl: Float = 0f
     var toolbarHeight: Float = 0f
-    protected override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //if player service not running, kill the app
@@ -128,96 +164,81 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         ButterKnife.bind(this)
 
         //backgroundOverlay.setBackgroundDrawable(ColorHelper.GetGradientDrawable());
-        slidingUpPanelLayout.getViewTreeObserver().addOnGlobalLayoutListener(
-            object : OnGlobalLayoutListener {
-                public override fun onGlobalLayout() {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        slidingUpPanelLayout.getViewTreeObserver()
-                            .removeOnGlobalLayoutListener(this)
-                    } else {
-                        slidingUpPanelLayout.getViewTreeObserver()
-                            .removeGlobalOnLayoutListener(this)
-                    }
-                    yControl = controlsWrapper!!.getY()
-                    toolbarHeight = toolbar!!.getHeight().toFloat()
-                    Log.d("ActivityNowPlaying", "onGlobalLayout: yControl " + yControl)
-                    Log.d("ActivityNowPlaying", "onGlobalLayout: toolbarHeight " + toolbarHeight)
+        slidingUpPanelLayout.getViewTreeObserver().addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    slidingUpPanelLayout.getViewTreeObserver()
+                        .removeOnGlobalLayoutListener(this)
+                    yControl = controlsWrapper!!.y
+                    toolbarHeight = toolbar!!.height.toFloat()
+                    Log.d("ActivityNowPlaying", "onGlobalLayout: yControl $yControl")
+                    Log.d("ActivityNowPlaying", "onGlobalLayout: toolbarHeight $toolbarHeight")
                     Log.d("ActivityNowPlaying",
-                        controlsWrapper!!.getMeasuredHeight().toString() + "")
+                        controlsWrapper!!.measuredHeight.toString() + "")
                 }
             })
         if (!MyApp.Companion.getPref().getBoolean("never_show_button_again", false)) {
-            val gso: GoogleSignInOptions =
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
                     .build()
             mGoogleApiClient = GoogleApiClient.Builder(this)
-                .enableAutoManage(this, object : GoogleApiClient.OnConnectionFailedListener {
-                    public override fun onConnectionFailed(connectionResult: ConnectionResult) {
-                        Log.d(Constants.TAG, "onConnectionFailed:" + connectionResult)
-                    }
-                })
-                .addApi<GoogleSignInOptions>(Auth.GOOGLE_SIGN_IN_API, gso)
+                .enableAutoManage(this) { connectionResult ->
+                    Log.d(Constants.TAG, "onConnectionFailed:$connectionResult")
+                }
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build()
         }
-        if (getIntent().getAction() != null) {
-            if ((getIntent().getAction() == Constants.ACTION.OPEN_FROM_FILE_EXPLORER)) {
+        if (intent.action != null) {
+            if ((intent.action == Constants.ACTION.OPEN_FROM_FILE_EXPLORER)) {
                 isInvokedFromFileExplorer = true
             }
         } else {
             isInvokedFromFileExplorer = false
         }
         pref = MyApp.Companion.getPref()
-        if (playerService != null && playerService.getCurrentTrack() != null) {
-            toolbar.setTitle(playerService.getCurrentTrack().getTitle())
-            toolbar.setSubtitle(playerService.getCurrentTrack().getArtist())
+        if (playerService != null && playerService!!.getCurrentTrack() != null) {
+            toolbar.setTitle(playerService!!.getCurrentTrack().title)
+            toolbar.setSubtitle(playerService!!.getCurrentTrack()!!.getArtist())
         }
         setSupportActionBar(toolbar)
         InitializeCurrentTracklistAdapter()
         val displayMetrics: DisplayMetrics = DisplayMetrics()
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics)
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
         screenWidth = displayMetrics.widthPixels
         screenHeight = displayMetrics.heightPixels
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            getWindow().getDecorView().setSystemUiVisibility((
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN))
-        }
+        window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager?
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true)
-            getSupportActionBar().setDisplayShowHomeEnabled(true)
+        if (supportActionBar != null) {
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
-        val playQueueHandle: View = findViewById<View>(R.id.handle_current_queue)
-        playQueueHandle.getViewTreeObserver()
-            .addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                public override fun onGlobalLayout() {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                        playQueueHandle.getViewTreeObserver().removeGlobalOnLayoutListener(this)
-                    } else {
-                        playQueueHandle.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-                    }
+        val playQueueHandle: View = findViewById(R.id.handle_current_queue)
+        playQueueHandle.viewTreeObserver
+            .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    playQueueHandle.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     //height is ready
-                    slidingUpPanelLayout.setPanelHeight(playQueueHandle.getHeight())
+                    slidingUpPanelLayout.setPanelHeight(playQueueHandle.height)
                     slidingUpPanelLayout.setScrollableView(mRecyclerView)
                 }
             })
         slidingUpPanelLayout.addPanelSlideListener(object :
             SlidingUpPanelLayout.PanelSlideListener {
-            public override fun onPanelSlide(panel: View, slideOffset: Float) {
+            override fun onPanelSlide(panel: View, slideOffset: Float) {
                 if (slideOffset > 0.99) {
-                    playQueueHandle.setVisibility(View.INVISIBLE)
+                    playQueueHandle.visibility = View.INVISIBLE
                 } else {
-                    playQueueHandle.setVisibility(View.VISIBLE)
+                    playQueueHandle.visibility = View.VISIBLE
                 }
             }
 
-            public override fun onPanelStateChanged(
+            override fun onPanelStateChanged(
                 panel: View,
-                previousState: PanelState,
-                newState: PanelState
+                previousState: SlidingUpPanelLayout.PanelState,
+                newState: SlidingUpPanelLayout.PanelState
             ) {
                 if (previousState == SlidingUpPanelLayout.PanelState.COLLAPSED && newState == SlidingUpPanelLayout.PanelState.DRAGGING) {
                     try {
@@ -231,26 +252,26 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         })
         slidingUpPanelLayout.setDragView(R.id.play_queue_title)
         shineButton.init(this)
-        val saveQueueButton: View = findViewById<View>(R.id.save_queue_button)
+        val saveQueueButton: View = findViewById(R.id.save_queue_button)
         saveQueueButton.setOnClickListener(this)
         Log.v(Constants.TAG,
             audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC).toString() + "VOLUME")
         mUIUpdateReceiver = object : BroadcastReceiver() {
-            public override fun onReceive(context: Context, intent: Intent) {
+            override fun onReceive(context: Context, intent: Intent) {
                 Log.v(Constants.TAG, "update UI__ please Jarvis")
                 UpdateUI(intent)
             }
         }
-        viewPager.addOnPageChangeListener(object : OnPageChangeListener {
-            public override fun onPageScrolled(
+        viewPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
             }
 
-            public override fun onPageSelected(position: Int) {
-                Log.v(Constants.L_TAG + "wow", "selected " + position)
+            override fun onPageSelected(position: Int) {
+                Log.v(Constants.L_TAG + "wow", "selected $position")
                 selectedPageIndex = position
                 //display disclaimer if not accepted already
                 if (position == 2 && !MyApp.Companion.getPref()
@@ -260,14 +281,14 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
                 }
 
                 //2 lyrics fragment
-                if (position == 2 && playerService.getStatus() === PlayerService.PLAYING) {
+                if (position == 2 && playerService!!.getStatus() === PlayerService.PLAYING) {
                     acquireWindowPowerLock(true)
                 } else {
                     acquireWindowPowerLock(false)
                 }
             }
 
-            public override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrollStateChanged(state: Int) {}
         })
         viewPager.setOffscreenPageLimit(2)
         setupViewPager(viewPager)
@@ -278,7 +299,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         if (playerService != null && playerService.getTrackList() != null) {
             if (!playerService.getTrackList().isEmpty()) {
                 val title: String = "Save Playlist"
-                (findViewById<View>(R.id.save_queue_button) as TextView).setText(title)
+                (findViewById<View>(R.id.save_queue_button) as TextView).text = title
             }
         }
         if (!MyApp.Companion.getPref()
@@ -292,31 +313,30 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private fun setupSharedElementTransitions() {
         val arcMotion: ArcMotion = ArcMotion()
-        arcMotion.setMinimumHorizontalAngle(50f)
-        arcMotion.setMinimumVerticalAngle(50f)
+        arcMotion.minimumHorizontalAngle = 50f
+        arcMotion.minimumVerticalAngle = 50f
         val easeInOut: Interpolator =
             AnimationUtils.loadInterpolator(this, R.interpolator.fast_out_slow_in)
-        val sharedEnter: MorphMiniToNowPlaying = MorphMiniToNowPlaying()
-        sharedEnter.setPathMotion(arcMotion)
-        sharedEnter.setInterpolator(easeInOut)
-        val sharedExit: MorphNowPlayingToMini = MorphNowPlayingToMini()
-        sharedExit.setPathMotion(arcMotion)
-        sharedExit.setInterpolator(easeInOut)
+        val sharedEnter = MorphMiniToNowPlaying()
+        sharedEnter.pathMotion = arcMotion
+        sharedEnter.interpolator = easeInOut
+        val sharedExit = MorphNowPlayingToMini()
+        sharedExit.pathMotion = arcMotion
+        sharedExit.interpolator = easeInOut
 
         /*if (second_card != null) {
             sharedEnter.addTarget(second_card)
             sharedReturn.addTarget(second_card)
-        }*/getWindow().setSharedElementEnterTransition(sharedEnter)
-        getWindow().setSharedElementExitTransition(sharedExit)
+        }*/window.sharedElementEnterTransition = sharedEnter
+        window.sharedElementExitTransition = sharedExit
         postponeEnterTransition()
         //getWindow().sharedElementEnterTransition = sharedEnter
         //getWindow().sharedElementReturnTransition = sharedReturn
     }
 
-    protected override fun attachBaseContext(newBase: Context) {
+    override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
@@ -333,71 +353,70 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }*/
         if (acquire) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 
     private fun showDisclaimerDialog() {
-        val dialog: MaterialDialog = MyDialogBuilder(this)
-            .title(getString(R.string.lyrics_disclaimer_title))
-            .content(getString(R.string.lyrics_disclaimer_content))
-            .positiveText(getString(R.string.lyrics_disclaimer_title_pos))
-            .negativeText(getString(R.string.lyrics_disclaimer_title_neg))
-            .onPositive(object : SingleButtonCallback() {
-                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                    MyApp.Companion.getPref().edit()
-                        .putBoolean(getString(R.string.pref_disclaimer_accepted), true).apply()
-                    (viewPagerAdapter!!.getItem(2) as FragmentLyrics).disclaimerAccepted()
-                }
-            })
-            .build()
-
-        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-        dialog.show()
+//        val dialog: MaterialDialog = MyDialogBuilder(this)
+//            .title(getString(R.string.lyrics_disclaimer_title))
+//            .content(getString(R.string.lyrics_disclaimer_content))
+//            .positiveText(getString(R.string.lyrics_disclaimer_title_pos))
+//            .negativeText(getString(R.string.lyrics_disclaimer_title_neg))
+//            .onPositive(object : SingleButtonCallback() {
+//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
+//                    MyApp.Companion.getPref().edit()
+//                        .putBoolean(getString(R.string.pref_disclaimer_accepted), true).apply()
+//                    (viewPagerAdapter!!.getItem(2) as FragmentLyrics).disclaimerAccepted()
+//                }
+//            })
+//            .build()
+//
+//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+//        dialog.show()
     }
 
     private fun showInfoDialog() {
-        val dialog: MaterialDialog = MyDialogBuilder(this)
-            .title(getString(R.string.lyric_art_info_title))
-            .content(getString(R.string.lyric_art_info_content))
-            .positiveText(getString(R.string.lyric_art_info_title_button_neg))
-            .negativeText(getString(R.string.lyric_art_info_button_p))
-            .onPositive(object : SingleButtonCallback() {
-                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                    MyApp.Companion.getPref().edit()
-                        .putBoolean(getString(R.string.pref_swipe_right_shown), true).apply()
-                }
-            })
-            .build()
-
-        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-        dialog.show()
+//        val dialog: MaterialDialog = MyDialogBuilder(this)
+//            .title(getString(R.string.lyric_art_info_title))
+//            .content(getString(R.string.lyric_art_info_content))
+//            .positiveText(getString(R.string.lyric_art_info_title_button_neg))
+//            .negativeText(getString(R.string.lyric_art_info_button_p))
+//            .onPositive(object : SingleButtonCallback() {
+//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
+//                    MyApp.Companion.getPref().edit()
+//                        .putBoolean(getString(R.string.pref_swipe_right_shown), true).apply()
+//                }
+//            })
+//            .build()
+//
+//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+//        dialog.show()
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        viewPagerAdapter = ViewPagerAdapter(getSupportFragmentManager())
+        viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         val artistInfo: FragmentArtistInfo = FragmentArtistInfo()
         viewPagerAdapter!!.addFragment(artistInfo, "Artist Bio")
         val fragmentAlbumArt: FragmentAlbumArt = FragmentAlbumArt()
         viewPagerAdapter!!.addFragment(fragmentAlbumArt, "Disc")
         val fragmentLyric: FragmentLyrics = FragmentLyrics()
         viewPagerAdapter!!.addFragment(fragmentLyric, "Lyrics")
-        viewPager.setAdapter(viewPagerAdapter)
+        viewPager.setAdapter(viewPagerAdapter!!)
     }
 
     fun InitializeCurrentTracklistAdapter() {
         mRecyclerView = findViewById<RecyclerView>(R.id.recyclerViewForCurrentTracklist)
         mAdapter = CurrentTracklistAdapter(this, this)
-        mRecyclerView.setAdapter(mAdapter)
-        mRecyclerView.setLayoutManager(mLayoutManager)
+        mRecyclerView!!.setAdapter(mAdapter!!)
+        mRecyclerView!!.setLayoutManager(mLayoutManager)
         val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(mAdapter)
         mItemTouchHelper = ItemTouchHelper(callback)
-        mItemTouchHelper.attachToRecyclerView(mRecyclerView)
-        val itemDecor: DividerItemDecoration =
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        mRecyclerView.addItemDecoration(itemDecor)
+        mItemTouchHelper!!.attachToRecyclerView(mRecyclerView)
+        val itemDecor = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        mRecyclerView!!.addItemDecoration(itemDecor)
     }
 
     fun UpdateCurrentTracklistAdapter() {
@@ -407,11 +426,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         mAdapter.fillData()
     }
 
-    protected override fun onStop() {
-        super.onStop()
-    }
-
-    protected override fun onDestroy() {
+    override fun onDestroy() {
         Log.v(Constants.TAG, "DESTORY NOW PLAYING")
         //this removes any memory leak caused by handler
         mHandler.removeCallbacksAndMessages(null)
@@ -454,12 +469,12 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
             invalidateOptionsMenu()
             if (item != null) {
                 val intent: Intent = Intent().setAction(Constants.ACTION.UPDATE_LYRIC_AND_INFO)
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent)
-                Log.v(Constants.TAG, "Intent sent! " + intent.getAction())
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+                Log.v(Constants.TAG, "Intent sent! " + intent.action)
                 if (playerService.getStatus() === PlayerService.PLAYING) {
-                    mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_pause))
+                    mPlayButton.setImageDrawable(resources.getDrawable(R.drawable.pw_pause))
                 } else {
-                    mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_play))
+                    mPlayButton.setImageDrawable(resources.getDrawable(R.drawable.pw_play))
                 }
                 totalTime.setText(UtilityFun.msToString(playerService.getCurrentTrackDuration()))
 
@@ -478,7 +493,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
                         1 -> {
                             //look in cache for artist image
                             val CACHE_ART_THUMBS: String =
-                                this.getCacheDir().toString() + "/art_thumbs/"
+                                this.cacheDir.toString() + "/art_thumbs/"
                             val actual_file_path: String =
                                 CACHE_ART_THUMBS + playerService.getCurrentTrack().getArtist()
                             b = BitmapFactory.decodeFile(actual_file_path)
@@ -492,8 +507,8 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
                     e.printStackTrace()
                 }
                 if (b != null) {
-                    var width: Int = b.getWidth()
-                    var height: Int = b.getHeight()
+                    var width: Int = b.width
+                    var height: Int = b.height
                     val maxWidth: Int = screenWidth
                     val maxHeight: Int = screenHeight
                     if (width > height) {
@@ -576,17 +591,17 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         }
     }
 
-    protected override fun onPause() {
+    override fun onPause() {
         MyApp.Companion.isAppVisible = false
         Log.v(Constants.TAG, "PAUSE NOW PLAYING")
-        LocalBroadcastManager.getInstance(getApplicationContext())
+        LocalBroadcastManager.getInstance(applicationContext)
             .unregisterReceiver(mUIUpdateReceiver)
         stopUpdateTask()
         stopProgressRunnable = true
         super.onPause()
     }
 
-    protected override fun onResume() {
+    override fun onResume() {
         super.onResume()
         MyApp.Companion.isAppVisible = true
         if (MyApp.Companion.getService() == null) {
@@ -596,7 +611,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
             playerService = MyApp.Companion.getService()
         }
         UpdateUI(null)
-        LocalBroadcastManager.getInstance(getApplicationContext())
+        LocalBroadcastManager.getInstance(applicationContext)
             .registerReceiver(mUIUpdateReceiver, IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE))
         AppLaunchCountManager.nowPlayingLaunched()
         //UpdateCurrentTracklistAdapter();
@@ -604,26 +619,26 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         startUpdateTask()
     }
 
-    public override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_now_plying, menu)
+        menuInflater.inflate(R.menu.menu_now_plying, menu)
         for (i in 0 until menu.size()) {
             if (menu.getItem(i).getItemId() == R.id.action_fav) {
                 //Drawable drawable = menu.getItem(i).getIcon();
                 //if (drawable != null) {
                 val item: TrackItem? = playerService.getCurrentTrack()
-                if (item != null && PlaylistManager.getInstance(getApplicationContext())
+                if (item != null && PlaylistManager.getInstance(applicationContext)
                         .isFavNew(item.id)
                 ) {
                     //rawable.mutate();
                     //drawable.setColorFilter(ColorHelper.GetWidgetColor(), PorterDuff.Mode.SRC_ATOP);
                     menu.getItem(i)
-                        .setIcon(getResources().getDrawable(R.drawable.ic_favorite_black_24dp))
+                        .setIcon(resources.getDrawable(R.drawable.ic_favorite_black_24dp))
                 } else {
                     //drawable.mutate();
                     //drawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite), PorterDuff.Mode.SRC_ATOP);
                     menu.getItem(i)
-                        .setIcon(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp))
+                        .setIcon(resources.getDrawable(R.drawable.ic_favorite_border_black_24dp))
                 }
                 //}
             }
@@ -631,7 +646,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         return true
     }
 
-    public override fun onBackPressed() {
+    override fun onBackPressed() {
         //
         if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED)
@@ -641,7 +656,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
             finish()
             return
         }
-        if (isTaskRoot()) {
+        if (isTaskRoot) {
             startActivity(Intent(this, ActivityMain::class.java))
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             //finish();
@@ -654,7 +669,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         }
     }
 
-    protected override fun onNewIntent(intent: Intent) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         val b: Boolean = intent.getBooleanExtra("refresh", false)
         if (b) {
@@ -676,7 +691,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         }
     }
 
-    public override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val trackItem: TrackItem? = playerService.getCurrentTrack()
         when (item.getItemId()) {
             R.id.action_fav -> {
@@ -686,13 +701,13 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
                         Snackbar.LENGTH_SHORT).show()
                     return true
                 }
-                if (PlaylistManager.getInstance(getApplicationContext())
+                if (PlaylistManager.getInstance(applicationContext)
                         .isFavNew(playerService.getCurrentTrack().getId())
                 ) {
-                    PlaylistManager.getInstance(getApplicationContext())
+                    PlaylistManager.getInstance(applicationContext)
                         .RemoveFromFavNew(playerService.getCurrentTrack().getId())
                 } else {
-                    PlaylistManager.getInstance(getApplicationContext())
+                    PlaylistManager.getInstance(applicationContext)
                         .addSongToFav(playerService.getCurrentTrack().getId())
                     shineButton.setVisibility(View.VISIBLE)
                     shineButton.showAnim()
@@ -704,7 +719,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
                 val intent: Intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                 if ((MyApp.Companion.getPref()
                         .getBoolean(getString(R.string.pref_prefer_system_equ), true)
-                            && (intent.resolveActivity(getPackageManager()) != null))
+                            && (intent.resolveActivity(packageManager) != null))
                 ) {
                     try {
                         //show system equalizer
@@ -728,7 +743,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
             R.id.home -> {
-                if (isTaskRoot()) {
+                if (isTaskRoot) {
                     startActivity(Intent(this, ActivityMain::class.java))
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     //finish();
@@ -771,7 +786,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
                     val fileToBeShared: File = File(trackItem.getFilePath())
                     val fileUris: ArrayList<Uri> = ArrayList<Uri>()
                     fileUris.add(FileProvider.getUriForFile(this,
-                        getApplicationContext().getPackageName() + "com.bhandari.music.provider",
+                        applicationContext.packageName + "com.bhandari.music.provider",
                         fileToBeShared))
                     UtilityFun.Share(this, fileUris, trackItem.title)
                 } else {
@@ -906,12 +921,12 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         invalidateOptionsMenu()
     }
 
-    public override fun onClick(view: View) {
+    override fun onClick(view: View) {
         if (MyApp.Companion.getService() == null) {
             UtilityFun.restartApp()
             return
         }
-        when (view.getId()) {
+        when (view.id) {
             R.id.save_queue_button -> {
                 if (mAdapter.getItemCount() === 0) {
                     return
@@ -965,7 +980,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         mItemTouchHelper.startDrag(viewHolder)
     }
 
-    public override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         //super.onKeyDown(keyCode,event);
         when (keyCode) {
             KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY -> {
@@ -995,7 +1010,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
     }
 
     private fun updateDisc() {
-        LocalBroadcastManager.getInstance(getApplicationContext())
+        LocalBroadcastManager.getInstance(applicationContext)
             .sendBroadcast(Intent(Constants.ACTION.DISC_UPDATE))
         (viewPagerAdapter!!.getItem(2) as FragmentLyrics).runLyricThread()
         if (viewPager.getCurrentItem() === 2 && playerService.getStatus() === PlayerService.PLAYING) {
@@ -1017,13 +1032,13 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         val timer: Int =
             MyApp.Companion.getPref().getInt(context.getString(R.string.pref_sleep_timer), 0)
         if (timer == 0) {
-            text.setText("0" + getString(R.string.main_act_sleep_timer_status_minutes))
+            text.text = "0" + getString(R.string.main_act_sleep_timer_status_minutes)
         } else {
             val stringTemp: String =
                 (context.getString(R.string.main_act_sleep_timer_status_part1) +
                         timer +
                         context.getString(R.string.main_act_sleep_timer_status_part2))
-            text.setText(stringTemp)
+            text.text = stringTemp
             builder.neutralText(getString(R.string.main_act_sleep_timer_neu))
                 .onNeutral(object : SingleButtonCallback() {
                     fun onClick(dialog: MaterialDialog, which: DialogAction) {
@@ -1038,26 +1053,26 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
                 })
         }
         text.setPadding(0, 10, 0, 0)
-        text.setGravity(Gravity.CENTER)
+        text.gravity = Gravity.CENTER
         text.setTypeface(TypeFaceHelper.getTypeFace(this))
         val seek: SeekBar = SeekBar(context)
         seek.setPadding(40, 10, 40, 10)
-        seek.setMax(100)
-        seek.setProgress(0)
+        seek.max = 100
+        seek.progress = 0
         seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            public override fun onProgressChanged(
+            override fun onProgressChanged(
                 seekBar: SeekBar,
                 progress: Int,
                 fromUser: Boolean
             ) {
                 val tempString: String =
                     progress.toString() + context.getString(R.string.main_act_sleep_timer_status_minutes)
-                text.setText(tempString)
+                text.text = tempString
             }
 
-            public override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            public override fun onStopTrackingTouch(seekBar: SeekBar) {
-                val progress: Int = seekBar.getProgress()
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                val progress: Int = seekBar.progress
             }
         })
         linear.addView(seek)
@@ -1068,14 +1083,14 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
             .negativeText(getString(R.string.cancel))
             .onPositive(object : SingleButtonCallback() {
                 fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                    if (seek.getProgress() != 0) {
+                    if (seek.progress != 0) {
                         MyApp.Companion.getPref().edit()
                             .putInt(context.getString(R.string.pref_sleep_timer),
-                                seek.getProgress()).apply()
-                        playerService.setSleepTimer(seek.getProgress(), true)
-                        playerService.setSleepTimer(seek.getProgress(), true)
+                                seek.progress).apply()
+                        playerService.setSleepTimer(seek.progress, true)
+                        playerService.setSleepTimer(seek.progress, true)
                         val temp: String = (getString(R.string.sleep_timer_successfully_set)
-                                + seek.getProgress()
+                                + seek.progress
                                 + getString(R.string.main_act_sleep_timer_status_minutes))
                         Snackbar.make(rootView, temp, Snackbar.LENGTH_SHORT).show()
                     }
@@ -1123,10 +1138,10 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
     }
 
     //for catching exception generated by recycler view which was causing abend, no other way to handle this
-    private inner class WrapContentLinearLayoutManager internal constructor(context: Context?) :
+    private inner class WrapContentLinearLayoutManager(context: Context?) :
         LinearLayoutManager(context) {
         //... constructor
-        public override fun onLayoutChildren(recycler: Recycler, state: RecyclerView.State) {
+        override fun onLayoutChildren(recycler: Recycler, state: RecyclerView.State) {
             try {
                 super.onLayoutChildren(recycler, state)
             } catch (e: IndexOutOfBoundsException) {
@@ -1135,7 +1150,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         }
     }
 
-    protected override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
             val result: GoogleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
@@ -1180,7 +1195,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
     private fun shareApp() {
         try {
             val i: Intent = Intent(Intent.ACTION_SEND)
-            i.setType("text/plain")
+            i.type = "text/plain"
             i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
             var sAux: String = getString(R.string.main_act_share_app_text)
             sAux = sAux + getString(R.string.share_app) + " \n\n"
@@ -1228,32 +1243,32 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
             textInsideRepeat.setText("")
         }
         if (playerService.getStatus() === PlayerService.PLAYING) {
-            mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_pause))
+            mPlayButton.setImageDrawable(resources.getDrawable(R.drawable.pw_pause))
         } else {
-            mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_play))
+            mPlayButton.setImageDrawable(resources.getDrawable(R.drawable.pw_play))
         }
 
         //mPlayButton.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
         seekBar.setMax(100)
         seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            public override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 if (b) {
                     runningTime.setText(UtilityFun.msToString(
-                        UtilityFun.progressToTimer(seekBar.getProgress(),
+                        UtilityFun.progressToTimer(seekBar.progress,
                             playerService.getCurrentTrackDuration()).toLong()))
                     if (selectedPageIndex == 2) {
                         (viewPagerAdapter!!.getItem(2) as FragmentLyrics).smoothScrollAfterSeekbarTouched(
-                            seekBar.getProgress())
+                            seekBar.progress)
                     }
                 }
             }
 
-            public override fun onStartTrackingTouch(seekBar: SeekBar) {
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
                 stopUpdateTask()
             }
 
-            public override fun onStopTrackingTouch(seekBar: SeekBar) {
-                playerService.seekTrack(UtilityFun.progressToTimer(seekBar.getProgress(),
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                playerService.seekTrack(UtilityFun.progressToTimer(seekBar.progress,
                     playerService.getCurrentTrackDuration()))
                 startUpdateTask()
             }
@@ -1360,10 +1375,10 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         }
         playerService.play()
         if (playerService.getStatus() === PlayerService.PLAYING) {
-            mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_pause))
+            mPlayButton.setImageDrawable(resources.getDrawable(R.drawable.pw_pause))
             startUpdateTask()
         } else {
-            mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_play))
+            mPlayButton.setImageDrawable(resources.getDrawable(R.drawable.pw_play))
             stopUpdateTask()
         }
     }
@@ -1392,14 +1407,14 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
     }
 
     private val mUpdateTimeTask: Runnable = object : Runnable {
-        public override fun run() {
+        override fun run() {
             while (true) {
                 if (stopProgressRunnable) {
                     break
                 }
                 updateTimeTaskRunning = true
                 mHandler.post(object : Runnable {
-                    public override fun run() {
+                    override fun run() {
                         val curDur: Int = playerService.getCurrentTrackProgress()
                         val per: Int =
                             UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress() / 1000,
@@ -1419,15 +1434,15 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
         }
     }
 
-    private inner class ViewPagerAdapter internal constructor(manager: FragmentManager?) :
+    private inner class ViewPagerAdapter(manager: FragmentManager?) :
         FragmentPagerAdapter(manager) {
         private val mFragmentList: MutableList<Fragment> = ArrayList()
         private val mFragmentTitleList: MutableList<String> = ArrayList()
-        public override fun getItem(position: Int): Fragment {
+        override fun getItem(position: Int): Fragment {
             return mFragmentList.get(position)
         }
 
-        public override fun getCount(): Int {
+        override fun getCount(): Int {
             return mFragmentList.size
         }
 
@@ -1436,7 +1451,7 @@ class ActivityNowPlaying constructor() : AppCompatActivity(), View.OnClickListen
             mFragmentTitleList.add(title)
         }
 
-        public override fun getPageTitle(position: Int): CharSequence? {
+        override fun getPageTitle(position: Int): CharSequence? {
             return mFragmentTitleList.get(position)
         }
     }

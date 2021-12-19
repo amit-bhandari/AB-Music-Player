@@ -1,9 +1,21 @@
 package com.music.player.bhandari.m.activity
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import butterknife.BindView
+import butterknife.ButterKnife
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
 import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.service.NotificationListenerService
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -20,7 +32,7 @@ import com.music.player.bhandari.m.model.Constants
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ActivityRequestNotificationAccess constructor() : AppCompatActivity(), View.OnClickListener {
+class ActivityRequestNotificationAccess : AppCompatActivity(), View.OnClickListener {
     @BindView(R.id.text_never_ask)
     var never_ask: TextView? = null
 
@@ -29,11 +41,9 @@ class ActivityRequestNotificationAccess constructor() : AppCompatActivity(), Vie
 
     @BindView(R.id.progressBar)
     var progressBar: ProgressBar? = null
-    protected override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         ColorHelper.setStatusBarGradiant(this)
-        val themeSelector: Int = MyApp.Companion.getPref()
-            .getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
-        when (themeSelector) {
+        when (MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
@@ -43,29 +53,27 @@ class ActivityRequestNotificationAccess constructor() : AppCompatActivity(), Vie
 
         //findViewById(R.id.root_view_request_notification_access).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
         findViewById<View>(R.id.request_button).setOnClickListener(this)
-        skip.setOnClickListener(this)
-        never_ask.setOnClickListener(this)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            getWindow().getDecorView().setSystemUiVisibility((
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN))
-        }
+        skip!!.setOnClickListener(this)
+        never_ask!!.setOnClickListener(this)
+        window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         super.onCreate(savedInstanceState)
     }
 
-    protected override fun attachBaseContext(newBase: Context) {
+    override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
-    protected override fun onResume() {
+    override fun onResume() {
         super.onResume()
         if (NotificationListenerService.isListeningAuthorized(this)) {
             launchMainActivity()
         }
     }
 
-    public override fun onClick(view: View) {
-        when (view.getId()) {
+    override fun onClick(view: View) {
+        when (view.id) {
             R.id.request_button -> {
                 val intent: Intent =
                     Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
@@ -74,14 +82,14 @@ class ActivityRequestNotificationAccess constructor() : AppCompatActivity(), Vie
             }
             R.id.text_skip -> {
                 launchMainActivity()
-                skip.setVisibility(View.GONE)
-                never_ask.setVisibility(View.GONE)
-                progressBar.setVisibility(View.VISIBLE)
+                skip!!.visibility = View.GONE
+                never_ask!!.visibility = View.GONE
+                progressBar!!.visibility = View.VISIBLE
             }
             R.id.text_never_ask -> {
-                never_ask.setVisibility(View.GONE)
-                progressBar.setVisibility(View.VISIBLE)
-                MyApp.Companion.getPref().edit()
+                never_ask!!.visibility = View.GONE
+                progressBar!!.visibility = View.VISIBLE
+                MyApp.getPref()!!.edit()
                     .putBoolean(getString(R.string.pref_never_ask_notitication_permission), true)
                     .apply()
                 launchMainActivity()
@@ -90,7 +98,7 @@ class ActivityRequestNotificationAccess constructor() : AppCompatActivity(), Vie
     }
 
     private fun launchMainActivity() {
-        val mainActIntent: Intent = Intent(this, ActivityMain::class.java)
+        val mainActIntent = Intent(this, ActivityMain::class.java)
         startActivity(mainActIntent)
         finish()
     }
