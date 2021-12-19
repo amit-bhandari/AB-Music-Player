@@ -65,9 +65,6 @@
         <item name="colorAccent">@color/darkThemeAccent</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeBackground">@color/colorBlack</item>
-        <item name="md_positive_color">#ffffff</item>
-        <item name="md_neutral_color">#ffffff</item>
-        <item name="md_negative_color">#ffffff</item>
         <item name="android:textColorSecondary">@color/primary_text_color</item>
         <item name="android:itemBackground">@color/popupMenuBackground</item>
     </style>
