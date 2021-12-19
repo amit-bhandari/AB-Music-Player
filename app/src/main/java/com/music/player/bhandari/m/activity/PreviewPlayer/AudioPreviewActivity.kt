@@ -93,7 +93,7 @@ class AudioPreviewActivity : Activity(), MediaPlayer.OnCompletionListener,
             }
         }
     }
-    private val mHandler: UiHandler? = UiHandler()
+    private val mHandler = UiHandler()
     private var mAudioManager: AudioManager? = null
     private var mPreviewPlayer: PreviewPlayer? = null
     private val mPreviewSong = PreviewSong()
@@ -336,11 +336,9 @@ class AudioPreviewActivity : Activity(), MediaPlayer.OnCompletionListener,
     }
 
     private fun startProgressUpdates() {
-        if (mHandler != null) {
-            mHandler.removeMessages(UiHandler.MSG_UPDATE_PROGRESS)
-            val msg: Message = mHandler.obtainMessage(UiHandler.MSG_UPDATE_PROGRESS)
-            mHandler.sendMessage(msg)
-        }
+        mHandler.removeMessages(1000)
+        val msg: Message = mHandler.obtainMessage(1000)
+        mHandler.sendMessage(msg)
     }
 
     private fun updateProgressForPlayer() {
@@ -350,11 +348,9 @@ class AudioPreviewActivity : Activity(), MediaPlayer.OnCompletionListener,
                     mSeekBar!!.progress = mPreviewPlayer!!.currentPosition
                 }
             }
-            if (mHandler != null) {
-                mHandler.removeMessages(UiHandler.MSG_UPDATE_PROGRESS)
-                val msg: Message = mHandler.obtainMessage(UiHandler.MSG_UPDATE_PROGRESS)
-                mHandler.sendMessageDelayed(msg, PROGRESS_DELAY_INTERVAL.toLong())
-            }
+            mHandler.removeMessages(1000)
+            val msg: Message = mHandler.obtainMessage(1000)
+            mHandler.sendMessageDelayed(msg, PROGRESS_DELAY_INTERVAL.toLong())
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -401,7 +397,7 @@ class AudioPreviewActivity : Activity(), MediaPlayer.OnCompletionListener,
     }
 
     override fun onCompletion(mp: MediaPlayer) {
-        mHandler!!.removeMessages(UiHandler.MSG_UPDATE_PROGRESS)
+        mHandler.removeMessages(1000)
         if (mSeekBar != null && mPreviewPlayer != null) {
             mSeekBar!!.progress = mPreviewPlayer!!.duration
         }
@@ -543,7 +539,7 @@ class AudioPreviewActivity : Activity(), MediaPlayer.OnCompletionListener,
             if (updateUi) {
                 sendStateChange(State.PAUSED)
             }
-            mHandler!!.removeMessages(UiHandler.MSG_UPDATE_PROGRESS)
+            mHandler.removeMessages(1000)
         }
     }
 

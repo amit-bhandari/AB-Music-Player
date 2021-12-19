@@ -61,6 +61,6 @@ internal object Logger {
         if (TextUtils.isEmpty(msg)) {
             throw IllegalArgumentException("'msg' cannot be empty!")
         }
-        Log.e(TAG, tag + " [ " + msg + " ]")
+        Log.e(TAG, "$tag [ $msg ]")
     }
 }

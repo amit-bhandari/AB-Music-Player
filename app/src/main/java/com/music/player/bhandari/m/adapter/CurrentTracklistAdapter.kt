@@ -1,24 +1,33 @@
 package com.music.player.bhandari.m.adapter
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.PopupMenu
+import android.view.*
+import android.widget.*
+import androidx.core.content.FileProvider
 import androidx.core.view.MotionEventCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
+import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.ItemTouchHelperAdapter
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener
+import com.music.player.bhandari.m.activity.ActivityTagEditor
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary
 import com.music.player.bhandari.m.model.dataItem
 import com.music.player.bhandari.m.service.PlayerService
+import com.music.player.bhandari.m.utils.UtilityFun
+import com.wang.avi.AVLoadingIndicatorView
+import java.io.File
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
@@ -78,29 +87,27 @@ class CurrentTracklistAdapter constructor(
         }
     }
 
-    public override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view: View = inflater.inflate(R.layout.track_item_for_dragging, parent, false)
         return MyViewHolder(view)
     }
 
-    public override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        if (dataItems.get(position) == null) return
-        holder.title.setText(dataItems.get(position).title)
-        holder.secondary.setText(dataItems.get(position).artist_name)
-        holder.handle.setOnTouchListener(object : View.OnTouchListener {
-            public override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
-                if (MotionEventCompat.getActionMasked(motionEvent) ==
-                    MotionEvent.ACTION_DOWN
-                ) {
-                    Log.d("CurrentTracklistAdapter", "onTouch: ")
-                    mDragStartListener.onStartDrag(holder)
-                }
-                return false
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        if (dataItems[position] == null) return
+        holder.title.text = dataItems[position]!!.title
+        holder.secondary.text = dataItems[position]!!.artist_name
+        holder.handle.setOnTouchListener { view, motionEvent ->
+            if (MotionEventCompat.getActionMasked(motionEvent) ==
+                MotionEvent.ACTION_DOWN
+            ) {
+                Log.d("CurrentTracklistAdapter", "onTouch: ")
+                mDragStartListener.onStartDrag(holder)
             }
-        })
+            false
+        }
         if (playerService != null && position == playerService.getCurrentTrackPosition()) {
             holder.cv.setBackgroundColor(ColorHelper.getColor(R.color.gray3))
-            holder.playAnimation.setVisibility(View.VISIBLE)
+            holder.playAnimation.visibility = View.VISIBLE
             if (playerService.getStatus() === PlayerService.PLAYING) {
                 //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
                 holder.playAnimation.smoothToShow()
@@ -110,13 +117,13 @@ class CurrentTracklistAdapter constructor(
             }
             //holder.iv.setVisibility(View.VISIBLE);
         } else {
-            holder.cv.setBackgroundColor(context.getResources().getColor(R.color.colorTransparent))
+            holder.cv.setBackgroundColor(context.resources.getColor(R.color.colorTransparent))
             //holder.iv.setVisibility(View.GONE);
-            holder.playAnimation.setVisibility(View.GONE)
+            holder.playAnimation.visibility = View.GONE
         }
     }
 
-    public override fun getItemCount(): Int {
+    override fun getItemCount(): Int {
         return dataItems.size
     }
 
@@ -134,7 +141,7 @@ class CurrentTracklistAdapter constructor(
     override fun onItemDismiss(position: Int) {
         if (playerService.getCurrentTrackPosition() !== position) {
             //listOfHeader.remove(position);
-            playerService.removeTrack(position)
+            playerService!!.removeTrack(position)
             dataItems.removeAt(position)
             notifyItemRemoved(position)
         } else {
@@ -143,8 +150,8 @@ class CurrentTracklistAdapter constructor(
         }
     }
 
-    public override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_play -> {
                 val oldPos: Int = position
                 position = tempPosition
@@ -163,8 +170,8 @@ class CurrentTracklistAdapter constructor(
                 val uris: ArrayList<Uri> = ArrayList<Uri>() //for sending multiple files
                 val file: File = File(dataItems.get(position).file_path)
                 val fileUri: Uri = FileProvider.getUriForFile(context,
-                    context.getApplicationContext()
-                        .getPackageName() + "com.bhandari.music.provider",
+                    context.applicationContext
+                        .packageName + "com.bhandari.music.provider",
                     file)
                 uris.add(fileUri)
                 UtilityFun.Share(context, uris, dataItems.get(position).title)
@@ -208,9 +215,9 @@ class CurrentTracklistAdapter constructor(
 
     fun updateItem(position: Int, vararg param: String) {
         try {
-            dataItems.get(position).title = param.get(0)
-            dataItems.get(position).artist_name = param.get(1)
-            dataItems.get(position).albumName = param.get(2)
+            dataItems.get(position)!!.title = param.get(0)
+            dataItems.get(position)!!.artist_name = param.get(1)
+            dataItems.get(position)!!.albumName = param.get(2)
             notifyItemChanged(position)
         } catch (e: Exception) {
             Log.v(Constants.TAG, e.toString())
@@ -221,71 +228,71 @@ class CurrentTracklistAdapter constructor(
         //final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         //alert.setTitle(context.getString(R.string.track_info_title));
         val linear: LinearLayout = LinearLayout(context)
-        linear.setOrientation(LinearLayout.VERTICAL)
+        linear.orientation = LinearLayout.VERTICAL
         val text: TextView = TextView(context)
         text.setTypeface(TypeFaceHelper.getTypeFace(context))
-        text.setText(UtilityFun.trackInfoBuild(dataItems.get(position).id).toString())
+        text.text = UtilityFun.trackInfoBuild(dataItems.get(position).id).toString()
         text.setPadding(20, 20, 20, 10)
-        text.setTextSize(15f)
+        text.textSize = 15f
         //text.setGravity(Gravity.CENTER);
         text.setTypeface(TypeFaceHelper.getTypeFace(context))
         linear.addView(text)
         //alert.setView(linear);
         //alert.show();
-        MyDialogBuilder(context)
-            .title(context.getString(R.string.track_info_title))
-            .customView(linear, true)
-            .positiveText(R.string.okay)
-            .show()
+//        MyDialogBuilder(context)
+//            .title(context.getString(R.string.track_info_title))
+//            .customView(linear, true)
+//            .positiveText(R.string.okay)
+//            .show()
     }
 
     private fun Delete() {
-        MyDialogBuilder(context)
-            .title(context.getString(R.string.are_u_sure))
-            .positiveText(R.string.yes)
-            .negativeText(R.string.no)
-            .onPositive(object : SingleButtonCallback() {
-                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                    val ids: ArrayList<Int> = ArrayList()
-                    val files: ArrayList<File> = ArrayList<File>()
-                    files.add(File(dataItems.get(position).file_path))
-                    ids.add(dataItems.get(position).id)
-                    if (UtilityFun.Delete(context, files, ids)) {  //last parameter not needed
-                        Toast.makeText(context,
-                            context.getString(R.string.deleted) + dataItems.get(position).title,
-                            Toast.LENGTH_SHORT).show()
-                        if (playerService.getCurrentTrack().getTitle()
-                                .equals(dataItems.get(position).title)
-                        ) {
-                            playerService.nextTrack()
-                            //playerService.notifyUI();
-                            notifyItemChanged(position + 1)
-                        }
-                        playerService.removeTrack(position)
-                        dataItems.removeAt(position)
-                        notifyItemRemoved(position)
-                        // notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(context,
-                            context.getString(R.string.unable_to_del),
-                            Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
-            .show()
+//        MyDialogBuilder(context)
+//            .title(context.getString(R.string.are_u_sure))
+//            .positiveText(R.string.yes)
+//            .negativeText(R.string.no)
+//            .onPositive(object : SingleButtonCallback() {
+//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
+//                    val ids: ArrayList<Int> = ArrayList()
+//                    val files: ArrayList<File> = ArrayList<File>()
+//                    files.add(File(dataItems.get(position).file_path))
+//                    ids.add(dataItems.get(position).id)
+//                    if (UtilityFun.Delete(context, files, ids)) {  //last parameter not needed
+//                        Toast.makeText(context,
+//                            context.getString(R.string.deleted) + dataItems.get(position).title,
+//                            Toast.LENGTH_SHORT).show()
+//                        if (playerService.getCurrentTrack().getTitle()
+//                                .equals(dataItems.get(position).title)
+//                        ) {
+//                            playerService.nextTrack()
+//                            //playerService.notifyUI();
+//                            notifyItemChanged(position + 1)
+//                        }
+//                        playerService.removeTrack(position)
+//                        dataItems.removeAt(position)
+//                        notifyItemRemoved(position)
+//                        // notifyDataSetChanged();
+//                    } else {
+//                        Toast.makeText(context,
+//                            context.getString(R.string.unable_to_del),
+//                            Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            })
+//            .show()
     }
 
     fun onClick(view: View, position: Int) {
         tempPosition = position
-        when (view.getId()) {
+        when (view.id) {
             R.id.more -> {
                 val popup: PopupMenu = PopupMenu(context, view)
-                val inflater: MenuInflater = popup.getMenuInflater()
-                inflater.inflate(R.menu.menu_tracks_by_title, popup.getMenu())
-                popup.getMenu().removeItem(R.id.action_set_as_ringtone)
-                popup.getMenu().removeItem(R.id.action_add_to_q)
-                popup.getMenu().removeItem(R.id.action_play_next)
-                popup.getMenu().removeItem(R.id.action_exclude_folder)
+                val inflater: MenuInflater = popup.menuInflater
+                inflater.inflate(R.menu.menu_tracks_by_title, popup.menu)
+                popup.menu.removeItem(R.id.action_set_as_ringtone)
+                popup.menu.removeItem(R.id.action_add_to_q)
+                popup.menu.removeItem(R.id.action_play_next)
+                popup.menu.removeItem(R.id.action_exclude_folder)
                 popup.show()
                 popup.setOnMenuItemClickListener(this)
             }
@@ -314,24 +321,20 @@ class CurrentTracklistAdapter constructor(
 
     inner class MyViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var title: TextView
-        var secondary: TextView
-        var handle: ImageView
-        var cv: View
+        var title: TextView = itemView.findViewById<TextView>(R.id.header)
+        var secondary: TextView = itemView.findViewById<TextView>(R.id.secondaryHeader)
+        var handle: ImageView = itemView.findViewById<ImageView>(R.id.handleForDrag)
+        var cv: View = itemView.findViewById(R.id.trackItemDraggable)
 
         //ImageView iv;
-        var playAnimation: AVLoadingIndicatorView
-        public override fun onClick(v: View) {
-            this@CurrentTracklistAdapter.onClick(v, this.getLayoutPosition())
+        var playAnimation: AVLoadingIndicatorView = itemView.findViewById(R.id.song_playing_animation)
+
+        override fun onClick(v: View) {
+            this@CurrentTracklistAdapter.onClick(v, this.layoutPosition)
         }
 
         init {
-            title = itemView.findViewById<TextView>(R.id.header)
-            secondary = itemView.findViewById<TextView>(R.id.secondaryHeader)
-            handle = itemView.findViewById<ImageView>(R.id.handleForDrag)
-            cv = itemView.findViewById(R.id.trackItemDraggable)
             //iv = itemView.findViewById(R.id.play_button_item_drag);
-            playAnimation = itemView.findViewById(R.id.song_playing_animation)
             itemView.findViewById<View>(R.id.more).setOnClickListener(this)
             itemView.findViewById<View>(R.id.trackItemDraggable).setOnClickListener(this)
         }
@@ -342,14 +345,14 @@ class CurrentTracklistAdapter constructor(
     }
 
     init {
-        if (MyApp.Companion.getService() == null) {
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp()
             return
         }
-        playerService = MyApp.Companion.getService()
+        playerService = MyApp.getService()
         handler = Handler(Looper.getMainLooper())
         fillData()
-        position = playerService.getCurrentTrackPosition()
+        position = playerService!!.getCurrentTrackPosition()
         this.context = context
         inflater = LayoutInflater.from(context)
         //setHasStableIds(true);

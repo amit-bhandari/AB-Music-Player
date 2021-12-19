@@ -15,7 +15,11 @@
  */
 package com.music.player.bhandari.m.ringtoneCutter
 
+import android.media.AudioFormat
+import android.media.AudioManager
+import android.media.AudioTrack
 import com.music.player.bhandari.m.ringtoneCutter.soundfile.SoundFile
+import java.nio.ShortBuffer
 
 internal class SamplePlayer constructor(
     samples: ShortBuffer,
@@ -23,39 +27,38 @@ internal class SamplePlayer constructor(
     channels: Int,
     numSamples: Int
 ) {
-    open interface OnCompletionListener {
+    interface OnCompletionListener {
         fun onCompletion()
     }
 
-    private val mSamples: ShortBuffer
-    private val mSampleRate: Int
-    private val mChannels: Int
+    private val mSamples: ShortBuffer = samples
+    private val mSampleRate: Int = sampleRate
+    private val mChannels: Int = channels
     private val mNumSamples // Number of samples per channel.
-            : Int
+            : Int = numSamples
     private val mAudioTrack: AudioTrack
     private val mBuffer: ShortArray
     private var mPlaybackStart // Start offset, in samples.
             : Int
     private var mPlayThread: Thread?
     private var mKeepPlaying: Boolean
-    private var mListener: OnCompletionListener?
+    private var mListener: OnCompletionListener? = null
 
-    constructor(sf: SoundFile?) : this(sf!!.getSamples(),
-        sf!!.getSampleRate(),
-        sf!!.getChannels(),
-        sf!!.getNumSamples()) {
-    }
+    constructor(sf: SoundFile?) : this(sf!!.getSamples()!!,
+        sf.getSampleRate(),
+        sf.getChannels(),
+        sf.getNumSamples())
 
     fun setOnCompletionListener(listener: OnCompletionListener?) {
         mListener = listener
     }
 
     fun isPlaying(): Boolean {
-        return mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING
+        return mAudioTrack.playState == AudioTrack.PLAYSTATE_PLAYING
     }
 
     fun isPaused(): Boolean {
-        return mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED
+        return mAudioTrack.playState == AudioTrack.PLAYSTATE_PAUSED
     }
 
     fun start() {
@@ -68,7 +71,7 @@ internal class SamplePlayer constructor(
         // Setting thread feeding the audio samples to the audio hardware.
         // (Assumes mChannels = 1 or 2).
         mPlayThread = object : Thread() {
-            public override fun run() {
+            override fun run() {
                 val position: Int = mPlaybackStart * mChannels
                 mSamples.position(position)
                 val limit: Int = mNumSamples * mChannels
@@ -78,7 +81,7 @@ internal class SamplePlayer constructor(
                         mSamples.get(mBuffer)
                     } else {
                         for (i in numSamplesLeft until mBuffer.size) {
-                            mBuffer.get(i) = 0
+                            mBuffer[i] = 0
                         }
                         mSamples.get(mBuffer, 0, numSamplesLeft)
                     }
@@ -87,7 +90,7 @@ internal class SamplePlayer constructor(
                 }
             }
         }
-        mPlayThread.start()
+        mPlayThread!!.start()
     }
 
     fun pause() {
@@ -125,22 +128,18 @@ internal class SamplePlayer constructor(
         if (mPlaybackStart > mNumSamples) {
             mPlaybackStart = mNumSamples // Nothing to play...
         }
-        mAudioTrack.setNotificationMarkerPosition(mNumSamples - 1 - mPlaybackStart)
+        mAudioTrack.notificationMarkerPosition = mNumSamples - 1 - mPlaybackStart
         if (wasPlaying) {
             start()
         }
     }
 
     fun getCurrentPosition(): Int {
-        return ((mPlaybackStart + mAudioTrack.getPlaybackHeadPosition()) *
-                (1000.0 / mSampleRate))
+        return ((mPlaybackStart + mAudioTrack.playbackHeadPosition) *
+                (1000.0 / mSampleRate)).toInt()
     }
 
     init {
-        mSamples = samples
-        mSampleRate = sampleRate
-        mChannels = channels
-        mNumSamples = numSamples
         mPlaybackStart = 0
         var bufferSize: Int = AudioTrack.getMinBufferSize(
             mSampleRate,
@@ -159,11 +158,11 @@ internal class SamplePlayer constructor(
             mBuffer.size * 2,
             AudioTrack.MODE_STREAM)
         // Check when player played all the given data and notify user if mListener is set.
-        mAudioTrack.setNotificationMarkerPosition(mNumSamples - 1) // Set the marker to the end.
+        mAudioTrack.notificationMarkerPosition = mNumSamples - 1 // Set the marker to the end.
         mAudioTrack.setPlaybackPositionUpdateListener(
             object : AudioTrack.OnPlaybackPositionUpdateListener {
-                public override fun onPeriodicNotification(track: AudioTrack) {}
-                public override fun onMarkerReached(track: AudioTrack) {
+                override fun onPeriodicNotification(track: AudioTrack) {}
+                override fun onMarkerReached(track: AudioTrack) {
                     stop()
                     if (mListener != null) {
                         mListener!!.onCompletion()
