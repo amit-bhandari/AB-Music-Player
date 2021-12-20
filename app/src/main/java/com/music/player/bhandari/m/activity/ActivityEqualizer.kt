@@ -2,6 +2,7 @@ package com.music.player.bhandari.m.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.audiofx.PresetReverb
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -635,26 +636,26 @@ class ActivityEqualizer : AppCompatActivity() {
                             .getBand(9000000)
 
                     //Set the gain level text based on the slider position.
-                    if (seekBarLevel == 16) {
-                        text12_5kHzGainTextView.setText("0 dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(twelvePointFiveKiloHertzBand, 0.toShort())
-                    } else if (seekBarLevel < 16) {
-                        if (seekBarLevel == 0) {
-                            text12_5kHzGainTextView.setText("-" + "15 dB")
-                            MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                                .setBandLevel(twelvePointFiveKiloHertzBand, (-1500).toShort())
-                        } else {
-                            text12_5kHzGainTextView.setText("-" + (16 - seekBarLevel) + " dB")
-                            MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                                .setBandLevel(twelvePointFiveKiloHertzBand,
-                                    (-((16 - seekBarLevel) * 100)).toShort())
+                    when {
+                        seekBarLevel == 16 -> {
+                            text12_5kHzGainTextView!!.setText("0 dB")
+                            MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(twelvePointFiveKiloHertzBand, 0.toShort())
                         }
-                    } else if (seekBarLevel > 16) {
-                        text12_5kHzGainTextView.setText("+" + (seekBarLevel - 16) + " dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(twelvePointFiveKiloHertzBand,
+                        seekBarLevel < 16 -> {
+                            if (seekBarLevel == 0) {
+                                text12_5kHzGainTextView!!.text = "-" + "15 dB"
+                                MyApp.getService()!!.getEqualizerHelper().getEqualizer()!!.setBandLevel(twelvePointFiveKiloHertzBand, (-1500).toShort())
+                            } else {
+                                text12_5kHzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
+                                MyApp.getService()!!.getEqualizerHelper().getEqualizer()!!.setBandLevel(twelvePointFiveKiloHertzBand,
+                                    (-((16 - seekBarLevel) * 100)).toShort())
+                            }
+                        }
+                        seekBarLevel > 16 -> {
+                            text12_5kHzGainTextView!!.text = "+" + (seekBarLevel - 16) + " dB"
+                            MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(twelvePointFiveKiloHertzBand,
                                 ((seekBarLevel - 16) * 100).toShort())
+                        }
                     }
                     twelvePointFiveKilohertzLevel = seekBarLevel
                 } catch (e: Exception) {
@@ -682,35 +683,44 @@ class ActivityEqualizer : AppCompatActivity() {
                 index: Int,
                 arg3: Long
             ) {
-                if (MyApp.Companion.getService() != null) if (index == 0) {
-                    MyApp.Companion.getService().getEqualizerHelper().getPresetReverb()
-                        .setPreset(PresetReverb.PRESET_NONE)
-                    reverbSetting = 0
-                } else if (index == 1) {
-                    MyApp.Companion.getService().getEqualizerHelper().getPresetReverb()
-                        .setPreset(PresetReverb.PRESET_LARGEHALL)
-                    reverbSetting = 1
-                } else if (index == 2) {
-                    MyApp.Companion.getService().getEqualizerHelper().getPresetReverb()
-                        .setPreset(PresetReverb.PRESET_LARGEROOM)
-                    reverbSetting = 2
-                } else if (index == 3) {
-                    MyApp.Companion.getService().getEqualizerHelper().getPresetReverb()
-                        .setPreset(PresetReverb.PRESET_MEDIUMHALL)
-                    reverbSetting = 3
-                } else if (index == 4) {
-                    MyApp.Companion.getService().getEqualizerHelper().getPresetReverb()
-                        .setPreset(PresetReverb.PRESET_MEDIUMROOM)
-                    reverbSetting = 4
-                } else if (index == 5) {
-                    MyApp.Companion.getService().getEqualizerHelper().getPresetReverb()
-                        .setPreset(PresetReverb.PRESET_SMALLROOM)
-                    reverbSetting = 5
-                } else if (index == 6) {
-                    MyApp.Companion.getService().getEqualizerHelper().getPresetReverb()
-                        .setPreset(PresetReverb.PRESET_PLATE)
-                    reverbSetting = 6
-                } else reverbSetting = 0
+                if (MyApp.getService() != null) when (index) {
+                    0 -> {
+                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                            PresetReverb.PRESET_NONE
+                        reverbSetting = 0
+                    }
+                    1 -> {
+                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                            PresetReverb.PRESET_LARGEHALL
+                        reverbSetting = 1
+                    }
+                    2 -> {
+                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                            PresetReverb.PRESET_LARGEROOM
+                        reverbSetting = 2
+                    }
+                    3 -> {
+                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                            PresetReverb.PRESET_MEDIUMHALL
+                        reverbSetting = 3
+                    }
+                    4 -> {
+                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                            PresetReverb.PRESET_MEDIUMROOM
+                        reverbSetting = 4
+                    }
+                    5 -> {
+                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                            PresetReverb.PRESET_SMALLROOM
+                        reverbSetting = 5
+                    }
+                    6 -> {
+                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                            PresetReverb.PRESET_PLATE
+                        reverbSetting = 6
+                    }
+                    else -> reverbSetting = 0
+                }
             }
 
             override fun onNothingSelected(arg0: AdapterView<*>?) {
@@ -824,9 +834,9 @@ class ActivityEqualizer : AppCompatActivity() {
     private fun showLoadPresetDialog() {
 
         //load data from db here
-        val array: Array<String> = MyApp.Companion.getService().getEqualizerHelper().getPresetList()
-        for (s: String in array) {
-            Log.d("ActivityEqualizer", "showLoadPresetDialog: array " + s)
+        val array = MyApp.getService()!!.getEqualizerHelper()!!.getPresetList()
+        for (s in array) {
+            Log.d("ActivityEqualizer", "showLoadPresetDialog: array $s")
         }
 //        MyDialogBuilder(this)
 //            .title(R.string.title_load_preset)
@@ -868,8 +878,8 @@ class ActivityEqualizer : AppCompatActivity() {
         virtualizerListener.onProgressChanged(virtualizerSeekBar!!,
             virtualizerSeekBar!!.progress,
             true)
-        bassBoostListener.onProgressChanged(bassBoostSeekBar!!, bassBoostSeekBar.getProgress(), true)
-        enhanceListener.onProgressChanged(enhanceSeekBar!!, enhanceSeekBar.getProgress(), true)
+        bassBoostListener.onProgressChanged(bassBoostSeekBar!!, bassBoostSeekBar!!.progress, true)
+        enhanceListener.onProgressChanged(enhanceSeekBar!!, enhanceSeekBar!!.progress, true)
         reverbListener.onItemSelected(reverbSpinner,
             null,
             reverbSpinner.getSelectedItemPosition(),
@@ -904,51 +914,51 @@ class ActivityEqualizer : AppCompatActivity() {
             reverbSetting = equalizerSetting!!.getReverb()
 
             //Move the sliders to the equalizer settings.
-            equalizer50HzSeekBar.setProgressAndThumb(fiftyHertzLevel)
-            equalizer130HzSeekBar.setProgressAndThumb(oneThirtyHertzLevel)
-            equalizer320HzSeekBar.setProgressAndThumb(threeTwentyHertzLevel)
-            equalizer800HzSeekBar.setProgressAndThumb(eightHundredHertzLevel)
-            equalizer2kHzSeekBar.setProgressAndThumb(twoKilohertzLevel)
-            equalizer5kHzSeekBar.setProgressAndThumb(fiveKilohertzLevel)
-            equalizer12_5kHzSeekBar.setProgressAndThumb(twelvePointFiveKilohertzLevel)
-            virtualizerSeekBar.setProgress(virtualizerLevel)
-            bassBoostSeekBar.setProgress(bassBoostLevel)
-            enhanceSeekBar.setProgress(enhancementLevel)
-            if (reverbSetting < reverbSpinner.getAdapter().count) reverbSpinner.setSelection(
+            equalizer50HzSeekBar!!.setProgressAndThumb(fiftyHertzLevel)
+            equalizer130HzSeekBar!!.setProgressAndThumb(oneThirtyHertzLevel)
+            equalizer320HzSeekBar!!.setProgressAndThumb(threeTwentyHertzLevel)
+            equalizer800HzSeekBar!!.setProgressAndThumb(eightHundredHertzLevel)
+            equalizer2kHzSeekBar!!.setProgressAndThumb(twoKilohertzLevel)
+            equalizer5kHzSeekBar!!.setProgressAndThumb(fiveKilohertzLevel)
+            equalizer12_5kHzSeekBar!!.setProgressAndThumb(twelvePointFiveKilohertzLevel)
+            virtualizerSeekBar!!.progress = virtualizerLevel
+            bassBoostSeekBar!!.progress = bassBoostLevel
+            enhanceSeekBar!!.progress = enhancementLevel
+            if (reverbSetting < reverbSpinner!!.adapter.count) reverbSpinner!!.setSelection(
                 reverbSetting,
                 false)
 
             //50Hz Band.
             when {
                 fiftyHertzLevel == 16 -> {
-                    text50HzGainTextView.setText("0 dB")
+                    text50HzGainTextView!!.text = "0 dB"
                 }
                 fiftyHertzLevel < 16 -> {
                     if (fiftyHertzLevel == 0) {
-                        text50HzGainTextView.setText("-" + "15 dB")
+                        text50HzGainTextView!!.text = "-" + "15 dB"
                     } else {
-                        text50HzGainTextView.setText("-" + (16 - fiftyHertzLevel) + " dB")
+                        text50HzGainTextView!!.text = "-" + (16 - fiftyHertzLevel) + " dB"
                     }
                 }
                 fiftyHertzLevel > 16 -> {
-                    text50HzGainTextView.setText("+" + (fiftyHertzLevel - 16) + " dB")
+                    text50HzGainTextView!!.text = "+" + (fiftyHertzLevel - 16) + " dB"
                 }
             }
 
             //130Hz Band.
             when {
                 oneThirtyHertzLevel == 16 -> {
-                    text130HzGainTextView.setText("0 dB")
+                    text130HzGainTextView!!.text = "0 dB"
                 }
                 oneThirtyHertzLevel < 16 -> {
                     if (oneThirtyHertzLevel == 0) {
-                        text130HzGainTextView.setText("-" + "15 dB")
+                        text130HzGainTextView!!.text = "-" + "15 dB"
                     } else {
-                        text130HzGainTextView.setText("-" + (16 - oneThirtyHertzLevel) + " dB")
+                        text130HzGainTextView!!.text = "-" + (16 - oneThirtyHertzLevel) + " dB"
                     }
                 }
                 oneThirtyHertzLevel > 16 -> {
-                    text130HzGainTextView.setText("+" + (oneThirtyHertzLevel - 16) + " dB")
+                    text130HzGainTextView!!.text = "+" + (oneThirtyHertzLevel - 16) + " dB"
                 }
             }
 

@@ -1,10 +1,37 @@
 package com.music.player.bhandari.m.model
 
+import android.annotation.SuppressLint
+import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.Context
+import android.content.Intent
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Build
+import android.os.ParcelFileDescriptor
+import android.provider.MediaStore
+import android.util.Log
 import android.util.Size
+import android.util.SparseArray
+import androidx.annotation.RequiresApi
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.music.player.bhandari.m.BuildConfig
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.BulkArtInfoGrabber
+import com.music.player.bhandari.m.utils.UtilityFun
+import java.io.File
+import java.io.FileDescriptor
+import java.io.IOException
+import java.util.*
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -23,10 +50,12 @@ import java.util.concurrent.Executors
  */
 //singleton class
 //maintains music library
+
+@SuppressLint("Range")
 class MusicLibrary private constructor() {
-    private val context: Context
-    private val cr: ContentResolver
-    private val atomicInt: AtomicInteger = AtomicInteger()
+    private val context: Context = MyApp.getContext()!!
+    private val cr: ContentResolver = context.contentResolver
+    private val atomicInt = AtomicInteger()
     private var libraryLoadCounter = 0
 
     //short clip time
@@ -34,37 +63,31 @@ class MusicLibrary private constructor() {
     private var REMOVE_TRACK_CONTAINING_1: String? = null
     private var REMOVE_TRACK_CONTAINING_2: String? = null
     private var REMOVE_TRACK_CONTAINING_3: String? = null
-    private var excludedFolders: Array<String>
+    private var excludedFolders: Array<String>? = null
 
     //all the folders in which songs are there
     val foldersList = ArrayList<String>()
 
     //data for all frgaments
-    private val dataItemsForTracks: MutableMap<Int, dataItem>? =
-        Collections.synchronizedMap(LinkedHashMap<Int, dataItem>())
-    private val dataItemsForAlbums: ArrayList<dataItem> = ArrayList<dataItem>()
-    private val dataItemsForGenres: ArrayList<dataItem> = ArrayList<dataItem>()
-    private val dataItemsForArtists: ArrayList<dataItem> = ArrayList<dataItem>()
+    private val dataItemsForTracks: MutableMap<Int, dataItem>? = Collections.synchronizedMap(LinkedHashMap<Int, dataItem>())
+    private val dataItemsForAlbums: ArrayList<dataItem> = ArrayList()
+    private val dataItemsForGenres: ArrayList<dataItem> = ArrayList()
+    private val dataItemsForArtists: ArrayList<dataItem> = ArrayList()
 
     //track id to track name hashmap
     //used for shuffling tracks using track name in now playing
     private val trackMap: SparseArray<String> = SparseArray<String>()
     fun RefreshLibrary() {
-        val excludedFoldersString: String =
-            MyApp.getPref().getString(context.getString(R.string.pref_excluded_folders), "")
-        excludedFolders = excludedFoldersString.split(",".toRegex()).toTypedArray()
+        val excludedFoldersString = MyApp.getPref()!!.getString(context.getString(R.string.pref_excluded_folders), "")
+        excludedFolders = excludedFoldersString!!.split(",".toRegex()).toTypedArray()
 
         //filter audio based on track duration
-        SHORT_CLIPS_TIME_IN_MS =
-            MyApp.getPref().getInt(context.getString(R.string.pref_hide_short_clips), 10) * 1000
+        SHORT_CLIPS_TIME_IN_MS = MyApp.getPref()!!.getInt(context.getString(R.string.pref_hide_short_clips), 10) * 1000
 
         //filter audio based on name
-        REMOVE_TRACK_CONTAINING_1 = MyApp.getPref()
-            .getString(context.getString(R.string.pref_hide_tracks_starting_with_1), "")
-        REMOVE_TRACK_CONTAINING_2 = MyApp.getPref()
-            .getString(context.getString(R.string.pref_hide_tracks_starting_with_2), "")
-        REMOVE_TRACK_CONTAINING_3 = MyApp.getPref()
-            .getString(context.getString(R.string.pref_hide_tracks_starting_with_3), "")
+        REMOVE_TRACK_CONTAINING_1 = MyApp.getPref()!!.getString(context.getString(R.string.pref_hide_tracks_starting_with_1), "")
+        REMOVE_TRACK_CONTAINING_2 = MyApp.getPref()!!.getString(context.getString(R.string.pref_hide_tracks_starting_with_2), "")
+        REMOVE_TRACK_CONTAINING_3 = MyApp.getPref()!!.getString(context.getString(R.string.pref_hide_tracks_starting_with_3), "")
         atomicInt.set(0)
         dataItemsForTracks!!.clear()
         dataItemsForGenres.clear()
@@ -88,7 +111,7 @@ class MusicLibrary private constructor() {
             atomicInt.set(0)
             libraryLoadCounter = 0
             Log.v(Constants.TAG, "refreshed")
-            PlaylistManager.getInstance(MyApp.getContext())!!.PopulateUserMusicTable()
+            PlaylistManager.getInstance(MyApp.getContext()!!)!!.PopulateUserMusicTable()
             LocalBroadcastManager.getInstance(context)
                 .sendBroadcast(Intent(Constants.ACTION.REFRESH_LIB))
             Log.v("See the time", (System.currentTimeMillis() - start).toString() + "")
@@ -100,11 +123,11 @@ class MusicLibrary private constructor() {
             try {
                 foldersList.clear()
                 for (item in dataItemsForTracks!!.values) {
-                    var path: String = item.file_path
-                    path = path.substring(0, path.lastIndexOf("/"))
+                    var path = item.file_path
+                    path = path!!.substring(0, path.lastIndexOf("/"))
                     var isExcluded = false
                     //check if excluded folder
-                    for (excludedPath in excludedFolders) {
+                    for (excludedPath in excludedFolders!!) {
                         if (excludedPath == path) {
                             isExcluded = true
                         }
@@ -136,9 +159,9 @@ class MusicLibrary private constructor() {
 
     private fun fillDataForTracks() {
         Executors.newSingleThreadExecutor().execute {
-            val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+            val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
             val selection: String = MediaStore.Audio.Media.IS_MUSIC + "!= 0"
-            val projection = arrayOf<String>(
+            val projection = arrayOf(
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ARTIST_ID,
@@ -156,41 +179,38 @@ class MusicLibrary private constructor() {
                 cursor = cr.query(uri, projection, selection, null, sortOrder)
             } catch (ignored: Exception) {
             }
-            if (cursor != null && cursor.getCount() > 0) {
+            if (cursor != null && cursor.count > 0) {
                 while (cursor.moveToNext()) {
                     if (REMOVE_TRACK_CONTAINING_1 != ""
                         && cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE)
-                            .startsWith(REMOVE_TRACK_CONTAINING_1)
+                            .startsWith(REMOVE_TRACK_CONTAINING_1!!)
                     ) {
                         continue
                     }
                     if (REMOVE_TRACK_CONTAINING_2 != ""
                         && cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE)
-                            .startsWith(REMOVE_TRACK_CONTAINING_2)
+                            .startsWith(REMOVE_TRACK_CONTAINING_2!!)
                     ) {
                         continue
                     }
                     if (REMOVE_TRACK_CONTAINING_3 != ""
                         && cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE)
-                            .startsWith(REMOVE_TRACK_CONTAINING_3)
+                            .startsWith(REMOVE_TRACK_CONTAINING_3!!)
                     ) {
                         continue
                     }
                     val filePath: String = cursor.getString(6)
-                    if (filePath != null) {
-                        val folderPath = filePath.substring(0, filePath.lastIndexOf("/"))
-                        var isExcluded = false
-                        for (excludedPath in excludedFolders) {
-                            if (folderPath == excludedPath) isExcluded = true
-                        }
-                        if (isExcluded) continue
+                    val folderPath = filePath.substring(0, filePath.lastIndexOf("/"))
+                    var isExcluded = false
+                    for (excludedPath in excludedFolders!!) {
+                        if (folderPath == excludedPath) isExcluded = true
                     }
+                    if (isExcluded) continue
 
                     /*System.out.println("Track number "
                                     + cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-                                    + " " + cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)));*/if (cursor.getInt(
-                            cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) > SHORT_CLIPS_TIME_IN_MS
-                    ) {
+                                    + " " + cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)));*/
+                    if (cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) > SHORT_CLIPS_TIME_IN_MS) {
                         dataItemsForTracks!![cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))] =
                             dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
                                 cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)),
@@ -207,9 +227,7 @@ class MusicLibrary private constructor() {
                     }
                 }
             }
-            if (cursor != null) {
-                cursor.close()
-            }
+            cursor?.close()
             libraryLoadCounter = atomicInt.incrementAndGet()
             fillFoldersList()
         }
@@ -233,7 +251,7 @@ class MusicLibrary private constructor() {
                     MediaStore.Audio.Artists.ARTIST + " ASC")
             } catch (ignored: Exception) {
             }
-            if (cursor != null && cursor.getCount() > 0) {
+            if (cursor != null && cursor.count > 0) {
                 while (cursor.moveToNext()) {
                     dataItemsForArtists.add(dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists._ID)),
                         cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST)),
@@ -242,20 +260,17 @@ class MusicLibrary private constructor() {
                     ))
                 }
             }
-            if (cursor != null) {
-                cursor.close()
-            }
+            cursor?.close()
             updateArtistInfo()
             libraryLoadCounter = atomicInt.incrementAndGet()
             if (!BuildConfig.DEBUG) {
                 //if its been more than 2 days since artist info has been cached locally, do it
                 //fetch art info thread
-                val lastTimeDidAt: Long =
-                    MyApp.getPref().getLong(context.getString(R.string.pref_artinfo_libload), 0)
+                val lastTimeDidAt = MyApp.getPref()!!.getLong(context.getString(R.string.pref_artinfo_libload), 0)
                 if (System.currentTimeMillis() >= lastTimeDidAt +
                     2 * 24 * 60 * 60 * 1000
                 ) {
-                    BulkArtInfoGrabber().start()
+                    BulkArtInfoGrabber.start()
                 }
             }
         }
@@ -263,7 +278,7 @@ class MusicLibrary private constructor() {
 
     private fun fillDataForAlbums() {
         Executors.newSingleThreadExecutor().execute {
-            val mProjection = arrayOf<String>(
+            val mProjection = arrayOf(
                 MediaStore.Audio.Albums._ID,
                 MediaStore.Audio.Albums.ALBUM,
                 MediaStore.Audio.Albums.NUMBER_OF_SONGS,
@@ -284,7 +299,7 @@ class MusicLibrary private constructor() {
             } catch (ignored: Exception) {
                 println(ignored)
             }
-            if (cursor != null && cursor.getCount() > 0) {
+            if (cursor != null && cursor.count > 0) {
                 while (cursor.moveToNext()) {
                     dataItemsForAlbums.add(dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Albums._ID)),
                         cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)),
@@ -319,15 +334,13 @@ class MusicLibrary private constructor() {
                     MediaStore.Audio.Genres.NAME + " ASC")
             } catch (ignored: Exception) {
             }
-            if (cursor != null && cursor.getCount() > 0) {
+            if (cursor != null && cursor.count > 0) {
                 while (cursor.moveToNext()) {
                     val songList =
                         getSongListFromGenreIdNew(cursor.getInt(INDEX_FOR_GENRE_CURSOR._ID),
                             Constants.SORT_ORDER.ASC)
                     if (songList == null || songList.size == 0) continue
-                    val genre_name: String =
-                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Genres.NAME))
-                            ?: continue
+                    val genre_name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Genres.NAME)) ?: continue
                     dataItemsForGenres.add(dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Genres._ID)),
                         genre_name,
                         0)
@@ -354,7 +367,7 @@ class MusicLibrary private constructor() {
         return dataItemsForAlbums
     }
 
-    val dataItemsArtist: ArrayList<com.music.player.bhandari.m.model.dataItem>
+    val dataItemsArtist: ArrayList<dataItem>
         get() = dataItemsForArtists
 
     fun getDataItemsForTracks(): Map<Int, dataItem>? {
@@ -371,10 +384,10 @@ class MusicLibrary private constructor() {
 
     fun getSongListFromArtistIdNew(artist_id: Int, sort: Int): ArrayList<Int>? {
         val songList = ArrayList<Int>()
-        val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val selection: String =
             MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ARTIST_ID + "=" + artist_id
-        val projection = arrayOf<String>(
+        val projection = arrayOf(
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media._ID
@@ -404,19 +417,22 @@ class MusicLibrary private constructor() {
 
     fun getSongListFromAlbumIdNew(album_id: Int, sort: Int): ArrayList<Int>? {
         val songList = ArrayList<Int>()
-        val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val selection: String =
             MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ALBUM_ID + "=" + album_id
-        val projection = arrayOf<String>(
+        val projection = arrayOf(
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media._ID
         )
         var sortOrder = ""
-        sortOrder = if (sort == Constants.SORT_ORDER.ASC) {
-            MediaStore.Audio.Media.TITLE + " ASC"
-        } else {
-            MediaStore.Audio.Media.TITLE + " DESC"
+        sortOrder = when (sort) {
+            Constants.SORT_ORDER.ASC -> {
+                MediaStore.Audio.Media.TITLE + " ASC"
+            }
+            else -> {
+                MediaStore.Audio.Media.TITLE + " DESC"
+            }
         }
         var cursor: Cursor? = null
         try {
@@ -437,8 +453,8 @@ class MusicLibrary private constructor() {
 
     fun getSongListFromGenreIdNew(genre_id: Int, sort: Int): ArrayList<Int>? {
         val songList = ArrayList<Int>()
-        val uri: Uri = MediaStore.Audio.Genres.Members.getContentUri("external", genre_id.toLong())
-        val projection = arrayOf<String>(MediaStore.Audio.Media.TITLE,
+        val uri = MediaStore.Audio.Genres.Members.getContentUri("external", genre_id.toLong())
+        val projection = arrayOf(MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media._ID)
         var sortOrder = ""
@@ -472,10 +488,9 @@ class MusicLibrary private constructor() {
             //you bugged my mind
             title = title.replace("'".toRegex(), "''")
         }
-        val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        val selection: String = (MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
-                + MediaStore.Audio.Media.TITLE + "= '" + title + "'")
-        val projection = arrayOf<String>(
+        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val selection: String = (MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.TITLE + "= '" + title + "'")
+        val projection = arrayOf(
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.DATA,
@@ -495,7 +510,7 @@ class MusicLibrary private constructor() {
                 MediaStore.Audio.Media.TITLE + " ASC")
         } catch (ignored: Exception) {
         }
-        if (cursor != null && cursor.getCount() != 0) {
+        if (cursor != null && cursor.count != 0) {
             cursor.moveToFirst()
             val item = TrackItem(cursor.getString(INDEX_FOR_TRACK_CURSOR.DATA_PATH),
                 cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE),
@@ -513,10 +528,10 @@ class MusicLibrary private constructor() {
     }
 
     fun getTrackItemFromId(_id: Int): TrackItem? {
-        val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val selection: String = (MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
                 + MediaStore.Audio.Media._ID + "= '" + _id + "'")
-        val projection = arrayOf<String>(
+        val projection = arrayOf(
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.DATA,
@@ -536,7 +551,7 @@ class MusicLibrary private constructor() {
                 MediaStore.Audio.Media.TITLE + " ASC")
         } catch (ignored: Exception) {
         }
-        if (cursor != null && cursor.getCount() != 0) {
+        if (cursor != null && cursor.count != 0) {
             cursor.moveToFirst()
             val item = TrackItem(cursor.getString(INDEX_FOR_TRACK_CURSOR.DATA_PATH),
                 cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE),
@@ -558,8 +573,8 @@ class MusicLibrary private constructor() {
         if (filePath.contains("\"")) {
             filePath = UtilityFun.escapeDoubleQuotes(filePath)
         }
-        val videosUri: Uri = MediaStore.Audio.Media.getContentUri("external")
-        val projection = arrayOf<String>(MediaStore.Audio.Media._ID)
+        val videosUri = MediaStore.Audio.Media.getContentUri("external")
+        val projection = arrayOf(MediaStore.Audio.Media._ID)
         var cursor: Cursor? = null
         try {
             cursor = cr.query(videosUri,
@@ -569,10 +584,9 @@ class MusicLibrary private constructor() {
                 null)
         } catch (ignored: Exception) {
         }
-        return if (cursor != null && cursor.getCount() != 0) {
+        return if (cursor != null && cursor.count != 0) {
             cursor.moveToFirst()
-            val id: Int
-            id = try {
+            val id: Int = try {
                 cursor.getInt(0)
             } catch (e: Exception) {
                 cursor.close()
@@ -586,7 +600,7 @@ class MusicLibrary private constructor() {
     }
 
     fun getAlbumArtFromId(id: Int): Bitmap? {
-        var uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        var uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val selection: String = (MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
                 + MediaStore.Audio.Media._ID + "=" + "'" + id + "'")
         val projection = arrayOf<String>(
@@ -602,20 +616,16 @@ class MusicLibrary private constructor() {
                 MediaStore.Audio.Media.TITLE + " ASC")
         } catch (ignored: Exception) {
         }
-        if (cursor != null && cursor.getCount() != 0) {
+        if (cursor != null && cursor.count != 0) {
             cursor.moveToFirst()
             val album_id: Int = cursor.getInt(0)
             var bm: Bitmap? = null
             try {
-                val sArtworkUri: Uri = Uri
-                    .parse("content://media/external/audio/albumart")
+                val sArtworkUri = Uri.parse("content://media/external/audio/albumart")
                 uri = ContentUris.withAppendedId(sArtworkUri, album_id.toLong())
-                val pfd: ParcelFileDescriptor = cr
-                    .openFileDescriptor(uri, "r")
-                if (pfd != null) {
-                    val fd: FileDescriptor = pfd.getFileDescriptor()
-                    bm = BitmapFactory.decodeFileDescriptor(fd)
-                }
+                val pfd: ParcelFileDescriptor = cr.openFileDescriptor(uri, "r")!!
+                val fd: FileDescriptor = pfd.fileDescriptor
+                bm = BitmapFactory.decodeFileDescriptor(fd)
             } catch (e: Exception) {
                 cursor.close()
             }
@@ -624,15 +634,12 @@ class MusicLibrary private constructor() {
                 return bm
             }
         }
-        if (cursor != null) {
-            cursor.close()
-        }
+        cursor?.close()
         return null
     }
 
     fun getAlbumArtUri(album_id: Int): Uri? {
-        return Uri.fromFile(File(MyApp.getInstance().getFilesDir()
-            .getAbsolutePath() + "random.png"))
+        return Uri.fromFile(File(MyApp.getInstance()!!.filesDir.absolutePath + "random.png"))
         /*Uri songCover = Uri.parse("content://media/external/audio/albumart");
         return ContentUris.withAppendedId(songCover, album_id);*/
     }
@@ -644,7 +651,7 @@ class MusicLibrary private constructor() {
             trackId.toLong())
         var bm: Bitmap? = null
         try {
-            bm = MyApp.getContext().getContentResolver()
+            bm = MyApp.getContext()!!.contentResolver
                 .loadThumbnail(trackUri, Size(512, 512), null)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -701,8 +708,6 @@ class MusicLibrary private constructor() {
     }
 
     init {
-        context = MyApp.getContext()
-        cr = context.contentResolver
         RefreshLibrary()
     }
 }
