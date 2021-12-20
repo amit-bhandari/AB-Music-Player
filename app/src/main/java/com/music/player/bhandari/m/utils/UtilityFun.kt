@@ -431,8 +431,7 @@ object UtilityFun {
 
     fun restartApp() {
         val intent = Intent(MyApp.getContext(), ActivityPermissionSeek::class.java)
-        intent.flags =
-            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         MyApp.getContext()?.startActivity(intent)
     }

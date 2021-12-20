@@ -1,11 +1,45 @@
 package com.music.player.bhandari.m.activity
 
-import android.content.Context
+import android.annotation.SuppressLint
+import android.content.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Typeface
+import android.net.Uri
+import android.os.AsyncTask
+import android.os.Bundle
+import android.provider.MediaStore
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import butterknife.BindView
+import butterknife.ButterKnife
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
+import com.music.player.bhandari.m.interfaces.DoubleClickListener
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.TrackItem
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.ArtistInfo.ArtistInfo
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArtInfoThread
+import com.music.player.bhandari.m.service.PlayerService
+import com.music.player.bhandari.m.utils.UtilityFun
+import com.wang.avi.AVLoadingIndicatorView
+import java.io.*
+import java.net.URL
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -22,7 +56,7 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.ArtistInfo.Artist
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
+class FragmentArtistInfo : Fragment(), ArtistInfo.Callback {
     private var layout: View? = null
     private var mArtistUpdateReceiver: BroadcastReceiver? = null
     private var mArtistInfo: ArtistInfo? = null
@@ -49,7 +83,7 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
     //@BindView(R.id.adView)  AdView mAdView;
     //@BindView(R.id.ad_close)  TextView adCloseText;
     private var playerService: PlayerService? = null
-    public override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         Log.v("frag", isVisibleToUser.toString() + "")
         /*if(isVisibleToUser && mAdView!=null){
             mAdView.resume();
@@ -60,28 +94,25 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
         }*/super.setUserVisibleHint(isVisibleToUser)
     }
 
-    public override fun onCreateView(
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         layout = inflater.inflate(R.layout.fragment_artist_info, container, false)
-        ButterKnife.bind(this, layout)
-        playerService = MyApp.Companion.getService()
-        if (MyApp.Companion.getService() == null) {
+        ButterKnife.bind(this, layout!!)
+        playerService = MyApp.getService()
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp()
             return layout
         }
-        playerService = MyApp.Companion.getService()
-        buttonUpdateMetadata.setOnClickListener(object : View.OnClickListener {
-            public override fun onClick(v: View) {
-                val item: TrackItem? = playerService.getCurrentTrack()
-                if (item == null) {
-                    return
-                }
-                val edited_artist: String = artistEdit.getText().toString().trim({ it <= ' ' })
+        playerService = MyApp.getService()
+        buttonUpdateMetadata!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                val item: TrackItem = playerService!!.getCurrentTrack() ?: return
+                val edited_artist: String = artistEdit!!.text.toString().trim { it <= ' ' }
                 if (edited_artist.isEmpty()) {
-                    Toast.makeText(getContext(),
+                    Toast.makeText(context,
                         getString(R.string.te_error_empty_field),
                         Toast.LENGTH_SHORT).show()
                     return
@@ -92,36 +123,34 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
                     val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                     val values: ContentValues = ContentValues()
                     values.put(MediaStore.Audio.Media.ARTIST, edited_artist)
-                    getContext()!!.getContentResolver()
+                    context!!.contentResolver
                         .update(uri,
                             values,
                             MediaStore.Audio.Media.TITLE + "=?",
                             arrayOf(item.title))
-                    val intent: Intent = Intent(getContext(), ActivityNowPlaying::class.java)
+                    val intent: Intent = Intent(context, ActivityNowPlaying::class.java)
                     intent.putExtra("refresh", true)
-                    intent.putExtra("position", playerService.getCurrentTrackPosition())
+                    intent.putExtra("position", playerService!!.getCurrentTrackPosition())
                     intent.putExtra("originalTitle", item.title)
                     intent.putExtra("title", item.title)
                     intent.putExtra("artist", edited_artist)
                     intent.putExtra("album", item.album)
                     startActivity(intent)
-                    artistEdit.setVisibility(View.GONE)
-                    updateTagsText.setVisibility(View.GONE)
-                    buttonUpdateMetadata.setVisibility(View.GONE)
-                    buttonUpdateMetadata.setClickable(false)
-                    if (getActivity() != null) {
-                        val view: View? = getActivity()!!.getCurrentFocus()
+                    artistEdit!!.visibility = View.GONE
+                    updateTagsText!!.visibility = View.GONE
+                    buttonUpdateMetadata!!.visibility = View.GONE
+                    buttonUpdateMetadata!!.isClickable = false
+                    if (activity != null) {
+                        val view: View? = activity!!.currentFocus
                         if (view != null) {
-                            val imm: InputMethodManager? = getActivity()
-                                .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-                            if (imm != null) {
-                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
-                            }
+                            (activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.hideSoftInputFromWindow(
+                                view.windowToken,
+                                0)
                         }
                     }
                     downloadArtInfo()
                 } else {
-                    Toast.makeText(getContext(),
+                    Toast.makeText(context,
                         getString(R.string.change_tags_to_update),
                         Toast.LENGTH_SHORT).show()
                 }
@@ -131,36 +160,36 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
         //retry click listner
         layout!!.findViewById<View>(R.id.ll_art_bio)
             .setOnClickListener(object : DoubleClickListener() {
-                fun onSingleClick(v: View?) {
-                    if (retryText.getVisibility() == View.VISIBLE) {
-                        retryText.setVisibility(View.GONE)
-                        artBioText.setVisibility(View.VISIBLE)
-                        artistEdit.setVisibility(View.GONE)
-                        updateTagsText.setVisibility(View.GONE)
-                        buttonUpdateMetadata.setVisibility(View.GONE)
-                        buttonUpdateMetadata.setClickable(false)
-                        lyricLoadAnimation.setVisibility(View.GONE)
+                override fun onSingleClick(v: View?) {
+                    if (retryText!!.visibility == View.VISIBLE) {
+                        retryText!!.visibility = View.GONE
+                        artBioText!!.visibility = View.VISIBLE
+                        artistEdit!!.visibility = View.GONE
+                        updateTagsText!!.visibility = View.GONE
+                        buttonUpdateMetadata!!.visibility = View.GONE
+                        buttonUpdateMetadata!!.isClickable = false
+                        lyricLoadAnimation!!.visibility = View.GONE
                         downloadArtInfo()
                     }
                 }
 
-                fun onDoubleClick(v: View?) {
+                override fun onDoubleClick(v: View?) {
 
                     //if no connection text, do not hide artist content
-                    if ((retryText.getText().toString() == getString(R.string.no_connection))) {
+                    if ((retryText!!.text.toString() == getString(R.string.no_connection))) {
                         return
                     }
-                    if (artBioText.getVisibility() == View.VISIBLE) {
-                        artBioText.setVisibility(View.GONE)
+                    if (artBioText!!.visibility == View.VISIBLE) {
+                        artBioText!!.visibility = View.GONE
                     } else {
-                        artBioText.setVisibility(View.VISIBLE)
+                        artBioText!!.visibility = View.VISIBLE
                     }
                 }
             })
 
         //downloadArtInfo();
         mArtistUpdateReceiver = object : BroadcastReceiver() {
-            public override fun onReceive(context: Context, intent: Intent) {
+            override fun onReceive(context: Context, intent: Intent) {
                 //already displayed, skip
                 updateArtistInfoIfNeeded()
             }
@@ -168,65 +197,50 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
         return layout
     }
 
-    /* @OnClick(R.id.ad_close)
-    public void close_ad(){
-        if(mAdView!=null){
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
-    }*/
-    public override fun onDestroyView() {
-        super.onDestroyView()
-
-        /*if (mAdView != null) {
-            mAdView.destroy();
-        }*/
-    }
-
     private fun downloadArtInfo() {
-        val item: TrackItem? = playerService.getCurrentTrack()
-        if (item == null || item.getArtist() == null) {
+        val item: TrackItem? = playerService!!.getCurrentTrack()
+        if (item?.getArtist() == null) {
             return
         }
-        artBioText.setText(getString(R.string.artist_info_loading))
+        artBioText!!.setText(getString(R.string.artist_info_loading))
 
         //set loading animation
-        lyricLoadAnimation.setVisibility(View.VISIBLE)
-        lyricLoadAnimation.show()
+        lyricLoadAnimation!!.visibility = View.VISIBLE
+        lyricLoadAnimation!!.show()
 
         //see in offlinne db first
         mArtistInfo = OfflineStorageArtistBio.getArtistBioFromTrackItem(item)
         //second check is added to make sure internet call will happen
         //when user manually changes artist tag
         if (mArtistInfo != null && (item.getArtist()!!
-                .trim({ it <= ' ' }) == mArtistInfo.getOriginalArtist()!!.trim())
+                .trim { it <= ' ' } == mArtistInfo!!.getOriginalArtist()!!.trim())
         ) {
             onArtInfoDownloaded(mArtistInfo)
             return
         }
         if (UtilityFun.isConnectedToInternet) {
             var artist: String? = item.getArtist()
-            artist = UtilityFun.filterArtistString(artist)
+            artist = UtilityFun.filterArtistString(artist!!)
             DownloadArtInfoThread(this, artist, item).start()
         } else {
-            artBioText.setVisibility(View.GONE)
-            retryText.setText(getString(R.string.no_connection))
-            retryText.setVisibility(View.VISIBLE)
-            lyricLoadAnimation.hide()
-            lyricLoadAnimation.setVisibility(View.GONE)
+            artBioText!!.visibility = View.GONE
+            retryText!!.text = getString(R.string.no_connection)
+            retryText!!.visibility = View.VISIBLE
+            lyricLoadAnimation!!.hide()
+            lyricLoadAnimation!!.visibility = View.GONE
         }
     }
 
-    public override fun onPause() {
+    override fun onPause() {
         super.onPause()
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mArtistUpdateReceiver)
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mArtistUpdateReceiver!!)
     }
 
-    public override fun onResume() {
+    override fun onResume() {
         super.onResume()
-        if (MyApp.Companion.getService() != null) {
+        if (MyApp.getService() != null) {
             updateArtistInfoIfNeeded()
-            LocalBroadcastManager.getInstance(getContext()).registerReceiver(mArtistUpdateReceiver,
+            LocalBroadcastManager.getInstance(requireContext()).registerReceiver(mArtistUpdateReceiver!!,
                 IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO))
         } else {
             UtilityFun.restartApp()
@@ -234,18 +248,16 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
     }
 
     private fun updateArtistInfoIfNeeded() {
-        val item: TrackItem? = playerService.getCurrentTrack()
+        val item: TrackItem? = playerService!!.getCurrentTrack()
         if (item == null) {
-            artBioText.setVisibility(View.GONE)
-            retryText.setText(getString(R.string.no_music_found))
+            artBioText!!.visibility = View.GONE
+            retryText!!.text = getString(R.string.no_music_found)
             //retryText.setVisibility(View.GONE);
-            retryText.setVisibility(View.VISIBLE)
-            lyricLoadAnimation.hide()
+            retryText!!.visibility = View.VISIBLE
+            lyricLoadAnimation!!.hide()
             return
         }
-        if (mArtistInfo != null && mArtistInfo.getOriginalArtist()
-                .equals(item.getArtist())
-        ) {
+        if (mArtistInfo != null && mArtistInfo!!.getOriginalArtist().equals(item.getArtist())) {
             return
         }
 
@@ -256,88 +268,88 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
 
     override fun onArtInfoDownloaded(artistInfo: ArtistInfo?) {
         mArtistInfo = artistInfo
-        if ((artistInfo == null) || (getActivity() == null) || !isAdded()) {
+        if ((artistInfo == null) || (activity == null) || !isAdded) {
             return
         }
-        val item: TrackItem? = playerService.getCurrentTrack()
+        val item: TrackItem? = playerService!!.getCurrentTrack()
         //if song is already changed , return
         if (item != null && !(item.getArtist()!!
-                .trim({ it <= ' ' }) == artistInfo.getOriginalArtist()!!.trim())
+                .trim { it <= ' ' } == artistInfo.getOriginalArtist()!!.trim())
         ) {
             //artBioText.setText(getString(R.string.artist_info_loading));
             return
         }
         //hide loading animation
-        lyricLoadAnimation.hide()
-        lyricLoadAnimation.setVisibility(View.GONE)
+        lyricLoadAnimation!!.hide()
+        lyricLoadAnimation!!.visibility = View.GONE
         if (artistInfo.getArtistContent() == null) {
-            retryText.setText(getString(R.string.artist_info_no_result))
-            retryText.setVisibility(View.VISIBLE)
-            artBioText.setVisibility(View.GONE)
-            val tempItem: TrackItem? = playerService.getCurrentTrack()
+            retryText!!.text = getString(R.string.artist_info_no_result)
+            retryText!!.visibility = View.VISIBLE
+            artBioText!!.visibility = View.GONE
+            val tempItem: TrackItem? = playerService!!.getCurrentTrack()
             if (tempItem != null) {
-                artistEdit.setVisibility(View.VISIBLE)
-                updateTagsText.setVisibility(View.VISIBLE)
-                buttonUpdateMetadata.setVisibility(View.VISIBLE)
-                buttonUpdateMetadata.setClickable(true)
-                artistEdit.setText(tempItem.getArtist())
+                artistEdit!!.visibility = View.VISIBLE
+                updateTagsText!!.visibility = View.VISIBLE
+                buttonUpdateMetadata!!.visibility = View.VISIBLE
+                buttonUpdateMetadata!!.isClickable = true
+                artistEdit!!.setText(tempItem.getArtist())
             }
             return
         }
-        if ((layout != null) && (getActivity() != null) && (artistInfo.getArtistContent() != null)) {
+        if ((layout != null) && (activity != null) && (artistInfo.getArtistContent() != null)) {
             Log.d("onArtInfoDownloaded", "onArtInfoDownloaded: " + artistInfo.getCorrectedArtist())
-            val content: String = artistInfo.getArtistContent()
-            val index: Int = content.indexOf("Read more")
-            val ss: SpannableString = SpannableString(content)
+            val content = artistInfo.getArtistContent()
+            val index: Int = content!!.indexOf("Read more")
+            val ss = SpannableString(content)
             val clickableSpan: ClickableSpan = object : ClickableSpan() {
-                public override fun onClick(textView: View) {
+                override fun onClick(textView: View) {
                     if (mArtistInfo!!.getArtistUrl() == null) {
-                        Toast.makeText(getContext(),
+                        Toast.makeText(context,
                             getString(R.string.error_invalid_url),
                             Toast.LENGTH_SHORT).show()
                     } else {
                         try {
-                            val browserIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(
                                 mArtistInfo!!.getArtistUrl()))
                             startActivity(browserIntent)
                         } catch (e: ActivityNotFoundException) {
-                            Toast.makeText(getContext(),
+                            Toast.makeText(context,
                                 "No supporting application found for opening the link.",
                                 Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
 
-                public override fun updateDrawState(ds: TextPaint) {
+                override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
-                    ds.setUnderlineText(true)
-                    ds.setTypeface(Typeface.create(ds.getTypeface(), Typeface.BOLD))
+                    ds.isUnderlineText = true
+                    ds.typeface = Typeface.create(ds.typeface, Typeface.BOLD)
                 }
             }
             if (index != -1) {
                 ss.setSpan(clickableSpan, index, index + 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
             if (!(content == "")) {
-                artBioText.setVisibility(View.VISIBLE)
-                retryText.setVisibility(View.GONE)
-                artBioText.setText(ss)
-                artBioText.setMovementMethod(LinkMovementMethod.getInstance())
-                artistEdit.setVisibility(View.GONE)
-                updateTagsText.setVisibility(View.GONE)
-                buttonUpdateMetadata.setVisibility(View.GONE)
-                buttonUpdateMetadata.setClickable(false)
-                artistEdit.setText("")
+                artBioText!!.visibility = View.VISIBLE
+                retryText!!.visibility = View.GONE
+                artBioText!!.text = ss
+                artBioText!!.movementMethod = LinkMovementMethod.getInstance()
+                artistEdit!!.visibility = View.GONE
+                updateTagsText!!.visibility = View.GONE
+                buttonUpdateMetadata!!.visibility = View.GONE
+                buttonUpdateMetadata!!.isClickable = false
+                artistEdit!!.setText("")
             } else {
-                artBioText.setVisibility(View.GONE)
-                retryText.setText(getString(R.string.artist_info_no_result))
-                retryText.setVisibility(View.VISIBLE)
-                val tempItem: TrackItem? = playerService.getCurrentTrack()
+                artBioText!!.visibility = View.GONE
+                retryText!!.text = getString(R.string.artist_info_no_result)
+                retryText!!.visibility = View.VISIBLE
+                val tempItem: TrackItem? = playerService!!.getCurrentTrack()
                 if (tempItem != null) {
-                    artistEdit.setVisibility(View.VISIBLE)
-                    updateTagsText.setVisibility(View.VISIBLE)
-                    buttonUpdateMetadata.setVisibility(View.VISIBLE)
-                    buttonUpdateMetadata.setClickable(true)
-                    artistEdit.setText(tempItem.getArtist())
+                    artistEdit!!.visibility = View.VISIBLE
+                    updateTagsText!!.visibility = View.VISIBLE
+                    buttonUpdateMetadata!!.visibility = View.VISIBLE
+                    buttonUpdateMetadata!!.isClickable = true
+                    artistEdit!!.setText(tempItem.getArtist())
                 }
             }
 
@@ -345,11 +357,11 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
             ///get current setting
             // 0 - System default   1 - artist image  2 - custom
             val currentNowPlayingBackPref: Int =
-                MyApp.Companion.getPref().getInt(getString(R.string.pref_now_playing_back), 1)
+                MyApp.getPref()!!.getInt(getString(R.string.pref_now_playing_back), 1)
             if (currentNowPlayingBackPref == 1 && !artistInfo.getCorrectedArtist()
                     .equals("[unknown]")
             ) {
-                if (!(getActivity() as ActivityNowPlaying?)!!.isArtistLoadedInBack()) {
+                if (!(activity as ActivityNowPlaying?)!!.isArtistLoadedInBack()) {
                     SetBlurryImagetask().execute(artistInfo)
                 }
             }
@@ -357,30 +369,30 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class SetBlurryImagetask constructor() :
+    private inner class SetBlurryImagetask :
         AsyncTask<ArtistInfo?, String?, Bitmap?>() {
         var b: Bitmap? = null
-        protected override fun doInBackground(vararg params: ArtistInfo): Bitmap {
+        override fun doInBackground(vararg params: ArtistInfo?): Bitmap? {
 
             //store file in cache with artist id as name
             //create folder in cache for artist images
             val CACHE_ART_THUMBS: String =
-                MyApp.Companion.getContext().getCacheDir().toString() + "/art_thumbs/"
-            val actual_file_path: String = CACHE_ART_THUMBS + params.get(0).getOriginalArtist()
-            val f: File = File(CACHE_ART_THUMBS)
+                MyApp.getContext()!!.cacheDir.toString() + "/art_thumbs/"
+            val actual_file_path: String = CACHE_ART_THUMBS + params[0]!!.getOriginalArtist()
+            val f = File(CACHE_ART_THUMBS)
             if (!f.exists()) {
                 f.mkdir()
             }
             if (!File(actual_file_path).exists()) {
                 //create file
-                var fos: FileOutputStream? = null
+                val fos: FileOutputStream?
                 try {
                     fos = FileOutputStream(File(actual_file_path))
-                    val url: URL = URL(params.get(0).getImageUrl())
+                    val url = URL(params[0]!!.getImageUrl())
                     val inputStream: InputStream = url.openConnection().getInputStream()
-                    val buffer: ByteArray = ByteArray(1024)
-                    var bufferLength: Int = 0
-                    while ((inputStream.read(buffer).also({ bufferLength = it })) > 0) {
+                    val buffer = ByteArray(1024)
+                    var bufferLength: Int
+                    while ((inputStream.read(buffer).also { bufferLength = it }) > 0) {
                         fos.write(buffer, 0, bufferLength)
                     }
                     fos.close()
@@ -394,11 +406,11 @@ class FragmentArtistInfo constructor() : Fragment(), ArtistInfo.Callback {
             return b
         }
 
-        protected override fun onPostExecute(b: Bitmap) {
+        override fun onPostExecute(b: Bitmap?) {
 
             //set background image
-            if (b != null && getActivity() != null) {
-                (getActivity() as ActivityNowPlaying?)!!.setBlurryBackground(b)
+            if (b != null && activity != null) {
+                (activity as ActivityNowPlaying?)!!.setBlurryBackground(b)
             }
         }
     }

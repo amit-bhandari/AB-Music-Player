@@ -37,6 +37,7 @@ class TopTracksAdapter(private val context: Context, private val trackList: List
     RecyclerView.Adapter<TopTracksAdapter.MyViewHolder?>(), PopupMenu.OnMenuItemClickListener {
     private val inflater = LayoutInflater.from(context)
     private var clickedPostion = 0
+
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }

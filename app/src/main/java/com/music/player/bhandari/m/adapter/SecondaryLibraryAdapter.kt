@@ -1,15 +1,25 @@
 package com.music.player.bhandari.m.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
-import android.widget.PopupMenu
+import android.view.ViewGroup
+import android.widget.*
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialdialogs.DialogAction
-import com.music.player.bhandari.m.model.Constants
-import com.music.player.bhandari.m.model.TrackItem
-import com.music.player.bhandari.m.model.dataItem
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
+import com.music.player.bhandari.m.activity.ActivityTagEditor
+import com.music.player.bhandari.m.model.*
 import com.music.player.bhandari.m.service.PlayerService
+import com.music.player.bhandari.m.utils.UtilityFun
+import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -44,7 +54,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         this.context = context
         inflater = LayoutInflater.from(context)
         for (id: Int? in data) {
-            val d: dataItem? = MusicLibrary.getInstance().getDataItemsForTracks().get(id)
+            val d: dataItem? = MusicLibrary.instance!!.getDataItemsForTracks()!![id]
             if (d != null) {
                 dataItems!!.add(d)
             }
@@ -93,9 +103,9 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
                     temp.add(d.id)
                 }
             }
-            Collections.shuffle(temp)
-            playerService.setTrackList(temp)
-            playerService.playAtPosition(0)
+            temp.shuffle()
+            playerService!!.setTrackList(temp)
+            playerService!!.playAtPosition(0)
         }
     }
 
@@ -107,7 +117,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         return dataItems
     }
 
-    public override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view: View = inflater.inflate(R.layout.fragment_library_item, parent, false)
         val viewParent: View = parent
         //int color = ColorHelper.getColor(R.color.colorwhite) ;
@@ -119,31 +129,31 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         return MyViewHolder(view)
     }
 
-    public override fun getItemId(position: Int): Long {
+    override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
-    public override fun getItemViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         return position
     }
 
-    public override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         Log.d("SecondaryLibraryAdapter", "onBindViewHolder: " + dataItems!!.get(position).title)
         if ((dataItems.get(position).title == "")) {
-            holder.itemView.setVisibility(View.GONE)
+            holder.itemView.visibility = View.GONE
             return
         }
         holder.title.setPadding(20, 0, 0, 0)
         holder.secondary.setPadding(20, 0, 0, 0)
-        val secondaryText: String = (dataItems.get(position).artist_name
+        val secondaryText: String = (dataItems[position].artist_name
                 + " | "
                 + dataItems.get(position).albumName)
-        holder.title.setText(dataItems.get(position).title)
-        holder.secondary.setText(secondaryText)
-        holder.count.setText(dataItems.get(position).durStr)
+        holder.title.text = dataItems[position].title
+        holder.secondary.text = secondaryText
+        holder.count.text = dataItems[position].durStr
     }
 
-    public override fun getItemCount(): Int {
+    override fun getItemCount(): Int {
         return dataItems!!.size
     }
 
@@ -153,7 +163,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
             return
         }
         clikedON = dataItems.get(position).id
-        when (view.getId()) {
+        when (view.id) {
             R.id.libraryItem -> {
                 if (MyApp.Companion.isLocked()) {
                     Toast.makeText(context, "Music is Locked!", Toast.LENGTH_SHORT).show()
@@ -163,9 +173,9 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
                 Play()
             }
             R.id.menuPopup -> {
-                val popup: PopupMenu = PopupMenu(context, view)
-                val inflater: MenuInflater = popup.getMenuInflater()
-                inflater.inflate(R.menu.menu_tracks_by_title, popup.getMenu())
+                val popup = PopupMenu(context, view)
+                val inflater = popup.menuInflater
+                inflater.inflate(R.menu.menu_tracks_by_title, popup.menu)
                 if (status == Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT) {
                     //popup.getMenu().removeItem(R.id.action_delete);
                     if (!(((playlist_name!!.replace(" ",
@@ -175,10 +185,10 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
                             " ",
                             "_") == Constants.SYSTEM_PLAYLISTS.MOST_PLAYED)))
                     ) {
-                        popup.getMenu().add(REMOVE)
+                        popup.menu.add(REMOVE)
                     }
                 }
-                popup.getMenu().removeItem(R.id.action_exclude_folder)
+                popup.menu.removeItem(R.id.action_exclude_folder)
                 popup.show()
                 popup.setOnMenuItemClickListener(this)
             }
@@ -192,8 +202,8 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         notifyItemChanged(position)
     }
 
-    public override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_play -> {
                 if (MyApp.Companion.isLocked()) {
                     Toast.makeText(context,
@@ -205,23 +215,21 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
                 Play()
             }
             R.id.action_add_to_playlist -> {
-                val ids: IntArray
-                ids = intArrayOf(dataItems!!.get(position).id)
+                val ids: IntArray = intArrayOf(dataItems!![position].id)
                 UtilityFun.AddToPlaylist(context, ids)
             }
             R.id.action_share -> {
-                val files: ArrayList<Uri> = ArrayList<Uri>()
-                val fileToBeShared: File =
-                    File(MusicLibrary.getInstance().getTrackItemFromId(clikedON).getFilePath())
+                val files: ArrayList<Uri> = ArrayList()
+                val fileToBeShared = File(MusicLibrary.instance!!.getTrackItemFromId(clikedON)!!.getFilePath())
                 try {
                     files.add(FileProvider.getUriForFile(context,
-                        context.getApplicationContext()
-                            .getPackageName() + "com.bhandari.music.provider",
+                        context.applicationContext
+                            .packageName + "com.bhandari.music.provider",
                         fileToBeShared))
-                    UtilityFun.Share(context, files, dataItems!!.get(position).title)
+                    UtilityFun.Share(context, files, dataItems!![position].title)
                 } catch (e: IllegalArgumentException) {
                     try {
-                        UtilityFun.ShareFromPath(context, fileToBeShared.getAbsolutePath())
+                        UtilityFun.ShareFromPath(context, fileToBeShared.absolutePath)
                     } catch (ex: Exception) {
                         Toast.makeText(context,
                             context.getString(R.string.error_unable_to_share),
@@ -234,7 +242,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
             R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
             R.id.action_track_info -> setTrackInfoDialog()
             R.id.action_edit_track_info -> {
-                val editItem: TrackItem? = MusicLibrary.getInstance().getTrackItemFromId(
+                val editItem: TrackItem? = MusicLibrary.instance!!.getTrackItemFromId(
                     dataItems!!.get(position).id)
                 if (editItem == null) {
                     Toast.makeText(context,
@@ -251,7 +259,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
                     .putExtra("id", editItem.id))
             }
             R.id.action_set_as_ringtone -> {
-                val tempItem: TrackItem? = MusicLibrary.getInstance().getTrackItemFromId(
+                val tempItem: TrackItem? = MusicLibrary.instance!!.getTrackItemFromId(
                     dataItems!!.get(position).id)
                 if (tempItem == null) {
                     Toast.makeText(context,
@@ -263,9 +271,8 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
                 UtilityFun.SetRingtone(context, tempItem.getFilePath(), tempItem.id)
             }
         }
-        if ((item.getTitle() == REMOVE)) {
-            PlaylistManager.getInstance(MyApp.Companion.getContext())
-                .RemoveSongFromPlaylistNew(playlist_name, dataItems!!.get(position).id)
+        if ((item.title == REMOVE)) {
+            PlaylistManager.getInstance(MyApp.getContext()!!)!!.RemoveSongFromPlaylistNew(playlist_name!!, dataItems!!.get(position).id)
             dataItems.removeAt(position)
             notifyItemRemoved(position)
         }
@@ -276,32 +283,32 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         //final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         //alert.setTitle(context.getString(R.string.track_info_title) );
         val linear: LinearLayout = LinearLayout(context)
-        linear.setOrientation(LinearLayout.VERTICAL)
-        val text: TextView = TextView(context)
+        linear.orientation = LinearLayout.VERTICAL
+        val text = TextView(context)
         text.setTypeface(TypeFaceHelper.getTypeFace(context))
-        text.setText(UtilityFun.trackInfoBuild(dataItems!!.get(position).id).toString())
+        text.text = UtilityFun.trackInfoBuild(dataItems!!.get(position).id).toString()
         text.setPadding(20, 20, 20, 10)
-        text.setTextSize(15f)
+        text.textSize = 15f
         //text.setGravity(Gravity.CENTER);
         linear.addView(text)
         //alert.setView(linear);
         //alert.show()
-        MyDialogBuilder(context)
-            .title(context.getString(R.string.track_info_title))
-            .customView(linear, true)
-            .positiveText(R.string.okay)
-            .show()
+//        MyDialogBuilder(context)
+//            .title(context.getString(R.string.track_info_title))
+//            .customView(linear, true)
+//            .positiveText(R.string.okay)
+//            .show()
     }
 
     private fun Play() {
         val temp: ArrayList<Int> = ArrayList()
-        for (d: dataItem in dataItems) {
+        for (d: dataItem in dataItems!!) {
             if (d.id != 0) {
                 temp.add(d.id)
             }
         }
-        playerService.setTrackList(temp)
-        playerService.playAtPosition(position)
+        playerService!!.setTrackList(temp)
+        playerService!!.playAtPosition(position)
     }
 
     private fun AddToQ(positionToAdd: Int) {
@@ -310,82 +317,80 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         val toastString: String =
             (if (positionToAdd == Constants.ADD_TO_Q.AT_LAST) context.getString(R.string.added_to_q) else context.getString(
                 R.string.playing_next))
-        playerService.addToQ(clikedON, positionToAdd)
+        playerService!!.addToQ(clikedON, positionToAdd)
         //to update the to be next field in notification
-        MyApp.Companion.getService().PostNotification()
-        Toast.makeText(context, toastString + dataItems!!.get(position).title, Toast.LENGTH_SHORT)
+        MyApp.getService()!!.PostNotification()
+        Toast.makeText(context, toastString + dataItems!![position].title, Toast.LENGTH_SHORT)
             .show()
         //Snackbar.make(viewParent, toastString+clikedON, Snackbar.LENGTH_SHORT).show();
     }
 
     private fun DeleteDialog() {
-        MyDialogBuilder(context)
-            .title(context.getString(R.string.are_u_sure))
-            .positiveText(R.string.yes)
-            .negativeText(R.string.no)
-            .onPositive(object : SingleButtonCallback() {
-                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                    if (playerService.getCurrentTrack().getTitle()
-                            .equals(dataItems!!.get(position).title)
-                    ) {
-                        Toast.makeText(context,
-                            context.getString(R.string.song_is_playing),
-                            Toast.LENGTH_SHORT).show()
-                        // Snackbar.make(viewParent, "Cannot delete currently playing song", Snackbar.LENGTH_SHORT).show();
-                        return
-                    }
-                    val file: File
-                    try {
-                        file = File(MusicLibrary.getInstance()
-                            .getTrackItemFromId(dataItems.get(position).id)
-                            .getFilePath())
-                    } catch (e: Exception) {
-                        return
-                    }
-                    //delete the file first
-                    val files: ArrayList<File> = ArrayList<File>()
-                    files.add(file)
-                    val ids: ArrayList<Int> = ArrayList()
-                    ids.add(dataItems.get(position).id)
-                    if (UtilityFun.Delete(context, files, ids)) {
-                        Toast.makeText(context,
-                            context.getString(R.string.deleted) + dataItems.get(position).title,
-                            Toast.LENGTH_SHORT).show()
-                        dataItems.remove(dataItems.get(position))
-                        notifyItemRemoved(position)
-                        notifyDataSetChanged()
-                    } else {
-                        Toast.makeText(context,
-                            context.getString(R.string.unable_to_del),
-                            Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
-            .show()
+//        MyDialogBuilder(context)
+//            .title(context.getString(R.string.are_u_sure))
+//            .positiveText(R.string.yes)
+//            .negativeText(R.string.no)
+//            .onPositive(object : SingleButtonCallback() {
+//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
+//                    if (playerService.getCurrentTrack().getTitle()
+//                            .equals(dataItems!!.get(position).title)
+//                    ) {
+//                        Toast.makeText(context,
+//                            context.getString(R.string.song_is_playing),
+//                            Toast.LENGTH_SHORT).show()
+//                        // Snackbar.make(viewParent, "Cannot delete currently playing song", Snackbar.LENGTH_SHORT).show();
+//                        return
+//                    }
+//                    val file: File
+//                    try {
+//                        file = File(MusicLibrary.getInstance()
+//                            .getTrackItemFromId(dataItems.get(position).id)
+//                            .getFilePath())
+//                    } catch (e: Exception) {
+//                        return
+//                    }
+//                    //delete the file first
+//                    val files: ArrayList<File> = ArrayList<File>()
+//                    files.add(file)
+//                    val ids: ArrayList<Int> = ArrayList()
+//                    ids.add(dataItems.get(position).id)
+//                    if (UtilityFun.Delete(context, files, ids)) {
+//                        Toast.makeText(context,
+//                            context.getString(R.string.deleted) + dataItems.get(position).title,
+//                            Toast.LENGTH_SHORT).show()
+//                        dataItems.remove(dataItems.get(position))
+//                        notifyItemRemoved(position)
+//                        notifyDataSetChanged()
+//                    } else {
+//                        Toast.makeText(context,
+//                            context.getString(R.string.unable_to_del),
+//                            Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            })
+//            .show()
     }
 
     inner class MyViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var title: TextView
-        var secondary: TextView
-        var count: TextView
+        var title: TextView = itemView.findViewById(R.id.header)
+        var secondary: TextView = itemView.findViewById(R.id.secondaryHeader)
+        var count: TextView = itemView.findViewById(R.id.count)
         var popUp: ImageButton
-        public override fun onClick(view: View) {
-            this@SecondaryLibraryAdapter.onClick(view, getLayoutPosition())
+
+        override fun onClick(view: View) {
+            this@SecondaryLibraryAdapter.onClick(view, layoutPosition)
         }
 
         init {
-            title = itemView.findViewById<TextView>(R.id.header)
             //title.setTypeface(TypeFaceHelper.getTypeFace());
-            secondary = itemView.findViewById<TextView>(R.id.secondaryHeader)
             //secondary.setTypeface(TypeFaceHelper.getTypeFace());
-            count = itemView.findViewById<TextView>(R.id.count)
             //count.setTypeface(TypeFaceHelper.getTypeFace());
-            itemView.findViewById<View>(R.id.album_art_wrapper).setVisibility(View.GONE)
-            popUp = itemView.findViewById<ImageButton>(R.id.menuPopup)
+            itemView.findViewById<View>(R.id.album_art_wrapper).visibility = View.GONE
+            popUp = itemView.findViewById(R.id.menuPopup)
             itemView.setOnClickListener(this)
             itemView.findViewById<View>(R.id.menuPopup).setOnClickListener(this)
-            itemView.findViewById<View>(R.id.imageVIewForStubAlbumArt).setVisibility(View.GONE)
+            itemView.findViewById<View>(R.id.imageVIewForStubAlbumArt).visibility = View.GONE
         }
     }
 }

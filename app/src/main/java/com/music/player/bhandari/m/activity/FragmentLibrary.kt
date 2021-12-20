@@ -21,7 +21,6 @@ import com.music.player.bhandari.m.UIElementHelper.FastScroller
 import com.music.player.bhandari.m.adapter.MainLibraryAdapter
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary
-import com.music.player.bhandari.m.model.dataItem
 
 /**
  * Copyright 2017 Amit Bhandari AB

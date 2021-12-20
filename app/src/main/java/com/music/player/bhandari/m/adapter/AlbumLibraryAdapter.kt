@@ -1,19 +1,29 @@
 package com.music.player.bhandari.m.adapter
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
 import android.view.*
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.BubbleTextGetter
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary
 import com.music.player.bhandari.m.model.TrackItem
@@ -21,6 +31,7 @@ import com.music.player.bhandari.m.model.dataItem
 import com.music.player.bhandari.m.service.PlayerService
 import com.music.player.bhandari.m.utils.UtilityFun
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import java.io.File
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -46,39 +57,34 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val playerService: PlayerService
     private var position: Int = 0
-    private var dataItems: ArrayList<dataItem> = ArrayList<dataItem>() //actual data
-    private val filteredDataItems: ArrayList<dataItem> = ArrayList<dataItem>()
+    private var dataItems: ArrayList<dataItem> = ArrayList() //actual data
+    private val filteredDataItems: ArrayList<dataItem> = ArrayList()
     private var viewParent: View? = null
     private var batmanDrawable: Drawable? = null
     fun sort(sort_id: Int) {
-        val sort_order: Int = MyApp.Companion.getPref()
-            .getInt(context.resources.getString(R.string.pref_order_by), Constants.SORT_BY.ASC)
+        val sort_order: Int = MyApp.getPref()!!.getInt(context.resources.getString(R.string.pref_order_by), Constants.SORT_BY.ASC)
         when (sort_id) {
             Constants.SORT_BY.NAME -> if (sort_order == Constants.SORT_BY.ASC) {
-                Collections.sort(filteredDataItems, object : Comparator<dataItem> {
-                    override fun compare(o1: dataItem, o2: dataItem): Int {
-                        return o1.albumName.compareTo(o2.albumName, ignoreCase = true)
-                    }
-                })
+                filteredDataItems.sortWith { o1, o2 ->
+                    o1.albumName.compareTo(o2.albumName,
+                        ignoreCase = true)
+                }
             } else {
-                Collections.sort(filteredDataItems, object : Comparator<dataItem> {
-                    override fun compare(o1: dataItem, o2: dataItem): Int {
-                        return o2.albumName.compareTo(o1.albumName, ignoreCase = true)
-                    }
-                })
+                filteredDataItems.sortWith { o1, o2 ->
+                    o2.albumName.compareTo(o1.albumName,
+                        ignoreCase = true)
+                }
             }
             Constants.SORT_BY.YEAR -> if (sort_order == Constants.SORT_BY.ASC) {
-                Collections.sort(filteredDataItems, object : Comparator<dataItem> {
-                    override fun compare(o1: dataItem, o2: dataItem): Int {
-                        return o1.year.compareTo(o2.year, ignoreCase = true)
-                    }
-                })
+                filteredDataItems.sortWith { o1, o2 ->
+                    o1.year.compareTo(o2.year,
+                        ignoreCase = true)
+                }
             } else {
-                Collections.sort(filteredDataItems, object : Comparator<dataItem> {
-                    override fun compare(o1: dataItem, o2: dataItem): Int {
-                        return o2.year.compareTo(o1.year, ignoreCase = true)
-                    }
-                })
+                filteredDataItems.sortWith { o1, o2 ->
+                    o2.year.compareTo(o1.year,
+                        ignoreCase = true)
+                }
             }
         }
         notifyDataSetChanged()
@@ -116,11 +122,8 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.title.text = filteredDataItems.get(position).albumName
         var builder: RequestBuilder<Bitmap?>? = null
-        if (!MyApp.Companion.getPref()
-                .getBoolean(context.getString(R.string.pref_data_saver), false)
-        ) {
-            val url: String = MusicLibrary.getInstance().getArtistUrls()
-                .get(filteredDataItems.get(position).artist_name)
+        if (!MyApp.getPref()!!.getBoolean(context.getString(R.string.pref_data_saver), false)) {
+            val url = MusicLibrary.instance!!.artistUrls.get(filteredDataItems[position].artist_name)
             builder = Glide
                 .with(context)
                 .asBitmap()
@@ -130,8 +133,11 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
                 .override(200, 200)
                 .placeholder(batmanDrawable)
         }
-        val bm: Bitmap = MusicLibrary.getInstance()
-            .getAlbumArtFromTrack(filteredDataItems.get(position).album_id)
+        val bm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MusicLibrary.instance!!.getAlbumArtFromTrack(filteredDataItems.get(position).album_id)
+        } else {
+            TODO("VERSION.SDK_INT < Q")
+        }
         Glide
             .with(context)
             .asBitmap()
@@ -161,12 +167,12 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
         val key: Int
         when (view.id) {
             R.id.card_view_album -> {
-                title = filteredDataItems.get(position).albumName
-                key = filteredDataItems.get(position).album_id
-                val intent: Intent = Intent(context, ActivitySecondaryLibrary::class.java)
+                title = filteredDataItems[position].albumName
+                key = filteredDataItems[position].album_id
+                val intent = Intent(context, ActivitySecondaryLibrary::class.java)
                 intent.putExtra("status", Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT)
                 intent.putExtra("key", key)
-                intent.putExtra("title", title.trim({ it <= ' ' }))
+                intent.putExtra("title", title.trim { it <= ' ' })
                 /*ActivityOptions options;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     options = ActivityOptions.makeSceneTransitionAnimation((ActivityMain)context
@@ -179,7 +185,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
                     R.anim.slide_out_left)
             }
             R.id.overflow -> {
-                val popup: PopupMenu = PopupMenu(context, view)
+                val popup = PopupMenu(context, view)
                 val inflater: MenuInflater = popup.menuInflater
                 inflater.inflate(R.menu.menu_tracks_by_title, popup.menu)
                 popup.menu.removeItem(R.id.action_set_as_ringtone)
@@ -197,7 +203,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
             R.id.action_play -> {
                 if (MyApp.Companion.isLocked()) {
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent,
+                    Snackbar.make(viewParent!!,
                         context.getString(R.string.music_is_locked),
                         Snackbar.LENGTH_SHORT).show()
                     return true
@@ -206,24 +212,21 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
             }
             R.id.action_add_to_playlist -> {
                 val temp: ArrayList<Int>
-                val album_id: Int = filteredDataItems.get(position).album_id
-                temp = MusicLibrary.getInstance()
-                    .getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)
-                val ids: IntArray = IntArray(temp.size)
-                var i: Int = 0
+                val album_id: Int = filteredDataItems[position].album_id
+                temp = MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)!!
+                val ids = IntArray(temp.size)
+                var i = 0
                 while (i < ids.size) {
-                    ids.get(i) = temp.get(i)
+                    ids[i] = temp[i]
                     i++
                 }
                 UtilityFun.AddToPlaylist(context, ids)
             }
             R.id.action_share -> {
-                val files: ArrayList<Uri> = ArrayList<Uri>() //for sending multiple files
-                for (id: Int in MusicLibrary.getInstance().getSongListFromAlbumIdNew(
-                    filteredDataItems.get(position).album_id, Constants.SORT_ORDER.ASC)) {
+                val files: ArrayList<Uri> = ArrayList() //for sending multiple files
+                for (id: Int in MusicLibrary.instance!!.getSongListFromAlbumIdNew(filteredDataItems[position].album_id, Constants.SORT_ORDER.ASC)!!) {
                     try {
-                        val file: File =
-                            File(MusicLibrary.getInstance().getTrackItemFromId(id).getFilePath())
+                        val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
                         val fileUri: Uri = FileProvider.getUriForFile(context,
                             context.applicationContext
                                 .packageName + "com.bhandari.music.provider",
@@ -231,7 +234,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
                         files.add(fileUri)
                     } catch (e: Exception) {
                         // Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
-                        Snackbar.make(viewParent,
+                        Snackbar.make(viewParent!!,
                             context.getString(R.string.error_something_wrong),
                             Snackbar.LENGTH_SHORT).show()
                         return true
@@ -243,16 +246,15 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
             R.id.action_play_next -> AddToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
             R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
             R.id.action_search_youtube -> UtilityFun.LaunchYoutube(context,
-                (filteredDataItems.get(position).albumName + " - "
-                        + filteredDataItems.get(position).artist_name))
+                (filteredDataItems[position].albumName + " - "
+                        + filteredDataItems[position].artist_name))
         }
         return true
     }
 
     private fun Play() {
-        val album_id: Int = filteredDataItems.get(position).album_id
-        playerService.setTrackList(MusicLibrary.getInstance()
-            .getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
+        val album_id: Int = filteredDataItems[position].album_id
+        playerService.setTrackList(MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
         playerService.playAtPosition(0)
     }
 
@@ -265,20 +267,22 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
         //when adding to playing next, order of songs should be desc
         //and asc for adding at last
         //this is how the function in player service is writte, deal with it
-        val sortOrder: Int =
-            (if (positionToAdd == Constants.ADD_TO_Q.AT_LAST) Constants.SORT_ORDER.ASC else Constants.SORT_ORDER.DESC)
+        val sortOrder: Int = when (positionToAdd) {
+            Constants.ADD_TO_Q.AT_LAST -> Constants.SORT_ORDER.ASC
+            else -> Constants.SORT_ORDER.DESC
+        }
         val album_id: Int = filteredDataItems[position].album_id
         for (id: Int in MusicLibrary.instance?.getSongListFromAlbumIdNew(album_id, sortOrder)!!) {
             playerService.addToQ(id, positionToAdd)
         }
 
         //to update the to be next field in notification
-        MyApp.Companion.getService().PostNotification()
+        MyApp.getService()!!.PostNotification()
         //Toast.makeText(context
         //,toastString+filteredDataItems.get(position).title
         //  ,Toast.LENGTH_SHORT).show();
         Snackbar.make(viewParent!!,
-            toastString + filteredDataItems.get(position).title,
+            toastString + filteredDataItems[position].title,
             Snackbar.LENGTH_SHORT).show()
     }
 
@@ -344,10 +348,10 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
 
     inner class MyViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var title: TextView = itemView.findViewById<TextView>(R.id.title)
-        var count: TextView = itemView.findViewById<TextView>(R.id.count)
-        var thumbnail: ImageView = itemView.findViewById<ImageView>(R.id.thumbnail)
-        var overflow: ImageView = itemView.findViewById<ImageView>(R.id.overflow)
+        var title: TextView = itemView.findViewById(R.id.title)
+        var count: TextView = itemView.findViewById(R.id.count)
+        var thumbnail: ImageView = itemView.findViewById(R.id.thumbnail)
+        var overflow: ImageView = itemView.findViewById(R.id.overflow)
 
         override fun onClick(v: View) {
             this@AlbumLibraryAdapter.onClick(v, this.layoutPosition)
@@ -360,11 +364,11 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
     }
 
     init {
-        playerService = MyApp.Companion.getService()
+        playerService = MyApp.getService()!!
         dataItems = data
         filteredDataItems.addAll(dataItems)
         setHasStableIds(true)
-        when (MyApp.Companion.getPref().getInt(context.getString(R.string.pref_default_album_art), 0)) {
+        when (MyApp.getPref()!!.getInt(context.getString(R.string.pref_default_album_art), 0)) {
             0 -> batmanDrawable = ContextCompat.getDrawable(context, R.drawable.ic_batman_1)
             1 -> batmanDrawable = UtilityFun.defaultAlbumArtDrawable
         }

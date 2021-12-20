@@ -1,10 +1,28 @@
 package com.music.player.bhandari.m.adapter
 
+import android.app.Activity
 import android.content.Context
-import android.view.View
+import android.content.Intent
+import android.content.SharedPreferences
+import android.net.Uri
+import android.preference.PreferenceManager
+import android.view.*
+import android.widget.ImageView
 import android.widget.PopupMenu
-import com.afollestad.materialdialogs.DialogAction
+import android.widget.TextView
+import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary
 import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.model.MusicLibrary
+import com.music.player.bhandari.m.model.PlaylistManager
+import com.music.player.bhandari.m.model.dataItem
+import com.music.player.bhandari.m.service.PlayerService
+import java.io.File
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -31,11 +49,11 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
     private var viewParent: View? = null
     fun clear() {}
     fun refreshPlaylistList() {
-        headers = PlaylistManager.getInstance(MyApp.Companion.getContext()).getSystemPlaylistsList()
+        headers = PlaylistManager.getInstance(MyApp.getContext()!!)!!.systemPlaylistsList
         notifyDataSetChanged()
     }
 
-    public override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view: View = inflater.inflate(R.layout.fragment_playlist_item, parent, false)
         viewParent = parent
         val holder: MyViewHolder = MyViewHolder(view)
@@ -47,25 +65,24 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
         return holder
     }
 
-    public override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.title.setText(headers.get(position))
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        holder.title.text = headers.get(position)
         holder.title.setPadding(20, 0, 0, 0)
-        val count: Long = PlaylistManager.getInstance(MyApp.Companion.getContext())
-            .getTrackCountFromCache(headers.get(position))
+        val count: Long = PlaylistManager.getInstance(MyApp.Companion.getContext()!!)!!.getTrackCountFromCache(headers.get(position))
         if (count != 0L) {
-            holder.count.setText(context.getString(R.string.track_count, count.toString()))
+            holder.count.text = context.getString(R.string.track_count, count.toString())
         } else {
-            holder.count.setText(context.getString(R.string.empty_playlist))
+            holder.count.text = context.getString(R.string.empty_playlist)
         }
         holder.count.setPadding(20, 0, 0, 0)
     }
 
-    public override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_play -> {
                 if (MyApp.Companion.isLocked()) {
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent,
+                    Snackbar.make(viewParent!!,
                         context.getString(R.string.music_is_locked),
                         Snackbar.LENGTH_SHORT).show()
                     return true
@@ -76,29 +93,29 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
             R.id.action_delete -> Delete()
             R.id.action_play_next -> AddToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
             R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
-            R.id.action_clear_playlist -> if (PlaylistManager.getInstance(MyApp.Companion.getContext())
-                    .ClearPlaylist(headers.get(position))
-            ) {
-                Snackbar.make(viewParent,
-                    context.getString(R.string.snack_cleared) + " " + headers.get(position),
-                    Snackbar.LENGTH_SHORT).show()
-            } else {
-                Snackbar.make(viewParent,
-                    context.getString(R.string.snack_unable_to_Clear) + " " + headers.get(position),
-                    Snackbar.LENGTH_SHORT).show()
+            R.id.action_clear_playlist -> when {
+                PlaylistManager.getInstance(MyApp.getContext()!!)!!.ClearPlaylist(headers[position]) -> {
+                    Snackbar.make(viewParent!!,
+                        context.getString(R.string.snack_cleared) + " " + headers[position],
+                        Snackbar.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Snackbar.make(viewParent!!,
+                        context.getString(R.string.snack_unable_to_Clear) + " " + headers.get(position),
+                        Snackbar.LENGTH_SHORT).show()
+                }
             }
         }
         return true
     }
 
     private fun Play() {
-        val temp: ArrayList<dataItem> = PlaylistManager.getInstance(MyApp.Companion.getContext())
-            .GetPlaylist(headers.get(position))
+        val temp: ArrayList<dataItem> = PlaylistManager.getInstance(MyApp.getContext()!!)!!.GetPlaylist(headers.get(position))
         val trackList: ArrayList<Int> = ArrayList()
         for (d: dataItem in temp) {
             trackList.add(d.id)
         }
-        if (!trackList.isEmpty()) {
+        if (trackList.isNotEmpty()) {
             playerService.setTrackList(trackList)
             playerService.playAtPosition(0)
             /*
@@ -107,46 +124,42 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
                     .putExtra("position",0));*/
         } else {
             //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();
-            Snackbar.make(viewParent,
-                context.getString(R.string.empty_play_list),
-                Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(viewParent!!, context.getString(R.string.empty_play_list), Snackbar.LENGTH_SHORT).show()
         }
     }
 
     private fun Share() {
-        val files: ArrayList<Uri> = ArrayList<Uri>() //for sending multiple files
-        val temp: ArrayList<dataItem> = PlaylistManager.getInstance(MyApp.Companion.getContext())
-            .GetPlaylist(headers.get(position))
+        val files: ArrayList<Uri> = ArrayList() //for sending multiple files
+        val temp: ArrayList<dataItem> = PlaylistManager.getInstance(MyApp.getContext()!!)!!.GetPlaylist(headers[position])
         val trackList: ArrayList<Int> = ArrayList()
         for (d: dataItem in temp) {
             trackList.add(d.id)
         }
         for (id: Int in trackList) {
             try {
-                val file: File =
-                    File(MusicLibrary.getInstance().getTrackItemFromId(id).getFilePath())
+                val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
                 val fileUri: Uri = FileProvider.getUriForFile(context,
-                    context.getApplicationContext()
-                        .getPackageName() + "com.bhandari.music.provider",
+                    context.applicationContext
+                        .packageName + "com.bhandari.music.provider",
                     file)
                 files.add(fileUri)
             } catch (e: Exception) {
                 //Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
-                Snackbar.make(viewParent,
+                Snackbar.make(viewParent!!,
                     context.getString(R.string.error_something_wrong),
                     Snackbar.LENGTH_SHORT).show()
                 return
             }
         }
-        if (!files.isEmpty()) {
+        if (files.isNotEmpty()) {
             val intent: Intent = Intent()
-            intent.setAction(Intent.ACTION_SEND_MULTIPLE)
-            intent.setType("*/*")
+            intent.action = Intent.ACTION_SEND_MULTIPLE
+            intent.type = "*/*"
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files)
             context.startActivity(Intent.createChooser(intent, "multiple audio files"))
         } else {
             //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();
-            Snackbar.make(viewParent,
+            Snackbar.make(viewParent!!,
                 context.getString(R.string.empty_play_list),
                 Snackbar.LENGTH_SHORT).show()
         }
@@ -164,114 +177,112 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
         val sortOrder: Int =
             (if (positionToAdd == Constants.ADD_TO_Q.AT_LAST) Constants.SORT_ORDER.ASC else Constants.SORT_ORDER.DESC)
         val temp: ArrayList<dataItem> =
-            PlaylistManager.getInstance(context).GetPlaylist(headers.get(position))
+            PlaylistManager.getInstance(context)!!.GetPlaylist(headers.get(position))
         val trackList: ArrayList<Int> = ArrayList()
         for (d: dataItem in temp) {
             trackList.add(d.id)
         }
-        if (!trackList.isEmpty()) {
+        if (trackList.isNotEmpty()) {
             for (id: Int in trackList) {
                 playerService.addToQ(id, positionToAdd)
             }
             //to update the to be next field in notification
-            MyApp.Companion.getService().PostNotification()
+            MyApp.getService()!!.PostNotification()
 
             /*Toast.makeText(context
                     , toastString + headers.get(position)
-                    , Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent,
-                toastString + headers.get(position),
+                    , Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent!!,
+                toastString + headers[position],
                 Snackbar.LENGTH_SHORT).show()
         } else {
             //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();
-            Snackbar.make(viewParent,
+            Snackbar.make(viewParent!!,
                 context.getString(R.string.empty_play_list),
                 Snackbar.LENGTH_SHORT).show()
         }
     }
 
     private fun Delete() {
-        MyDialogBuilder(context)
-            .title(context.getString(R.string.are_u_sure))
-            .positiveText(R.string.yes)
-            .negativeText(R.string.no)
-            .onPositive(object : SingleButtonCallback() {
-                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                    if (((headers.get(position) == Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED) || (headers.get(
-                            position) == Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED) || (headers.get(
-                            position) == Constants.SYSTEM_PLAYLISTS.MOST_PLAYED) || (headers.get(
-                            position) == Constants.SYSTEM_PLAYLISTS.MY_FAV))
-                    ) {
-                        //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
-                        Snackbar.make(viewParent,
-                            context.getString(R.string.cannot_del) + headers.get(position),
-                            Snackbar.LENGTH_SHORT).show()
-                        return
-                    }
-                    if (PlaylistManager.getInstance(MyApp.Companion.getContext())
-                            .DeletePlaylist(headers.get(position))
-                    ) {
-                        //Toast.makeText(context,"Deleted "+headers.get(position),Toast.LENGTH_SHORT).show();
-                        Snackbar.make(viewParent,
-                            context.getString(R.string.deleted) + headers.get(position),
-                            Snackbar.LENGTH_SHORT).show()
-                        headers.remove(headers.get(position))
-                        notifyDataSetChanged()
-                    } else {
-                        //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
-                        Snackbar.make(viewParent,
-                            context.getString(R.string.cannot_del) + headers.get(position),
-                            Snackbar.LENGTH_SHORT).show()
-                    }
-                }
-            })
-            .show()
+//        MyDialogBuilder(context)
+//            .title(context.getString(R.string.are_u_sure))
+//            .positiveText(R.string.yes)
+//            .negativeText(R.string.no)
+//            .onPositive(object : SingleButtonCallback() {
+//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
+//                    if (((headers.get(position) == Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED) || (headers.get(
+//                            position) == Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED) || (headers.get(
+//                            position) == Constants.SYSTEM_PLAYLISTS.MOST_PLAYED) || (headers.get(
+//                            position) == Constants.SYSTEM_PLAYLISTS.MY_FAV))
+//                    ) {
+//                        //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
+//                        Snackbar.make(viewParent,
+//                            context.getString(R.string.cannot_del) + headers.get(position),
+//                            Snackbar.LENGTH_SHORT).show()
+//                        return
+//                    }
+//                    if (PlaylistManager.getInstance(MyApp.Companion.getContext())
+//                            .DeletePlaylist(headers.get(position))
+//                    ) {
+//                        //Toast.makeText(context,"Deleted "+headers.get(position),Toast.LENGTH_SHORT).show();
+//                        Snackbar.make(viewParent,
+//                            context.getString(R.string.deleted) + headers.get(position),
+//                            Snackbar.LENGTH_SHORT).show()
+//                        headers.remove(headers.get(position))
+//                        notifyDataSetChanged()
+//                    } else {
+//                        //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
+//                        Snackbar.make(viewParent,
+//                            context.getString(R.string.cannot_del) + headers.get(position),
+//                            Snackbar.LENGTH_SHORT).show()
+//                    }
+//                }
+//            })
+//            .show()
     }
 
-    public override fun getItemCount(): Int {
+    override fun getItemCount(): Int {
         return headers.size
     }
 
     fun onClick(view: View, position: Int) {
         this.position = position
-        when (view.getId()) {
+        when (view.id) {
             R.id.libraryItem -> {
                 val intent: Intent = Intent(context, ActivitySecondaryLibrary::class.java)
                 intent.putExtra("status", Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT)
-                intent.putExtra("title", headers.get(position).trim({ it <= ' ' }))
+                intent.putExtra("title", headers.get(position).trim { it <= ' ' })
                 context.startActivity(intent)
                 (context as Activity).overridePendingTransition(R.anim.slide_in_right,
                     R.anim.slide_out_left)
             }
             R.id.menuPopup -> {
-                val popup: PopupMenu = PopupMenu(context, view)
-                val inflater: MenuInflater = popup.getMenuInflater()
-                inflater.inflate(R.menu.system_playlist_menu, popup.getMenu())
+                val popup = PopupMenu(context, view)
+                val inflater: MenuInflater = popup.menuInflater
+                inflater.inflate(R.menu.system_playlist_menu, popup.menu)
                 popup.show()
                 popup.setOnMenuItemClickListener(this)
             }
         }
     }
 
-    public override fun getItemViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         return position
     }
 
-    public override fun getItemId(position: Int): Long {
+    override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
     inner class MyViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var title: TextView
-        var count: TextView
-        public override fun onClick(view: View) {
-            this@PlaylistLibraryAdapter.onClick(view, getLayoutPosition())
+        var title: TextView = itemView.findViewById<TextView>(R.id.header)
+        var count: TextView = itemView.findViewById<TextView>(R.id.secondaryHeader)
+        override fun onClick(view: View) {
+            this@PlaylistLibraryAdapter.onClick(view, layoutPosition)
         }
 
         init {
-            title = itemView.findViewById<TextView>(R.id.header)
-            count = itemView.findViewById<TextView>(R.id.secondaryHeader)
-            itemView.findViewById<View>(R.id.album_art_wrapper).setVisibility(View.GONE)
+            itemView.findViewById<View>(R.id.album_art_wrapper).visibility = View.GONE
             itemView.setOnClickListener(this)
             itemView.findViewById<View>(R.id.menuPopup).setOnClickListener(this)
         }
@@ -281,10 +292,9 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
         //create first page for folder fragment
         val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         inflater = LayoutInflater.from(context)
-        headers = PlaylistManager.getInstance(MyApp.Companion.getContext()).getSystemPlaylistsList()
-        headers.addAll(PlaylistManager.getInstance(MyApp.Companion.getContext())
-            .getUserCreatedPlaylistList())
-        playerService = MyApp.Companion.getService()
+        headers = PlaylistManager.getInstance(MyApp.getContext()!!)!!.systemPlaylistsList
+        headers.addAll(PlaylistManager.getInstance(MyApp.getContext()!!)!!.userCreatedPlaylistList)
+        playerService = MyApp.getService()!!
         setHasStableIds(true)
     }
 }

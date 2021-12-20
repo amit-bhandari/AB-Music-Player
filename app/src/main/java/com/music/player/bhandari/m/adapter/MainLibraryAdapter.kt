@@ -40,7 +40,6 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import java.io.File
 import java.util.*
 import java.util.concurrent.Executors
-import kotlin.Comparator
 import kotlin.collections.ArrayList
 
 /**
@@ -119,12 +118,11 @@ class MainLibraryAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val url = MusicLibrary.instance!!.artistUrls.get(filteredDataItems[position].artist_name)
+        val url = MusicLibrary.instance!!.artistUrls[filteredDataItems[position].artist_name]
         when (fl!!.getStatus()) {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
                 var builder: RequestBuilder<Drawable?>? = null
-                if (!MyApp.getPref()!!.getBoolean(context.getString(R.string.pref_data_saver), false)
-                ) builder = Glide
+                if (!MyApp.getPref()!!.getBoolean(context.getString(R.string.pref_data_saver), false)) builder = Glide
                     .with(context)
                     .load(url)
                     .centerCrop()
@@ -142,7 +140,7 @@ class MainLibraryAdapter(
                     .override(100, 100)
                     .into(holder.image)
                 holder.title.text = filteredDataItems[position].title
-                holder.count.text = UtilityFun.msToString(filteredDataItems[position].duration.toInt()
+                holder.count.text = UtilityFun.msToString(filteredDataItems[position].duration!!.toInt()
                     .toLong())
                 val secText: String =
                     filteredDataItems[position].artist_name + " | " + filteredDataItems[position].albumName
@@ -258,7 +256,7 @@ class MainLibraryAdapter(
                                 key = filteredDataItems[position].id
                             }
                         }
-                        if (fl.getStatus() !== Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
+                        if (fl!!.getStatus() !== Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
                             val intent = Intent(context, ActivitySecondaryLibrary::class.java)
                             intent.putExtra("status", fl!!.getStatus())
                             intent.putExtra("key", key)
@@ -345,42 +343,56 @@ class MainLibraryAdapter(
                         ignoreCase = true)
                 }
             }
-            Constants.SORT_BY.SIZE -> if (sort_order == Constants.SORT_BY.ASC) {
-                filteredDataItems.sortWith(Comparator { o1, o2 -> (File(o1.file_path).length() - File(o2.file_path).length()) })
-            } else {
-                Collections.sort(filteredDataItems,
-                    Comparator<dataItem> { o1, o2 ->
-                        (File(o2.file_path).length() - File(o1.file_path).length())
-                    })
-            }
-            Constants.SORT_BY.YEAR -> if (sort_order == Constants.SORT_BY.ASC) {
-                filteredDataItems.sortWith { o1, o2 ->
-                    o1.year.compareTo(o2.year,
-                        ignoreCase = true)
+            Constants.SORT_BY.SIZE -> when (sort_order) {
+                Constants.SORT_BY.ASC -> {
+                    filteredDataItems.sortWith { o1, o2 -> (File(o1.file_path).length() - File(o2.file_path).length()).toInt() }
                 }
-            } else {
-                filteredDataItems.sortWith { o1, o2 ->
-                    o2.year.compareTo(o1.year,
-                        ignoreCase = true)
+                else -> {
+                    filteredDataItems.sortWith { o1, o2 ->
+                        (File(o2.file_path).length() - File(o1.file_path).length()).toInt()
+                    }
                 }
             }
-            Constants.SORT_BY.NO_OF_ALBUMS -> if (sort_order == Constants.SORT_BY.ASC) {
-                filteredDataItems.sortWith { o1, o2 -> o1.numberOfAlbums - o2.numberOfAlbums }
-            } else {
-                filteredDataItems.sortWith { o1, o2 -> o2.numberOfAlbums - o1.numberOfAlbums }
-            }
-            Constants.SORT_BY.NO_OF_TRACKS -> if (sort_order == Constants.SORT_BY.ASC) {
-                filteredDataItems.sortWith { o1, o2 -> o1.numberOfTracks - o2.numberOfTracks }
-            } else {
-                filteredDataItems.sortWith { o1, o2 -> o2.numberOfTracks - o1.numberOfTracks }
-            }
-            Constants.SORT_BY.DURATION -> if (sort_order == Constants.SORT_BY.ASC) {
-                filteredDataItems.sortWith { o1, o2 ->
-                    Integer.valueOf(o1.duration) - Integer.valueOf(o2.duration)
+            Constants.SORT_BY.YEAR -> when (sort_order) {
+                Constants.SORT_BY.ASC -> {
+                    filteredDataItems.sortWith { o1, o2 ->
+                        o1.year.compareTo(o2.year,
+                            ignoreCase = true)
+                    }
                 }
-            } else {
-                filteredDataItems.sortWith { o1, o2 ->
-                    Integer.valueOf(o2.duration) - Integer.valueOf(o1.duration)
+                else -> {
+                    filteredDataItems.sortWith { o1, o2 ->
+                        o2.year.compareTo(o1.year,
+                            ignoreCase = true)
+                    }
+                }
+            }
+            Constants.SORT_BY.NO_OF_ALBUMS -> when (sort_order) {
+                Constants.SORT_BY.ASC -> {
+                    filteredDataItems.sortWith { o1, o2 -> o1.numberOfAlbums - o2.numberOfAlbums }
+                }
+                else -> {
+                    filteredDataItems.sortWith { o1, o2 -> o2.numberOfAlbums - o1.numberOfAlbums }
+                }
+            }
+            Constants.SORT_BY.NO_OF_TRACKS -> when (sort_order) {
+                Constants.SORT_BY.ASC -> {
+                    filteredDataItems.sortWith { o1, o2 -> o1.numberOfTracks - o2.numberOfTracks }
+                }
+                else -> {
+                    filteredDataItems.sortWith { o1, o2 -> o2.numberOfTracks - o1.numberOfTracks }
+                }
+            }
+            Constants.SORT_BY.DURATION -> when (sort_order) {
+                Constants.SORT_BY.ASC -> {
+                    filteredDataItems.sortWith { o1, o2 ->
+                        Integer.valueOf(o1.duration) - Integer.valueOf(o2.duration)
+                    }
+                }
+                else -> {
+                    filteredDataItems.sortWith { o1, o2 ->
+                        Integer.valueOf(o2.duration) - Integer.valueOf(o1.duration)
+                    }
                 }
             }
         }
@@ -433,7 +445,7 @@ class MainLibraryAdapter(
                     .getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC))
             }
         }
-        if (fl.getStatus() !== Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
+        if (fl!!.getStatus() !== Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
             playerService.playAtPosition(0)
         }
     }
@@ -441,15 +453,14 @@ class MainLibraryAdapter(
     private fun AddToPlaylist() {
         val ids: IntArray
         val temp: ArrayList<Int>
-        when (fl.getStatus()) {
+        when (fl!!.getStatus()) {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
                 ids = intArrayOf(filteredDataItems[position].id)
                 UtilityFun.AddToPlaylist(context, ids)
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 val album_id: Int = filteredDataItems[position].album_id
-                temp = MusicLibrary.instance!!
-                    .getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)
+                temp = MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)!!
                 ids = IntArray(temp.size)
                 var i = 0
                 while (i < ids.size) {
@@ -460,8 +471,7 @@ class MainLibraryAdapter(
             }
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 val artist_id: Int = filteredDataItems[position].artist_id
-                temp = MusicLibrary.instance!!
-                    .getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)
+                temp = MusicLibrary.instance!!.getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)!!
                 ids = IntArray(temp.size)
                 var i = 0
                 while (i < ids.size) {
@@ -472,8 +482,7 @@ class MainLibraryAdapter(
             }
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                 val genre_id: Int = filteredDataItems[position].id
-                temp = MusicLibrary.instance!!
-                    .getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC)
+                temp = MusicLibrary.instance!!.getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC)!!
                 ids = IntArray(temp.size)
                 var i = 0
                 while (i < ids.size) {
@@ -506,7 +515,7 @@ class MainLibraryAdapter(
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 val album_id: Int = filteredDataItems[position].album_id
                 for (id: Int in MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)!!) {
-                    val file = File(MusicLibrary.instance!!.getTrackItemFromId(id).getFilePath())
+                    val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
                     val fileUri: Uri = FileProvider.getUriForFile(context,
                         context.applicationContext.packageName + "com.bhandari.music.provider",
                         file)
@@ -516,7 +525,7 @@ class MainLibraryAdapter(
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 val artist_id: Int = filteredDataItems[position].artist_id
                 for (id: Int in MusicLibrary.instance!!.getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)!!) {
-                    val file = File(MusicLibrary.instance!!.getTrackItemFromId(id).getFilePath())
+                    val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
                     val fileUri: Uri = FileProvider.getUriForFile(context,
                         context.applicationContext.packageName + "com.bhandari.music.provider",
                         file)
@@ -526,7 +535,7 @@ class MainLibraryAdapter(
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                 val genre_id: Int = filteredDataItems[position].id
                 for (id: Int in MusicLibrary.instance!!.getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC)!!) {
-                    val file = File(MusicLibrary.instance!!.getTrackItemFromId(id).getFilePath())
+                    val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
                     val fileUri: Uri = FileProvider.getUriForFile(context,
                         context.applicationContext.packageName + "com.bhandari.music.provider",
                         file)
@@ -579,7 +588,7 @@ class MainLibraryAdapter(
                 }
                 /*Toast.makeText(context
                         ,toastString+filteredDataItems.get(position).title
-                        ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent,
+                        ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent!!,
                     toastString + filteredDataItems[position].title,
                     Snackbar.LENGTH_SHORT).show()
             }
@@ -590,14 +599,14 @@ class MainLibraryAdapter(
                 }
                 /*Toast.makeText(context
                         ,toastString+filteredDataItems.get(position).title
-                        ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent,
+                        ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent!!,
                     toastString + filteredDataItems[position].title,
                     Snackbar.LENGTH_SHORT).show()
             }
         }
 
         //to update the to be next field in notification
-        MyApp.Companion.getService().PostNotification()
+        MyApp.getService()!!.PostNotification()
     }
 
     private fun DeleteDialog() {

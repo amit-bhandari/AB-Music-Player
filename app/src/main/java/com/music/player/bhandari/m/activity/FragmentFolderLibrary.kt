@@ -1,11 +1,27 @@
 package com.music.player.bhandari.m.activity
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Bundle
 import android.os.Handler
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration
+import com.music.player.bhandari.m.UIElementHelper.FastScroller
+import com.music.player.bhandari.m.adapter.FolderLibraryAdapter
 import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.model.MusicLibrary
 import java.util.concurrent.Executors
 
 /**
@@ -23,50 +39,44 @@ import java.util.concurrent.Executors
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FragmentFolderLibrary constructor() : Fragment(), OnRefreshListener /*ActionMode.Callback*/ {
+class FragmentFolderLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener /*ActionMode.Callback*/ {
     private var mRecyclerView: RecyclerView? = null
     private var adapter: FolderLibraryAdapter? = null
     private val mReceiverForLibraryRefresh: BroadcastReceiver
     fun filter(s: String?) {
         if (adapter != null) {
-            adapter.filter(s)
+            adapter!!.filter(s!!)
         }
     }
 
-    public override fun onDestroy() {
-        if (adapter != null) adapter.clear()
+    override fun onDestroy() {
+        if (adapter != null) adapter!!.clear()
         super.onDestroy()
     }
 
-    public override fun onDestroyView() {
+    override fun onDestroyView() {
         super.onDestroyView()
-        mRecyclerView.setAdapter(null)
+        mRecyclerView!!.adapter = null
     }
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    public override fun onResume() {
+    override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(MyApp.Companion.getContext()).registerReceiver(
-            mReceiverForBackPressedAction, IntentFilter(ActivityMain.NOTIFY_BACK_PRESSED))
-        LocalBroadcastManager.getInstance(MyApp.Companion.getContext()).registerReceiver(
+        LocalBroadcastManager.getInstance(MyApp.getContext()!!).registerReceiver(
+            mReceiverForBackPressedAction!!, IntentFilter(ActivityMain.NOTIFY_BACK_PRESSED))
+        LocalBroadcastManager.getInstance(MyApp.getContext()!!).registerReceiver(
             mReceiverForLibraryRefresh,
             IntentFilter(Constants.ACTION.REFRESH_LIB))
         Log.d("FragmentFolderLibrary", "onResume: receivers registered")
     }
 
-    public override fun onPause() {
+    override fun onPause() {
         super.onPause()
-        LocalBroadcastManager.getInstance(MyApp.Companion.getContext()).unregisterReceiver(
-            mReceiverForBackPressedAction)
-        LocalBroadcastManager.getInstance(MyApp.Companion.getContext())
-            .unregisterReceiver(mReceiverForLibraryRefresh)
+        LocalBroadcastManager.getInstance(MyApp.getContext()!!).unregisterReceiver(mReceiverForBackPressedAction!!)
+        LocalBroadcastManager.getInstance(MyApp.getContext()!!).unregisterReceiver(mReceiverForLibraryRefresh)
         Log.d("FragmentFolderLibrary", "onPause: receivers unregistered")
     }
 
-    public override fun onCreateView(
+    override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
@@ -80,24 +90,24 @@ class FragmentFolderLibrary constructor() : Fragment(), OnRefreshListener /*Acti
         fastScroller.setRecyclerView(mRecyclerView)
         /*mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
         mRecyclerView.setThumbColor(ColorHelper.getAccentColor());
-        mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/mRecyclerView.setLayoutManager(
-            WrapContentLinearLayoutManager(getContext()))
-        val offsetPx: Float = getResources().getDimension(R.dimen.bottom_offset_dp)
+        mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/
+        mRecyclerView!!.layoutManager = WrapContentLinearLayoutManager(context)
+        val offsetPx: Float = resources.getDimension(R.dimen.bottom_offset_dp)
         val bottomOffsetDecoration: BottomOffsetDecoration =
             BottomOffsetDecoration(offsetPx.toInt())
-        mRecyclerView.addItemDecoration(bottomOffsetDecoration)
-        adapter = FolderLibraryAdapter(getActivity())
-        mRecyclerView.setAdapter(adapter)
-        mRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            public override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        mRecyclerView!!.addItemDecoration(bottomOffsetDecoration)
+        adapter = FolderLibraryAdapter(requireActivity())
+        mRecyclerView!!.setAdapter(adapter!!)
+        mRecyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0) {
-                    (getActivity() as ActivityMain?)!!.hideFab(true)
-                } else (getActivity() as ActivityMain?)!!.hideFab(false)
+                    (activity as ActivityMain?)!!.hideFab(true)
+                } else (activity as ActivityMain?)!!.hideFab(false)
             }
 
-            public override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    (getActivity() as ActivityMain?)!!.hideFab(false)
+                    (activity as ActivityMain?)!!.hideFab(false)
                 }
                 super.onScrollStateChanged(recyclerView, newState)
             }
@@ -105,23 +115,15 @@ class FragmentFolderLibrary constructor() : Fragment(), OnRefreshListener /*Acti
         return layout
     }
 
-    public override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-    }
-
-    public override fun onRefresh() {
-        Executors.newSingleThreadExecutor().execute(object : Runnable {
-            public override fun run() {
-                MusicLibrary.getInstance().RefreshLibrary()
-            }
-        })
+    override fun onRefresh() {
+        Executors.newSingleThreadExecutor().execute { MusicLibrary.instance!!.RefreshLibrary() }
     }
 
     //for catching exception generated by recycler view which was causing abend, no other way to handle this
     internal inner class WrapContentLinearLayoutManager constructor(context: Context?) :
         LinearLayoutManager(context) {
         //... constructor
-        public override fun onLayoutChildren(recycler: Recycler, state: RecyclerView.State) {
+        override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
             try {
                 super.onLayoutChildren(recycler, state)
             } catch (ignored: IndexOutOfBoundsException) {
@@ -133,28 +135,26 @@ class FragmentFolderLibrary constructor() : Fragment(), OnRefreshListener /*Acti
         /*overwrite back button for this fragment as we will be using same recycler view for
         walking into directory
      */
-        private var mReceiverForBackPressedAction: BroadcastReceiver
+        private var mReceiverForBackPressedAction: BroadcastReceiver? = null
     }
 
     init {
         mReceiverForBackPressedAction = object : BroadcastReceiver() {
-            public override fun onReceive(context: Context, intent: Intent) {
+            override fun onReceive(context: Context, intent: Intent) {
                 if (adapter != null) {
-                    adapter.onStepBack()
+                    adapter!!.onStepBack()
                 }
             }
         }
         mReceiverForLibraryRefresh = object : BroadcastReceiver() {
-            public override fun onReceive(context: Context, intent: Intent) {
+            override fun onReceive(context: Context, intent: Intent) {
                 //updateUI();
-                adapter = FolderLibraryAdapter(getContext())
-                val mHandler: Handler = Handler(getContext()!!.getMainLooper())
-                mHandler.post(object : Runnable {
-                    public override fun run() {
-                        mRecyclerView.setAdapter(adapter)
-                        //swipeRefreshLayout.setRefreshing(false);
-                    }
-                })
+                adapter = FolderLibraryAdapter(requireContext())
+                val mHandler = Handler(requireContext().mainLooper)
+                mHandler.post {
+                    mRecyclerView!!.setAdapter(adapter!!)
+                    //swipeRefreshLayout.setRefreshing(false);
+                }
             }
         }
     }

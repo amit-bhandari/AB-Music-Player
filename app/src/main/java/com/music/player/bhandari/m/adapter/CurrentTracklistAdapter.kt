@@ -73,7 +73,7 @@ class CurrentTracklistAdapter constructor(
             try {
                 for (id: Int in temp) {
                     val d: dataItem? =
-                        MusicLibrary.instance!!.getDataItemsForTracks().get(id)
+                        MusicLibrary.instance!!.getDataItemsForTracks()!!.get(id)
                     if (d != null) {
                         dataItems.add(d)
                     }
@@ -132,14 +132,14 @@ class CurrentTracklistAdapter constructor(
         //listOfHeader is reference for that list itself
         //it will automatically reflect in current tracklist in player service class
         Log.d("CurrentTracklistAdapter", "onItemMove: from to $fromPosition : $toPosition")
-        playerService.swapPosition(fromPosition, toPosition)
+        playerService!!.swapPosition(fromPosition, toPosition)
         Collections.swap(dataItems, fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
         return true
     }
 
     override fun onItemDismiss(position: Int) {
-        if (playerService.getCurrentTrackPosition() !== position) {
+        if (playerService!!.getCurrentTrackPosition() !== position) {
             //listOfHeader.remove(position);
             playerService!!.removeTrack(position)
             dataItems.removeAt(position)
@@ -155,7 +155,7 @@ class CurrentTracklistAdapter constructor(
             R.id.action_play -> {
                 val oldPos: Int = position
                 position = tempPosition
-                playerService.playAtPositionFromNowPlaying(tempPosition)
+                playerService!!.playAtPositionFromNowPlaying(tempPosition)
                 notifyItemChanged(oldPos)
                 notifyItemChanged(position)
                 val intent: Intent = Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE)
@@ -163,21 +163,21 @@ class CurrentTracklistAdapter constructor(
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
             }
             R.id.action_add_to_playlist -> {
-                val ids: IntArray = intArrayOf(dataItems.get(position).id)
+                val ids: IntArray = intArrayOf(dataItems[position]!!.id)
                 UtilityFun.AddToPlaylist(context, ids)
             }
             R.id.action_share -> try {
-                val uris: ArrayList<Uri> = ArrayList<Uri>() //for sending multiple files
-                val file: File = File(dataItems.get(position).file_path)
+                val uris: ArrayList<Uri> = ArrayList() //for sending multiple files
+                val file = File(dataItems[position]!!.file_path)
                 val fileUri: Uri = FileProvider.getUriForFile(context,
                     context.applicationContext
                         .packageName + "com.bhandari.music.provider",
                     file)
                 uris.add(fileUri)
-                UtilityFun.Share(context, uris, dataItems.get(position).title)
+                UtilityFun.Share(context, uris, dataItems[position]!!.title)
             } catch (e: IllegalArgumentException) {
                 try {
-                    UtilityFun.ShareFromPath(context, dataItems.get(position).file_path)
+                    UtilityFun.ShareFromPath(context, dataItems[position]!!.file_path!!)
                 } catch (ex: Exception) {
                     Toast.makeText(context,
                         context.getString(R.string.error_unable_to_share),
@@ -189,24 +189,23 @@ class CurrentTracklistAdapter constructor(
             R.id.action_edit_track_info -> {
                 context.startActivity(Intent(context, ActivityTagEditor::class.java)
                     .putExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING)
-                    .putExtra("file_path", dataItems.get(position).file_path)
-                    .putExtra("track_title", dataItems.get(position).title)
+                    .putExtra("file_path", dataItems[position]!!.file_path)
+                    .putExtra("track_title", dataItems[position]!!.title)
                     .putExtra("position", position)
-                    .putExtra("id", dataItems.get(position).id))
+                    .putExtra("id", dataItems[position]!!.id))
                 (context as Activity).overridePendingTransition(R.anim.slide_in_right,
                     R.anim.slide_out_left)
             }
             R.id.action_search_youtube -> UtilityFun.LaunchYoutube(context,
-                (dataItems.get(position).artist_name + " - "
-                        + dataItems.get(position).title))
+                (dataItems[position]!!.artist_name + " - " + dataItems[position]!!.title))
         }
         return true
     }
 
     fun getSongList(): ArrayList<Int> {
         val temp: ArrayList<Int> = ArrayList()
-        for (d: dataItem in dataItems) {
-            if (d.id != 0) {
+        for (d in dataItems) {
+            if (d!!.id != 0) {
                 temp.add(d.id)
             }
         }
@@ -215,9 +214,9 @@ class CurrentTracklistAdapter constructor(
 
     fun updateItem(position: Int, vararg param: String) {
         try {
-            dataItems.get(position)!!.title = param.get(0)
-            dataItems.get(position)!!.artist_name = param.get(1)
-            dataItems.get(position)!!.albumName = param.get(2)
+            dataItems[position]!!.title = param[0]
+            dataItems[position]!!.artist_name = param[1]
+            dataItems[position]!!.albumName = param[2]
             notifyItemChanged(position)
         } catch (e: Exception) {
             Log.v(Constants.TAG, e.toString())
@@ -231,7 +230,7 @@ class CurrentTracklistAdapter constructor(
         linear.orientation = LinearLayout.VERTICAL
         val text: TextView = TextView(context)
         text.setTypeface(TypeFaceHelper.getTypeFace(context))
-        text.text = UtilityFun.trackInfoBuild(dataItems.get(position).id).toString()
+        text.text = UtilityFun.trackInfoBuild(dataItems[position]!!.id).toString()
         text.setPadding(20, 20, 20, 10)
         text.textSize = 15f
         //text.setGravity(Gravity.CENTER);
@@ -305,7 +304,7 @@ class CurrentTracklistAdapter constructor(
                 mLastClickTime = SystemClock.elapsedRealtime()
                 notifyItemChanged(oldPos)
                 notifyItemChanged(position)
-                if (position == playerService.getCurrentTrackPosition()) {
+                if (position == playerService!!.getCurrentTrackPosition()) {
                     playerService.play()
                     val intent: Intent = Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE)
                     intent.putExtra("skip_adapter_update", true)
@@ -313,7 +312,7 @@ class CurrentTracklistAdapter constructor(
                     //playerService.notifyUI();
                 } else {
                     playerService.playAtPositionFromNowPlaying(position)
-                    Log.v(Constants.TAG, position.toString() + "  position")
+                    Log.v(Constants.TAG, "$position  position")
                 }
             }
         }
@@ -321,9 +320,9 @@ class CurrentTracklistAdapter constructor(
 
     inner class MyViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var title: TextView = itemView.findViewById<TextView>(R.id.header)
-        var secondary: TextView = itemView.findViewById<TextView>(R.id.secondaryHeader)
-        var handle: ImageView = itemView.findViewById<ImageView>(R.id.handleForDrag)
+        var title: TextView = itemView.findViewById(R.id.header)
+        var secondary: TextView = itemView.findViewById(R.id.secondaryHeader)
+        var handle: ImageView = itemView.findViewById(R.id.handleForDrag)
         var cv: View = itemView.findViewById(R.id.trackItemDraggable)
 
         //ImageView iv;
@@ -341,13 +340,12 @@ class CurrentTracklistAdapter constructor(
     }
 
     companion object {
-        private val dataItems: ArrayList<dataItem?> = ArrayList<dataItem?>()
+        private val dataItems: ArrayList<dataItem?> = ArrayList()
     }
 
     init {
         if (MyApp.getService() == null) {
             UtilityFun.restartApp()
-            return
         }
         playerService = MyApp.getService()
         handler = Handler(Looper.getMainLooper())

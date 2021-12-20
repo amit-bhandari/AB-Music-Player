@@ -751,7 +751,9 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                 }
                 var b: Bitmap? = null
                 try {
-                    b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -900,7 +902,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     trackList.sortWith { integer, t1 ->
                         try {
                             MusicLibrary.instance!!.getTrackMap().get(integer)
-                                .compareToIgnoreCase(MusicLibrary.instance!!.getTrackMap()
+                                .compareTo(MusicLibrary.instance!!.getTrackMap()
                                     .get(t1))
                         } catch (e: NullPointerException) {
                             0
@@ -930,22 +932,21 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
     }
 
     fun removeTrack(position: Int) {
+        if (trackList.contains(position)) {
+            val position: Int = trackList.indexOf(position)
+            if (currentTrackPosition > position) {
+                currentTrackPosition--
+            }
+            trackList.remove(position)
+            return
+        }
+
         if (currentTrackPosition > position) {
             currentTrackPosition--
         }
         try {
             trackList.removeAt(position)
         } catch (ignored: ArrayIndexOutOfBoundsException) {
-        }
-    }
-
-    fun removeTrack(_id: Int) {
-        if (trackList.contains(_id)) {
-            val position: Int = trackList.indexOf(_id)
-            if (currentTrackPosition > position) {
-                currentTrackPosition--
-            }
-            trackList.remove(_id)
         }
     }
 
@@ -975,7 +976,9 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         if (loadBitmap) {
             var b: Bitmap? = null
             try {
-                b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                }
             } catch (e: Exception) {
                 //e.printStackTrace();
             }
@@ -1090,7 +1093,9 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                 if (enable) {
                     var b: Bitmap? = null
                     try {
-                        b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

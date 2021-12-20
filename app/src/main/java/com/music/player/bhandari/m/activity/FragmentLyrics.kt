@@ -1,21 +1,18 @@
 package com.music.player.bhandari.m.activity
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
+import android.text.Html
 import android.util.Log
-import android.view.ActionMode
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.view.*
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
@@ -24,7 +21,10 @@ import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter
+import com.music.player.bhandari.m.lyricCard.ActivityLyricCard
 import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.model.MusicLibrary
+import com.music.player.bhandari.m.model.PlaylistManager
 import com.music.player.bhandari.m.model.TrackItem
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.ViewLyrics
@@ -32,6 +32,9 @@ import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.Of
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadLyricThread
 import com.music.player.bhandari.m.service.PlayerService
 import com.music.player.bhandari.m.utils.UtilityFun
+import com.nshmura.snappysmoothscroller.SnapType
+import com.nshmura.snappysmoothscroller.SnappyLayoutManager
+import com.nshmura.snappysmoothscroller.SnappyLinearLayoutManager
 import com.wang.avi.AVLoadingIndicatorView
 import java.util.concurrent.Executors
 
@@ -106,22 +109,18 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     ): View? {
         layout = inflater.inflate(R.layout.fragment_lyrics, container, false)
         ButterKnife.bind(this, layout!!)
-        if (MyApp.Companion.getService() == null) {
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp()
             return layout
         }
-        playerService = MyApp.Companion.getService()
+        playerService = MyApp.getService()
         initializeListeners()
         return layout
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     private fun initializeListeners() {
-        buttonUpdateMetadata.setOnClickListener(this)
-        lyricStatus.setOnClickListener(this)
+        buttonUpdateMetadata!!.setOnClickListener(this)
+        lyricStatus!!.setOnClickListener(this)
         mLyricChange = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 Log.v(Constants.TAG, "update lyrics please Jarvis")
@@ -149,7 +148,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
         if (isLyricsLoaded) {
             return
         }
-        Log.v(Constants.TAG, "Intent Song playing " + playerService!!.getCurrentTrack().title)
+        Log.v(Constants.TAG, "Intent Song playing " + playerService!!.getCurrentTrack()!!.title)
         updateLyrics()
     }
 
@@ -159,40 +158,36 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
         if (!isAdded || activity == null) {
             return
         }
-        item = playerService.getCurrentTrack()
-        artistEdit.setVisibility(View.GONE)
-        titleEdit.setVisibility(View.GONE)
-        updateTagsTextView.setVisibility(View.GONE)
-        buttonUpdateMetadata.setVisibility(View.GONE)
-        buttonUpdateMetadata.setClickable(false)
+        item = playerService!!.getCurrentTrack()
+        artistEdit!!.visibility = View.GONE
+        titleEdit!!.visibility = View.GONE
+        updateTagsTextView!!.visibility = View.GONE
+        buttonUpdateMetadata!!.visibility = View.GONE
+        buttonUpdateMetadata!!.isClickable = false
 
         //set loading animation
-        lyricLoadAnimation.setVisibility(View.VISIBLE)
-        lyricLoadAnimation.show()
+        lyricLoadAnimation!!.visibility = View.VISIBLE
+        lyricLoadAnimation!!.show()
 
         //lyricCopyRightText.setVisibility(View.GONE);
-        ll_lyric_view.setVisibility(View.GONE)
+        ll_lyric_view!!.visibility = View.GONE
         //ll_lyric_view.removeAllViews();
         fLyricUpdaterThreadCancelled = true
-        lyricStatus.setVisibility(View.VISIBLE)
-        lyricStatus.setText(getString(R.string.lyrics_loading))
-        if (!MyApp.Companion.getPref()
-                .getBoolean(getString(R.string.pref_disclaimer_accepted), false)
+        lyricStatus!!.visibility = View.VISIBLE
+        lyricStatus!!.text = getString(R.string.lyrics_loading)
+        if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_disclaimer_accepted), false)
         ) {
-            lyricStatus.setVisibility(View.VISIBLE)
-            lyricStatus.setText(getString(R.string.disclaimer_rejected))
+            lyricStatus!!.visibility = View.VISIBLE
+            lyricStatus!!.text = getString(R.string.disclaimer_rejected)
             try {
                 //some exceptions reported in play console, thats why
-                lyricLoadAnimation.hide()
+                lyricLoadAnimation!!.hide()
             } catch (ignored: Exception) {
             }
             // }
             return
         }
-        if ((mLyrics != null) && (mLyrics.getFlag() === Lyrics.POSITIVE_RESULT
-                    ) && (mLyrics.getTrackId() !== -1
-                    ) && (mLyrics.getTrackId() === item!!.id)
-        ) {
+        if ((mLyrics != null) && (mLyrics!!.getFlag() === Lyrics.POSITIVE_RESULT) && (mLyrics!!.getTrackId() !== -1) && (mLyrics!!.getTrackId() === item!!.id)) {
             onLyricsDownloaded(mLyrics)
             return
         }
@@ -207,35 +202,34 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
             if (UtilityFun.isConnectedToInternet) {
                 fetchLyrics((item!!.getArtist())!!, (item!!.title)!!, null)
             } else {
-                lyricStatus.setText(getString(R.string.no_connection))
-                lyricLoadAnimation.hide()
+                lyricStatus!!.text = getString(R.string.no_connection)
+                lyricLoadAnimation!!.hide()
             }
         } else {
-            lyricStatus.setText(getString(R.string.no_music_found_lyrics))
-            lyricStatus.setVisibility(View.VISIBLE)
-            lyricLoadAnimation.hide()
+            lyricStatus!!.text = getString(R.string.no_music_found_lyrics)
+            lyricStatus!!.visibility = View.VISIBLE
+            lyricLoadAnimation!!.hide()
         }
     }
 
-    private fun fetchLyrics(vararg params: String) {
+    private fun fetchLyrics(vararg params: String?) {
         if (activity == null) return
-        val artist: String? = params.get(0)
-        val title: String? = params.get(1)
+        val artist = params[0]
+        val title = params[1]
 
         ///filter title string
         //title = filterTitleString(title);
         var url: String? = null
-        if (params.size > 2) url = params.get(2)
-        Log.d("Fragment lyrics", "fetchLyrics: download lyric thread starting!")
-        if (artist != null && title != null) {
-            if (url == null) lyricThread =
-                DownloadLyricThread(this, true, item, artist, title) else lyricThread =
-                DownloadLyricThread(this, true, item, url, artist, title)
-            lyricThread.start()
+        if (params.size > 2) url = params[2]
+        val d = Log.d("Fragment lyrics", "fetchLyrics: download lyric thread starting!")
+        lyricThread = when (url) {
+            null -> DownloadLyricThread(this, true, item, artist!!, title!!)
+            else -> DownloadLyricThread(this, true, item, url, artist!!, title!!)
         }
+        lyricThread!!.start()
     }
 
-    fun onLyricsDownloaded(lyrics: Lyrics?) {
+    override fun onLyricsDownloaded(lyrics: Lyrics?) {
         isLyricsLoaded = true
         //control comes here no matter where lyrics found, in db or online
         //so update the view here
@@ -250,12 +244,10 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
         //background thread already working to fetch latest lyrics
         //track id is -1 if lyrics are downloaded from internet and have
         //id of track from content resolver if lyrics came from offline storage
-        if (lyrics.getTrackId() !== -1 && lyrics.getTrackId() !== playerService.getCurrentTrack()
-                .getId()
-        ) {
+        if (lyrics.getTrackId() !== -1 && lyrics.getTrackId() !== playerService!!.getCurrentTrack()!!.id) {
             return
         }
-        lyricLoadAnimation.hide()
+        lyricLoadAnimation!!.hide()
         mLyrics = lyrics
         if (layout != null) {
             if (lyrics.getFlag() === Lyrics.POSITIVE_RESULT) {
@@ -267,28 +259,28 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
 
                 //see if timing information available and update view accordingly
                 // if(lyrics.isLRC()){
-                lyricStatus.setVisibility(View.GONE)
-                fIsStaticLyrics = !mLyrics.isLRC()
+                lyricStatus!!.visibility = View.GONE
+                fIsStaticLyrics = !mLyrics!!.isLRC()
                 fLyricUpdaterThreadCancelled = false
-                ll_lyric_view.setVisibility(View.VISIBLE)
-                lyricStatus.setVisibility(View.GONE)
+                ll_lyric_view!!.visibility = View.VISIBLE
+                lyricStatus!!.visibility = View.GONE
                 //lyricCopyRightText.setVisibility(View.VISIBLE);
                 initializeLyricsView()
             } else {
                 //in case no lyrics found, set staticLyric flag true as we start lyric thread based on its value
                 //and we dont want our thread to run even if no lyrics found
-                if (playerService.getCurrentTrack() != null) {
-                    artistEdit.setVisibility(View.VISIBLE)
-                    titleEdit.setVisibility(View.VISIBLE)
-                    updateTagsTextView.setVisibility(View.VISIBLE)
-                    buttonUpdateMetadata.setVisibility(View.VISIBLE)
-                    buttonUpdateMetadata.setClickable(true)
-                    titleEdit.setText(item!!.title)
-                    artistEdit.setText(item!!.getArtist())
+                if (playerService!!.getCurrentTrack() != null) {
+                    artistEdit!!.visibility = View.VISIBLE
+                    titleEdit!!.visibility = View.VISIBLE
+                    updateTagsTextView!!.visibility = View.VISIBLE
+                    buttonUpdateMetadata!!.visibility = View.VISIBLE
+                    buttonUpdateMetadata!!.isClickable = true
+                    titleEdit!!.setText(item!!.title)
+                    artistEdit!!.setText(item!!.getArtist())
                 }
                 fIsStaticLyrics = true
-                lyricStatus.setText(getString(R.string.tap_to_refresh_lyrics))
-                lyricStatus.setVisibility(View.VISIBLE)
+                lyricStatus!!.text = getString(R.string.tap_to_refresh_lyrics)
+                lyricStatus!!.visibility = View.VISIBLE
                 //lyricCopyRightText.setVisibility(View.GONE);
             }
         }
@@ -301,25 +293,24 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
         if (handler == null) {
             handler = Handler(Looper.getMainLooper())
         }
-        adapter = LyricsViewAdapter(context, mLyrics)
+        adapter = LyricsViewAdapter(requireContext(), mLyrics)
         val snappyLinearLayoutManager: SnappyLayoutManager = SnappyLinearLayoutManager(context)
         snappyLinearLayoutManager.setSnapType(SnapType.CENTER)
         snappyLinearLayoutManager.setSnapDuration(1500)
         //layoutManager.setSnapInterpolator(new DecelerateInterpolator());
 
         // Attach layout manager to the RecyclerView:
-        recyclerView.setLayoutManager(snappyLinearLayoutManager as LayoutManager?)
+        recyclerView!!.layoutManager = snappyLinearLayoutManager as RecyclerView.LayoutManager?
         val offsetPx: Float = resources.getDimension(R.dimen.bottom_offset_secondary_lib)
-        val bottomOffsetDecoration: BottomOffsetDecoration =
-            BottomOffsetDecoration(offsetPx.toInt())
-        recyclerView.addItemDecoration(bottomOffsetDecoration)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.setAdapter(adapter)
-        recyclerView.addOnItemTouchListener(this)
+        val bottomOffsetDecoration = BottomOffsetDecoration(offsetPx.toInt())
+        recyclerView!!.addItemDecoration(bottomOffsetDecoration)
+        recyclerView!!.setHasFixedSize(true)
+        recyclerView!!.adapter = adapter
+        recyclerView!!.addOnItemTouchListener(this)
         gestureDetector = GestureDetectorCompat(context, RecyclerViewDemoOnGestureListener())
-        layoutManager = recyclerView.getLayoutManager() as LinearLayoutManager
+        layoutManager = recyclerView!!.layoutManager as LinearLayoutManager
         fLyricUpdaterThreadCancelled = false
-        if (!fIsStaticLyrics && (playerService.getStatus() === PlayerService.PLAYING) && !fIsLyricUpdaterThreadRunning) {
+        if (!fIsStaticLyrics && (playerService!!.getStatus() === PlayerService.PLAYING) && !fIsLyricUpdaterThreadRunning) {
             Executors.newSingleThreadExecutor().execute(lyricUpdater)
             scrollLyricsToCurrentLocation()
         }
@@ -327,15 +318,15 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
 
     override fun onResume() {
         super.onResume()
-        if (MyApp.Companion.getService() == null) {
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp()
             return
         }
 
         /* This code together with the one in onDestroy()
          * will make the screen be always on until this Activity gets destroyed. */startLyricUpdater()
-        LocalBroadcastManager.getInstance(context)
-            .registerReceiver(mLyricChange, IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO))
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(mLyricChange!!, IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO))
         /*LocalBroadcastManager.getInstance(getContext()).registerReceiver(mPlayPauseUpdateReceiver
                 ,new IntentFilter(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));*/
         //UpdateUI();
@@ -348,7 +339,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     }
 
     private fun startLyricUpdater() {
-        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && (playerService.getStatus() === PlayerService.PLAYING)) {
+        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && (playerService!!.getStatus() === PlayerService.PLAYING)) {
             Log.d("FragmentLyrics", "startLyricUpdater: starting lyric updater")
             fLyricUpdaterThreadCancelled = false
             Executors.newSingleThreadExecutor().execute(lyricUpdater)
@@ -361,30 +352,25 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     }
 
     private fun scrollLyricsToCurrentLocation() {
-        adapter.changeCurrent(playerService.getCurrentTrackProgress())
-        val index: Int = adapter.getCurrentTimeIndex()
+        adapter!!.changeCurrent(playerService!!.getCurrentTrackProgress().toLong())
+        val index: Int = adapter!!.getCurrentTimeIndex()
         if (index != -1) {
             // without delay lyrics wont scroll to latest position when called from onResume for some reason
-            Handler().postDelayed(object : Runnable {
-                override fun run() {
-                    recyclerView.smoothScrollToPosition(index)
-                }
-            }, 100)
+            Handler().postDelayed({ recyclerView!!.smoothScrollToPosition(index) }, 100)
         }
-        Log.d("FragmentLyrics", "scrollLyricsToCurrentLocation: index " + index)
-        adapter.notifyDataSetChanged()
+        Log.d("FragmentLyrics", "scrollLyricsToCurrentLocation: index $index")
+        adapter!!.notifyDataSetChanged()
     }
 
     fun smoothScrollAfterSeekbarTouched(progress: Int) {
         if (adapter != null && !fIsStaticLyrics) {
-            adapter.changeCurrent(UtilityFun.progressToTimer(progress,
-                playerService.getCurrentTrackDuration()))
-            val index: Int = adapter.getCurrentTimeIndex()
+            adapter!!.changeCurrent(UtilityFun.progressToTimer(progress, playerService!!.getCurrentTrackDuration()).toLong())
+            val index: Int = adapter!!.getCurrentTimeIndex()
             if (index != -1) {
-                recyclerView.smoothScrollToPosition(index)
-                adapter.notifyDataSetChanged()
+                recyclerView!!.smoothScrollToPosition(index)
+                adapter!!.notifyDataSetChanged()
             }
-            Log.d("FragmentLyrics", "scrollLyricsToCurrentLocation: index " + index)
+            Log.d("FragmentLyrics", "scrollLyricsToCurrentLocation: index $index")
         }
     }
 
@@ -395,7 +381,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
             actionMode = null
         }
         stopLyricUpdater()
-        LocalBroadcastManager.getInstance(context).unregisterReceiver(mLyricChange)
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mLyricChange!!)
         //LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mPlayPauseUpdateReceiver);
 
         //fSeekbarThreadCancelled = true;
@@ -404,7 +390,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (playerService == null) playerService = MyApp.Companion.getService()
+        if (playerService == null) playerService = MyApp.getService()
         if (isVisibleToUser) {
             startLyricUpdater()
         } else {
@@ -421,7 +407,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
 
     fun runLyricThread() {
         isLyricsLoaded = false
-        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && (playerService.getStatus() === PlayerService.PLAYING)) {
+        if (!fIsStaticLyrics && !fIsLyricUpdaterThreadRunning && (playerService!!.getStatus() === PlayerService.PLAYING)) {
             fLyricUpdaterThreadCancelled = false
             Executors.newSingleThreadExecutor().execute(lyricUpdater)
         } else {
@@ -431,19 +417,19 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
 
     fun clearLyrics() {
         if (playerService == null) return
-        if (playerService.getCurrentTrack() != null) {
+        if (playerService!!.getCurrentTrack() != null) {
             try {
-                ll_lyric_view.setVisibility(View.GONE)
+                ll_lyric_view!!.visibility = View.GONE
                 fIsStaticLyrics = true
-                lyricStatus.setText(getString(R.string.tap_to_refresh_lyrics))
-                lyricStatus.setVisibility(View.VISIBLE)
-                buttonUpdateMetadata.setVisibility(View.VISIBLE)
-                buttonUpdateMetadata.setClickable(true)
-                titleEdit.setText(item!!.title)
-                artistEdit.setText(item!!.getArtist())
-                artistEdit.setVisibility(View.VISIBLE)
-                titleEdit.setVisibility(View.VISIBLE)
-                updateTagsTextView.setVisibility(View.VISIBLE)
+                lyricStatus!!.text = getString(R.string.tap_to_refresh_lyrics)
+                lyricStatus!!.visibility = View.VISIBLE
+                buttonUpdateMetadata!!.visibility = View.VISIBLE
+                buttonUpdateMetadata!!.isClickable = true
+                titleEdit!!.setText(item!!.title)
+                artistEdit!!.setText(item!!.getArtist())
+                artistEdit!!.visibility = View.VISIBLE
+                titleEdit!!.visibility = View.VISIBLE
+                updateTagsTextView!!.visibility = View.VISIBLE
             } catch (ignored: Exception) {
             }
         }
@@ -452,44 +438,40 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     //when clicked on this, lyrics are searched again from viewlyrics
     //but this time option is given to select lyrics
     fun wrongLyrics() {
-        if (mLyrics == null || mLyrics.getFlag() !== Lyrics.POSITIVE_RESULT) {
+        if (mLyrics == null || mLyrics!!.getFlag() !== Lyrics.POSITIVE_RESULT) {
             if (isAdded && activity != null) Toast.makeText(activity,
                 getString(R.string.error_no_lyrics),
                 Toast.LENGTH_SHORT).show()
             return
         }
-        if (mLyrics.getSource() == null || (!mLyrics.getSource()
-                .equals(ViewLyrics.clientUserAgent) && !mLyrics.getSource().equals("manual"))
-        ) {
+        if (mLyrics!!.getSource() == null || (!mLyrics!!.getSource().equals(ViewLyrics.clientUserAgent) && !mLyrics!!.getSource().equals("manual"))) {
             if (isAdded && activity != null) Toast.makeText(activity,
                 "No lyrics from other sources available!",
                 Toast.LENGTH_SHORT).show()
             return
         }
-        item = playerService.getCurrentTrack()
+        item = playerService!!.getCurrentTrack()
 
         ///filter title string
         val title: String? = item!!.title
         val artist: String? = item!!.getArtist()
-        Executors.newSingleThreadExecutor().execute(object : Runnable {
-            override fun run() {
-                if (artist != null && title != null) {
-                    try {
-                        ViewLyrics.fromMetaData(activity,
-                            artist,
-                            title,
-                            item,
-                            this@FragmentLyrics)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+        Executors.newSingleThreadExecutor().execute {
+            if (artist != null && title != null) {
+                try {
+                    ViewLyrics.fromMetaData(activity,
+                        artist,
+                        title,
+                        item,
+                        this@FragmentLyrics)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
-        })
+        }
     }
 
     fun shareLyrics() {
-        if ((mLyrics == null) || (mLyrics.getFlag() !== Lyrics.POSITIVE_RESULT) || (adapter == null)) {
+        if ((mLyrics == null) || (mLyrics!!.getFlag() !== Lyrics.POSITIVE_RESULT) || (adapter == null)) {
             if (activity != null && isAdded) {
                 Toast.makeText(activity,
                     getString(R.string.error_no_lyrics),
@@ -498,12 +480,12 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
             return
         }
         var shareBody: String = getString(R.string.lyrics_share_text)
-        shareBody += "\n\nTrack : " + mLyrics.getTrack()
-            .toString() + "\n".toString() + "Artist : " + mLyrics.getArtist().toString() + "\n\n"
-        if (mLyrics.isLRC()) {
-            shareBody += Html.fromHtml(adapter.getStaticLyrics()).toString()
+        shareBody += "\n\nTrack : " + mLyrics!!.getTrack()
+            .toString() + "\n".toString() + "Artist : " + mLyrics!!.getArtist().toString() + "\n\n"
+        if (mLyrics!!.isLRC()) {
+            shareBody += Html.fromHtml(adapter!!.getStaticLyrics()).toString()
         } else {
-            shareBody += Html.fromHtml(mLyrics.getText())
+            shareBody += Html.fromHtml(mLyrics!!.getText())
         }
         shareTextIntent(shareBody)
     }
@@ -528,7 +510,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
 
     override fun onDestroy() {
         fLyricUpdaterThreadCancelled = true
-        if (lyricThread != null) lyricThread.setCallback(null)
+        if (lyricThread != null) lyricThread!!.setCallback(null)
         super.onDestroy()
     }
 
@@ -538,21 +520,23 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     }
 
     private fun myToggleSelection(idx: Int) {
-        adapter.toggleSelection(idx)
-        if (adapter.getSelectedItemCount() === 0) {
+        adapter!!.toggleSelection(idx)
+        if (adapter!!.getSelectedItemCount() == 0) {
             actionMode!!.finish()
             actionMode = null
             return
         }
-        val numberOfItems: Int = adapter.getSelectedItemCount()
-        val selectionString: String =
-            if (numberOfItems == 1) " item selected" else " items selected"
+        val numberOfItems: Int = adapter!!.getSelectedItemCount()
+        val selectionString: String = when (numberOfItems) {
+            1 -> " item selected"
+            else -> " items selected"
+        }
         val title: String = numberOfItems.toString() + selectionString
         actionMode!!.title = title
     }
 
     override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-        gestureDetector.onTouchEvent(e)
+        gestureDetector!!.onTouchEvent(e)
         return false
     }
 
@@ -569,7 +553,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     }
 
     override fun onActionItemClicked(actionMode: ActionMode, menuItem: MenuItem): Boolean {
-        when (menuItem.getItemId()) {
+        when (menuItem.itemId) {
             R.id.menu_share -> try {
                 shareTextIntent(getSelectedLyricString().toString())
                 actionMode.finish()
@@ -582,10 +566,10 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
                     Toast.LENGTH_SHORT).show()
             }
             R.id.menu_lyric_card -> {
-                val intent: Intent = Intent(activity, ActivityLyricCard::class.java)
+                val intent = Intent(activity, ActivityLyricCard::class.java)
                 intent.putExtra("lyric", getSelectedLyricString().toString())
-                    .putExtra("artist", mLyrics.getArtist())
-                    .putExtra("track", mLyrics.getTrack())
+                    .putExtra("artist", mLyrics!!.getArtist())
+                    .putExtra("track", mLyrics!!.getTrack())
                 startActivity(intent)
             }
         }
@@ -594,14 +578,12 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
 
     private fun getSelectedLyricString(): StringBuilder {
         val shareString: StringBuilder = StringBuilder()
-        val selectedItemPositions: List<Int> = adapter.getSelectedItems()
+        val selectedItemPositions: List<Int> = adapter!!.getSelectedItems()
         var currPos: Int
-        for (i in 0..selectedItemPositions.size - 1) {
+        for (i in selectedItemPositions.indices) {
             currPos = selectedItemPositions.get(i)
-            val lyricLine: String? = adapter.getLineAtPosition(currPos)
-            if (lyricLine != null) {
-                shareString.append(lyricLine).append("\n")
-            }
+            val lyricLine = adapter!!.getLineAtPosition(currPos)
+            shareString.append(lyricLine).append("\n")
         }
         return shareString
     }
@@ -609,73 +591,70 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     override fun onDestroyActionMode(actionMode: ActionMode) {
         actionMode.finish()
         actionModeActive = false
-        adapter.clearSelections()
+        adapter!!.clearSelections()
     }
 
     override fun onClick(view: View) {
         when (view.id) {
             R.id.lyrics_line -> if (recyclerView != null) {
-                val idx: Int = recyclerView.getChildLayoutPosition(view)
+                val idx: Int = recyclerView!!.getChildLayoutPosition(view)
                 if (actionModeActive) {
                     myToggleSelection(idx)
                     return
                 }
             }
             R.id.text_view_lyric_status -> {
-                lyricStatus.setText(getString(R.string.lyrics_loading))
+                lyricStatus!!.text = getString(R.string.lyrics_loading)
                 updateLyrics()
             }
             R.id.button_update_metadata -> {
-                item = playerService.getCurrentTrack()
+                item = playerService!!.getCurrentTrack()
                 if (item == null) {
                     return
                 }
-                val edited_title: String = titleEdit.getText().toString()
-                val edited_artist: String = artistEdit.getText().toString()
+                val edited_title = titleEdit!!.text.toString()
+                val edited_artist = artistEdit!!.text.toString()
                 if (edited_title.isEmpty() || edited_artist.isEmpty()) {
                     Toast.makeText(context,
                         getString(R.string.te_error_empty_field),
                         Toast.LENGTH_SHORT).show()
                     return
                 }
-                if (!(edited_title == item!!.title) ||
-                    !(edited_artist == item!!.getArtist())
+                if (edited_title != item!!.title ||
+                    edited_artist != item!!.getArtist()
                 ) {
 
                     //changes made, save those
-                    val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                    val values: ContentValues = ContentValues()
+                    val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                    val values = ContentValues()
                     values.put(MediaStore.Audio.Media.TITLE, edited_title)
                     values.put(MediaStore.Audio.Media.ARTIST, edited_artist)
-                    context!!.contentResolver
+                    requireContext().contentResolver
                         .update(uri,
                             values,
                             MediaStore.Audio.Media.TITLE + "=?",
                             arrayOf(item!!.title))
-                    val d: dataItem = MusicLibrary.getInstance()
-                        .updateTrackNew(item!!.id, edited_title, edited_artist, item!!.album)
-                    PlaylistManager.getInstance(MyApp.Companion.getContext())
-                        .addEntryToMusicTable(d)
-                    val intent: Intent = Intent(context, ActivityNowPlaying::class.java)
+                    val d = MusicLibrary.instance!!.updateTrackNew(item!!.id, edited_title, edited_artist, item!!.album!!)
+                    PlaylistManager.getInstance(MyApp.getContext()!!)!!.addEntryToMusicTable(d!!)
+                    val intent = Intent(context, ActivityNowPlaying::class.java)
                     intent.putExtra("refresh", true)
-                    intent.putExtra("position", playerService.getCurrentTrackPosition())
+                    intent.putExtra("position", playerService!!.getCurrentTrackPosition())
                     intent.putExtra("originalTitle", item!!.title)
                     intent.putExtra("title", edited_title)
                     intent.putExtra("artist", edited_artist)
                     intent.putExtra("album", item!!.album)
                     startActivity(intent)
-                    artistEdit.setVisibility(View.GONE)
-                    titleEdit.setVisibility(View.GONE)
-                    updateTagsTextView.setVisibility(View.GONE)
-                    buttonUpdateMetadata.setVisibility(View.GONE)
-                    buttonUpdateMetadata.setClickable(false)
+                    artistEdit!!.visibility = View.GONE
+                    titleEdit!!.visibility = View.GONE
+                    updateTagsTextView!!.visibility = View.GONE
+                    buttonUpdateMetadata!!.visibility = View.GONE
+                    buttonUpdateMetadata!!.isClickable = false
                     if (activity != null) {
-                        if (activity!!.currentFocus != null) {
-                            val imm: InputMethodManager? = activity
-                                .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-                            if (imm != null) {
-                                imm.hideSoftInputFromWindow(view.windowToken, 0)
-                            }
+                        if (requireActivity().currentFocus != null) {
+                            (requireActivity()
+                                .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.hideSoftInputFromWindow(
+                                view.windowToken,
+                                0)
                         }
                     }
                 } else {
@@ -688,9 +667,9 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     }
 
     private inner class RecyclerViewDemoOnGestureListener :
-        SimpleOnGestureListener() {
+        GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            val view: View? = recyclerView.findChildViewUnder(e.getX(), e.getY())
+            val view: View? = recyclerView!!.findChildViewUnder(e.x, e.y)
             if (view != null) {
                 onClick(view)
             }
@@ -699,49 +678,44 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
 
         override fun onLongPress(e: MotionEvent) {
             if (!isAdded || activity == null) return
-            val view: View = recyclerView.findChildViewUnder(e.getX(), e.getY())
+            val view = recyclerView!!.findChildViewUnder(e.x, e.y)
             if (actionModeActive) {
                 return
             }
             // Start the CAB using the ActionMode.Callback defined above
             actionMode = activity!!.startActionMode(this@FragmentLyrics)
             actionModeActive = true
-            val idx: Int = recyclerView.getChildPosition(view)
+            val idx: Int = recyclerView!!.getChildPosition(view!!)
             myToggleSelection(idx)
             super.onLongPress(e)
         }
     }
 
-    private val lyricUpdater: Runnable = object : Runnable {
-        override fun run() {
-            while (true) {
-                if (fLyricUpdaterThreadCancelled) {
-                    break
-                }
-                fIsLyricUpdaterThreadRunning = true
-                //Log.v("FragmentLyrics","Lyric thread running");
-                if (activity != null) {
-                    handler!!.post(object : Runnable {
-                        override fun run() {
-                            val index: Int =
-                                adapter.changeCurrent(playerService.getCurrentTrackProgress())
-                            val firstVisibleItem: Int = layoutManager.findFirstVisibleItemPosition()
-                            val lastVisibleItem: Int = layoutManager.findLastVisibleItemPosition()
-                            if ((index != -1) && (index > firstVisibleItem) && (index < lastVisibleItem)) {
-                                recyclerView.smoothScrollToPosition(index)
-                            }
-                        }
-                    })
-                    try {
-                        Thread.sleep(100)
-                    } catch (e: InterruptedException) {
-                        e.printStackTrace()
+    private val lyricUpdater: Runnable = Runnable {
+        while (true) {
+            if (fLyricUpdaterThreadCancelled) {
+                break
+            }
+            fIsLyricUpdaterThreadRunning = true
+            //Log.v("FragmentLyrics","Lyric thread running");
+            if (activity != null) {
+                handler!!.post {
+                    val index: Int = adapter!!.changeCurrent(playerService!!.getCurrentTrackProgress().toLong())
+                    val firstVisibleItem: Int = layoutManager!!.findFirstVisibleItemPosition()
+                    val lastVisibleItem: Int = layoutManager!!.findLastVisibleItemPosition()
+                    if ((index != -1) && (index > firstVisibleItem) && (index < lastVisibleItem)) {
+                        recyclerView!!.smoothScrollToPosition(index)
                     }
                 }
+                try {
+                    Thread.sleep(100)
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
             }
-            fIsLyricUpdaterThreadRunning = false
-            Log.v("FragmentLyrics", "Lyric thread stopped")
         }
+        fIsLyricUpdaterThreadRunning = false
+        Log.v("FragmentLyrics", "Lyric thread stopped")
     }
 
     companion object {

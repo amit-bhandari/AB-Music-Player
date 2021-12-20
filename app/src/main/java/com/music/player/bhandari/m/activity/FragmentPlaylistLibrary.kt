@@ -34,7 +34,7 @@ class FragmentPlaylistLibrary: Fragment() {
         val layout: View = inflater.inflate(R.layout.fragment_playlist_library, container, false)
         val mRecyclerViewPlaylist = layout.findViewById<RecyclerView>(R.id.recyclerViewSystemPlaylist)
         playlistAdapter = PlaylistLibraryAdapter(requireContext())
-        mRecyclerViewPlaylist.setAdapter(playlistAdapter!!)
+        mRecyclerViewPlaylist.adapter = playlistAdapter!!
         mRecyclerViewPlaylist.layoutManager = WrapContentLinearLayoutManager(context)
         val offsetPx: Float = resources.getDimension(R.dimen.bottom_offset_dp)
         val bottomOffsetDecoration = BottomOffsetDecoration(offsetPx.toInt())
