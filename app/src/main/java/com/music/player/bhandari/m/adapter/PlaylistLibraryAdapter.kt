@@ -116,8 +116,8 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
             trackList.add(d.id)
         }
         if (trackList.isNotEmpty()) {
-            playerService.setTrackList(trackList)
-            playerService.playAtPosition(0)
+            playerService!!.setTrackList(trackList)
+            playerService!!.playAtPosition(0)
             /*
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent()
                     .setAction(Constants.ACTION.PLAY_AT_POSITION)
@@ -184,7 +184,7 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
         }
         if (trackList.isNotEmpty()) {
             for (id: Int in trackList) {
-                playerService.addToQ(id, positionToAdd)
+                playerService!!.addToQ(id, positionToAdd)
             }
             //to update the to be next field in notification
             MyApp.getService()!!.PostNotification()

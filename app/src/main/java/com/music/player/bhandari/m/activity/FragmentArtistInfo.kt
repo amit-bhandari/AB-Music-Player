@@ -121,7 +121,7 @@ class FragmentArtistInfo : Fragment(), ArtistInfo.Callback {
 
                     //changes made, save those
                     val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                    val values: ContentValues = ContentValues()
+                    val values = ContentValues()
                     values.put(MediaStore.Audio.Media.ARTIST, edited_artist)
                     context!!.contentResolver
                         .update(uri,

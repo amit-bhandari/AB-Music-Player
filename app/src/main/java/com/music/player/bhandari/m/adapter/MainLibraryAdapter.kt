@@ -421,32 +421,32 @@ class MainLibraryAdapter(
         if (playerService == null) return
         when (fl!!.getStatus()) {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
-                if (playerService.getStatus() === PlayerService.PLAYING) playerService.pause()
+                if (playerService!!.getStatus() === playerService!!.PLAYING) playerService!!.pause()
                 id_list.clear()
                 for (d: dataItem in filteredDataItems) {
                     id_list.add(d.id)
                 }
-                playerService.setTrackList(id_list)
-                playerService.playAtPosition(position)
+                playerService!!.setTrackList(id_list)
+                playerService!!.playAtPosition(position)
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 val album_id: Int = filteredDataItems[position].album_id
-                playerService.setTrackList(MusicLibrary.instance!!
+                playerService!!.setTrackList(MusicLibrary.instance!!
                     .getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
             }
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 val artist_id: Int = filteredDataItems[position].artist_id
-                playerService.setTrackList(MusicLibrary.instance!!
+                playerService!!.setTrackList(MusicLibrary.instance!!
                     .getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC))
             }
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                 val genre_id: Int = filteredDataItems[position].id
-                playerService.setTrackList(MusicLibrary.instance!!
+                playerService!!.setTrackList(MusicLibrary.instance!!
                     .getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC))
             }
         }
         if (fl!!.getStatus() !== Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
-            playerService.playAtPosition(0)
+            playerService!!.playAtPosition(0)
         }
     }
 
@@ -659,7 +659,7 @@ class MainLibraryAdapter(
 //                            tracklist = MusicLibrary.instance!!.getSongListFromArtistIdNew(
 //                                filteredDataItems[position].artist_id, Constants.SORT_ORDER.ASC)
 //                            for (id: Int in tracklist) {
-//                                /*if(playerService.getCurrentTrack().getTitle().equals(track)){
+//                                /*if(playerService!!.getCurrentTrack().getTitle().equals(track)){
 //                                        ///Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
 //                                        Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
 //                                        return;
@@ -685,7 +685,7 @@ class MainLibraryAdapter(
 //                            tracklist = MusicLibrary.instance!!.getSongListFromGenreIdNew(
 //                                filteredDataItems[position].id, Constants.SORT_ORDER.ASC)
 //                            for (id: Int in tracklist) {
-//                                /*if(playerService.getCurrentTrack().getTitle().equals(track)){
+//                                /*if(playerService!!.getCurrentTrack().getTitle().equals(track)){
 //                                        //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
 //                                        Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
 //                                        return;
@@ -714,7 +714,7 @@ class MainLibraryAdapter(
 //                    Snackbar.make(viewParent,
 //                        context.getString(R.string.deleted) + filteredDataItems[position].title,
 //                        Snackbar.LENGTH_SHORT).show()
-//                    playerService.removeTrack(filteredDataItems[position].id)
+//                    playerService!!.removeTrack(filteredDataItems[position].id)
 //                    dataItems.remove(dataItems[position])
 //                    filteredDataItems.remove(filteredDataItems[position])
 //                    notifyItemRemoved(position)

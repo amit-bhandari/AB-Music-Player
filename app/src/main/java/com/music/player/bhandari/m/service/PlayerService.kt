@@ -377,19 +377,19 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     Constants.ACTION.REPEAT_WIDGET -> {
                         val pref: SharedPreferences = MyApp.getPref()!!
                         when {
-                            pref.getInt(Constants.PREFERENCES.REPEAT,
+                            pref!!.getInt(Constants.PREFERENCES.REPEAT,
                                 0) == Constants.PREFERENCE_VALUES.NO_REPEAT -> {
-                                pref.edit().putInt(Constants.PREFERENCES.REPEAT,
+                                pref!!.edit().putInt(Constants.PREFERENCES.REPEAT,
                                     Constants.PREFERENCE_VALUES.REPEAT_ALL).apply()
                             }
-                            pref.getInt(Constants.PREFERENCES.REPEAT,
+                            pref!!.getInt(Constants.PREFERENCES.REPEAT,
                                 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL -> {
-                                pref.edit().putInt(Constants.PREFERENCES.REPEAT,
+                                pref!!.edit().putInt(Constants.PREFERENCES.REPEAT,
                                     Constants.PREFERENCE_VALUES.REPEAT_ONE).apply()
                             }
-                            pref.getInt(Constants.PREFERENCES.REPEAT,
+                            pref!!.getInt(Constants.PREFERENCES.REPEAT,
                                 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
-                                pref.edit().putInt(Constants.PREFERENCES.REPEAT,
+                                pref!!.edit().putInt(Constants.PREFERENCES.REPEAT,
                                     Constants.PREFERENCE_VALUES.NO_REPEAT).apply()
                             }
                         }

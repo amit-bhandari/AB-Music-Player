@@ -36,7 +36,7 @@ object Constants {
             const val REFRESH_LIB = "com.refresh.lib"
             const val WIDGET_UPDATE = "com.update.widget"
             const val LAUNCH_PLAYER_FROM_WIDGET = "comm.launch.nowplaying"
-            const val SHUFFLE_WIDGET = "com.shuffle.widget"
+            const val SHUFFLE_WIDGET = "com.shuffle!!.widget"
             const val REPEAT_WIDGET = "com.repeat.widget"
             const val FAV_WIDGET = "com.fav.widget"
             const val UPDATE_LYRIC_AND_INFO = "com.update.lyric.info"

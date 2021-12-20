@@ -40,7 +40,7 @@ class WidgetReceiver : AppWidgetProvider() {
     var context: Context? = null
     private val playerServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(arg0: ComponentName, service: IBinder) {
-            val playerBinder = service as PlayerService.PlayerBinder
+            val playerBinder = service as playerService!!.PlayerBinder
             val playerService: PlayerService = playerBinder.getService()
             MyApp.setService(playerService)
             context!!.startService(Intent(context, PlayerService::class.java)
@@ -96,13 +96,13 @@ class WidgetReceiver : AppWidgetProvider() {
                 /*new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        IBinder service = peekService(context, new Intent(context, PlayerService.class));
+                        IBinder service = peekService(context, new Intent(context, playerService!!.class));
 
                         if (service != null){
-                            PlayerService.PlayerBinder playerBinder = (PlayerService.PlayerBinder) service;
+                            playerService!!.PlayerBinder playerBinder = (playerService!!.PlayerBinder) service;
                             PlayerService playerService = playerBinder.getTrackInfoService();
                             MyApp.setService(playerService);
-                            context.startService(new Intent(context, PlayerService.class)
+                            context.startService(new Intent(context, playerService!!.class)
                                     .setAction(action));
                             Log.v(TAG,"Widget "+ action);
                             Log.v(TAG,"Widget "+ "Service started");

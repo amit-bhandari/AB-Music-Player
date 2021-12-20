@@ -2,7 +2,6 @@ package com.music.player.bhandari.m.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
-import com.bumptech.glide.request.target.SimpleTarget
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
@@ -50,7 +48,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ColorHelper.setStatusBarGradiant(this)
 
-        val themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
+        val themeSelector = MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
         when (themeSelector) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
 
@@ -189,11 +187,11 @@ class ActivitySavedLyrics: AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            holder.itemView.trackInfo?.text = lyrics[position].track
-            holder.itemView.playCount?.text = lyrics[position].artist
+            holder.itemView.trackInfo?.text = lyrics[position].getTrack()
+            holder.itemView.playCount?.text = lyrics[position].getArtist()
             holder.itemView.delete?.isEnabled = true
             Glide.with(this@ActivitySavedLyrics)
-                .load(artistImageUrls[lyrics[position].originalArtist])
+                .load(artistImageUrls[lyrics[position].getOriginalArtist()])
                 .thumbnail(0.5f)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .transition(withCrossFade())
@@ -218,12 +216,15 @@ class ActivitySavedLyrics: AppCompatActivity() {
 
         fun filter(keyword: String){
             lyrics.clear()
-            if(keyword.isEmpty()){
-                lyrics.addAll(copyLyrics)
-            }else{
-                copyLyrics.forEach { lyric ->
-                    if(lyric.track.contains(keyword, true) || lyric.artist.contains(keyword, true))
-                        lyrics.add(lyric)
+            when {
+                keyword.isEmpty() -> {
+                    lyrics.addAll(copyLyrics)
+                }
+                else -> {
+                    copyLyrics.forEach { lyric ->
+                        if(lyric.getTrack()!!.contains(keyword, true) || lyric.getArtist()!!.contains(keyword, true))
+                            lyrics.add(lyric)
+                    }
                 }
             }
             notifyDataSetChanged()
@@ -249,15 +250,15 @@ class ActivitySavedLyrics: AppCompatActivity() {
                 when(v?.id){
                     R.id.root_view_item_saved_lyrics -> {
                         val intent = Intent(this@ActivitySavedLyrics, ActivityLyricView::class.java)
-                        intent.putExtra("track_title", lyrics[position].originalTrack)
-                        intent.putExtra("artist", lyrics[position].originalArtist)
+                        intent.putExtra("track_title", lyrics[position].getOriginalTrack())
+                        intent.putExtra("artist", lyrics[position].getOriginalArtist())
                         intent.putExtra("lyrics", lyrics[position] as Serializable)
                         startActivity(intent)
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     }
                     R.id.delete ->{
                         v.isEnabled = false  //to prevent double clicks
-                        if (OfflineStorageLyrics.clearLyricsFromDB(lyrics[position].originalTrack, lyrics[position].trackId)) {
+                        if (OfflineStorageLyrics.clearLyricsFromDB(lyrics[position].getOriginalTrack()!!, lyrics[position].getTrackId())) {
                             Snackbar.make(v, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT).show()
                             lyrics.removeAt(position)
                             notifyItemRemoved(position)

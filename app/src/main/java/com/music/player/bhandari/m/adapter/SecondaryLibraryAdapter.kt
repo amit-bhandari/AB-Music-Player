@@ -50,7 +50,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
     private var playlist_name: String? = null
     private var playerService: PlayerService? = null
 
-    constructor(context: Context, data: ArrayList<Int?>) {
+    constructor(context: Context, data: ArrayList<Int>) {
         this.context = context
         inflater = LayoutInflater.from(context)
         for (id: Int? in data) {
@@ -332,7 +332,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
 //            .negativeText(R.string.no)
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    if (playerService.getCurrentTrack().getTitle()
+//                    if (playerService!!.getCurrentTrack().getTitle()
 //                            .equals(dataItems!!.get(position).title)
 //                    ) {
 //                        Toast.makeText(context,

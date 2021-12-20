@@ -1,12 +1,36 @@
 package com.music.player.bhandari.m.activity
 
-import android.R
+import android.app.Activity
+import android.content.ContentUris
+import android.content.ContentValues
 import android.content.Context
-import android.view.View
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
+import android.view.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.afollestad.materialdialogs.DialogAction
+import butterknife.BindView
+import butterknife.ButterKnife
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.signature.ObjectKey
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
+import com.music.player.bhandari.m.UIElementHelper.ColorHelper
 import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.model.MusicLibrary
+import com.music.player.bhandari.m.model.PlaylistManager
 import com.music.player.bhandari.m.model.TrackItem
+import com.music.player.bhandari.m.utils.UtilityFun
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import java.io.File
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -23,7 +47,7 @@ import com.music.player.bhandari.m.model.TrackItem
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListener {
+class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
     @BindView(R.id.title_te)
     var title: EditText? = null
 
@@ -50,18 +74,16 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
 
     //file path where changed image file is stored
     private var new_artwork_path: String = ""
-    protected override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         //if player service not running, kill the app
-        if (MyApp.Companion.getService() == null) {
-            val intent: Intent = Intent(this, ActivityPermissionSeek::class.java)
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        if (MyApp.getService() == null) {
+            val intent = Intent(this, ActivityPermissionSeek::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
         }
         ColorHelper.setStatusBarGradiant(this)
         super.onCreate(savedInstanceState)
-        val themeSelector: Int = MyApp.Companion.getPref()
-            .getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
-        when (themeSelector) {
+        when (MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
@@ -72,27 +94,27 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
         //show info dialog
         showInfoDialog()
         ALBUM_ART_PATH = Environment.getExternalStorageDirectory()
-            .getAbsolutePath() + "/" + getString(R.string.album_art_dir_name)
+            .absolutePath + "/" + getString(R.string.album_art_dir_name)
 
         //findViewById(R.id.root_view_tag_editor).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 
         //get file path
-        val file_path: String? = getIntent().getStringExtra("file_path")
+        val file_path: String? = intent.getStringExtra("file_path")
         if (file_path == null) {
             finish()
         }
-        track_title = getIntent().getStringExtra("track_title")
-        song_id = getIntent().getIntExtra("id", 0)
-        item = MusicLibrary.getInstance().getTrackItemFromId(song_id)
+        track_title = intent.getStringExtra("track_title")
+        song_id = intent.getIntExtra("id", 0)
+        item = MusicLibrary.instance!!.getTrackItemFromId(song_id)
         val toolbar: Toolbar = findViewById<Toolbar>(R.id.toolbar_)
         setSupportActionBar(toolbar)
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null) {
+        if (supportActionBar != null) {
             //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true)
-            getSupportActionBar().setDisplayShowHomeEnabled(true)
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -100,13 +122,13 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }*/setTitle(getString(R.string.title_tag_editor))
-        album_art.setOnClickListener(this)
+        album_art!!.setOnClickListener(this)
 
         //get current tags from audio file and populate the fields
         setTagsFromContent()
     }
 
-    protected override fun attachBaseContext(newBase: Context) {
+    override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
@@ -114,54 +136,52 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
         if (item == null) {
             return
         }
-        title.setText(item!!.title)
+        title!!.setText(item!!.title)
         song_id = item!!.id
         original_title = item!!.title
-        album.setText(item!!.album)
+        album!!.setText(item!!.album)
         original_album = item!!.album
-        artist.setText(item!!.getArtist())
+        artist!!.setText(item!!.getArtist())
         original_artist = item!!.getArtist()
-        val defaultAlbumArtSetting: Int =
-            MyApp.Companion.getPref().getInt(getString(R.string.pref_default_album_art), 0)
-        when (defaultAlbumArtSetting) {
+        when (MyApp.getPref()!!.getInt(getString(R.string.pref_default_album_art), 0)) {
             0 -> Glide.with(this)
-                .load(MusicLibrary.getInstance().getAlbumArtUri(item!!.albumId))
+                .load(MusicLibrary.instance!!.getAlbumArtUri(item!!.albumId))
                 .signature(ObjectKey(System.currentTimeMillis().toString()))
                 .placeholder(R.drawable.ic_batman_1)
-                .into(album_art)
+                .into(album_art!!)
             1 -> Glide.with(this)
-                .load(MusicLibrary.getInstance().getAlbumArtUri(item!!.albumId))
+                .load(MusicLibrary.instance!!.getAlbumArtUri(item!!.albumId))
                 .signature(ObjectKey(System.currentTimeMillis().toString()))
                 .placeholder(UtilityFun.defaultAlbumArtDrawable)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(album_art)
+                .into(album_art!!)
         }
     }
 
-    protected override fun onPause() {
+    override fun onPause() {
         super.onPause()
-        MyApp.Companion.isAppVisible = false
+        MyApp.isAppVisible = false
     }
 
-    protected override fun onResume() {
+    override fun onResume() {
         super.onResume()
-        MyApp.Companion.isAppVisible = true
+        MyApp.isAppVisible = true
     }
 
-    public override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         menu.add(0, SAVE, 0, getString(R.string.action_save))
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         return super.onPrepareOptionsMenu(menu)
     }
 
-    public override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.home -> {
                 readValues()
                 if (fChanged) {
                     unsavedDataAlert()
                 } else {
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_in_right)
                     finish()
                 }
             }
@@ -179,18 +199,19 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
                     Log.v(Constants.TAG, edited_title)
                     Log.v(Constants.TAG, edited_artist)
                     Log.v(Constants.TAG, edited_album)
-                    val edited_genre: String = ""
+                    val edited_genre = ""
                     Log.v(Constants.TAG, edited_genre)
                 } else {
-                    val intent: Intent
-                    val launchedFrom: Int =
-                        getIntent().getIntExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB)
-                    if (launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB) {
-                        intent = Intent(this, ActivityMain::class.java)
-                    } else if (launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING) {
-                        intent = Intent(this, ActivityNowPlaying::class.java)
-                    } else {
-                        intent = Intent(this, ActivitySecondaryLibrary::class.java)
+                    val intent: Intent = when (intent.getIntExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB)) {
+                        Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB -> {
+                            Intent(this, ActivityMain::class.java)
+                        }
+                        Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING -> {
+                            Intent(this, ActivityNowPlaying::class.java)
+                        }
+                        else -> {
+                            Intent(this, ActivitySecondaryLibrary::class.java)
+                        }
                     }
                     startActivity(intent)
                     finish()
@@ -201,49 +222,49 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
     }
 
     private fun readValues() {
-        edited_title = title.getText().toString()
-        edited_artist = artist.getText().toString()
-        edited_album = album.getText().toString()
+        edited_title = title!!.text.toString()
+        edited_artist = artist!!.text.toString()
+        edited_album = album!!.text.toString()
         //edited_genre = genre.getText().toString();
-        if ((!(edited_title == original_title) ||
-                    !(edited_artist == original_artist) ||
-                    !(edited_album == original_album) ||  //!edited_genre.equals(original_genre) ||
-                    !(new_artwork_path == ""))
+        if ((edited_title != original_title ||
+                    edited_artist != original_artist ||
+                    edited_album != original_album ||  //!edited_genre.equals(original_genre) ||
+                    new_artwork_path != "")
         ) {
             fChanged = true
         }
     }
 
     private fun unsavedDataAlert() {
-        MyDialogBuilder(this)
-            .title(getString(R.string.te_unsaved_data_title))
-            .content(getString(R.string.changes_discard_alert_te))
-            .positiveText(getString(R.string.te_unsaved_data_pos))
-            .negativeText(getString(R.string.te_unsaved_data_new))
-            .onPositive(object : SingleButtonCallback() {
-                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                    try {
-                        save()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Toast.makeText(this@ActivityTagEditor,
-                            "Error while saving tags!",
-                            Toast.LENGTH_LONG).show()
-                    }
-                    finish()
-                }
-            })
-            .onNegative(object : SingleButtonCallback() {
-                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                    finish()
-                }
-            })
-            .show()
+//        MyDialogBuilder(this)
+//            .title(getString(R.string.te_unsaved_data_title))
+//            .content(getString(R.string.changes_discard_alert_te))
+//            .positiveText(getString(R.string.te_unsaved_data_pos))
+//            .negativeText(getString(R.string.te_unsaved_data_new))
+//            .onPositive(object : SingleButtonCallback() {
+//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
+//                    try {
+//                        save()
+//                    } catch (e: Exception) {
+//                        e.printStackTrace()
+//                        Toast.makeText(this@ActivityTagEditor,
+//                            "Error while saving tags!",
+//                            Toast.LENGTH_LONG).show()
+//                    }
+//                    finish()
+//                }
+//            })
+//            .onNegative(object : SingleButtonCallback() {
+//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
+//                    finish()
+//                }
+//            })
+//            .show()
     }
 
     private fun save() {
         if (edited_title.isEmpty() || edited_album.isEmpty() || edited_artist.isEmpty()) {
-            Toast.makeText(getApplicationContext(),
+            Toast.makeText(applicationContext,
                 getString(R.string.te_error_empty_field),
                 Toast.LENGTH_SHORT).show()
             return
@@ -255,35 +276,35 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
         values.put(MediaStore.Audio.Media.TITLE, edited_title)
         values.put(MediaStore.Audio.Media.ARTIST, edited_artist)
         values.put(MediaStore.Audio.Media.ALBUM, edited_album)
-        getContentResolver().update(uri,
+        contentResolver.update(uri,
             values,
             MediaStore.Audio.Media.TITLE + "=?",
             arrayOf(track_title))
         if (!(new_artwork_path == "")) {
             val sArtworkUri: Uri = Uri.parse("content://media/external/audio/albumart")
             val deleted: Int =
-                getContentResolver().delete(ContentUris.withAppendedId(sArtworkUri, item!!.albumId),
+                contentResolver.delete(ContentUris.withAppendedId(sArtworkUri, item!!.albumId.toLong()),
                     null,
                     null)
-            Log.v(Constants.TAG, "delete " + deleted)
+            Log.v(Constants.TAG, "delete $deleted")
             values = ContentValues()
             values.put("album_id", item!!.albumId)
             values.put("_data", new_artwork_path)
-            getContentResolver().insert(sArtworkUri, values)
+            contentResolver.insert(sArtworkUri, values)
         }
-        val d: dataItem = MusicLibrary.getInstance()
-            .updateTrackNew(song_id, edited_title, edited_artist, edited_album)
-        PlaylistManager.getInstance(MyApp.Companion.getContext()).addEntryToMusicTable(d)
+        val d = MusicLibrary.instance!!.updateTrackNew(song_id, edited_title, edited_artist, edited_album)
+        PlaylistManager.getInstance(MyApp.getContext()!!)!!.addEntryToMusicTable(d!!)
         //   PlaylistManager.getInstance(MyApp.getContext()).PopulateUserMusicTable();
-        val intent: Intent
-        val launchedFrom: Int =
-            getIntent().getIntExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB)
-        if (launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB) {
-            intent = Intent(this, ActivityMain::class.java)
-        } else if (launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING) {
-            intent = Intent(this, ActivityNowPlaying::class.java)
-        } else {
-            intent = Intent(this, ActivitySecondaryLibrary::class.java)
+        val intent: Intent = when (intent.getIntExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB)) {
+            Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB -> {
+                Intent(this, ActivityMain::class.java)
+            }
+            Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING -> {
+                Intent(this, ActivityNowPlaying::class.java)
+            }
+            else -> {
+                Intent(this, ActivitySecondaryLibrary::class.java)
+            }
         }
         intent.putExtra("refresh", true)
         intent.putExtra("position", getIntent().getIntExtra("position", -1))
@@ -292,12 +313,12 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
         intent.putExtra("artist", edited_artist)
         intent.putExtra("album", edited_album)
         startActivity(intent)
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_in_right)
         finish()
     }
 
-    public override fun onClick(v: View) {
-        if (v.getId() == R.id.album_art_te) {
+    override fun onClick(v: View) {
+        if (v.id == R.id.album_art_te) {
             pickImage()
         }
     }
@@ -305,11 +326,11 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
     fun pickImage() {
         val intent: Intent = Intent(Intent.ACTION_PICK,
             MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        intent.setType("image/*")
+        intent.type = "image/*"
         startActivityForResult(intent, 1)
     }
 
-    protected override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != Activity.RESULT_OK) {
             return
@@ -320,7 +341,7 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
         if (requestCode == 1) {
             //dumpIntent(data);
             checkAndCreateAlbumArtDirectory()
-            val uri: Uri? = data.getData()
+            val uri: Uri? = data.data
             if (uri != null && album_art != null) {
                 Log.v(Constants.TAG, data.toString())
                 val file_path_artwork: String? = getRealPathFromURI(uri)
@@ -332,14 +353,14 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
                 }
                 Glide.with(this)
                     .load(File(file_path_artwork)) // Uri of the picture
-                    .into(album_art)
+                    .into(album_art!!)
                 new_artwork_path = file_path_artwork
             }
         }
     }
 
     private fun checkAndCreateAlbumArtDirectory() {
-        val f: File = File(ALBUM_ART_PATH)
+        val f = File(ALBUM_ART_PATH)
         if (f.exists()) {
             return
         }
@@ -351,7 +372,7 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
 
     fun getRealPathFromURI(uri: Uri?): String? {
         val projection: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor: Cursor? = managedQuery(uri, projection, null, null, null)
+        val cursor = managedQuery(uri, projection, null, null, null)
         if (cursor == null || cursor.getCount() == 0) {
             return null
         }
@@ -361,47 +382,44 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
         return cursor.getString(column_index)
     }
 
-    public override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         when (keyCode) {
-            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY -> MyApp.Companion.getService()
-                .play()
-            KeyEvent.KEYCODE_MEDIA_NEXT -> MyApp.Companion.getService().nextTrack()
-            KeyEvent.KEYCODE_MEDIA_PREVIOUS -> MyApp.Companion.getService().prevTrack()
-            KeyEvent.KEYCODE_MEDIA_STOP -> MyApp.Companion.getService().stop()
+            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY -> MyApp.getService()!!.play()
+            KeyEvent.KEYCODE_MEDIA_NEXT -> MyApp.getService()!!.nextTrack()
+            KeyEvent.KEYCODE_MEDIA_PREVIOUS -> MyApp.getService()!!.prevTrack()
+            KeyEvent.KEYCODE_MEDIA_STOP -> MyApp.getService()!!.stop()
             KeyEvent.KEYCODE_BACK -> onBackPressed()
         }
         return false
     }
 
-    public override fun onBackPressed() {
+    override fun onBackPressed() {
         readValues()
         if (fChanged) {
             unsavedDataAlert()
         } else {
             finish()
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_in_right)
         }
     }
 
     private fun showInfoDialog() {
-        if (!MyApp.Companion.getPref()
-                .getBoolean(getString(R.string.pref_show_edit_track_info_dialog), true)
-        ) {
+        if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_show_edit_track_info_dialog), true)) {
             return
         }
-        MyDialogBuilder(this)
-            .title(getString(R.string.te_show_info_title))
-            .content(getString(R.string.te_show_info_content))
-            .positiveText(getString(R.string.te_show_info_pos))
-            .negativeText(getString(R.string.te_show_info_neg))
-            .onPositive(object : SingleButtonCallback() {
-                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                    MyApp.Companion.getPref().edit()
-                        .putBoolean(getString(R.string.pref_show_edit_track_info_dialog), false)
-                        .apply()
-                }
-            })
-            .show()
+//        MyDialogBuilder(this)
+//            .title(getString(R.string.te_show_info_title))
+//            .content(getString(R.string.te_show_info_content))
+//            .positiveText(getString(R.string.te_show_info_pos))
+//            .negativeText(getString(R.string.te_show_info_neg))
+//            .onPositive(object : SingleButtonCallback() {
+//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
+//                    MyApp.Companion.getPref().edit()
+//                        .putBoolean(getString(R.string.pref_show_edit_track_info_dialog), false)
+//                        .apply()
+//                }
+//            })
+//            .show()
     }
 
     companion object {
@@ -424,7 +442,7 @@ class ActivityTagEditor constructor() : AppCompatActivity(), View.OnClickListene
         }
     }*/
         fun dumpIntent(i: Intent) {
-            val bundle: Bundle? = i.getExtras()
+            val bundle: Bundle? = i.extras
             if (bundle != null) {
                 val keys: Set<String> = bundle.keySet()
                 val it: Iterator<String> = keys.iterator()

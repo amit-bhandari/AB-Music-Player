@@ -359,8 +359,8 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                     Snackbar.LENGTH_SHORT).show()
                 return
             }
-            playerService.setTrackList(songTitles)
-            playerService.playAtPosition(original_file_index)
+            playerService!!.setTrackList(songTitles)
+            playerService!!.playAtPosition(original_file_index)
         } else {
             val fileList: Array<File>? = clickedFile!!.listFiles()
             val songTitles: ArrayList<Int> = ArrayList()
@@ -379,8 +379,8 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                     Snackbar.LENGTH_SHORT).show()
                 return
             }
-            playerService.setTrackList(songTitles)
-            playerService.playAtPosition(0)
+            playerService!!.setTrackList(songTitles)
+            playerService!!.playAtPosition(0)
         }
     }
 
@@ -461,7 +461,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         if (clickedFile!!.isFile) {
             val id: Int =
                 MusicLibrary.instance!!.getIdFromFilePath(clickedFile!!.absolutePath)
-            playerService.addToQ(id, positionToAdd)
+            playerService!!.addToQ(id, positionToAdd)
             /*Toast.makeText(context
                     ,toastString+title
                     ,Toast.LENGTH_SHORT).show();*/
@@ -473,7 +473,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
             for (f: File in fileList) {
                 if (isFileExtensionValid(f)) {
                     val id: Int = MusicLibrary.instance!!.getIdFromFilePath(f.absolutePath)
-                    playerService.addToQ(id, positionToAdd)
+                    playerService!!.addToQ(id, positionToAdd)
                 }
             }
             /*Toast.makeText(context

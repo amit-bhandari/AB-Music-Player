@@ -43,7 +43,6 @@ import butterknife.ButterKnife
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetView
@@ -55,7 +54,6 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.internal.NavigationMenuView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -213,7 +211,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //bind music service
-        //startService(new Intent(this,playerService.class));
+        //startService(new Intent(this,playerService!!.class));
         ColorHelper.setStatusBarGradiant(this)
         //if player service not running, kill the app
         playerService = MyApp.getService()
@@ -694,7 +692,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                             .placeholder(R.drawable.ic_batman_1)
                             .into(albumArt!!)
                     }
-                    if (playerService!!.getStatus() === PlayerService.PLAYING) buttonPlay!!.setImageDrawable(
+                    if (playerService!!.getStatus() === playerService!!.PLAYING) buttonPlay!!.setImageDrawable(
                         ContextCompat.getDrawable(this,
                             R.drawable.ic_pause_black_24dp)) else buttonPlay!!.setImageDrawable(
                         ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp))
@@ -1369,7 +1367,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 //                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                        MyApp.Companion.getPref().edit()
 //                            .putInt(getString(R.string.pref_sleep_timer), 0).apply()
-//                        playerService.setSleepTimer(0, false)
+//                        playerService!!.setSleepTimer(0, false)
 //                        //Toast.makeText(this, "Sleep timer discarded", Toast.LENGTH_LONG).show();
 //                        Snackbar.make(rootView,
 //                            getString(R.string.sleep_timer_discarded),
@@ -1410,7 +1408,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 //                        MyApp.Companion.getPref().edit()
 //                            .putInt(getString(R.string.pref_sleep_timer), seek.progress)
 //                            .apply()
-//                        playerService.setSleepTimer(seek.progress, true)
+//                        playerService!!.setSleepTimer(seek.progress, true)
 //                        val temp: String = (getString(R.string.sleep_timer_successfully_set)
 //                                + seek.progress
 //                                + getString(R.string.main_act_sleep_timer_status_minutes))
@@ -1504,7 +1502,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                 }
                 mLastClickTime = SystemClock.elapsedRealtime()
                 playerService!!.play()
-                if (playerService!!.getStatus() === PlayerService.PLAYING) {
+                if (playerService!!.getStatus() === playerService!!.PLAYING) {
                     buttonPlay!!.setImageDrawable(ContextCompat.getDrawable(this,
                         R.drawable.ic_pause_black_24dp))
                 } else {
@@ -1521,7 +1519,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                     return
                 }
                 mLastClickTime = SystemClock.elapsedRealtime()
-                playerService.nextTrack()
+                playerService!!.nextTrack()
                 //no need to expand mini player
                 updateUI(false)
                 Log.v(Constants.TAG, "next track please Jarvis")
@@ -1592,7 +1590,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
             mReceiverForLibraryRefresh!!,
             IntentFilter(Constants.ACTION.REFRESH_LIB))
-        //seekBar.setProgress(UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress(), playerService.getCurrentTrackDuration()));
+        //seekBar.setProgress(UtilityFun.getProgressPercentage(playerService!!.getCurrentTrackProgress(), playerService!!.getCurrentTrackDuration()));
         //startUpdateTask();
     }
 

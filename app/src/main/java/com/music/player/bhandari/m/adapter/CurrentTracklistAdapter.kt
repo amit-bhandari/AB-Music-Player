@@ -68,7 +68,7 @@ class CurrentTracklistAdapter constructor(
         if (playerService == null) return
         dataItems.clear()
         Executors.newSingleThreadExecutor().execute {
-            val temp: ArrayList<Int> = playerService.getTrackList()
+            val temp: ArrayList<Int> = playerService!!.getTrackList()
             //HashMap<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
             try {
                 for (id: Int in temp) {
@@ -105,10 +105,10 @@ class CurrentTracklistAdapter constructor(
             }
             false
         }
-        if (playerService != null && position == playerService.getCurrentTrackPosition()) {
+        if (playerService != null && position == playerService!!.getCurrentTrackPosition()) {
             holder.cv.setBackgroundColor(ColorHelper.getColor(R.color.gray3))
             holder.playAnimation.visibility = View.VISIBLE
-            if (playerService.getStatus() === PlayerService.PLAYING) {
+            if (playerService!!.getStatus() === playerService!!.PLAYING) {
                 //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
                 holder.playAnimation.smoothToShow()
             } else {
@@ -260,14 +260,14 @@ class CurrentTracklistAdapter constructor(
 //                        Toast.makeText(context,
 //                            context.getString(R.string.deleted) + dataItems.get(position).title,
 //                            Toast.LENGTH_SHORT).show()
-//                        if (playerService.getCurrentTrack().getTitle()
+//                        if (playerService!!.getCurrentTrack().getTitle()
 //                                .equals(dataItems.get(position).title)
 //                        ) {
-//                            playerService.nextTrack()
-//                            //playerService.notifyUI();
+//                            playerService!!.nextTrack()
+//                            //playerService!!.notifyUI();
 //                            notifyItemChanged(position + 1)
 //                        }
-//                        playerService.removeTrack(position)
+//                        playerService!!.removeTrack(position)
 //                        dataItems.removeAt(position)
 //                        notifyItemRemoved(position)
 //                        // notifyDataSetChanged();
@@ -305,13 +305,13 @@ class CurrentTracklistAdapter constructor(
                 notifyItemChanged(oldPos)
                 notifyItemChanged(position)
                 if (position == playerService!!.getCurrentTrackPosition()) {
-                    playerService.play()
+                    playerService!!.play()
                     val intent: Intent = Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE)
                     intent.putExtra("skip_adapter_update", true)
                     LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-                    //playerService.notifyUI();
+                    //playerService!!.notifyUI();
                 } else {
-                    playerService.playAtPositionFromNowPlaying(position)
+                    playerService!!.playAtPositionFromNowPlaying(position)
                     Log.v(Constants.TAG, "$position  position")
                 }
             }

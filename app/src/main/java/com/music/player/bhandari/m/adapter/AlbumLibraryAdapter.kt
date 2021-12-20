@@ -254,8 +254,8 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
 
     private fun Play() {
         val album_id: Int = filteredDataItems[position].album_id
-        playerService.setTrackList(MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
-        playerService.playAtPosition(0)
+        playerService!!.setTrackList(MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
+        playerService!!.playAtPosition(0)
     }
 
     private fun AddToQ(positionToAdd: Int) {
@@ -273,7 +273,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
         }
         val album_id: Int = filteredDataItems[position].album_id
         for (id: Int in MusicLibrary.instance?.getSongListFromAlbumIdNew(album_id, sortOrder)!!) {
-            playerService.addToQ(id, positionToAdd)
+            playerService!!.addToQ(id, positionToAdd)
         }
 
         //to update the to be next field in notification
@@ -299,7 +299,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
 //                        .getSongListFromAlbumIdNew(filteredDataItems.get(position).album_id,
 //                            Constants.SORT_ORDER.ASC)
 //                    for (id: Int in tracklist) {
-//                        if (playerService.getCurrentTrack().getId() === id) {
+//                        if (playerService!!.getCurrentTrack().getId() === id) {
 //                            //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
 //                            Snackbar.make(viewParent,
 //                                context.getString(R.string.song_is_playing),

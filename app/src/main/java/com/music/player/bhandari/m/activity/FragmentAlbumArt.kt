@@ -1,13 +1,38 @@
 package com.music.player.bhandari.m.activity
 
+import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import butterknife.BindView
+import butterknife.ButterKnife
+import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.model.MusicLibrary
 import com.music.player.bhandari.m.service.PlayerService
+import com.music.player.bhandari.m.utils.UtilityFun
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -24,14 +49,15 @@ import com.music.player.bhandari.m.service.PlayerService
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FragmentAlbumArt constructor() : Fragment() {
+class FragmentAlbumArt : Fragment() {
     private var playerService: PlayerService? = null
     private var mUIUpdate: BroadcastReceiver? = null
 
     @kotlin.jvm.JvmField
     @BindView(R.id.album_art_now_playing)
     var albumArt: ImageView? = null
-    public override fun onCreateView(
+
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,12 +69,13 @@ class FragmentAlbumArt constructor() : Fragment() {
 
         Log.d("Fragment Disc", "onCreateView: " + screenWidthDp);
 
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(screenWidthDp -50, screenWidthDp -50);*/ButterKnife.bind(
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(screenWidthDp -50, screenWidthDp -50);*/
+        ButterKnife.bind(
             this,
             layout)
-        playerService = MyApp.Companion.getService()
+        playerService = MyApp.getService()
         mUIUpdate = object : BroadcastReceiver() {
-            public override fun onReceive(context: Context, intent: Intent) {
+            override fun onReceive(context: Context, intent: Intent) {
                 Log.v(Constants.TAG, "update disc please Jarvis")
                 UpdateUI()
             }
@@ -56,137 +83,128 @@ class FragmentAlbumArt constructor() : Fragment() {
         return layout
     }
 
-    public override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (isAdded() && getActivity() != null) {
+        if (isAdded && activity != null) {
             //exit animation
-            getActivity()!!.startPostponedEnterTransition()
+            requireActivity().startPostponedEnterTransition()
 
             //place album art view properly in center
-            albumArt.getViewTreeObserver().addOnGlobalLayoutListener(
-                object : OnGlobalLayoutListener {
-                    public override fun onGlobalLayout() {
-                        albumArt.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+            albumArt!!.getViewTreeObserver().addOnGlobalLayoutListener(
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        albumArt!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                         //y position of control buttons
-                        val yControl: Float = (getActivity() as ActivityNowPlaying?)!!.yControl
+                        val yControl: Float = (activity as ActivityNowPlaying?)!!.yControl
 
                         //height of toolbar
                         val toolbarHeight: Float =
-                            (getActivity() as ActivityNowPlaying?)!!.toolbarHeight
+                            (activity as ActivityNowPlaying?)!!.toolbarHeight
                         if (toolbarHeight != 0f || yControl != 0f) {
                             //centre the album art
-                            albumArt.setY(((yControl - toolbarHeight) / 2) - albumArt.getHeight() / 2)
+                            albumArt!!.y = ((yControl - toolbarHeight) / 2) - albumArt!!.height / 2
                         }
                     }
                 })
         }
     }
 
-    public override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
-    public override fun onPause() {
+    override fun onPause() {
         Log.v(Constants.TAG, "Disc paused........")
-        if (getContext() != null) {
-            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mUIUpdate)
+        if (context != null) {
+            LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mUIUpdate!!)
         }
         super.onPause()
     }
 
-    public override fun onResume() {
+    override fun onResume() {
         Log.v(Constants.TAG, "Disc resumed........")
-        if (getContext() != null) {
-            LocalBroadcastManager.getInstance(getContext())
-                .registerReceiver(mUIUpdate, IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE))
+        if (context != null) {
+            LocalBroadcastManager.getInstance(requireContext())
+                .registerReceiver(mUIUpdate!!, IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE))
         }
         UpdateUI()
         super.onResume()
     }
 
+    @SuppressLint("CheckResult")
     private fun UpdateUI() {
-        if ((getActivity() == null) || !isAdded() || (playerService!!.getCurrentTrack() == null)) {
+        if ((activity == null) || !isAdded || (playerService!!.getCurrentTrack() == null)) {
             return
         }
-        val currentNowPlayingBackPref: Int =
-            MyApp.Companion.getPref().getInt(getString(R.string.pref_now_playing_back), 1)
+        val currentNowPlayingBackPref: Int = MyApp.getPref()!!.getInt(getString(R.string.pref_now_playing_back), 1)
         //if album art selected, hide small album art
         if (currentNowPlayingBackPref == 2) {
-            albumArt.setImageBitmap(null)
+            albumArt!!.setImageBitmap(null)
         } else {
-            val request: RequestBuilder<Drawable> = Glide.with(this)
-                .load(MusicLibrary.getInstance()
-                    .getAlbumArtFromTrack(playerService!!.getCurrentTrack().getId()))
-                .centerCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-            val defaultAlbumArtSetting: Int =
-                MyApp.Companion.getPref().getInt(getString(R.string.pref_default_album_art), 0)
-            when (defaultAlbumArtSetting) {
+            val request: RequestBuilder<Drawable> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Glide.with(this)
+                    .load(MusicLibrary.instance!!.getAlbumArtFromTrack(playerService!!.getCurrentTrack()!!.id))
+                    .centerCrop()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+            } else {
+                TODO("VERSION.SDK_INT < Q")
+            }
+            when (MyApp.getPref()!!.getInt(getString(R.string.pref_default_album_art), 0)) {
                 0 -> request.listener(object : RequestListener<Drawable?> {
-                    public override fun onLoadFailed(
+                    override fun onLoadFailed(
                         e: GlideException?,
-                        model: Any,
-                        target: Target<Drawable>,
+                        model: Any?,
+                        target: Target<Drawable?>?,
                         isFirstResource: Boolean
                     ): Boolean {
                         //Log.d("AlbumLibraryAdapter", "onException: ");
-                        if (UtilityFun.isConnectedToInternet &&
-                            !MyApp.Companion.getPref()
-                                .getBoolean(getString(R.string.pref_data_saver), false)
-                        ) {
-                            val url: String? = MusicLibrary.getInstance().getArtistUrls().get(
-                                playerService!!.getCurrentTrack().getArtist())
-                            if (url != null && !url.isEmpty()) request.load(Uri.parse(url))
-                                .into(albumArt)
+                        if (UtilityFun.isConnectedToInternet && !MyApp.getPref()!!.getBoolean(getString(R.string.pref_data_saver), false)) {
+                            val url: String? = MusicLibrary.instance!!.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
+                            if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))
+                                .into(albumArt!!)
                             return true
                         }
                         return false
                     }
 
-                    public override fun onResourceReady(
-                        resource: Drawable,
-                        model: Any,
-                        target: Target<Drawable>,
-                        dataSource: DataSource,
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable?>?,
+                        dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
                         return false
                     }
                 }).placeholder(R.drawable.ic_batman_1)
                 1 -> request.listener(object : RequestListener<Drawable?> {
-                    public override fun onLoadFailed(
+                    override fun onLoadFailed(
                         e: GlideException?,
-                        model: Any,
-                        target: Target<Drawable>,
+                        model: Any?,
+                        target: Target<Drawable?>?,
                         isFirstResource: Boolean
                     ): Boolean {
                         if (UtilityFun.isConnectedToInternet &&
-                            !MyApp.Companion.getPref()
-                                .getBoolean(getString(R.string.pref_data_saver), false)
+                            !MyApp.getPref()!!.getBoolean(getString(R.string.pref_data_saver), false)
                         ) {
-                            val url: String? = MusicLibrary.getInstance().getArtistUrls().get(
-                                playerService!!.getCurrentTrack().getArtist())
-                            if (url != null && !url.isEmpty()) request.load(Uri.parse(url))
-                                .into(albumArt)
+                            val url: String? = MusicLibrary.instance!!.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
+                            if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))
+                                .into(albumArt!!)
                             return true
                         }
                         return false
                     }
 
-                    public override fun onResourceReady(
-                        resource: Drawable,
-                        model: Any,
-                        target: Target<Drawable>,
-                        dataSource: DataSource,
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable?>?,
+                        dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
                         return false
                     }
                 }).placeholder(UtilityFun.defaultAlbumArtDrawable)
             }
-            request.into(albumArt)
+            request.into(albumArt!!)
         }
     }
 }
