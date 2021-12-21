@@ -26,7 +26,7 @@ object RetrofitInstance {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
         }
-        return retrofit!!.create<TrackInfoService>(TrackInfoService::class.java)
+        return retrofit!!.create(TrackInfoService::class.java)
     }
 
 }

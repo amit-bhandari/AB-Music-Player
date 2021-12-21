@@ -88,9 +88,9 @@ class MorphMiniToNowPlaying : ChangeBounds {
         }
         val background = MorphDrawable(startColor, startCornerRadius.toFloat())
         endValues.view.background = background
-        val color: Animator = ObjectAnimator.ofArgb<Any>(background, MorphDrawable.COLOR, endColor)
-        val corners: Animator = ObjectAnimator.ofFloat<Any>(background,
-            MorphDrawable.CORNER_RADIUS,
+        val color: Animator = ObjectAnimator.ofArgb(background, background.COLOR, endColor)
+        val corners: Animator = ObjectAnimator.ofFloat(background,
+            background.CORNER_RADIUS,
             endCornerRadius.toFloat())
 
         // ease in the dialog's child views (slide up & fade in)

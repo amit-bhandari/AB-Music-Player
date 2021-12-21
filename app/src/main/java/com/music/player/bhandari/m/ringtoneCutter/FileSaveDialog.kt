@@ -15,10 +15,13 @@
  */
 package com.music.player.bhandari.m.ringtoneCutter
 
-import android.R
+import android.app.Dialog
 import android.content.Context
+import android.content.res.Resources
 import android.os.Message
 import android.view.View
+import android.widget.*
+import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
 
 class FileSaveDialog constructor(
@@ -26,41 +29,34 @@ class FileSaveDialog constructor(
     resources: Resources,
     originalName: String?,
     response: Message
-) : Dialog(context) {
-    private val mTypeSpinner: Spinner
-    private val mFilename: EditText
-    private val mResponse: Message
+) : Dialog(context!!) {
+    private var mTypeSpinner: Spinner? = null
+    private var mFilename: EditText? = null
+    private var mResponse: Message? = null
     private val mOriginalName: String?
     private val mTypeArray: ArrayList<String>
     private var mPreviousSelection: Int
     private fun setFilenameEditBoxFromName(onlyIfNotEdited: Boolean) {
         if (onlyIfNotEdited) {
-            val currentText: CharSequence = mFilename.getText()
-            val expectedText: String = (mOriginalName + " " +
-                    mTypeArray.get(mPreviousSelection))
+            val currentText: CharSequence = mFilename!!.text
+            val expectedText = (mOriginalName + " " + mTypeArray[mPreviousSelection])
             if (!expectedText.contentEquals(currentText)) {
                 return
             }
         }
-        val newSelection: Int = mTypeSpinner.getSelectedItemPosition()
+        val newSelection: Int = mTypeSpinner!!.selectedItemPosition
         val newSuffix: String = mTypeArray.get(newSelection)
-        mFilename.setText(mOriginalName + " " + newSuffix)
-        mPreviousSelection = mTypeSpinner.getSelectedItemPosition()
+        mFilename!!.setText("$mOriginalName $newSuffix")
+        mPreviousSelection = mTypeSpinner!!.selectedItemPosition
     }
 
-    private val saveListener: View.OnClickListener = object : View.OnClickListener {
-        public override fun onClick(view: View) {
-            mResponse.obj = mFilename.getText()
-            mResponse.arg1 = mTypeSpinner.getSelectedItemPosition()
-            mResponse.sendToTarget()
-            dismiss()
-        }
+    private val saveListener: View.OnClickListener = View.OnClickListener {
+        mResponse!!.obj = mFilename!!.text
+        mResponse!!.arg1 = mTypeSpinner!!.selectedItemPosition
+        mResponse!!.sendToTarget()
+        dismiss()
     }
-    private val cancelListener: View.OnClickListener = object : View.OnClickListener {
-        public override fun onClick(view: View) {
-            dismiss()
-        }
-    }
+    private val cancelListener: View.OnClickListener = View.OnClickListener { dismiss() }
 
     companion object {
         // File kinds - these should correspond to the order in which
@@ -76,12 +72,12 @@ class FileSaveDialog constructor(
          * be translated.
          */
         fun KindToName(kind: Int): String {
-            when (kind) {
-                FILE_KIND_MUSIC -> return "Music"
-                FILE_KIND_ALARM -> return "Alarm"
-                FILE_KIND_NOTIFICATION -> return "Notification"
-                FILE_KIND_RINGTONE -> return "Ringtone"
-                else -> return "Unknown"
+            return when (kind) {
+                FILE_KIND_MUSIC -> "Music"
+                FILE_KIND_ALARM -> "Alarm"
+                FILE_KIND_NOTIFICATION -> "Notification"
+                FILE_KIND_RINGTONE -> "Ringtone"
+                else -> "Unknown"
             }
         }
     }
@@ -99,16 +95,16 @@ class FileSaveDialog constructor(
         mFilename = findViewById<View>(R.id.filename) as EditText
         mOriginalName = originalName
         val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            context, R.layout.simple_spinner_item, mTypeArray)
+            context!!, R.layout.support_simple_spinner_dropdown_item, mTypeArray)
         adapter.setDropDownViewResource(
-            R.layout.simple_spinner_dropdown_item)
+            R.layout.support_simple_spinner_dropdown_item)
         mTypeSpinner = findViewById<View>(R.id.ringtone_type) as Spinner
-        mTypeSpinner.setAdapter(adapter)
-        mTypeSpinner.setSelection(FILE_KIND_RINGTONE)
+        mTypeSpinner!!.adapter = adapter
+        mTypeSpinner!!.setSelection(FILE_KIND_RINGTONE)
         mPreviousSelection = FILE_KIND_RINGTONE
         setFilenameEditBoxFromName(false)
-        mTypeSpinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
-            public override fun onItemSelected(
+        mTypeSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
                 parent: AdapterView<*>?,
                 v: View,
                 position: Int,
@@ -117,16 +113,16 @@ class FileSaveDialog constructor(
                 setFilenameEditBoxFromName(true)
             }
 
-            public override fun onNothingSelected(parent: AdapterView<*>?) {}
-        })
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
         val save: Button = findViewById<View>(R.id.save) as Button
         save.setOnClickListener(saveListener)
         val cancel: Button = findViewById<View>(R.id.cancel) as Button
         cancel.setOnClickListener(cancelListener)
         mResponse = response
-        if (getWindow() != null) {
-            getWindow().setBackgroundDrawable(ColorHelper.getGradientDrawableDark())
-            getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window
+        if (window != null) {
+            window!!.setBackgroundDrawable(ColorHelper.getGradientDrawableDark())
+            window!!.attributes.windowAnimations = R.style.MyAnimation_Window
         }
     }
 }

@@ -90,31 +90,31 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
     private var mLyrics: Lyrics? = null
     private var artistInfo: ArtistInfo? = null
 
-    @BindView(R.id.text_view_lyric_status)
+    @JvmField @BindView(R.id.text_view_lyric_status)
     var lyricStatus: TextView? = null
 
-    @BindView(R.id.text_view_artist_info)
+    @JvmField @BindView(R.id.text_view_artist_info)
     var artInfoTextView: TextView? = null
 
-    @BindView(R.id.lyric_view_wrapper)
+    @JvmField @BindView(R.id.lyric_view_wrapper)
     var lyricWrapper: View? = null
 
-    @BindView(R.id.view_artist_info)
+    @JvmField @BindView(R.id.view_artist_info)
     var viewArtInfoFab: FloatingActionButton? = null
 
-    @BindView(R.id.fab_save_lyrics)
+    @JvmField @BindView(R.id.fab_save_lyrics)
     var saveLyrics: FloatingActionButton? = null
 
-    @BindView(R.id.loading_lyrics_animation)
+    @JvmField @BindView(R.id.loading_lyrics_animation)
     var lyricLoadAnimation: AVLoadingIndicatorView? = null
 
-    @BindView(R.id.dynamic_lyrics_recycler_view)
+    @JvmField @BindView(R.id.dynamic_lyrics_recycler_view)
     var recyclerView: RecyclerView? = null
 
-    @BindView(R.id.root_view_instant_lyrics)
+    @JvmField @BindView(R.id.root_view_instant_lyrics)
     var rootView: View? = null
 
-    @BindView(R.id.fab_video)
+    @JvmField @BindView(R.id.fab_video)
     var watchVideo: FloatingActionButton? = null
     private var isLyricsShown = true
     private var isLyricsSaved = false

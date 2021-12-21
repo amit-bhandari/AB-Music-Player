@@ -74,55 +74,55 @@ import kotlin.system.exitProcess
  */
 class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
     ArtistInfo.Callback {
-    @BindView(R.id.secondaryLibraryList)
+    @JvmField @BindView(R.id.secondaryLibraryList)
     var mRecyclerView: RecyclerView? = null
 
-    @BindView(R.id.albumsInArtistFrag)
+    @JvmField @BindView(R.id.albumsInArtistFrag)
     var mAlbumsRecyclerView: RecyclerView? = null
 
-    @BindView(R.id.artistBio)
+    @JvmField @BindView(R.id.artistBio)
     var artistBio: ExpandableTextView? = null
     private var adapter: SecondaryLibraryAdapter? = null
     private var mReceiverForMiniPLayerUpdate: BroadcastReceiver? = null
     private var mReceiverForDataReady: BroadcastReceiver? = null
 
-    @BindView(R.id.song_name_mini_player)
+    @JvmField @BindView(R.id.song_name_mini_player)
     var songNameMiniPlayer: TextView? = null
 
-    @BindView(R.id.artist_mini_player)
+    @JvmField @BindView(R.id.artist_mini_player)
     var artistNameMiniPlayer: TextView? = null
 
-    @BindView(R.id.play_pause_mini_player)
+    @JvmField @BindView(R.id.play_pause_mini_player)
     var buttonPlay: ImageView? = null
 
-    @BindView(R.id.album_art_mini_player)
+    @JvmField @BindView(R.id.album_art_mini_player)
     var albumArtIv: ImageView? = null
 
-    @BindView(R.id.mini_player)
+    @JvmField @BindView(R.id.mini_player)
     var miniPlayer: LinearLayout? = null
 
-    @BindView(R.id.next_mini_plaayrer)
+    @JvmField @BindView(R.id.next_mini_plaayrer)
     var buttonNext: ImageView? = null
 
-    @BindView(R.id.main_backdrop)
+    @JvmField @BindView(R.id.main_backdrop)
     var mainBackdrop: ImageView? = null
 
-    @BindView(R.id.fab_right_side)
+    @JvmField @BindView(R.id.fab_right_side)
     var fab: FloatingActionButton? = null
 
-    @BindView(R.id.border_view)
+    @JvmField @BindView(R.id.border_view)
     var border: View? = null
 
-    @BindView(R.id.progressBar)
+    @JvmField @BindView(R.id.progressBar)
     var progressBar: View? = null
 
-    @BindView(R.id.main_collapsing)
+    @JvmField @BindView(R.id.main_collapsing)
     var collapsingToolbarLayout: CollapsingToolbarLayout? = null
 
-    @BindView(R.id.root_view_secondary_lib)
+    @JvmField @BindView(R.id.root_view_secondary_lib)
     var rootView: View? = null
 
-    @BindView(R.id.app_bar_layout_secondary_library)
+    @JvmField @BindView(R.id.app_bar_layout_secondary_library)
     var appBarLayout: AppBarLayout? = null
     private var mLastClickTime: Long = 0
     private var status: Int = 0

@@ -41,99 +41,99 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
  */
 class ActivityEqualizer : AppCompatActivity() {
     //views
-    @BindView(R.id.equalizerScrollView)
+    @JvmField @BindView(R.id.equalizerScrollView)
     var mScrollView: ScrollView? = null
 
-    @BindView(R.id.equalizerLinearLayout)
+    @JvmField @BindView(R.id.equalizerLinearLayout)
     var equalizerView: View? = null
 
     // 50Hz equalizer controls.
-    @BindView(R.id.equalizer50Hz)
+    @JvmField @BindView(R.id.equalizer50Hz)
     var equalizer50HzSeekBar: VerticalSeekBar? = null
 
-    @BindView(R.id.text50HzGain)
+    @JvmField @BindView(R.id.text50HzGain)
     var text50HzGainTextView: TextView? = null
 
-    @BindView(R.id.text50Hz)
+    @JvmField @BindView(R.id.text50Hz)
     var text50Hz: TextView? = null
 
     // 130Hz equalizer controls.
-    @BindView(R.id.equalizer130Hz)
+    @JvmField @BindView(R.id.equalizer130Hz)
     var equalizer130HzSeekBar: VerticalSeekBar? = null
 
-    @BindView(R.id.text130HzGain)
+    @JvmField @BindView(R.id.text130HzGain)
     var text130HzGainTextView: TextView? = null
 
-    @BindView(R.id.text130Hz)
+    @JvmField @BindView(R.id.text130Hz)
     var text130Hz: TextView? = null
 
     // 320Hz equalizer controls.
-    @BindView(R.id.equalizer320Hz)
+    @JvmField @BindView(R.id.equalizer320Hz)
     var equalizer320HzSeekBar: VerticalSeekBar? = null
 
-    @BindView(R.id.text320HzGain)
+    @JvmField @BindView(R.id.text320HzGain)
     var text320HzGainTextView: TextView? = null
 
-    @BindView(R.id.text320Hz)
+    @JvmField @BindView(R.id.text320Hz)
     var text320Hz: TextView? = null
 
     // 800 Hz equalizer controls.
-    @BindView(R.id.equalizer800Hz)
+    @JvmField @BindView(R.id.equalizer800Hz)
     var equalizer800HzSeekBar: VerticalSeekBar? = null
 
-    @BindView(R.id.text800HzGain)
+    @JvmField @BindView(R.id.text800HzGain)
     var text800HzGainTextView: TextView? = null
 
-    @BindView(R.id.text800Hz)
+    @JvmField @BindView(R.id.text800Hz)
     var text800Hz: TextView? = null
 
     // 2 kHz equalizer controls.
-    @BindView(R.id.equalizer2kHz)
+    @JvmField @BindView(R.id.equalizer2kHz)
     var equalizer2kHzSeekBar: VerticalSeekBar? = null
 
-    @BindView(R.id.text2kHzGain)
+    @JvmField @BindView(R.id.text2kHzGain)
     var text2kHzGainTextView: TextView? = null
 
-    @BindView(R.id.text2kHz)
+    @JvmField @BindView(R.id.text2kHz)
     var text2kHz: TextView? = null
 
     // 5 kHz equalizer controls.
-    @BindView(R.id.equalizer5kHz)
+    @JvmField @BindView(R.id.equalizer5kHz)
     var equalizer5kHzSeekBar: VerticalSeekBar? = null
 
-    @BindView(R.id.text5kHzGain)
+    @JvmField @BindView(R.id.text5kHzGain)
     var text5kHzGainTextView: TextView? = null
 
-    @BindView(R.id.text5kHz)
+    @JvmField @BindView(R.id.text5kHz)
     var text5kHz: TextView? = null
 
     // 12.5 kHz equalizer controls.
-    @BindView(R.id.equalizer12_5kHz)
+    @JvmField @BindView(R.id.equalizer12_5kHz)
     var equalizer12_5kHzSeekBar: VerticalSeekBar? = null
 
-    @BindView(R.id.text12_5kHzGain)
+    @JvmField @BindView(R.id.text12_5kHzGain)
     var text12_5kHzGainTextView: TextView? = null
 
-    @BindView(R.id.text12_5kHz)
+    @JvmField @BindView(R.id.text12_5kHz)
     var text12_5kHz: TextView? = null
 
     // Equalizer preset controls.
-    @BindView(R.id.loadPresetButton)
+    @JvmField @BindView(R.id.loadPresetButton)
     var loadPresetButton: RelativeLayout? = null
 
-    @BindView(R.id.saveAsPresetButton)
+    @JvmField @BindView(R.id.saveAsPresetButton)
     var saveAsPresetButton: RelativeLayout? = null
 
-    @BindView(R.id.resetAllButton)
+    @JvmField @BindView(R.id.resetAllButton)
     var resetAllButton: RelativeLayout? = null
 
-    @BindView(R.id.load_preset_text)
+    @JvmField @BindView(R.id.load_preset_text)
     var loadPresetText: TextView? = null
 
-    @BindView(R.id.save_as_preset_text)
+    @JvmField @BindView(R.id.save_as_preset_text)
     var savePresetText: TextView? = null
 
-    @BindView(R.id.reset_all_text)
+    @JvmField @BindView(R.id.reset_all_text)
     var resetAllText: TextView? = null
 
     // Temp variables that hold the equalizer's settings.
@@ -152,25 +152,25 @@ class ActivityEqualizer : AppCompatActivity() {
     private var reverbSetting: Int = 0
 
     //Audio FX elements.
-    @BindView(R.id.virtualizer_seekbar)
+    @JvmField @BindView(R.id.virtualizer_seekbar)
     var virtualizerSeekBar: SeekBar? = null
 
-    @BindView(R.id.bass_boost_seekbar)
+    @JvmField @BindView(R.id.bass_boost_seekbar)
     var bassBoostSeekBar: SeekBar? = null
 
-    @BindView(R.id.enhancer_seekbar)
+    @JvmField @BindView(R.id.enhancer_seekbar)
     var enhanceSeekBar: SeekBar? = null
 
-    @BindView(R.id.reverb_spinner)
+    @JvmField @BindView(R.id.reverb_spinner)
     var reverbSpinner: Spinner? = null
 
-    @BindView(R.id.virtualizer_title_text)
+    @JvmField @BindView(R.id.virtualizer_title_text)
     var virtualizerTitle: TextView? = null
 
-    @BindView(R.id.bass_boost_title_text)
+    @JvmField @BindView(R.id.bass_boost_title_text)
     var bassBoostTitle: TextView? = null
 
-    @BindView(R.id.reverb_title_text)
+    @JvmField @BindView(R.id.reverb_title_text)
     var reverbTitle: TextView? = null
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

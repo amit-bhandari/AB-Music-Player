@@ -48,16 +48,16 @@ import java.io.File
  * limitations under the License.
  */
 class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
-    @BindView(R.id.title_te)
+    @JvmField @BindView(R.id.title_te)
     var title: EditText? = null
 
-    @BindView(R.id.artist_te)
+    @JvmField @BindView(R.id.artist_te)
     var artist: EditText? = null
 
-    @BindView(R.id.album_te)
+    @JvmField @BindView(R.id.album_te)
     var album: EditText? = null
 
-    @BindView(R.id.album_art_te)
+    @JvmField @BindView(R.id.album_art_te)
     var album_art: ImageView? = null
     private var song_id: Int = 0
     private var original_title: String? = null

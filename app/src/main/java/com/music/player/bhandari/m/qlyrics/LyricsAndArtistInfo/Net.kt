@@ -39,7 +39,7 @@ object Net {
     fun getUrlAsString(paramURL: URL?): String {
         val request: Request =
             Request.Builder().header("User-Agent", USER_AGENT).url(paramURL).build()
-        val client: OkHttpClient = OkHttpClient()
+        val client = OkHttpClient()
         client.setConnectTimeout(10, TimeUnit.SECONDS)
         val response: Response = client.newCall(request).execute()
         val string: String = response.body().toString()

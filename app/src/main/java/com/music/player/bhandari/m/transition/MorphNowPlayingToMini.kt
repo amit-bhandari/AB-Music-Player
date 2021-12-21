@@ -42,7 +42,7 @@ import com.music.player.bhandari.m.R
  */
 class MorphNowPlayingToMini : ChangeBounds {
     constructor() : super()
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     override fun getTransitionProperties(): Array<String> {
         return TRANSITION_PROPERTIES
@@ -80,22 +80,17 @@ class MorphNowPlayingToMini : ChangeBounds {
         endValues: TransitionValues
     ): Animator {
         val changeBounds = super.createAnimator(sceneRoot, startValues, endValues)
-        if (startValues == null || endValues == null || changeBounds == null) {
-            return null
-        }
         val startColor = startValues.values[PROPERTY_COLOR] as Int?
         val startCornerRadius = startValues.values[PROPERTY_CORNER_RADIUS] as Int?
         val endColor = endValues.values[PROPERTY_COLOR] as Int?
         val endCornerRadius = endValues.values[PROPERTY_CORNER_RADIUS] as Int?
-        if (startColor == null || startCornerRadius == null || endColor == null || endCornerRadius == null) {
-            return null
-        }
-        val background = MorphDrawable(startColor, startCornerRadius.toFloat())
+        val background = MorphDrawable(startColor!!, startCornerRadius!!.toFloat())
         endValues.view.background = background
-        val color: Animator = ObjectAnimator.ofArgb<Any>(background, background.COLOR, endColor)
-        val corners: Animator = ObjectAnimator.ofFloat<Any>(background,
+        val color: Animator = ObjectAnimator.ofArgb(background, background.COLOR, endColor!!)
+        val corners: Animator = ObjectAnimator.ofFloat(background,
             background.CORNER_RADIUS,
-            endCornerRadius.toFloat())
+            endCornerRadius!!.toFloat()
+        )
 
         // hide child views (offset down & fade out)
         /*if (endValues.view instanceof ViewGroup) {

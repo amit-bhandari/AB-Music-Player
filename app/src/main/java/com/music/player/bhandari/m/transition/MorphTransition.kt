@@ -91,8 +91,8 @@ class MorphTransition : ChangeBounds {
         }
         val background = MorphDrawable(startColor, startCornerRadius.toFloat())
         endValues.view.background = background
-        val color: Animator = ObjectAnimator.ofArgb<Any>(background, background.COLOR, endColor)
-        val corners: Animator = ObjectAnimator.ofFloat<Any>(background,
+        val color = ObjectAnimator.ofArgb(background, background.COLOR, endColor)
+        val corners = ObjectAnimator.ofFloat(background,
             background.CORNER_RADIUS,
             endCornerRadius.toFloat())
 

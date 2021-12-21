@@ -23,14 +23,14 @@ import androidx.viewpager.widget.ViewPager
 class CustomViewPager : ViewPager {
     private var isPagingEnabled: Boolean = true
 
-    constructor(context: Context?) : super((context)!!) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super((context)!!, attrs) {}
+    constructor(context: Context?) : super((context)!!)
+    constructor(context: Context?, attrs: AttributeSet?) : super((context)!!, attrs)
 
-    public override fun onTouchEvent(event: MotionEvent): Boolean {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         return isPagingEnabled && super.onTouchEvent(event)
     }
 
-    public override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         return isPagingEnabled && super.onInterceptTouchEvent(event)
     }
 

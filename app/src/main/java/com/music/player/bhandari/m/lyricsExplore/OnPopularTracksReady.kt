@@ -17,7 +17,7 @@ package com.music.player.bhandari.m.lyricsExplore
  */
 interface OnPopularTracksReady {
     fun popularTracksReady(
-        tracks: List<com.music.player.bhandari.m.lyricsExplore.Track>?,
+        tracks: List<Track>?,
         region: String
     )
 

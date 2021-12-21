@@ -61,27 +61,27 @@ class FragmentArtistInfo : Fragment(), ArtistInfo.Callback {
     private var mArtistUpdateReceiver: BroadcastReceiver? = null
     private var mArtistInfo: ArtistInfo? = null
 
-    @BindView(R.id.text_view_art_bio_frag)
+    @JvmField @BindView(R.id.text_view_art_bio_frag)
     var artBioText: TextView? = null
 
-    @BindView(R.id.retry_text_view)
+    @JvmField @BindView(R.id.retry_text_view)
     var retryText: TextView? = null
 
-    @BindView(R.id.update_track_metadata)
+    @JvmField @BindView(R.id.update_track_metadata)
     var updateTagsText: TextView? = null
 
-    @BindView(R.id.loading_lyrics_animation)
+    @JvmField @BindView(R.id.loading_lyrics_animation)
     var lyricLoadAnimation: AVLoadingIndicatorView? = null
 
-    @BindView(R.id.track_artist_artsi_bio_frag)
+    @JvmField @BindView(R.id.track_artist_artsi_bio_frag)
     var artistEdit: EditText? = null
 
-    @BindView(R.id.button_update_metadata)
+    @JvmField @BindView(R.id.button_update_metadata)
     var buttonUpdateMetadata: Button? = null
 
-    //@BindView(R.id.ad_view_wrapper) View adViewWrapper;
-    //@BindView(R.id.adView)  AdView mAdView;
-    //@BindView(R.id.ad_close)  TextView adCloseText;
+    //@JvmField @BindView(R.id.ad_view_wrapper) View adViewWrapper;
+    //@JvmField @BindView(R.id.adView)  AdView mAdView;
+    //@JvmField @BindView(R.id.ad_close)  TextView adCloseText;
     private var playerService: PlayerService? = null
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         Log.v("frag", isVisibleToUser.toString() + "")

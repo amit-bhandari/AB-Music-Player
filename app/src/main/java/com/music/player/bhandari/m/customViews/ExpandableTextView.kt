@@ -66,12 +66,10 @@ class ExpandableTextView @JvmOverloads constructor(context: Context, attrs: Attr
         trimLength =
             typedArray.getInt(R.styleable.ExpandableTextView_trimLength, DEFAULT_TRIM_LENGTH)
         typedArray.recycle()
-        setOnClickListener(object : OnClickListener {
-            public override fun onClick(v: View) {
-                trim = !trim
-                setText()
-                requestFocusFromTouch()
-            }
-        })
+        setOnClickListener {
+            trim = !trim
+            setText()
+            requestFocusFromTouch()
+        }
     }
 }

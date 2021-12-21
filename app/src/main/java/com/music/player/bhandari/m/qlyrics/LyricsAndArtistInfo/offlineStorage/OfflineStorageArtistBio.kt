@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
@@ -29,6 +30,7 @@ import java.util.concurrent.Executors
  * limitations under the License.
  */
 object OfflineStorageArtistBio {
+    @SuppressLint("Range")
     fun getArtistBioFromTrackItem(item: TrackItem?): ArtistInfo? {
         if (item == null) {
             return null
@@ -128,7 +130,7 @@ object OfflineStorageArtistBio {
             override fun run() {
                 try {
                     val CACHE_ART_INFO: String =
-                        MyApp.getContext()!!.cacheDir.toString() + "/artistInfo/"
+                        MyApp.getContext().cacheDir.toString() + "/artistInfo/"
                     val actual_file_path: String = CACHE_ART_INFO + artistInfo.getCorrectedArtist()
                     if (File(actual_file_path).exists()) {
                         return
@@ -151,14 +153,14 @@ object OfflineStorageArtistBio {
 
     fun getArtistInfoFromCache(artist: String): ArtistInfo? {
         val CACHE_ART_INFO: String =
-            MyApp.getContext()!!.getCacheDir().toString() + "/artistInfo/"
+            MyApp.getContext().cacheDir.toString() + "/artistInfo/"
         val actual_file_path: String = CACHE_ART_INFO + artist
         val `in`: ObjectInputStream
         var artistInfo: ArtistInfo? = null
         try {
             val fileIn = FileInputStream(actual_file_path)
             `in` = ObjectInputStream(fileIn)
-            artistInfo = `in`.readObject()
+            artistInfo = `in`.readObject() as ArtistInfo?
             `in`.close()
         } catch (e: Exception) {
             e.printStackTrace()

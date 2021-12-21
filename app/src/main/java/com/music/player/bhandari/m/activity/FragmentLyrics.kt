@@ -61,39 +61,39 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
     private var layout: View? = null
     private var item: TrackItem? = null
 
-    @BindView(R.id.loading_lyrics_animation)
+    @JvmField @BindView(R.id.loading_lyrics_animation)
     var lyricLoadAnimation: AVLoadingIndicatorView? = null
 
-    /*@BindView(R.id.ad_view_wrapper) View adViewWrapper;
-    @BindView(R.id.adView)  AdView mAdView;
-    @BindView(R.id.ad_close)  TextView adCloseText;*/
+    /*@JvmField @BindView(R.id.ad_view_wrapper) View adViewWrapper;
+    @JvmField @BindView(R.id.adView)  AdView mAdView;
+    @JvmField @BindView(R.id.ad_close)  TextView adCloseText;*/
     private var mLyricChange: BroadcastReceiver? = null
 
-    @BindView(R.id.text_view_lyric_status)
+    @JvmField @BindView(R.id.text_view_lyric_status)
     var lyricStatus: TextView? = null
 
-    @BindView(R.id.update_track_metadata)
+    @JvmField @BindView(R.id.update_track_metadata)
     var updateTagsTextView //, lyricCopyRightText;
             : TextView? = null
 
-    @BindView(R.id.ll_dynamic_lyric_view)
+    @JvmField @BindView(R.id.ll_dynamic_lyric_view)
     var ll_lyric_view: LinearLayout? = null
     private var fIsStaticLyrics: Boolean = true
 
-    @BindView(R.id.track_title_lyric_frag)
+    @JvmField @BindView(R.id.track_title_lyric_frag)
     var titleEdit: EditText? = null
 
-    @BindView(R.id.track_artist_lyric_frag)
+    @JvmField @BindView(R.id.track_artist_lyric_frag)
     var artistEdit: EditText? = null
 
-    @BindView(R.id.button_update_metadata)
+    @JvmField @BindView(R.id.button_update_metadata)
     var buttonUpdateMetadata: Button? = null
     private var isLyricsLoaded: Boolean = false
     private var fLyricUpdaterThreadCancelled: Boolean = false
     private var fIsLyricUpdaterThreadRunning: Boolean = false
     private var handler: Handler? = null
 
-    @BindView(R.id.dynamic_lyrics_recycler_view)
+    @JvmField @BindView(R.id.dynamic_lyrics_recycler_view)
     var recyclerView: RecyclerView? = null
     private var adapter: LyricsViewAdapter? = null
     private var layoutManager: LinearLayoutManager? = null

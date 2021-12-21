@@ -27,21 +27,21 @@ import java.util.concurrent.Executors
  */
 class DbHelperUserMusicData constructor(context: Context?) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-    public override fun onCreate(db: SQLiteDatabase) {
+    override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(TABLE_CREATE_NEW)
     }
 
-    public override fun onUpgrade(db: SQLiteDatabase, arg1: Int, arg2: Int) {
+    override fun onUpgrade(db: SQLiteDatabase, arg1: Int, arg2: Int) {
         if (arg2 == 3) {
             val insertQuery: String = ("ALTER TABLE " + TABLE_NAME + " ADD COLUMN "
                     + KEY_ID + " INTEGER DEFAULT 0")
             db.execSQL(insertQuery)
             updateIdField(db)
         } else {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME)
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
             db.execSQL(TABLE_CREATE_NEW)
         }
-        Log.d("DbHelperUserMusicData", "onUpgrade: from to :" + arg1 + " : " + arg2)
+        Log.d("DbHelperUserMusicData", "onUpgrade: from to :$arg1 : $arg2")
     }
 
     private fun updateIdField(db: SQLiteDatabase) {

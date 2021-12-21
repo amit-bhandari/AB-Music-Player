@@ -130,16 +130,16 @@ class RecyclerFastScroller @JvmOverloads constructor(
      */
     fun setTouchTargetWidth(touchTargetWidth: Int) {
         mTouchTargetWidth = touchTargetWidth
-        val eightDp: Int = RecyclerFastScrollerUtils.convertDpToPx(context, 8)
+        val eightDp: Int = RecyclerFastScrollerUtils.convertDpToPx(context, 8F)
         mBarInset = mTouchTargetWidth - eightDp
-        val fortyEightDp: Int = RecyclerFastScrollerUtils.convertDpToPx(context, 48)
+        val fortyEightDp: Int = RecyclerFastScrollerUtils.convertDpToPx(context, 48F)
         if (mTouchTargetWidth > fortyEightDp) {
             throw RuntimeException("Touch target width cannot be larger than 48dp!")
         }
-        mBar.layoutParams = FrameLayout.LayoutParams(touchTargetWidth,
+        mBar.layoutParams = LayoutParams(touchTargetWidth,
             ViewGroup.LayoutParams.MATCH_PARENT,
             GravityCompat.END)
-        mHandle!!.layoutParams = FrameLayout.LayoutParams(touchTargetWidth,
+        mHandle!!.layoutParams = LayoutParams(touchTargetWidth,
             ViewGroup.LayoutParams.MATCH_PARENT,
             GravityCompat.END)
         updateHandleColorsAndInset()
@@ -241,8 +241,8 @@ class RecyclerFastScroller @JvmOverloads constructor(
                 mHandle!!.isEnabled = true
                 if (animate) {
                     if (!mAnimatingIn && translationX != 0f) {
-                        if (mAnimator != null && mAnimator.isStarted()) {
-                            mAnimator.cancel()
+                        if (mAnimator != null && mAnimator!!.isStarted) {
+                            mAnimator!!.cancel()
                         }
                         mAnimator = AnimatorSet()
                         val animator: ObjectAnimator =
@@ -258,8 +258,8 @@ class RecyclerFastScroller @JvmOverloads constructor(
                             }
                         })
                         mAnimatingIn = true
-                        mAnimator.play(animator)
-                        mAnimator.start()
+                        mAnimator!!.play(animator)
+                        mAnimator!!.start()
                     }
                 } else {
                     translationX = 0f
@@ -352,12 +352,12 @@ class RecyclerFastScroller @JvmOverloads constructor(
             RecyclerFastScrollerUtils.resolveColor(context, R.attr.colorAccent))
         mTouchTargetWidth = a.getDimensionPixelSize(
             R.styleable.RecyclerFastScroller_rfs_touchTargetWidth,
-            RecyclerFastScrollerUtils.convertDpToPx(context, 24))
+            RecyclerFastScrollerUtils.convertDpToPx(context, 24F))
         mHideDelay = a.getInt(R.styleable.RecyclerFastScroller_rfs_hideDelay,
             DEFAULT_AUTO_HIDE_DELAY)
         mHidingEnabled = a.getBoolean(R.styleable.RecyclerFastScroller_rfs_hidingEnabled, true)
         a.recycle()
-        val fortyEightDp: Int = RecyclerFastScrollerUtils.convertDpToPx(context, 48)
+        val fortyEightDp: Int = RecyclerFastScrollerUtils.convertDpToPx(context, 48F)
         layoutParams = ViewGroup.LayoutParams(fortyEightDp, ViewGroup.LayoutParams.MATCH_PARENT)
         mBar = View(context)
         mHandle = View(context)
@@ -365,7 +365,7 @@ class RecyclerFastScroller @JvmOverloads constructor(
         addView(mHandle)
         setTouchTargetWidth(mTouchTargetWidth)
         mMinScrollHandleHeight = fortyEightDp
-        val eightDp: Int = RecyclerFastScrollerUtils.convertDpToPx(getContext(), 8)
+        val eightDp: Int = RecyclerFastScrollerUtils.convertDpToPx(getContext(), 8F)
         mHiddenTranslationX =
             (if (RecyclerFastScrollerUtils.isRTL(getContext())) -1 else 1) * eightDp
         mHide = Runnable {
@@ -375,11 +375,11 @@ class RecyclerFastScroller @JvmOverloads constructor(
                 }
                 mAnimator = AnimatorSet()
                 val animator2: ObjectAnimator =
-                    ObjectAnimator.ofFloat<View>(this@RecyclerFastScroller, View.TRANSLATION_X,
+                    ObjectAnimator.ofFloat(this@RecyclerFastScroller, View.TRANSLATION_X,
                         mHiddenTranslationX.toFloat())
                 animator2.interpolator = FastOutLinearInInterpolator()
                 animator2.duration = 150
-                mHandle.setEnabled(false)
+                mHandle.isEnabled = false
                 mAnimator!!.play(animator2)
                 mAnimator!!.start()
             }
@@ -390,15 +390,15 @@ class RecyclerFastScroller @JvmOverloads constructor(
             private var mLastAppBarLayoutOffset: Int = 0
             override fun onTouch(v: View, event: MotionEvent): Boolean {
                 if (mOnTouchListener != null) {
-                    mOnTouchListener.onTouch(v, event)
+                    mOnTouchListener!!.onTouch(v, event)
                 }
                 when (event.actionMasked) {
                     MotionEvent.ACTION_DOWN -> {
-                        mHandle.setPressed(true)
-                        mRecyclerView.stopScroll()
+                        mHandle.isPressed = true
+                        mRecyclerView!!.stopScroll()
                         var nestedScrollAxis: Int = ViewCompat.SCROLL_AXIS_NONE
                         nestedScrollAxis = nestedScrollAxis or ViewCompat.SCROLL_AXIS_VERTICAL
-                        mRecyclerView.startNestedScroll(nestedScrollAxis)
+                        mRecyclerView!!.startNestedScroll(nestedScrollAxis)
                         mInitialBarHeight = mBar.height.toFloat()
                         mLastPressedYAdjustedToInitial = event.y + mHandle.y + mBar.y
                         mLastAppBarLayoutOffset = mAppBarLayoutOffset
@@ -411,7 +411,10 @@ class RecyclerFastScroller @JvmOverloads constructor(
                         val deltaPressedYFromLastAdjustedToInitial: Float =
                             newHandlePressedYAdjustedToInitial - mLastPressedYAdjustedToInitial
                         val dY: Int = ((deltaPressedYFromLastAdjustedToInitial / mInitialBarHeight) *
-                                (mRecyclerView!!.computeVerticalScrollRange() + (if (mAppBarLayout == null) 0 else mAppBarLayout.getTotalScrollRange()))) as Int
+                                (mRecyclerView!!.computeVerticalScrollRange() + (when (mAppBarLayout) {
+                                    null -> 0
+                                    else -> mAppBarLayout!!.totalScrollRange
+                                }))) as Int
                         if (mCoordinatorLayout != null && mAppBarLayout != null) {
                             val params: CoordinatorLayout.LayoutParams =
                                 mAppBarLayout!!.layoutParams as CoordinatorLayout.LayoutParams
@@ -429,7 +432,7 @@ class RecyclerFastScroller @JvmOverloads constructor(
                     }
                     MotionEvent.ACTION_UP -> {
                         mLastPressedYAdjustedToInitial = -1f
-                        mRecyclerView.stopNestedScroll()
+                        mRecyclerView!!.stopNestedScroll()
                         mHandle.isPressed = false
                         postAutoHide()
                     }

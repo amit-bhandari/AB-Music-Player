@@ -61,11 +61,7 @@ class ActivityAboutUs : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_us)
         val fab: FloatingActionButton = findViewById<FloatingActionButton>(R.id.fb_fab)
-        fab.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View) {
-                open_url(FB_URL)
-            }
-        })
+        fab.setOnClickListener { open_url(FB_URL) }
         val site_link: TextView = findViewById<TextView>(R.id.website_link)
         val spanWebsite: SpannableString = SpannableString(site_link.text)
         val clickableSpanWebsite: ClickableSpan = object : ClickableSpan() {

@@ -1,48 +1,7 @@
 package com.music.player.bhandari.m.model
 
-import com.music.player.bhandari.m.utils.UtilityFun.escapeDoubleQuotes
-import java.lang.NumberFormatException
 import android.media.MediaMetadataRetriever
 import android.util.Log
-import android.content.ContentResolver
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.ArrayList
-import java.util.Collections
-import java.util.LinkedHashMap
-import android.util.SparseArray
-import com.music.player.bhandari.m.MyApp
-import com.music.player.bhandari.m.R
-import java.lang.Runnable
-import java.lang.InterruptedException
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.content.Intent
-import java.lang.Exception
-import android.net.Uri
-import android.provider.MediaStore
-import android.database.Cursor
-import com.music.player.bhandari.m.utils.UtilityFun
-import android.graphics.Bitmap
-import android.content.ContentUris
-import android.os.ParcelFileDescriptor
-import java.io.FileDescriptor
-import android.graphics.BitmapFactory
-import java.io.File
-import androidx.annotation.RequiresApi
-import android.os.Build
-import java.io.IOException
-import kotlin.jvm.Synchronized
-import java.util.HashMap
-import android.database.sqlite.SQLiteDatabase
-import android.content.ContentValues
-import android.os.Looper
-import android.widget.Toast
-import android.annotation.SuppressLint
-import android.view.Gravity
-import java.util.ConcurrentModificationException
-import java.util.Comparator
-import android.database.DatabaseUtils
-import androidx.recyclerview.widget.RecyclerView
-import android.util.AttributeSet
 import java.io.Serializable
 
 /**
@@ -64,7 +23,7 @@ class TrackItem : Serializable {
     var id = 0
     private var filePath = ""
     var title: String? = ""
-    private var artist: String? = ""
+    var artist: String? = ""
     var album: String? = ""
     var genre = ""
         private set
@@ -74,7 +33,7 @@ class TrackItem : Serializable {
     var artist_id = 0
 
     //default constructor
-    constructor() {}
+    constructor()
     constructor(
         filePath: String,
         title: String?,
@@ -138,10 +97,12 @@ class TrackItem : Serializable {
         filePath = filePath
     }
 
+    @JvmName("getArtist1")
     fun getArtist(): String? {
         return artist
     }
 
+    @JvmName("setArtist1")
     fun setArtist(artist: String?) {
         if (artist == null || artist.isEmpty()) {
             this.artist = "<unknown>"
@@ -151,6 +112,6 @@ class TrackItem : Serializable {
     }
 
     fun haveAlbumArt(): Boolean {
-        return MusicLibrary.getInstance().getAlbumArtUri(albumId) != null
+        return MusicLibrary.instance!!.getAlbumArtUri(albumId) != null
     }
 }

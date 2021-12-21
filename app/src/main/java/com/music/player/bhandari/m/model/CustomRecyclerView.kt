@@ -1,6 +1,8 @@
 package com.music.player.bhandari.m.model
 
 import android.content.Context
+import android.util.AttributeSet
+import androidx.recyclerview.widget.RecyclerView
 import com.music.player.bhandari.m.adapter.MainLibraryAdapter
 
 /**
@@ -19,15 +21,14 @@ import com.music.player.bhandari.m.adapter.MainLibraryAdapter
  * limitations under the License.
  */
 class CustomRecyclerView : RecyclerView {
-    constructor(context: Context?) : super(context) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context,
+    constructor(context: Context?) : super(context!!)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context!!,
         attrs,
-        defStyle) {
-    }
+        defStyle)
 
     fun GetHeight(): Int {
-        return if (getAdapter() is MainLibraryAdapter) {
+        return if (adapter is MainLibraryAdapter) {
             0
         } else -1
     }

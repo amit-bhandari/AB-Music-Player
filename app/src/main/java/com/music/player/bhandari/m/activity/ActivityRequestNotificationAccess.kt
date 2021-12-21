@@ -33,13 +33,13 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
  * limitations under the License.
  */
 class ActivityRequestNotificationAccess : AppCompatActivity(), View.OnClickListener {
-    @BindView(R.id.text_never_ask)
+    @JvmField @BindView(R.id.text_never_ask)
     var never_ask: TextView? = null
 
-    @BindView(R.id.text_skip)
+    @JvmField @BindView(R.id.text_skip)
     var skip: TextView? = null
 
-    @BindView(R.id.progressBar)
+    @JvmField @BindView(R.id.progressBar)
     var progressBar: ProgressBar? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         ColorHelper.setStatusBarGradiant(this)

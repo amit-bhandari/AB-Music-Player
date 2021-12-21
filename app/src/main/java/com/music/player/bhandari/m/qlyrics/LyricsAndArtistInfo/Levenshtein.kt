@@ -19,6 +19,7 @@
 package com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo
 
 import java.util.*
+import kotlin.math.min
 
 object Levenshtein {
     fun distance(a: String, b: String): Int {
@@ -34,8 +35,8 @@ object Levenshtein {
             costs[0] = i
             var nw: Int = i - 1
             for (j in 1..b.length) {
-                val cj: Int = Math.min(1 + Math.min(costs.get(j), costs.get(j - 1)),
-                    if (a[i - 1] == b.get(j - 1)) nw else nw + 1)
+                val cj: Int = min(1 + min(costs[j], costs[j - 1]),
+                    if (a[i - 1] == b[j - 1]) nw else nw + 1)
                 nw = costs[j]
                 costs[j] = cj
             }

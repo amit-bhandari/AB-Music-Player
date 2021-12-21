@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.equalizer
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -38,10 +39,10 @@ class EqualizerHelper constructor(
     private var dbHelperEqualizer: DbHelperEqualizer? = null
     fun releaseEqObjects() {
         try {
-            equalizer.release()
-            virtualizer.release()
-            bassBoost.release()
-            presetReverb.release()
+            equalizer!!.release()
+            virtualizer!!.release()
+            bassBoost!!.release()
+            presetReverb!!.release()
         } catch (ignored: Exception) {
         }
         equalizer = null
@@ -73,8 +74,7 @@ class EqualizerHelper constructor(
     //general equ setting is stored in shared preference to reemove db complications and calls
     fun storeLastEquSetting(equSetting: EqualizerSetting?) {
         val jsonSetting: String = Gson().toJson(equSetting)
-        MyApp.Companion.getPref().edit()
-            .putString(mContext.getString(R.string.pref_last_equ_setting), jsonSetting).apply()
+        MyApp.getPref().edit().putString(mContext.getString(R.string.pref_last_equ_setting), jsonSetting).apply()
     }
 
     fun getLastEquSetting(): EqualizerSetting {
@@ -83,12 +83,13 @@ class EqualizerHelper constructor(
             EqualizerSetting::class.java)
     }
 
+    @SuppressLint("Range")
     fun getPresetList(): Array<String?> {
-        val cursor: Cursor = dbHelperEqualizer.getReadableDatabase()
+        val cursor: Cursor = dbHelperEqualizer!!.getReadableDatabase()
             .rawQuery("select * from " + DbHelperEqualizer.TABLE_NAME, null)
         val size: Int = cursor.count
         val array: Array<String?> = arrayOfNulls(size)
-        var index: Int = 0
+        var index = 0
         while (cursor.moveToNext()) {
             array[index] = cursor.getString(cursor.getColumnIndex(DbHelperEqualizer.EQU_PRESET_NAME))
             index++
@@ -101,19 +102,20 @@ class EqualizerHelper constructor(
         preset_name: String?,
         equalizerSetting: EqualizerSetting?
     ) {
-        val values: ContentValues = ContentValues()
+        val values = ContentValues()
         values.put(DbHelperEqualizer.EQU_PRESET_NAME, preset_name)
         values.put(DbHelperEqualizer.EQU_SETTING_STRING, Gson().toJson(equalizerSetting))
-        dbHelperEqualizer.getWritableDatabase().insert(DbHelperEqualizer.TABLE_NAME, null, values)
+        dbHelperEqualizer!!.writableDatabase.insert(DbHelperEqualizer.TABLE_NAME, null, values)
     }
 
+    @SuppressLint("Range")
     fun getPreset(preset_name: String): EqualizerSetting {
         val condition: String =
-            DbHelperEqualizer.EQU_PRESET_NAME.toString() + "=" + "'" + preset_name.replace("'",
+            DbHelperEqualizer.EQU_PRESET_NAME + "=" + "'" + preset_name.replace("'",
                 "''") + "'"
         val columnsToReturn: Array<String> =
             arrayOf(DbHelperEqualizer.EQU_PRESET_NAME, DbHelperEqualizer.EQU_SETTING_STRING)
-        val cursor: Cursor? = dbHelperEqualizer.getReadableDatabase()
+        val cursor: Cursor? = dbHelperEqualizer!!.getReadableDatabase()
             .query(DbHelperEqualizer.TABLE_NAME, columnsToReturn, condition, null, null, null, null)
         if (cursor != null && cursor.count > 0) {
             cursor.moveToFirst()

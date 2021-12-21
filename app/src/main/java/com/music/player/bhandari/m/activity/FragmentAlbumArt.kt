@@ -54,7 +54,7 @@ class FragmentAlbumArt : Fragment() {
     private var mUIUpdate: BroadcastReceiver? = null
 
     @kotlin.jvm.JvmField
-    @BindView(R.id.album_art_now_playing)
+    @JvmField @BindView(R.id.album_art_now_playing)
     var albumArt: ImageView? = null
 
     override fun onCreateView(

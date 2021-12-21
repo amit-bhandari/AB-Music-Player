@@ -100,51 +100,51 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     private var mReceiverForMiniPLayerUpdate: BroadcastReceiver? = null
     private var mReceiverForLibraryRefresh: BroadcastReceiver? = null
 
-    @BindView(R.id.viewpager)
+    @JvmField @BindView(R.id.viewpager)
     var viewPager: ViewPager? = null
     private var viewPagerAdapter: ViewPagerAdapter? = null
 
-    @BindView(R.id.play_pause_mini_player)
+    @JvmField @BindView(R.id.play_pause_mini_player)
     var buttonPlay: ImageView? = null
 
-    @BindView(R.id.next_mini_plaayrer)
+    @JvmField @BindView(R.id.next_mini_plaayrer)
     var buttonNext: ImageView? = null
 
-    @BindView(R.id.album_art_mini_player)
+    @JvmField @BindView(R.id.album_art_mini_player)
     var albumArt: ImageView? = null
 
-    @BindView(R.id.song_name_mini_player)
+    @JvmField @BindView(R.id.song_name_mini_player)
     var songNameMiniPlayer: TextView? = null
 
-    @BindView(R.id.artist_mini_player)
+    @JvmField @BindView(R.id.artist_mini_player)
     var artistNameMiniPlayer: TextView? = null
 
-    @BindView(R.id.mini_player)
+    @JvmField @BindView(R.id.mini_player)
     var miniPlayer: View? = null
 
-    @BindView(R.id.nav_view)
+    @JvmField @BindView(R.id.nav_view)
     var navigationView: NavigationView? = null
 
-    @BindView(R.id.drawer_bg)
+    @JvmField @BindView(R.id.drawer_bg)
     var navViewBack: ImageView? = null
 
-    @BindView(R.id.fab_right_side)
+    @JvmField @BindView(R.id.fab_right_side)
     var fab_right_side: FloatingActionButton? = null
 
-    @BindView(R.id.fab_lock)
+    @JvmField @BindView(R.id.fab_lock)
     var fab_lock: FloatingActionButton? = null
 
     //private SeekBar seekBar;
-    @BindView(R.id.root_view_main_activity)
+    @JvmField @BindView(R.id.root_view_main_activity)
     var rootView: View? = null
 
-    @BindView(R.id.album_art_mini_player_wrapper)
+    @JvmField @BindView(R.id.album_art_mini_player_wrapper)
     var miniPlayerWrapper: View? = null
 
-    @BindView(R.id.overlay_for_gradient)
+    @JvmField @BindView(R.id.overlay_for_gradient)
     var gradientOverlay: View? = null
 
-    @BindView(R.id.overlay_for_custom_background)
+    @JvmField @BindView(R.id.overlay_for_custom_background)
     var customBackOverlay: View? = null
 
     //bind player service

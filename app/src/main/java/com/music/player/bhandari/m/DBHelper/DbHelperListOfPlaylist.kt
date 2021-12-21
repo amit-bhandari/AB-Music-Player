@@ -24,7 +24,7 @@ import com.music.player.bhandari.m.model.Constants
  */
 class DbHelperListOfPlaylist constructor(context: Context?) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-    public override fun onCreate(db: SQLiteDatabase) {
+    override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(TABLE_CREATE)
         //populate playlist list with system playlist
         if ((TABLE_NAME == Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST)) {
@@ -36,9 +36,9 @@ class DbHelperListOfPlaylist constructor(context: Context?) :
                 null,
                 null)
             // if playlists list is empty
-            if (cursor.getCount() == 0) {
+            if (cursor.count == 0) {
                 for (playlistName: String? in Constants.SYSTEM_PLAYLISTS.listOfSystemPlaylist) {
-                    val c: ContentValues = ContentValues()
+                    val c = ContentValues()
                     c.put(KEY_TITLE, playlistName)
                     db.insert(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST, null, c)
                 }
@@ -47,8 +47,8 @@ class DbHelperListOfPlaylist constructor(context: Context?) :
         }
     }
 
-    public override fun onUpgrade(db: SQLiteDatabase, arg1: Int, arg2: Int) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME)
+    override fun onUpgrade(db: SQLiteDatabase, arg1: Int, arg2: Int) {
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
         onCreate(db)
     }
 

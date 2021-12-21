@@ -15,12 +15,15 @@
  */
 package com.music.player.bhandari.m.ringtoneCutter
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Message
 import android.view.View
+import android.widget.Button
+import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
 
-class AfterSaveActionDialog constructor(context: Context?, response: Message) : Dialog(context) {
+class AfterSaveActionDialog constructor(context: Context?, response: Message) : Dialog(context!!) {
     private val mResponse: Message
     private fun closeAndSendResult(clickedButtonId: Int) {
         mResponse.arg1 = clickedButtonId
@@ -35,7 +38,7 @@ class AfterSaveActionDialog constructor(context: Context?, response: Message) : 
         setTitle(R.string.alert_title_success)
         (findViewById<View>(R.id.button_make_default) as Button)
             .setOnClickListener(object : View.OnClickListener {
-                public override fun onClick(view: View) {
+                override fun onClick(view: View) {
                     closeAndSendResult(R.id.button_make_default)
                 }
             })
@@ -45,15 +48,11 @@ class AfterSaveActionDialog constructor(context: Context?, response: Message) : 
                         closeAndSendResult(R.id.button_choose_contact);
                     }
                 });*/(findViewById<View>(R.id.button_do_nothing) as Button)
-            .setOnClickListener(object : View.OnClickListener {
-                public override fun onClick(view: View) {
-                    closeAndSendResult(R.id.button_do_nothing)
-                }
-            })
+            .setOnClickListener { closeAndSendResult(R.id.button_do_nothing) }
         mResponse = response
-        if (getWindow() != null) {
-            getWindow().setBackgroundDrawable(ColorHelper.getGradientDrawableDark())
-            getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window
+        if (window != null) {
+            window!!.setBackgroundDrawable(ColorHelper.getGradientDrawableDark())
+            window!!.attributes.windowAnimations = R.style.MyAnimation_Window
         }
     }
 }

@@ -73,12 +73,12 @@ class ActivityLicenses : AppCompatActivity() {
     }
 
     override fun onResume() {
-        MyApp.Companion.isAppVisible = true
+        MyApp.isAppVisible = true
         super.onResume()
     }
 
     override fun onPause() {
-        MyApp.Companion.isAppVisible = false
+        MyApp.isAppVisible = false
         super.onPause()
     }
 

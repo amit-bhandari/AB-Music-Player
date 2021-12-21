@@ -95,16 +95,16 @@ class TopTracksAdapter(private val context: Context, private val trackList: List
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        @BindView(R.id.trackInfo)
+        @JvmField @BindView(R.id.trackInfo)
         var trackName: TextView? = null
 
-        @BindView(R.id.playCount)
+        @JvmField @BindView(R.id.playCount)
         var playCount: TextView? = null
 
-        @BindView(R.id.imageView)
+        @JvmField @BindView(R.id.imageView)
         var imageView: ImageView? = null
 
-        @BindView(R.id.more)
+        @JvmField @BindView(R.id.more)
         var overflow: ImageView? = null
         override fun onClick(v: View) {
             this@TopTracksAdapter.onClick(v, layoutPosition)

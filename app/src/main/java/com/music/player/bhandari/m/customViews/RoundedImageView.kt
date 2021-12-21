@@ -29,10 +29,7 @@ class RoundedImageView : AppCompatImageView {
         (context)!!, attrs, defStyle)
 
     override fun onDraw(canvas: Canvas) {
-        val drawable: Drawable? = drawable
-        if (drawable == null) {
-            return
-        }
+        val drawable: Drawable = drawable ?: return
         if (width == 0 || height == 0) {
             return
         }
@@ -57,10 +54,10 @@ class RoundedImageView : AppCompatImageView {
                 sbmp = bmp
             }
             val output: Bitmap = Bitmap.createBitmap(radius, radius, Bitmap.Config.ARGB_8888)
-            val canvas: Canvas = Canvas(output)
-            val color: String = "#BAB399"
-            val paint: Paint = Paint()
-            val rect: Rect = Rect(0, 0, radius, radius)
+            val canvas = Canvas(output)
+            val color = "#BAB399"
+            val paint = Paint()
+            val rect = Rect(0, 0, radius, radius)
             paint.isAntiAlias = true
             paint.isFilterBitmap = true
             paint.isDither = true

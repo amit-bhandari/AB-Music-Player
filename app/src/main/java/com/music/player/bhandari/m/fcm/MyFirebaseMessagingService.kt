@@ -1,11 +1,35 @@
 package com.music.player.bhandari.m.fcm
 
+import android.annotation.TargetApi
+import android.app.IntentService
 import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.Context
-import android.os.Handler
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.*
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
+import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.activity.ActivityExploreLyrics
+import com.music.player.bhandari.m.activity.ActivityLyricView
 import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.utils.AppLaunchCountManager
+import com.music.player.bhandari.m.utils.UtilityFun
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
 import java.util.*
 
 /**
@@ -27,7 +51,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         Log.d("MyFirebaseMessaging", "onMessageReceived: " + remoteMessage.toString())
-        val map: Map<String, String> = remoteMessage.getData()
+        val map: Map<String, String> = remoteMessage.data
         for (keys in map.keys) {
             Log.d("MyFirebaseMessaging", "onMessageReceived: $keys")
         }
@@ -48,21 +72,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         ) {
             return
         }
-        val handler: Handler = Handler(Looper.getMainLooper())
+        val handler = Handler(Looper.getMainLooper())
         handler.post { generatePictureStyleNotification(map).execute() }
     }
 
     class generatePictureStyleNotification internal constructor(private val map: Map<String, String>) :
         AsyncTask<String?, Void?, Bitmap?>() {
         private var builder: NotificationCompat.Builder? = null
-        protected override fun doInBackground(vararg params: String): Bitmap {
+        override fun doInBackground(vararg params: String?): Bitmap? {
             val `in`: InputStream
             try {
                 val url = URL(map["image_link"])
                 val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-                connection.setDoInput(true)
+                connection.doInput = true
                 connection.connect()
-                `in` = connection.getInputStream()
+                `in` = connection.inputStream
                 return BitmapFactory.decodeStream(`in`)
             } catch (e: MalformedURLException) {
                 e.printStackTrace()
@@ -75,14 +99,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-        protected override fun onPostExecute(result: Bitmap) {
+        override fun onPostExecute(result: Bitmap?) {
             super.onPostExecute(result)
             try {
                 val contentTitle = map["title"]
                 val contentText = map["body"]
                 val subText = map["subtitle"]
-                builder = NotificationCompat.Builder(MyApp.Companion.getContext(),
-                    MyApp.Companion.getContext().getString(R.string.notification_channel))
+                builder = NotificationCompat.Builder(MyApp.getContext(),
+                    MyApp.getContext().getString(R.string.notification_channel))
                     .setColor(ColorHelper.getColor(R.color.notification_color))
                     .setSmallIcon(R.drawable.ic_batman_kitkat)
                     .setContentTitle(contentTitle)
@@ -91,14 +115,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     .setAutoCancel(true)
                     .setStyle(NotificationCompat.BigPictureStyle().bigPicture(result)
                         .setSummaryText(contentText))
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    builder!!.setVisibility(Notification.VISIBILITY_PUBLIC)
-                }
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                    builder!!.priority = Notification.PRIORITY_MAX
-                }
+                builder!!.setVisibility(Notification.VISIBILITY_PUBLIC)
+                builder!!.priority = Notification.PRIORITY_MAX
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    builder!!.setChannelId(MyApp.Companion.getContext()
+                    builder!!.setChannelId(MyApp.getContext()
                         .getString(R.string.notification_channel))
                 }
                 when (map["type"]) {
@@ -111,17 +131,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }
                 val notification = builder!!.build()
                 val mNotificationManager: NotificationManager =
-                    MyApp.Companion.getContext().getSystemService(
+                    MyApp.getContext().getSystemService(
                         Context.NOTIFICATION_SERVICE) as NotificationManager
-                if (mNotificationManager != null) {
-                    mNotificationManager.notify(Random().nextInt(), notification)
-                    try {
-                        val bundle = Bundle()
-                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE,
-                            "notification_displayed")
-                        UtilityFun.logEvent(bundle)
-                    } catch (ignored: Exception) {
-                    }
+                mNotificationManager.notify(Random().nextInt(), notification)
+                try {
+                    val bundle = Bundle()
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE,
+                        "notification_displayed")
+                    UtilityFun.logEvent(bundle)
+                } catch (ignored: Exception) {
                 }
             } catch (e: Exception) {
                 val bundle = Bundle()
@@ -135,13 +153,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         private fun trending_tracksNotif() {
             val requestCode = Random().nextInt()
             val notificationIntent =
-                Intent(MyApp.Companion.getContext(), ActivityExploreLyrics::class.java)
-            notificationIntent.setAction(Constants.ACTION.MAIN_ACTION)
+                Intent(MyApp.getContext(), ActivityExploreLyrics::class.java)
+            notificationIntent.action = Constants.ACTION.MAIN_ACTION
             notificationIntent.putExtra("fresh_load", true)
             notificationIntent.putExtra("from_notif", true)
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             val contentIntent: PendingIntent =
-                PendingIntent.getActivity(MyApp.Companion.getContext(), requestCode,
+                PendingIntent.getActivity(MyApp.getContext(), requestCode,
                     notificationIntent, 0)
             builder!!.setContentIntent(contentIntent)
         }
@@ -151,12 +169,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val artist = map["artist"]
             val requestCode = Random().nextInt()
             val notificationIntent =
-                Intent(MyApp.Companion.getContext(), ActivityLyricView::class.java)
-            notificationIntent.setAction(Constants.ACTION.MAIN_ACTION)
+                Intent(MyApp.getContext(), ActivityLyricView::class.java)
+            notificationIntent.action = Constants.ACTION.MAIN_ACTION
             notificationIntent.putExtra("track_title", trackTitle)
             notificationIntent.putExtra("artist", artist)
             notificationIntent.putExtra("from_notif", true)
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             val contentIntent: PendingIntent =
                 PendingIntent.getActivity(MyApp.Companion.getContext(), requestCode,
                     notificationIntent, 0)
@@ -165,7 +183,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         private fun UnknownNotif(map: Map<String, String>) {
             val notificationIntent = Intent(Intent.ACTION_VIEW)
-            notificationIntent.setData(Uri.parse(map["link"]))
+            notificationIntent.data = Uri.parse(map["link"])
             val contentIntent: PendingIntent =
                 PendingIntent.getActivity(MyApp.Companion.getContext(), 0,
                     notificationIntent, 0)
@@ -175,11 +193,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         private fun searchLyricNotif() {
             val requestCode = Random().nextInt()
             val notificationIntent =
-                Intent(MyApp.Companion.getContext(), ActivityExploreLyrics::class.java)
-            notificationIntent.setAction(Constants.ACTION.MAIN_ACTION)
+                Intent(MyApp.getContext(), ActivityExploreLyrics::class.java)
+            notificationIntent.action = Constants.ACTION.MAIN_ACTION
             notificationIntent.putExtra("search_on_launch", true)
             notificationIntent.putExtra("from_notif", true)
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             val contentIntent: PendingIntent =
                 PendingIntent.getActivity(MyApp.Companion.getContext(), requestCode,
                     notificationIntent, 0)
@@ -188,7 +206,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         private fun reviewNotif(map: Map<String, String>) {
             val action1Intent: Intent =
-                Intent(MyApp.Companion.getContext(), NotificationActionService::class.java)
+                Intent(MyApp.getContext(), NotificationActionService::class.java)
                     .setAction(ALREADY_RATED)
             action1Intent.putExtra("from_notif", true)
             val alreadyRatedIntent: PendingIntent =
@@ -212,9 +230,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         class NotificationActionService :
             IntentService(NotificationActionService::class.java.simpleName) {
-            protected override fun onHandleIntent(intent: Intent?) {
-                val action: String = intent.getAction() ?: return
-                if (intent.getExtras() != null && intent.getExtras().getBoolean("from_notif")) {
+            override fun onHandleIntent(intent: Intent?) {
+                val action: String = intent!!.action ?: return
+                if (intent.extras != null && intent.extras!!.getBoolean("from_notif")) {
                     try {
                         val bundle = Bundle()
                         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE,
@@ -225,11 +243,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }
                 Log.d("NotificationAction", "onHandleIntent: $action")
                 when (action) {
-                    ALREADY_RATED -> MyApp.Companion.getPref().edit()
+                    ALREADY_RATED -> MyApp.getPref().edit()
                         .putBoolean(getString(R.string.pref_already_rated), true).apply()
                     RATE_NOW -> {
                         val appPackageName: String =
-                            getPackageName() // getPackageName() from Context or Activity object
+                            packageName // getPackageName() from Context or Activity object
                         try {
                             startActivity(Intent(Intent.ACTION_VIEW,
                                 Uri.parse("market://details?id=$appPackageName")))
@@ -246,11 +264,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         }
                     }
                 }
-                val notificationManager: NotificationManager? =
-                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-                if (notificationManager != null) {
-                    notificationManager.cancel(Constants.NOTIFICATION_ID.FCM)
-                }
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager?)?.cancel(Constants.NOTIFICATION_ID.FCM)
             }
         }
 

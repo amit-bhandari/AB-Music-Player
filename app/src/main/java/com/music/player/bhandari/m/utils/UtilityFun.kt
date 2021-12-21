@@ -334,8 +334,7 @@ object UtilityFun {
 
     val isConnectedToInternet: Boolean
         get() {
-            val cm = MyApp.getContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val cm = MyApp.getContext()!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
             return (activeNetwork != null
                     && activeNetwork.isConnectedOrConnecting)
@@ -439,7 +438,7 @@ object UtilityFun {
     //return batman in case user selected image causes out of memory
     val defaultAlbumArtDrawable: Drawable?
         get() = try {
-            Drawable.createFromPath(MyApp.getContext()?.filesDir + MyApp.getContext()?.getString(R.string.def_album_art_custom_image))
+            Drawable.createFromPath(MyApp.getContext()?.filesDir.toString() + MyApp.getContext()?.getString(R.string.def_album_art_custom_image))
         } catch (e: OutOfMemoryError) {
             //return batman in case user selected image causes out of memory
             MyApp.getContext().getDrawable(R.drawable.ic_batman_1)
@@ -448,9 +447,8 @@ object UtilityFun {
     fun drawableToBitmap(drawable: Drawable?): Bitmap? {
         if (drawable == null) return null
         if (drawable is BitmapDrawable) {
-            val bitmapDrawable = drawable
-            if (bitmapDrawable.bitmap != null) {
-                return bitmapDrawable.bitmap
+            if (drawable.bitmap != null) {
+                return drawable.bitmap
             }
         }
 

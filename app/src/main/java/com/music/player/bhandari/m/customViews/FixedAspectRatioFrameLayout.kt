@@ -25,7 +25,7 @@ class FixedAspectRatioFrameLayout : FrameLayout {
     private var mAspectRatioWidth: Int = 0
     private var mAspectRatioHeight: Int = 0
 
-    constructor(context: Context?) : super((context)!!) {}
+    constructor(context: Context?) : super((context)!!)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(context, attrs)
     }

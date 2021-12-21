@@ -55,28 +55,28 @@ import kotlinx.android.synthetic.main.activity_track_info.*
  */
 class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
     View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
-    @BindView(R.id.root_view_lyrics_explore)
+    @JvmField @BindView(R.id.root_view_lyrics_explore)
     var rootView: View? = null
 
-    @BindView(R.id.recyclerView)
+    @JvmField @BindView(R.id.recyclerView)
     var recyclerView: RecyclerView? = null
 
-    @BindView(R.id.recycler_view_wrapper)
+    @JvmField @BindView(R.id.recycler_view_wrapper)
     var rvWrapper: View? = null
 
-    @BindView(R.id.progressBar)
+    @JvmField @BindView(R.id.progressBar)
     var progressBar: ProgressBar? = null
 
-    @BindView(R.id.statusTextView)
+    @JvmField @BindView(R.id.statusTextView)
     var statusText: TextView? = null
 
-    @BindView(R.id.swipeRefreshLayout)
+    @JvmField @BindView(R.id.swipeRefreshLayout)
     var swipeRefreshLayout: SwipeRefreshLayout? = null
 
-    @BindView(R.id.fab_right_side)
+    @JvmField @BindView(R.id.fab_right_side)
     var fab: FloatingActionButton? = null
 
-    @BindView(R.id.trending_now_text)
+    @JvmField @BindView(R.id.trending_now_text)
     var trendingNow: TextView? = null
     private var handler: Handler? = null
 

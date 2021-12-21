@@ -42,6 +42,27 @@ import com.music.player.bhandari.m.R
 class MorphDrawable(@ColorInt color: Int, private var cornerRadius: Float) : Drawable() {
     private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
+    val CORNER_RADIUS: Property<MorphDrawable, Float> = object : Property<MorphDrawable, Float>(
+        Float::class.java, "cornerRadius") {
+        override fun set(morphDrawable: MorphDrawable, value: Float) {
+            morphDrawable.setCornerRadius(value)
+        }
+
+        override fun get(morphDrawable: MorphDrawable): Float {
+            return morphDrawable.getCornerRadius()
+        }
+    }
+    val COLOR: Property<MorphDrawable, Int> = object : Property<MorphDrawable, Int>(
+        Int::class.java, "color") {
+        override fun set(morphDrawable: MorphDrawable, value: Int) {
+            morphDrawable.color = value
+        }
+
+        override fun get(morphDrawable: MorphDrawable): Int {
+            return morphDrawable.color
+        }
+    }
+
     fun getCornerRadius(): Float {
         return cornerRadius
     }
@@ -84,29 +105,6 @@ class MorphDrawable(@ColorInt color: Int, private var cornerRadius: Float) : Dra
 
     override fun getOpacity(): Int {
         return paint.alpha
-    }
-
-    companion object {
-        val CORNER_RADIUS: Property<MorphDrawable, Float> = object : Property<MorphDrawable, Float>(
-            Float::class.java, "cornerRadius") {
-            override fun set(morphDrawable: MorphDrawable, value: Float) {
-                morphDrawable.setCornerRadius(value)
-            }
-
-            override fun get(morphDrawable: MorphDrawable): Float {
-                return morphDrawable.getCornerRadius()
-            }
-        }
-        val COLOR: Property<MorphDrawable, Int> = object : Property<MorphDrawable, Int>(
-            Int::class.java, "color") {
-            override fun set(morphDrawable: MorphDrawable, value: Int) {
-                morphDrawable.color = value
-            }
-
-            override fun get(morphDrawable: MorphDrawable): Int {
-                return morphDrawable.color
-            }
-        }
     }
 
     init {

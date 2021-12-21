@@ -40,7 +40,7 @@ class WidgetReceiver : AppWidgetProvider() {
     var context: Context? = null
     private val playerServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(arg0: ComponentName, service: IBinder) {
-            val playerBinder = service as playerService!!.PlayerBinder
+            val playerBinder = service as PlayerService.PlayerBinder
             val playerService: PlayerService = playerBinder.getService()
             MyApp.setService(playerService)
             context!!.startService(Intent(context, PlayerService::class.java)

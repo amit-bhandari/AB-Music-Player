@@ -90,46 +90,46 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
     private var stopProgressRunnable: Boolean = false
     private var updateTimeTaskRunning: Boolean = false
 
-    @BindView(R.id.root_view_now_playing)
+    @JvmField @BindView(R.id.root_view_now_playing)
     var rootView: View? = null
 
-    @BindView(R.id.pw_ivShuffle)
+    @JvmField @BindView(R.id.pw_ivShuffle)
     var shuffle: ImageView? = null
 
-    @BindView(R.id.pw_ivRepeat)
+    @JvmField @BindView(R.id.pw_ivRepeat)
     var repeat: ImageView? = null
 
-    @BindView(R.id.text_in_repeat)
+    @JvmField @BindView(R.id.text_in_repeat)
     var textInsideRepeat: TextView? = null
 
-    @BindView(R.id.seekbar_now_playing)
+    @JvmField @BindView(R.id.seekbar_now_playing)
     var seekBar: SeekBar? = null
 
-    @BindView(R.id.pw_playButton)
+    @JvmField @BindView(R.id.pw_playButton)
     var mPlayButton: ImageButton? = null
 
-    @BindView(R.id.pw_runningTime)
+    @JvmField @BindView(R.id.pw_runningTime)
     var runningTime: TextView? = null
 
-    @BindView(R.id.pw_totalTime)
+    @JvmField @BindView(R.id.pw_totalTime)
     var totalTime: TextView? = null
 
-    @BindView(R.id.sliding_layout)
+    @JvmField @BindView(R.id.sliding_layout)
     var slidingUpPanelLayout: SlidingUpPanelLayout? = null
 
-    @BindView(R.id.view_pager_now_playing)
+    @JvmField @BindView(R.id.view_pager_now_playing)
     var viewPager: CustomViewPager? = null
 
-    @BindView(R.id.shineButton)
+    @JvmField @BindView(R.id.shineButton)
     var shineButton: ShineButton? = null
 
-    @BindView(R.id.toolbar_)
+    @JvmField @BindView(R.id.toolbar_)
     var toolbar: Toolbar? = null
 
-    @BindView(R.id.controls_wrapper)
+    @JvmField @BindView(R.id.controls_wrapper)
     var controlsWrapper: View? = null
 
-    //@BindView(R.id.nowPlayingBackgroundImageOverlay) View backgroundOverlay;
+    //@JvmField @BindView(R.id.nowPlayingBackgroundImageOverlay) View backgroundOverlay;
     private var pref: SharedPreferences? = null
 
     //is artist thumb loaded in blurry background

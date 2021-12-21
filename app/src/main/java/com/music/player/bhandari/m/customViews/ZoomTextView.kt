@@ -24,21 +24,21 @@ import android.widget.TextView
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ZoomTextView : TextView {
+class ZoomTextView : androidx.appcompat.widget.AppCompatTextView {
     private var mScaleDetector: ScaleGestureDetector? = null
     private var mScaleFactor: Float = 1f
     private var defaultSize: Float = 0f
     private var zoomLimit: Float = 3.0f
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context?) : super(context!!) {
         initialize()
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {
         initialize()
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context!!,
         attrs,
         defStyleAttr) {
         initialize()

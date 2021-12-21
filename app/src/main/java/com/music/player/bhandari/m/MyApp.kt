@@ -65,16 +65,16 @@ class MyApp constructor() : Application() {
 
         //current selected theme id
         private var selectedThemeId: Int = 0
-        fun getInstance(): MyApp? {
-            return instance
+        fun getInstance(): MyApp {
+            return instance!!
         }
 
-        fun getContext(): Context? {
-            return instance
+        fun getContext(): Context {
+            return instance!!
         }
 
-        fun getPref(): SharedPreferences? {
-            return pref
+        fun getPref(): SharedPreferences {
+            return pref!!
         }
 
         fun setService(s: PlayerService?) {

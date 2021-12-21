@@ -42,7 +42,7 @@ class DownloadArtInfoThread constructor(
     artist: String,
     item: TrackItem?
 ) : Thread(
-    getRunnable(callback, artist.trim({ it <= ' ' }), item)) {
+    getRunnable(callback, artist.trim { it <= ' ' }, item)) {
     companion object {
         private val API_ROOT_URL: String = "http://ws.audioscrobbler.com/2.0"
         private val API_ROOT_URL_SPOTI: String = "https://api.spotify.com/v1/search"
@@ -56,10 +56,10 @@ class DownloadArtInfoThread constructor(
         ): Runnable {
             return object : Runnable {
                 override fun run() {
-                    val artistInfo: ArtistInfo = ArtistInfo(artist)
+                    val artistInfo = ArtistInfo(artist)
                     val url: String =
                         java.lang.String.format(API_ROOT_URL + FORMAT_STRING, artist, Keys.LASTFM)
-                    var response: JsonObject? = null
+                    var response: JsonObject?
                     try {
                         val queryURL: URL = URL(url)
                         val connection: Connection = Jsoup.connect(queryURL.toExternalForm())
@@ -85,7 +85,7 @@ class DownloadArtInfoThread constructor(
                             }
                             artistInfo.setCorrectedArtist(response.getAsJsonObject("artist")
                                 .get("name").asString)
-                            if (!(content == "")) {
+                            if (content != "") {
                                 artistInfo.setFlag(ArtistInfo.POSITIVE)
                             }
                         }
@@ -100,7 +100,7 @@ class DownloadArtInfoThread constructor(
                 @SuppressLint("ApplySharedPref")
                 private fun getImageUrl(): String {
                     var imageUrl: String? = null
-                    var access_token: String = ""
+                    var access_token = ""
                     try {
                         val time: Long = MyApp.getPref()!!.getLong("spoty_expiry_time", 0)
                         val diff: Long = System.currentTimeMillis() - time

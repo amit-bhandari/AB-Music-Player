@@ -72,8 +72,8 @@ class MainLibraryAdapter(
     private val id_list = ArrayList<Int>()
     private val playerService: PlayerService?
     private var position = 0
-    private var dataItems: ArrayList<dataItem> = ArrayList<dataItem>()
-    private val filteredDataItems: ArrayList<dataItem> = ArrayList<dataItem>()
+    private var dataItems: ArrayList<dataItem> = ArrayList()
+    private val filteredDataItems: ArrayList<dataItem> = ArrayList()
     private val mItemHeight = 0
     private var mLastClickTime: Long = 0
     private var batmanDrawable: Drawable? = null

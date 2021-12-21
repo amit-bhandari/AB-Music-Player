@@ -217,7 +217,7 @@ class NotificationListenerService : NotificationListenerService(), RemoteControl
                     .setSmallIcon(R.drawable.ic_subject_black_24dp)
                     .setContentText(String.format("%s - %s", artist, track))
                     .setContentIntent(contentIntent)
-            builder.setVisibility(NotificationCompat.NotificationVisibility.VISIBILITY_PUBLIC)
+            builder.setVisibility(VISIBILITY_PUBLIC)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 /* Create or update. */
                 /*NotificationChannel channel = new NotificationChannel("channel_02",

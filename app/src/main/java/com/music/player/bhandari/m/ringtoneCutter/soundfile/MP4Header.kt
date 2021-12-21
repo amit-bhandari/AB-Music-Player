@@ -15,6 +15,8 @@
  */
 package com.music.player.bhandari.m.ringtoneCutter.soundfile
 
+import kotlin.experimental.or
+
 internal class Atom {
     // note: latest versions of spec simply call it 'box' instead of 'atom'.
     private var mSize // includes atom header (8 bytes)
@@ -69,11 +71,11 @@ internal class Atom {
     }
 
     private fun getTypeInt(type_str: String): Int {
-        var type: Int = 0
-        type = type or ((type_str.get(0)).toByte() shl 24)
-        type = type or ((type_str.get(1)).toByte() shl 16)
-        type = type or ((type_str.get(2)).toByte() shl 8)
-        type = type or (type_str.get(3)).toByte()
+        var type = 0
+        type = type or ((type_str[0]).toInt() shl 24)
+        type = type or ((type_str[1]).toInt() shl 16)
+        type = type or ((type_str[2]).toInt() shl 8)
+        type = type or (type_str[3]).toByte().toInt()
         return type
     }
 
@@ -82,7 +84,7 @@ internal class Atom {
     }
 
     fun getTypeStr(): String {
-        var type: String = ""
+        var type = ""
         type += (((mType shr 24) and 0xFF).toByte()).toChar()
         type += (((mType shr 16) and 0xFF).toByte()).toChar()
         type += (((mType shr 8) and 0xFF).toByte()).toChar()
@@ -109,7 +111,7 @@ internal class Atom {
             // TODO(nfaralli): log something here
             return false
         }
-        var numChildren: Int = 1
+        var numChildren = 1
         if (mChildren != null) {
             numChildren += mChildren!!.size
         }
@@ -117,7 +119,7 @@ internal class Atom {
         if (mChildren != null) {
             System.arraycopy(mChildren, 0, children, 0, mChildren!!.size)
         }
-        children.get(numChildren - 1) = child
+        children[numChildren - 1] = child
         mChildren = children
         setSize()
         return true
@@ -147,19 +149,19 @@ internal class Atom {
     fun getBytes(): ByteArray {
         val atom_bytes: ByteArray = ByteArray(mSize)
         var offset: Int = 0
-        atom_bytes.get(offset++) = ((mSize shr 24) and 0xFF).toByte()
-        atom_bytes.get(offset++) = ((mSize shr 16) and 0xFF).toByte()
-        atom_bytes.get(offset++) = ((mSize shr 8) and 0xFF).toByte()
-        atom_bytes.get(offset++) = (mSize and 0xFF).toByte()
-        atom_bytes.get(offset++) = ((mType shr 24) and 0xFF).toByte()
-        atom_bytes.get(offset++) = ((mType shr 16) and 0xFF).toByte()
-        atom_bytes.get(offset++) = ((mType shr 8) and 0xFF).toByte()
-        atom_bytes.get(offset++) = (mType and 0xFF).toByte()
+        atom_bytes[offset++] = ((mSize shr 24) and 0xFF).toByte()
+        atom_bytes[offset++] = ((mSize shr 16) and 0xFF).toByte()
+        atom_bytes[offset++] = ((mSize shr 8) and 0xFF).toByte()
+        atom_bytes[offset++] = (mSize and 0xFF).toByte()
+        atom_bytes[offset++] = ((mType shr 24) and 0xFF).toByte()
+        atom_bytes[offset++] = ((mType shr 16) and 0xFF).toByte()
+        atom_bytes[offset++] = ((mType shr 8) and 0xFF).toByte()
+        atom_bytes[offset++] = (mType and 0xFF).toByte()
         if (mVersion >= 0) {
-            atom_bytes.get(offset++) = mVersion
-            atom_bytes.get(offset++) = ((mFlags shr 16) and 0xFF).toByte()
-            atom_bytes.get(offset++) = ((mFlags shr 8) and 0xFF).toByte()
-            atom_bytes.get(offset++) = (mFlags and 0xFF).toByte()
+            atom_bytes[offset++] = mVersion
+            atom_bytes[offset++] = ((mFlags shr 16) and 0xFF).toByte()
+            atom_bytes[offset++] = ((mFlags shr 8) and 0xFF).toByte()
+            atom_bytes[offset++] = (mFlags and 0xFF).toByte()
         }
         if (mData != null) {
             System.arraycopy(mData, 0, atom_bytes, offset, mData!!.size)
@@ -216,7 +218,7 @@ class MP4Header constructor(
     private val mNumSamples // number of samples in the stream.
             : ByteArray
     private var mHeader // the complete header.
-            : ByteArray?
+            : ByteArray? = null
     private val mSampleRate // sampling frequency in Hz (e.g. 44100).
             : Int
     private val mChannels // number of channels.
@@ -232,8 +234,7 @@ class MP4Header constructor(
             return str
         }
         val num_32bits_per_lines: Int = 8
-        var count: Int = 0
-        for (b: Byte in mHeader!!) {
+        for ((count, b: Byte) in mHeader!!.withIndex()) {
             val break_line: Boolean = count > 0 && count % (num_32bits_per_lines * 4) == 0
             val insert_space: Boolean = (count > 0) && (count % 4 == 0) && !break_line
             if (break_line) {
@@ -243,7 +244,6 @@ class MP4Header constructor(
                 str += ' '
             }
             str += String.format("%02X", b)
-            count++
         }
         return str
     }
@@ -252,7 +252,7 @@ class MP4Header constructor(
         // create the atoms needed to build the header.
         val a_ftyp: Atom = getFTYPAtom()
         val a_moov: Atom = getMOOVAtom()
-        val a_mdat: Atom = Atom("mdat") // create an empty atom. The AAC stream data should follow
+        val a_mdat = Atom("mdat") // create an empty atom. The AAC stream data should follow
         // immediately after. The correct size will be set later.
 
         // set the correct chunk offset in the stco atom.
@@ -264,10 +264,10 @@ class MP4Header constructor(
         val data: ByteArray? = a_stco.getData()
         val chunk_offset: Int = a_ftyp.getSize() + a_moov.getSize() + a_mdat.getSize()
         var offset: Int = data!!.size - 4 // here stco should contain only one chunk offset.
-        data.get(offset++) = ((chunk_offset shr 24) and 0xFF).toByte()
-        data.get(offset++) = ((chunk_offset shr 16) and 0xFF).toByte()
-        data.get(offset++) = ((chunk_offset shr 8) and 0xFF).toByte()
-        data.get(offset++) = (chunk_offset and 0xFF).toByte()
+        data[offset++] = ((chunk_offset shr 24) and 0xFF).toByte()
+        data[offset++] = ((chunk_offset shr 16) and 0xFF).toByte()
+        data[offset++] = ((chunk_offset shr 8) and 0xFF).toByte()
+        data[offset++] = (chunk_offset and 0xFF).toByte()
 
         // create the header byte array based on the previous atoms.
         val header: ByteArray =
@@ -282,15 +282,15 @@ class MP4Header constructor(
         //set the correct size of the mdat atom
         val size: Int = 8 + mTotSize
         offset -= 8
-        header.get(offset++) = ((size shr 24) and 0xFF).toByte()
-        header.get(offset++) = ((size shr 16) and 0xFF).toByte()
-        header.get(offset++) = ((size shr 8) and 0xFF).toByte()
-        header.get(offset++) = (size and 0xFF).toByte()
+        header[offset++] = ((size shr 24) and 0xFF).toByte()
+        header[offset++] = ((size shr 16) and 0xFF).toByte()
+        header[offset++] = ((size shr 8) and 0xFF).toByte()
+        header[offset++] = (size and 0xFF).toByte()
         mHeader = header
     }
 
     private fun getFTYPAtom(): Atom {
-        val atom: Atom = Atom("ftyp")
+        val atom = Atom("ftyp")
         atom.setData(byteArrayOf(
             'M'.toByte(), '4'.toByte(), 'A'.toByte(), ' '.toByte(),  // Major brand
             0, 0, 0, 0,  // Minor version
@@ -302,31 +302,31 @@ class MP4Header constructor(
     }
 
     private fun getMOOVAtom(): Atom {
-        val atom: Atom = Atom("moov")
+        val atom = Atom("moov")
         atom.addChild(getMVHDAtom())
         atom.addChild(getTRAKAtom())
         return atom
     }
 
     private fun getMVHDAtom(): Atom {
-        val atom: Atom = Atom("mvhd", 0.toByte(), 0)
+        val atom = Atom("mvhd", 0.toByte(), 0)
         atom.setData(byteArrayOf(
-            mTime.get(0),
-            mTime.get(1),
-            mTime.get(2),
-            mTime.get(3),  // creation time.
-            mTime.get(0),
-            mTime.get(1),
-            mTime.get(2),
-            mTime.get(3),  // modification time.
+            mTime[0],
+            mTime[1],
+            mTime[2],
+            mTime[3],  // creation time.
+            mTime[0],
+            mTime[1],
+            mTime[2],
+            mTime[3],  // modification time.
             0,
             0,
             0x03,
             0xE8.toByte(),  // timescale = 1000 => duration expressed in ms.
-            mDurationMS.get(0),
-            mDurationMS.get(1),
-            mDurationMS.get(2),
-            mDurationMS.get(3),  // duration in ms.
+            mDurationMS[0],
+            mDurationMS[1],
+            mDurationMS[2],
+            mDurationMS[3],  // duration in ms.
             0,
             1,
             0,
@@ -412,23 +412,23 @@ class MP4Header constructor(
     }
 
     private fun getTRAKAtom(): Atom {
-        val atom: Atom = Atom("trak")
+        val atom = Atom("trak")
         atom.addChild(getTKHDAtom())
         atom.addChild(getMDIAAtom())
         return atom
     }
 
     private fun getTKHDAtom(): Atom {
-        val atom: Atom = Atom("tkhd", 0.toByte(), 0x07) // track enabled, in movie, and in preview.
+        val atom = Atom("tkhd", 0.toByte(), 0x07) // track enabled, in movie, and in preview.
         atom.setData(byteArrayOf(
-            mTime.get(0),
-            mTime.get(1),
-            mTime.get(2),
-            mTime.get(3),  // creation time.
-            mTime.get(0),
-            mTime.get(1),
-            mTime.get(2),
-            mTime.get(3),  // modification time.
+            mTime[0],
+            mTime[1],
+            mTime[2],
+            mTime[3],  // creation time.
+            mTime[0],
+            mTime[1],
+            mTime[2],
+            mTime[3],  // modification time.
             0,
             0,
             0,
@@ -506,7 +506,7 @@ class MP4Header constructor(
     }
 
     private fun getMDIAAtom(): Atom {
-        val atom: Atom = Atom("mdia")
+        val atom = Atom("mdia")
         atom.addChild(getMDHDAtom())
         atom.addChild(getHDLRAtom())
         atom.addChild(getMINFAtom())
@@ -514,7 +514,7 @@ class MP4Header constructor(
     }
 
     private fun getMDHDAtom(): Atom {
-        val atom: Atom = Atom("mdhd", 0.toByte(), 0)
+        val atom = Atom("mdhd", 0.toByte(), 0)
         atom.setData(byteArrayOf(
             mTime.get(0),
             mTime.get(1),
@@ -597,28 +597,27 @@ class MP4Header constructor(
     }
 
     private fun getDINFAtom(): Atom {
-        val atom: Atom = Atom("dinf")
+        val atom = Atom("dinf")
         atom.addChild(getDREFAtom())
         return atom
     }
 
     private fun getDREFAtom(): Atom {
-        val atom: Atom = Atom("dref", 0.toByte(), 0)
+        val atom = Atom("dref", 0.toByte(), 0)
         val url: ByteArray = getURLAtom().getBytes()
-        val data: ByteArray = ByteArray(4 + url.size)
-        data.get(3) = 0x01 // entry count = 1
+        val data = ByteArray(4 + url.size)
+        data[3] = 0x01 // entry count = 1
         System.arraycopy(url, 0, data, 4, url.size)
         atom.setData(data)
         return atom
     }
 
     private fun getURLAtom(): Atom {
-        val atom: Atom = Atom("url ", 0.toByte(), 0x01) // flags = 0x01: data is self contained.
-        return atom
+        return Atom("url ", 0.toByte(), 0x01) // flags = 0x01: data is self contained.
     }
 
     private fun getSTBLAtom(): Atom {
-        val atom: Atom = Atom("stbl")
+        val atom = Atom("stbl")
         atom.addChild(getSTSDAtom())
         atom.addChild(getSTTSAtom())
         atom.addChild(getSTSCAtom())
@@ -628,10 +627,10 @@ class MP4Header constructor(
     }
 
     private fun getSTSDAtom(): Atom {
-        val atom: Atom = Atom("stsd", 0.toByte(), 0)
+        val atom = Atom("stsd", 0.toByte(), 0)
         val mp4a: ByteArray = getMP4AAtom().getBytes()
-        val data: ByteArray = ByteArray(4 + mp4a.size)
-        data.get(3) = 0x01 // entry count = 1
+        val data = ByteArray(4 + mp4a.size)
+        data[3] = 0x01 // entry count = 1
         System.arraycopy(mp4a, 0, data, 4, mp4a.size)
         atom.setData(data)
         return atom
@@ -639,7 +638,7 @@ class MP4Header constructor(
 
     // See also Part 14 section 5.6.1 of ISO/IEC 14496 for this atom.
     private fun getMP4AAtom(): Atom {
-        val atom: Atom = Atom("mp4a")
+        val atom = Atom("mp4a")
         val ase: ByteArray = byteArrayOf( // Audio Sample Entry data
             0, 0, 0, 0, 0, 0,  // reserved
             0, 1,  // data reference index
@@ -651,7 +650,7 @@ class MP4Header constructor(
             0, 0,  // reserved
             (mSampleRate shr 8).toByte(), (mSampleRate).toByte(), 0, 0)
         val esds: ByteArray = getESDSAtom().getBytes()
-        val data: ByteArray = ByteArray(ase.size + esds.size)
+        val data = ByteArray(ase.size + esds.size)
         System.arraycopy(ase, 0, data, 0, ase.size)
         System.arraycopy(esds, 0, data, ase.size, esds.size)
         atom.setData(data)
@@ -659,7 +658,7 @@ class MP4Header constructor(
     }
 
     private fun getESDSAtom(): Atom {
-        val atom: Atom = Atom("esds", 0.toByte(), 0)
+        val atom = Atom("esds", 0.toByte(), 0)
         atom.setData(getESDescriptor())
         return atom
     }
@@ -679,7 +678,6 @@ class MP4Header constructor(
         // Sampling frequency and channels configuration are not set yet.
         val audioSpecificConfig: ByteArray = byteArrayOf(0x05, 0x02, 0x10, 0x00)
         val slConfigDescr: ByteArray = byteArrayOf(0x06, 0x01, 0x02) // specific for MP4 file.
-        var offset: Int
         var bufferSize: Int = 0x300
         while (bufferSize < 2 * mMaxFrameSize) {
             // TODO(nfaralli): what should be the minimum size of the decoder buffer?
@@ -688,20 +686,20 @@ class MP4Header constructor(
         }
 
         // create the Decoder Configuration Descriptor
-        val decConfigDescr: ByteArray = ByteArray(2 + decConfigDescr_top.get(1))
+        val decConfigDescr = ByteArray(2 + decConfigDescr_top.get(1))
         System.arraycopy(decConfigDescr_top, 0, decConfigDescr, 0, decConfigDescr_top.size)
-        offset = decConfigDescr_top.size
-        decConfigDescr.get(offset++) = ((bufferSize shr 16) and 0xFF).toByte()
-        decConfigDescr.get(offset++) = ((bufferSize shr 8) and 0xFF).toByte()
-        decConfigDescr.get(offset++) = (bufferSize and 0xFF).toByte()
-        decConfigDescr.get(offset++) = ((mBitrate shr 24) and 0xFF).toByte()
-        decConfigDescr.get(offset++) = ((mBitrate shr 16) and 0xFF).toByte()
-        decConfigDescr.get(offset++) = ((mBitrate shr 8) and 0xFF).toByte()
-        decConfigDescr.get(offset++) = (mBitrate and 0xFF).toByte()
-        decConfigDescr.get(offset++) = ((mBitrate shr 24) and 0xFF).toByte()
-        decConfigDescr.get(offset++) = ((mBitrate shr 16) and 0xFF).toByte()
-        decConfigDescr.get(offset++) = ((mBitrate shr 8) and 0xFF).toByte()
-        decConfigDescr.get(offset++) = (mBitrate and 0xFF).toByte()
+        var offset: Int = decConfigDescr_top.size
+        decConfigDescr[offset++] = ((bufferSize shr 16) and 0xFF).toByte()
+        decConfigDescr[offset++] = ((bufferSize shr 8) and 0xFF).toByte()
+        decConfigDescr[offset++] = (bufferSize and 0xFF).toByte()
+        decConfigDescr[offset++] = ((mBitrate shr 24) and 0xFF).toByte()
+        decConfigDescr[offset++] = ((mBitrate shr 16) and 0xFF).toByte()
+        decConfigDescr[offset++] = ((mBitrate shr 8) and 0xFF).toByte()
+        decConfigDescr[offset++] = (mBitrate and 0xFF).toByte()
+        decConfigDescr[offset++] = ((mBitrate shr 24) and 0xFF).toByte()
+        decConfigDescr[offset++] = ((mBitrate shr 16) and 0xFF).toByte()
+        decConfigDescr[offset++] = ((mBitrate shr 8) and 0xFF).toByte()
+        decConfigDescr[offset++] = (mBitrate and 0xFF).toByte()
         var index: Int
         index = 0
         while (index < samplingFrequencies.size) {
@@ -715,14 +713,14 @@ class MP4Header constructor(
             // Invalid sampling frequency. Default to 44100Hz...
             index = 4
         }
-        audioSpecificConfig.get(2) = audioSpecificConfig.get(2) or ((index shr 1) and 0x07).toByte()
-        audioSpecificConfig.get(3) =
-            audioSpecificConfig.get(3) or (((index and 1) shl 7) or ((mChannels and 0x0F) shl 3)).toByte()
+        audioSpecificConfig[2] = audioSpecificConfig[2] or ((index shr 1) and 0x07).toByte()
+        audioSpecificConfig[3] =
+            audioSpecificConfig[3] or (((index and 1) shl 7) or ((mChannels and 0x0F) shl 3)).toByte()
         System.arraycopy(
             audioSpecificConfig, 0, decConfigDescr, offset, audioSpecificConfig.size)
 
         // create the ES Descriptor
-        val ESDescriptor: ByteArray = ByteArray(2 + ESDescriptor_top.get(1))
+        val ESDescriptor = ByteArray(2 + ESDescriptor_top.get(1))
         System.arraycopy(ESDescriptor_top, 0, ESDescriptor, 0, ESDescriptor_top.size)
         offset = ESDescriptor_top.size
         System.arraycopy(decConfigDescr, 0, ESDescriptor, offset, decConfigDescr.size)
@@ -732,7 +730,7 @@ class MP4Header constructor(
     }
 
     private fun getSTTSAtom(): Atom {
-        val atom: Atom = Atom("stts", 0.toByte(), 0)
+        val atom = Atom("stts", 0.toByte(), 0)
         val numAudioFrames: Int = mFrameSize!!.size - 1
         atom.setData(byteArrayOf(
             0,
@@ -782,23 +780,23 @@ class MP4Header constructor(
     }
 
     private fun getSTSZAtom(): Atom {
-        val atom: Atom = Atom("stsz", 0.toByte(), 0)
+        val atom = Atom("stsz", 0.toByte(), 0)
         val numFrames: Int = mFrameSize!!.size
-        val data: ByteArray = ByteArray(8 + 4 * numFrames)
-        var offset: Int = 0
-        data.get(offset++) = 0 // sample size (=0 => each frame can have a different size)
-        data.get(offset++) = 0
-        data.get(offset++) = 0
-        data.get(offset++) = 0
-        data.get(offset++) = ((numFrames shr 24) and 0xFF).toByte() // sample count
-        data.get(offset++) = ((numFrames shr 16) and 0xFF).toByte()
-        data.get(offset++) = ((numFrames shr 8) and 0xFF).toByte()
-        data.get(offset++) = (numFrames and 0xFF).toByte()
+        val data = ByteArray(8 + 4 * numFrames)
+        var offset = 0
+        data[offset++] = 0 // sample size (=0 => each frame can have a different size)
+        data[offset++] = 0
+        data[offset++] = 0
+        data[offset++] = 0
+        data[offset++] = ((numFrames shr 24) and 0xFF).toByte() // sample count
+        data[offset++] = ((numFrames shr 16) and 0xFF).toByte()
+        data[offset++] = ((numFrames shr 8) and 0xFF).toByte()
+        data[offset++] = (numFrames and 0xFF).toByte()
         for (size: Int in mFrameSize) {
-            data.get(offset++) = ((size shr 24) and 0xFF).toByte()
-            data.get(offset++) = ((size shr 16) and 0xFF).toByte()
-            data.get(offset++) = ((size shr 8) and 0xFF).toByte()
-            data.get(offset++) = (size and 0xFF).toByte()
+            data[offset++] = ((size shr 24) and 0xFF).toByte()
+            data[offset++] = ((size shr 16) and 0xFF).toByte()
+            data[offset++] = ((size shr 8) and 0xFF).toByte()
+            data[offset++] = (size and 0xFF).toByte()
         }
         atom.setData(data)
         return atom
@@ -825,29 +823,25 @@ class MP4Header constructor(
 
     // Creates a new MP4Header object that should be used to generate an .m4a file header.
     init {
-        if ((frame_size == null) || (frame_size.size < 2) || (frame_size.get(0) != 2)) {
-            //TODO(nfaralli): log something here
-            return
-        }
         mSampleRate = sampleRate
         mChannels = numChannels
         mFrameSize = frame_size
         mBitrate = bitrate
-        mMaxFrameSize = mFrameSize!!.get(0)
-        mTotSize = mFrameSize.get(0)
+        mMaxFrameSize = mFrameSize!![0]
+        mTotSize = mFrameSize[0]
         for (i in 1 until mFrameSize.size) {
-            if (mMaxFrameSize < mFrameSize.get(i)) {
-                mMaxFrameSize = mFrameSize.get(i)
+            if (mMaxFrameSize < mFrameSize[i]) {
+                mMaxFrameSize = mFrameSize[i]
             }
-            mTotSize += mFrameSize.get(i)
+            mTotSize += mFrameSize[i]
         }
         var time: Long = System.currentTimeMillis() / 1000
         time += ((66 * 365 + 16) * 24 * 60 * 60).toLong() // number of seconds between 1904 and 1970
         mTime = ByteArray(4)
-        mTime.get(0) = ((time shr 24) and 0xFF).toByte()
-        mTime.get(1) = ((time shr 16) and 0xFF).toByte()
-        mTime.get(2) = ((time shr 8) and 0xFF).toByte()
-        mTime.get(3) = (time and 0xFF).toByte()
+        mTime[0] = ((time shr 24) and 0xFF).toByte()
+        mTime[1] = ((time shr 16) and 0xFF).toByte()
+        mTime[2] = ((time shr 8) and 0xFF).toByte()
+        mTime[3] = (time and 0xFF).toByte()
         val numSamples: Int = 1024 * (frame_size!!.size - 1) // 1st frame does not contain samples.
         var durationMS: Int = (numSamples * 1000) / mSampleRate
         if ((numSamples * 1000) % mSampleRate > 0) {  // round the duration up.

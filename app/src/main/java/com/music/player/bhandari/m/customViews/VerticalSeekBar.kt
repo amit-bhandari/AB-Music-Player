@@ -40,12 +40,11 @@ import androidx.appcompat.widget.AppCompatSeekBar
  */
 //Creates a Vertical SeekBar using Android's basic UI elements.
 class VerticalSeekBar : AppCompatSeekBar {
-    constructor(context: Context?) : super((context)!!) {}
+    constructor(context: Context?) : super((context)!!)
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
-        (context)!!, attrs, defStyle) {
-    }
+        (context)!!, attrs, defStyle)
 
-    constructor(context: Context?, attrs: AttributeSet?) : super((context)!!, attrs) {}
+    constructor(context: Context?, attrs: AttributeSet?) : super((context)!!, attrs)
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(h, w, oldh, oldw)
@@ -54,41 +53,41 @@ class VerticalSeekBar : AppCompatSeekBar {
     @Synchronized
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(heightMeasureSpec, widthMeasureSpec)
-        setMeasuredDimension(getMeasuredHeight(), getMeasuredWidth())
+        setMeasuredDimension(measuredHeight, measuredWidth)
     }
 
     override fun onDraw(c: Canvas) {
         c.rotate(-90f)
-        c.translate(-getHeight().toFloat(), 0f)
+        c.translate(-height.toFloat(), 0f)
         super.onDraw(c)
     }
 
     private var onChangeListener: OnSeekBarChangeListener? = null
-    public override fun setOnSeekBarChangeListener(onChangeListener: OnSeekBarChangeListener) {
+    override fun setOnSeekBarChangeListener(onChangeListener: OnSeekBarChangeListener) {
         this.onChangeListener = onChangeListener
     }
 
     private var lastProgress: Int = 0
-    public override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (!isEnabled()) {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!isEnabled) {
             return false
         }
-        when (event.getAction()) {
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 onChangeListener!!.onStartTrackingTouch(this)
-                setPressed(true)
-                setSelected(true)
+                isPressed = true
+                isSelected = true
             }
             MotionEvent.ACTION_MOVE -> {
                 super.onTouchEvent(event)
-                var progress: Int = getMax() - (getMax() * event.getY() / getHeight()).toInt()
+                var progress: Int = max - (max * event.y / height).toInt()
 
                 // Ensure progress stays within boundaries
                 if (progress < 0) {
                     progress = 0
                 }
-                if (progress > getMax()) {
-                    progress = getMax()
+                if (progress > max) {
+                    progress = max
                 }
                 setProgress(progress) // Draw progress
                 if (progress != lastProgress) {
@@ -96,19 +95,19 @@ class VerticalSeekBar : AppCompatSeekBar {
                     lastProgress = progress
                     onChangeListener!!.onProgressChanged(this, progress, true)
                 }
-                onSizeChanged(getWidth(), getHeight(), 0, 0)
-                setPressed(true)
-                setSelected(true)
+                onSizeChanged(width, height, 0, 0)
+                isPressed = true
+                isSelected = true
             }
             MotionEvent.ACTION_UP -> {
                 onChangeListener!!.onStopTrackingTouch(this)
-                setPressed(false)
-                setSelected(false)
+                isPressed = false
+                isSelected = false
             }
             MotionEvent.ACTION_CANCEL -> {
                 super.onTouchEvent(event)
-                setPressed(false)
-                setSelected(false)
+                isPressed = false
+                isSelected = false
             }
         }
         return true
@@ -117,7 +116,7 @@ class VerticalSeekBar : AppCompatSeekBar {
     @Synchronized
     fun setProgressAndThumb(progress: Int) {
         setProgress(progress)
-        onSizeChanged(getWidth(), getHeight(), 0, 0)
+        onSizeChanged(width, height, 0, 0)
         if (progress != lastProgress) {
             // Only enact listener if the progress has actually changed
             lastProgress = progress
@@ -127,11 +126,11 @@ class VerticalSeekBar : AppCompatSeekBar {
 
     @Synchronized
     fun setMaximum(maximum: Int) {
-        setMax(maximum)
+        max = maximum
     }
 
     @Synchronized
     fun getMaximum(): Int {
-        return getMax()
+        return max
     }
 }
