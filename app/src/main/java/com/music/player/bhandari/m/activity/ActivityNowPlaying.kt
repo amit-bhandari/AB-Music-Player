@@ -2,6 +2,7 @@ package com.music.player.bhandari.m.activity
 
 import android.content.*
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
@@ -421,7 +422,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         mAdapter = CurrentTracklistAdapter(this, this)
         mRecyclerView!!.adapter = mAdapter!!
         mRecyclerView!!.layoutManager = mLayoutManager
-        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(mAdapter)
+        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(mAdapter!!)
         mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper!!.attachToRecyclerView(mRecyclerView)
         val itemDecor = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
@@ -432,7 +433,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         if (mRecyclerView == null || mAdapter == null) {
             return
         }
-        mAdapter.fillData()
+        mAdapter!!.fillData()
     }
 
     override fun onDestroy() {
@@ -472,7 +473,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 if (receivedIntent == null || !receivedIntent.getBooleanExtra("skip_adapter_update",
                         false)
                 ) {
-                    mAdapter.notifyDataSetChanged()
+                    mAdapter!!.notifyDataSetChanged()
                 }
             }
             invalidateOptionsMenu()
@@ -504,7 +505,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                             val CACHE_ART_THUMBS: String =
                                 this.cacheDir.toString() + "/art_thumbs/"
                             val actual_file_path: String =
-                                CACHE_ART_THUMBS + playerService!!.getCurrentTrack().getArtist()
+                                CACHE_ART_THUMBS + playerService!!.getCurrentTrack()!!.getArtist()
                             b = BitmapFactory.decodeFile(actual_file_path)
                             isArtistLoadedInBackground = b != null
                             Log.d(Constants.TAG, "UpdateUI: settingArtistImageBackground")
@@ -639,16 +640,17 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 //Drawable drawable = menu.getItem(i).getIcon();
                 //if (drawable != null) {
                 val item: TrackItem? = playerService!!.getCurrentTrack()
-                if (item != null && PlaylistManager.getInstance(applicationContext)
-                        .isFavNew(item.id)
-                ) {
-                    //rawable.mutate();
-                    //drawable.setColorFilter(ColorHelper.GetWidgetColor(), PorterDuff.Mode.SRC_ATOP);
-                    menu.getItem(i).icon = resources.getDrawable(R.drawable.ic_favorite_black_24dp)
-                } else {
-                    //drawable.mutate();
-                    //drawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite), PorterDuff.Mode.SRC_ATOP);
-                    menu.getItem(i).icon = resources.getDrawable(R.drawable.ic_favorite_border_black_24dp)
+                when {
+                    item != null && PlaylistManager.getInstance(applicationContext)!!.isFavNew(item.id) -> {
+                        //rawable.mutate();
+                        //drawable.setColorFilter(ColorHelper.GetWidgetColor(), PorterDuff.Mode.SRC_ATOP);
+                        menu.getItem(i).icon = resources.getDrawable(R.drawable.ic_favorite_black_24dp)
+                    }
+                    else -> {
+                        //drawable.mutate();
+                        //drawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite), PorterDuff.Mode.SRC_ATOP);
+                        menu.getItem(i).icon = resources.getDrawable(R.drawable.ic_favorite_border_black_24dp)
+                    }
                 }
                 //}
             }
@@ -658,8 +660,8 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
 
     override fun onBackPressed() {
         //
-        if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED)
+        if (slidingUpPanelLayout!!.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            slidingUpPanelLayout!!.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED)
             return
         }
         if (isInvokedFromFileExplorer) {
@@ -702,7 +704,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         when (item.itemId) {
             R.id.action_fav -> {
                 if (playerService!!.getCurrentTrack() == null) {
-                    Snackbar.make(rootView,
+                    Snackbar.make(rootView!!,
                         getString(R.string.error_nothing_to_fav),
                         Snackbar.LENGTH_SHORT).show()
                     return true
@@ -729,7 +731,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                     }
                 } else {
                     //show app equalizer
-                    if (playerService!!.getEqualizerHelper().isEqualizerSupported()) {
+                    if (playerService!!.getEqualizerHelper()!!.isEqualizerSupported()) {
                         startActivity(Intent(this, ActivityEqualizer::class.java))
                     } else {
                         Snackbar.make(rootView!!,
@@ -762,7 +764,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 val art_intent: Intent = Intent(this, ActivitySecondaryLibrary::class.java)
                 art_intent.putExtra("status", Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT)
                 art_intent.putExtra("key", trackItem.artist_id)
-                art_intent.putExtra("title", trackItem.getArtist()!!.trim({ it <= ' ' }))
+                art_intent.putExtra("title", trackItem.getArtist()!!.trim { it <= ' ' })
                 startActivity(art_intent)
             } else {
                 Snackbar.make(rootView!!, getString(R.string.no_music_found), Snackbar.LENGTH_SHORT)
@@ -816,7 +818,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                         .putExtra("position", playerService!!.getCurrentTrackPosition())
                         .putExtra("id", trackItem.id))
                 } else {
-                    Snackbar.make(rootView,
+                    Snackbar.make(rootView!!,
                         getString(R.string.no_music_found),
                         Snackbar.LENGTH_SHORT).show()
                 }
@@ -925,7 +927,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         }
         when (view.id) {
             R.id.save_queue_button -> {
-                if (mAdapter.getItemCount() === 0) {
+                if (mAdapter!!.getItemCount() === 0) {
                     return
                 }
                 val input: EditText = EditText(this)
@@ -1000,7 +1002,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE -> {
                 super.onKeyDown(keyCode, event)
                 Log.v(Constants.TAG,
-                    keyCode.toString() + " v " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
+                    keyCode.toString() + " v " + audioManager!!.getStreamVolume(AudioManager.STREAM_MUSIC))
             }
         }
         return false
@@ -1010,7 +1012,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         LocalBroadcastManager.getInstance(applicationContext)
             .sendBroadcast(Intent(Constants.ACTION.DISC_UPDATE))
         (viewPagerAdapter!!.getItem(2) as FragmentLyrics).runLyricThread()
-        if (viewPager!!.currentItem === 2 && playerService!!.getStatus() === playerService!!.PLAYING) {
+        if (viewPager!!.currentItem == 2 && playerService!!.getStatus() === playerService!!.PLAYING) {
             acquireWindowPowerLock(true)
         } else {
             acquireWindowPowerLock(false)
@@ -1130,7 +1132,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         if (mGoogleApiClient == null) {
             return
         }
-        val signInIntent: Intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
+        val signInIntent: Intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient!!)
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
@@ -1150,7 +1152,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
-            val result: GoogleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data!!)!!
             handleSignInResult(result)
         }
     }
@@ -1161,7 +1163,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             // Signed in successfully, show authenticated UI.
 
             //permanently hide  sign in button on now playing activity
-            MyApp.getPref()!!.edit().putBoolean("never_show_button_again", true).apply()
+            MyApp.getPref().edit().putBoolean("never_show_button_again", true).apply()
             MyApp.hasUserSignedIn = true
             val acct: GoogleSignInAccount = result.signInAccount ?: return
 
@@ -1371,7 +1373,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             return
         }
         playerService!!.play()
-        if (playerService!!.getStatus() === playerService.PLAYING) {
+        if (playerService!!.getStatus() === playerService!!.PLAYING) {
             mPlayButton!!.setImageDrawable(resources.getDrawable(R.drawable.pw_pause))
             startUpdateTask()
         } else {
@@ -1381,9 +1383,9 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
     }
 
     private fun setSeekbarAndTime() {
-        seekBar.setProgress(UtilityFun.getProgressPercentage(playerService!!.getCurrentTrackProgress(),
+        seekBar!!.setProgress(UtilityFun.getProgressPercentage(playerService!!.getCurrentTrackProgress(),
             playerService!!.getCurrentTrackDuration()))
-        runningTime.setText(UtilityFun.msToString(playerService!!.getCurrentTrackProgress().toLong()))
+        runningTime!!.setText(UtilityFun.msToString(playerService!!.getCurrentTrackProgress().toLong()))
     }
 
     private fun startUpdateTask() {
@@ -1444,7 +1446,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             mFragmentTitleList.add(title)
         }
 
-        override fun getPageTitle(position: Int): CharSequence? {
+        override fun getPageTitle(position: Int): CharSequence {
             return mFragmentTitleList.get(position)
         }
     }

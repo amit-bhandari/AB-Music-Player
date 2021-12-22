@@ -100,6 +100,8 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
     //variables for measuring time between consecutive play pause button click on earphone
     private var lastTimePlayPauseClicked: Long = 0
 
+    val PLAYING: Int = 1
+
     //equlizer helper
     var mEqualizerHelper: EqualizerHelper? = null
 
@@ -116,7 +118,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
         shakeDetector = ShakeDetector(this)
         shakeDetector!!.setSensitivity(ShakeDetector.SENSITIVITY_LIGHT)
-        if (MyApp.getPref()!!.getBoolean(getString(R.string.pref_shake), false)) {
+        if (MyApp.getPref().getBoolean(getString(R.string.pref_shake), false)) {
             setShakeListener(true)
         }
         InitializeIntents()
@@ -1304,7 +1306,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     playTrack(0)
                     currentTrackPosition = 0
                 } else {
-                    if (MyApp.Companion.getPref()!!.getBoolean(getString(R.string.pref_continuous_playback), false)
+                    if (MyApp.getPref()!!.getBoolean(getString(R.string.pref_continuous_playback), false)
                     ) {
                         if (trackList.size < 10) {
                             val dataItems: List<Int> =
@@ -1399,8 +1401,8 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         }
     }
 
-    fun getEqualizerHelper(): EqualizerHelper? {
-        return mEqualizerHelper
+    fun getEqualizerHelper(): EqualizerHelper {
+        return mEqualizerHelper!!
     }
 
     fun seekTrack(p: Int) {
@@ -1731,7 +1733,6 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
     companion object {
         val STOPPED: Int = -1
         val PAUSED: Int = 0
-        val PLAYING: Int = 1
         private var shakeDetector: ShakeDetector? = null
         private var sensorManager: SensorManager? = null
 

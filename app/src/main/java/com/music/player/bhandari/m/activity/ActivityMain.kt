@@ -220,7 +220,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
             finish()
             return
         }
-        when (MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
@@ -312,7 +312,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 
 
         //get tab sequence
-        val savedTabSeq = MyApp.getPref()!!.getString(getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ)
+        val savedTabSeq = MyApp.getPref().getString(getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ)
         val st = StringTokenizer(savedTabSeq, ",")
         savedTabSeqInt = IntArray(Constants.TABS.NUMBER_OF_TABS)
         for (i in 0 until Constants.TABS.NUMBER_OF_TABS) {
@@ -320,13 +320,13 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         }
 
         // 0 - System default   1 - custom
-        when (MyApp.getPref()!!.getInt(getString(R.string.pref_main_library_back), 0)) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_main_library_back), 0)) {
             0 -> setSystemDefaultBackground()
             1 -> setBlurryBackgroundForMainLib()
         }
 
         // 0 - System default   1 - custom
-        when (MyApp.getPref()!!.getInt(getString(R.string.pref_nav_library_back), 0)) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_nav_library_back), 0)) {
             0 -> navViewBack!!.setBackgroundDrawable(ColorHelper.getGradientDrawable())
             1 -> setBlurryBackgroundForNav()
         }
@@ -393,7 +393,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         fab_right_side!!.setOnClickListener(this)
         fab_lock!!.backgroundTintList = ColorStateList.valueOf(ColorHelper.getWidgetColor())
         fab_lock!!.setOnClickListener(this)
-        if (MyApp.getPref()!!.getBoolean(getString(R.string.pref_hide_lock_button), false)
+        if (MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button), false)
         ) {
             fab_lock!!.visibility = View.GONE
         }
@@ -412,7 +412,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build()
-        mGoogleApiClient = GoogleApiClient.Builder(MyApp.getContext()!!)
+        mGoogleApiClient = GoogleApiClient.Builder(MyApp.getContext())
             .enableAutoManage(this, this)
             .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
             .build()
@@ -442,7 +442,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     fun setBlurryBackgroundForMainLib() {
         customBackOverlay!!.visibility = View.VISIBLE
         Glide.with(this)
-            .load(Uri.fromFile(File(MyApp.getContext()!!.filesDir
+            .load(Uri.fromFile(File(MyApp.getContext().filesDir
                 .toString() + getString(R.string.main_lib_back_custom_image))))
             .signature(ObjectKey(System.currentTimeMillis()
                 .toString())) //.placeholder(R.drawable.back2)
@@ -452,7 +452,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 
     fun setBlurryBackgroundForNav() {
         Glide.with(this)
-            .load(Uri.fromFile(File(MyApp.getContext()!!.filesDir.toString() + getString(R.string.nav_back_custom_image))))
+            .load(Uri.fromFile(File(MyApp.getContext().filesDir.toString() + getString(R.string.nav_back_custom_image))))
             .signature(ObjectKey(System.currentTimeMillis().toString()))
             .into(navViewBack!!)
     }
@@ -462,7 +462,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     }
 
     private fun firstTimeInfoManage() {
-        if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_lock_button_info_shown), false)) {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_lock_button_info_shown), false)) {
             showInfo(Constants.FIRST_TIME_INFO.MINI_PLAYER)
             return
         }
@@ -479,8 +479,8 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         }
 
         //if updating or first install
-        if (verCode != 0 && MyApp.getPref()!!.getInt(getString(R.string.pref_version_code), -1) < verCode) {
-            MyApp.getPref()!!.edit().putString(getString(R.string.pref_card_image_links), "").apply()
+        if (verCode != 0 && MyApp.getPref().getInt(getString(R.string.pref_version_code), -1) < verCode) {
+            MyApp.getPref().edit().putString(getString(R.string.pref_card_image_links), "").apply()
 //            val dialog: MaterialDialog = MyDialogBuilder(this)
 //                .title(getString(R.string.main_act_whats_new_title))
 //                .content(getString(R.string.whats_new))
@@ -500,9 +500,9 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 //
 //            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 //            dialog.show()
-            val baseThemePref = MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
+            val baseThemePref = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
             if (baseThemePref == Constants.PRIMARY_COLOR.LIGHT) {
-                MyApp.getPref()!!.edit().putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY).apply()
+                MyApp.getPref().edit().putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY).apply()
             }
 
             //MyApp.getPref().edit().putBoolean(getString(R.string.pref_prefer_system_equ),false).apply();
@@ -520,9 +520,9 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
             }
 
             //invalidate spotify key
-            MyApp.getPref()!!.edit().putLong("spoty_expiry_time", 0).apply()
+            MyApp.getPref().edit().putLong("spoty_expiry_time", 0).apply()
         }
-        MyApp.getPref()!!.edit().putInt(getString(R.string.pref_version_code), verCode).apply()
+        MyApp.getPref().edit().putInt(getString(R.string.pref_version_code), verCode).apply()
     }
 
     @SuppressLint("WrongViewCast")
@@ -560,7 +560,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                         }
 
                         private fun showNext() {
-                            MyApp.getPref()!!.edit()
+                            MyApp.getPref().edit()
                                 .putBoolean(getString(R.string.pref_lock_button_info_shown), true)
                                 .apply()
                             showInfo(Constants.FIRST_TIME_INFO.SORTING)
@@ -677,7 +677,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                     val url: String? = MusicLibrary.instance!!.artistUrls
                         .get(playerService!!.getCurrentTrack()!!.getArtist())
                     if (url != null) {
-                        when (MyApp.getPref()!!.getInt(getString(R.string.pref_default_album_art), 0)) {
+                        when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
                             0 -> builder = Glide.with(this).load(Uri.parse(url))
                                 .placeholder(R.drawable.ic_batman_1)
                             1 -> builder = Glide.with(this).load(Uri.parse(url))
@@ -721,7 +721,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                 Constants.TABS.ALBUMS -> {
                     val bundle3 = Bundle()
                     bundle3.putInt("status", Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT)
-                    if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_album_lib_view), true)
+                    if (!MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view), true)
                     ) {
                         val musicByAlbumFrag = FragmentLibrary()
                         musicByAlbumFrag.arguments = bundle3
@@ -854,7 +854,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 
     private fun launchEqu() {
         val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-        if ((MyApp.getPref()!!.getBoolean(getString(R.string.pref_prefer_system_equ), true)
+        if ((MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
                     && (intent.resolveActivity(packageManager) != null))
         ) {
             try {
@@ -865,7 +865,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         } else {
             //show app equalizer
             when {
-                playerService!!.getEqualizerHelper()!!.isEqualizerSupported() -> {
+                playerService!!.getEqualizerHelper().isEqualizerSupported() -> {
                     startActivity(Intent(this, ActivityEqualizer::class.java))
                 }
                 else -> {
@@ -908,7 +908,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
             Constants.TABS.FOLDER, Constants.TABS.PLAYLIST -> {}
             Constants.TABS.TRACKS -> currentPageSort = getString(R.string.pref_tracks_sort_by)
         }
-        when (MyApp.getPref()!!.getInt(currentPageSort, Constants.SORT_BY.NAME)) {
+        when (MyApp.getPref().getInt(currentPageSort, Constants.SORT_BY.NAME)) {
             Constants.SORT_BY.NAME -> popupMenu.menu.findItem(R.id.action_sort_name).isChecked = true
             Constants.SORT_BY.YEAR -> popupMenu.menu.findItem(R.id.action_sort_year).isChecked = true
             Constants.SORT_BY.SIZE -> popupMenu.menu.findItem(R.id.action_sort_size).isChecked = true
@@ -935,7 +935,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
             imm!!.hideSoftInputFromWindow(view.windowToken, 0)
 
             //add the search icon in the action bar
-            mSearchAction!!.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp))
+            mSearchAction!!.icon = ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp)
             clearSearch()
             searchQuery = ""
             findViewById<View>(R.id.mini_player).visibility = View.VISIBLE
@@ -988,7 +988,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     }
 
     private fun clearSearch() {
-        val savedTabSeq = MyApp.getPref()!!.getString(getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ)
+        val savedTabSeq = MyApp.getPref().getString(getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ)
         val st = StringTokenizer(savedTabSeq, ",")
         val savedTabSeqInt = IntArray(Constants.TABS.NUMBER_OF_TABS)
         for (i in 0 until Constants.TABS.NUMBER_OF_TABS) {
@@ -1014,17 +1014,17 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 
     private fun searchAdapters(searchQuery: String) {
         when {
-            viewPagerAdapter!!.getItem(viewPager.getCurrentItem()) is FragmentAlbumLibrary -> {
-                (viewPagerAdapter!!.getItem(viewPager.getCurrentItem()) as FragmentAlbumLibrary)
-                    .filter(searchQuery.toString())
+            viewPagerAdapter!!.getItem(viewPager!!.currentItem) is FragmentAlbumLibrary -> {
+                (viewPagerAdapter!!.getItem(viewPager!!.currentItem) as FragmentAlbumLibrary)
+                    .filter(searchQuery)
             }
-            viewPagerAdapter!!.getItem(viewPager.getCurrentItem()) is FragmentLibrary -> {
-                (viewPagerAdapter!!.getItem(viewPager.getCurrentItem()) as FragmentLibrary)
-                    .filter(searchQuery.toString())
+            viewPagerAdapter!!.getItem(viewPager!!.currentItem) is FragmentLibrary -> {
+                (viewPagerAdapter!!.getItem(viewPager!!.currentItem) as FragmentLibrary)
+                    .filter(searchQuery)
             }
-            viewPagerAdapter!!.getItem(viewPager.getCurrentItem()) is FragmentFolderLibrary -> {
-                (viewPagerAdapter!!.getItem(viewPager.getCurrentItem()) as FragmentFolderLibrary)
-                    .filter(searchQuery.toString())
+            viewPagerAdapter!!.getItem(viewPager!!.currentItem) is FragmentFolderLibrary -> {
+                (viewPagerAdapter!!.getItem(viewPager!!.currentItem) as FragmentFolderLibrary)
+                    .filter(searchQuery)
             }
         }
     }
@@ -1261,8 +1261,8 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     }
 
     private fun devMessageDialog() {
-        if (MyApp.getPref()!!.getBoolean("new_dev_message", false)) {
-            MyApp.getPref()!!.edit().putBoolean("new_dev_message", false).apply()
+        if (MyApp.getPref().getBoolean("new_dev_message", false)) {
+            MyApp.getPref().edit().putBoolean("new_dev_message", false).apply()
             updateNewDevMessageDot(false)
         }
         var message: String = FirebaseRemoteConfig.getInstance().getString("developer_message")
@@ -1457,10 +1457,10 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         Log.v("TAG", "Main activity getting destroyed")
         try {
             mHandler.removeCallbacksAndMessages(null)
-            viewPager.clearOnPageChangeListeners()
+            viewPager!!.clearOnPageChangeListeners()
             viewPager = null
             viewPagerAdapter = null
-            navigationView.setNavigationItemSelectedListener(null)
+            navigationView!!.setNavigationItemSelectedListener(null)
         } catch (e: NullPointerException) {
             Log.d("TAG", "onDestroy: destroy called because of null player service")
         }
@@ -1468,17 +1468,11 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     }
 
     override fun onClick(view: View) {
-        if (MyApp.Companion.getService() == null) {
-            UtilityFun.restartApp()
-            finish()
-            return
-        }
         when (view.id) {
             R.id.mini_player -> {
-                val intent: Intent = Intent(applicationContext, ActivityNowPlaying::class.java)
+                val intent = Intent(applicationContext, ActivityNowPlaying::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                val options: ActivityOptions
-                options = ActivityOptions.makeSceneTransitionAnimation(this,
+                val options: ActivityOptions = ActivityOptions.makeSceneTransitionAnimation(this,
                     miniPlayerWrapper,
                     getString(R.string.transition))
                 ActivityCompat.startActivityForResult(this,
@@ -1488,7 +1482,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                 Log.v(Constants.TAG, "Launch now playing Jarvis")
             }
             R.id.play_pause_mini_player -> {
-                val colorSwitchRunnablePlay = ColorSwitchRunnableForImageView(view)
+                val colorSwitchRunnablePlay = ColorSwitchRunnableForImageView(view as ImageView)
                 mHandler.post(colorSwitchRunnablePlay)
                 if (playerService!!.getCurrentTrack() == null) {
                     //Toast.makeText(this,"Nothing to play!",Toast.LENGTH_LONG).show();
@@ -1513,7 +1507,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                 actionMode = startSupportActionMode(this)
             }
             R.id.next_mini_plaayrer -> {
-                val colorSwitchRunnableNext = ColorSwitchRunnableForImageView(view)
+                val colorSwitchRunnableNext = ColorSwitchRunnableForImageView(view as ImageView)
                 mHandler.post(colorSwitchRunnableNext)
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
                     return
@@ -1543,21 +1537,27 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                 fab_lock!!.startAnimation(shake1)
                 lockInfoDialog()
             }
-            R.id.fab_right_side -> if (savedTabSeqInt[viewPager.getCurrentItem()] == Constants.TABS.PLAYLIST) {
-                CreatePlaylistDialog()
-            } else {
-                if (MyApp.isLocked()) {
-                    Snackbar.make(rootView!!,
-                        getString(R.string.music_is_locked),
-                        Snackbar.LENGTH_SHORT).show()
-                    return
+            R.id.fab_right_side -> when (Constants.TABS.PLAYLIST) {
+                savedTabSeqInt[viewPager!!.currentItem] -> {
+                    CreatePlaylistDialog()
                 }
-                if (playerService!!.getTrackList().size > 0) {
-                    playerService!!.shuffleAll()
-                } else {
-                    Snackbar.make(rootView!!,
-                        getString(R.string.empty_track_list),
-                        Snackbar.LENGTH_SHORT).show()
+                else -> {
+                    if (MyApp.isLocked()) {
+                        Snackbar.make(rootView!!,
+                            getString(R.string.music_is_locked),
+                            Snackbar.LENGTH_SHORT).show()
+                        return
+                    }
+                    when {
+                        playerService!!.getTrackList().size > 0 -> {
+                            playerService!!.shuffleAll()
+                        }
+                        else -> {
+                            Snackbar.make(rootView!!,
+                                getString(R.string.empty_track_list),
+                                Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
         }
@@ -1575,14 +1575,8 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 
     override fun onResume() {
         super.onResume()
-        if (MyApp.getService() == null) {
-            UtilityFun.restartApp()
-            finish()
-            return
-        } else {
-            playerService = MyApp.getService()
-        }
-        MyApp.Companion.isAppVisible = true
+        playerService = MyApp.getService()
+        MyApp.isAppVisible = true
         updateUI(false)
         LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
             mReceiverForMiniPLayerUpdate!!,
@@ -1602,14 +1596,13 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     fun hideFab(hide: Boolean) {
         if (hide && fab_right_side!!.isShown) {
             fab_right_side!!.hide()
-            if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_hide_lock_button), false)
-            ) {
+            if (!MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button), false)) {
                 fab_lock!!.hide()
             }
         } else {
             fab_right_side!!.show()
-            if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_hide_lock_button), false)) {
-                fab_lock.show()
+            if (!MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button), false)) {
+                fab_lock!!.show()
             }
         }
     }
@@ -1643,39 +1636,39 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
-        var sort_id: Int = MyApp.getPref()!!.getInt(currentPageSort, Constants.SORT_BY.NAME)
+        var sort_id: Int = MyApp.getPref().getInt(currentPageSort, Constants.SORT_BY.NAME)
         when (item.itemId) {
             R.id.action_sort_name -> {
-                MyApp.getPref()!!.edit().putInt(currentPageSort, Constants.SORT_BY.NAME).apply()
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.NAME).apply()
                 sort_id = Constants.SORT_BY.NAME
             }
             R.id.action_sort_year -> {
-                MyApp.getPref()!!.edit().putInt(currentPageSort, Constants.SORT_BY.YEAR).apply()
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.YEAR).apply()
                 sort_id = Constants.SORT_BY.YEAR
             }
             R.id.action_sort_size -> {
-                MyApp.getPref()!!.edit().putInt(currentPageSort, Constants.SORT_BY.SIZE).apply()
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.SIZE).apply()
                 sort_id = Constants.SORT_BY.SIZE
             }
             R.id.action_sort_no_of_album -> {
-                MyApp.getPref()!!.edit().putInt(currentPageSort, Constants.SORT_BY.NO_OF_ALBUMS).apply()
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.NO_OF_ALBUMS).apply()
                 sort_id = Constants.SORT_BY.NO_OF_ALBUMS
             }
             R.id.action_sort_no_of_tracks -> {
-                MyApp.getPref()!!.edit().putInt(currentPageSort, Constants.SORT_BY.NO_OF_TRACKS).apply()
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.NO_OF_TRACKS).apply()
                 sort_id = Constants.SORT_BY.NO_OF_TRACKS
             }
             R.id.action_sort_by_duration -> {
-                MyApp.getPref()!!.edit().putInt(currentPageSort, Constants.SORT_BY.DURATION).apply()
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.DURATION).apply()
                 sort_id = Constants.SORT_BY.DURATION
             }
             R.id.action_sort_asc -> if (!item.isChecked) {
-                MyApp.getPref()!!.edit().putInt(getString(R.string.pref_order_by), Constants.SORT_BY.ASC).apply()
+                MyApp.getPref().edit().putInt(getString(R.string.pref_order_by), Constants.SORT_BY.ASC).apply()
             } else {
-                MyApp.getPref()!!.edit().putInt(getString(R.string.pref_order_by), Constants.SORT_BY.DESC).apply()
+                MyApp.getPref().edit().putInt(getString(R.string.pref_order_by), Constants.SORT_BY.DESC).apply()
             }
         }
-        Log.v(Constants.TAG, "view pager item" + viewPager.getCurrentItem() + "")
+        Log.v(Constants.TAG, "view pager item" + viewPager!!.currentItem + "")
         when {
             viewPagerAdapter!!.getItem(viewPager!!.currentItem) is FragmentAlbumLibrary -> {
                 (viewPagerAdapter!!.getItem(viewPager!!.currentItem) as FragmentAlbumLibrary).sort(
@@ -1697,7 +1690,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     }
 
     private fun lockInfoDialog() {
-        if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_show_lock_info_dialog), true)) {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_show_lock_info_dialog), true)) {
             return
         }
 //        val dialog: MaterialDialog = MyDialogBuilder(this)
@@ -1810,7 +1803,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
             // Signed in successfully, show authenticated UI.
             if (manualSignIn) {
                 //permanently hide  sign in button on now playing activity
-                MyApp.getPref()!!.edit().putBoolean("never_show_button_again", true).apply()
+                MyApp.getPref().edit().putBoolean("never_show_button_again", true).apply()
             }
             MyApp.hasUserSignedIn = true
             val acct: GoogleSignInAccount = result.signInAccount ?: return
@@ -1864,7 +1857,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
         } else {
-            when (MyApp.getPref()!!.getInt(getString(R.string.pref_default_album_art), 0)) {
+            when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
                 0 -> imageView.setImageResource(R.drawable.ic_batman_1)
                 1 -> imageView.setImageDrawable(UtilityFun.defaultAlbumArtDrawable)
             }
@@ -1877,7 +1870,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         }
 
         //set red dot if new developer message arrives
-        if (MyApp.getPref()!!.getBoolean("new_dev_message", false)) {
+        if (MyApp.getPref().getBoolean("new_dev_message", false)) {
             updateNewDevMessageDot(true)
         }
 
@@ -1893,10 +1886,10 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 
     private fun updateNewDevMessageDot(set: Boolean) {
         if (set) {
-            navigationView.getMenu().findItem(R.id.nav_dev_message)
+            navigationView!!.menu.findItem(R.id.nav_dev_message)
                 .setActionView(R.layout.nav_item_dev_message)
         } else {
-            navigationView.getMenu().findItem(R.id.nav_dev_message).actionView = null
+            navigationView!!.menu.findItem(R.id.nav_dev_message).actionView = null
         }
     }
 

@@ -64,18 +64,18 @@ import java.util.concurrent.Executors
 class ActivitySettings : AppCompatActivity() {
     private var launchedFrom: Int = 0
     private var playerService: PlayerService? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         //if player service not running, kill the app
-        if (MyApp.Companion.getService() == null) {
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp()
             finish()
             return
         }
         playerService = MyApp.getService()
         ColorHelper.setStatusBarGradiant(this)
-        val themeSelector: Int = MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
-        when (themeSelector) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDarkPref)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDarkPref)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
@@ -99,9 +99,9 @@ class ActivitySettings : AppCompatActivity() {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }*/title = "Settings"
-        fragmentManager.beginTransaction()
-            .replace(R.id.linear_layout_fragment, MyPreferenceFragment()).commit()
+        }*/
+        title = "Settings"
+        fragmentManager.beginTransaction().replace(R.id.linear_layout_fragment, MyPreferenceFragment()).commit()
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -158,49 +158,52 @@ class ActivitySettings : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result: CropImage.ActivityResult = CropImage.getActivityResult(data)
-            if (resultCode == Activity.RESULT_OK) {
-                val resultUri: Uri = result.uri
-                val fromFile = File(resultUri.path)
-                val savePath: String = when (backgroundSelectionStatus) {
-                    MAIN_LIB -> MyApp.getContext()!!.filesDir
-                        .toString() + getString(R.string.main_lib_back_custom_image)
-                    NOW_PLAYING -> MyApp.getContext()!!.filesDir
-                        .toString() + getString(R.string.now_playing_back_custom_image)
-                    DEFAULT_ALBUM_ART -> MyApp.getContext()!!.filesDir
-                        .toString() + getString(R.string.def_album_art_custom_image)
-                    NAVIGATION_DRAWER -> MyApp.getContext()!!.filesDir
-                        .toString() + getString(R.string.nav_back_custom_image)
-                    else -> MyApp.getContext()!!.filesDir
-                        .toString() + getString(R.string.nav_back_custom_image)
-                }
-                val toFile = File(savePath)
-                val b: Boolean = fromFile.renameTo(toFile)
-                Log.d(Constants.TAG,
-                    "onActivityResult: saved custom image size : " + toFile.length() / (1024))
-                if (b) {
-                    when (backgroundSelectionStatus) {
-                        MAIN_LIB -> MyApp.getPref()!!.edit()
-                            .putInt(getString(R.string.pref_main_library_back), 1).apply()
-                        NOW_PLAYING -> MyApp.getPref()!!.edit()
-                            .putInt(getString(R.string.pref_now_playing_back), 3).apply()
-                        DEFAULT_ALBUM_ART -> MyApp.getPref()!!.edit()
-                            .putInt(getString(R.string.pref_default_album_art), 1).apply()
-                        NAVIGATION_DRAWER -> MyApp.getPref()!!.edit()
-                            .putInt(getString(R.string.pref_nav_library_back), 1).apply()
-                        else -> MyApp.getPref()!!.edit()
-                            .putInt(getString(R.string.pref_nav_library_back), 1).apply()
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val resultUri: Uri = result.uri
+                    val fromFile = File(resultUri.path)
+                    val savePath: String = when (backgroundSelectionStatus) {
+                        MAIN_LIB -> MyApp.getContext()!!.filesDir
+                            .toString() + getString(R.string.main_lib_back_custom_image)
+                        NOW_PLAYING -> MyApp.getContext()!!.filesDir
+                            .toString() + getString(R.string.now_playing_back_custom_image)
+                        DEFAULT_ALBUM_ART -> MyApp.getContext()!!.filesDir
+                            .toString() + getString(R.string.def_album_art_custom_image)
+                        NAVIGATION_DRAWER -> MyApp.getContext()!!.filesDir
+                            .toString() + getString(R.string.nav_back_custom_image)
+                        else -> MyApp.getContext()!!.filesDir
+                            .toString() + getString(R.string.nav_back_custom_image)
                     }
-                    Toast.makeText(this, "Background successfully updated!", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    Toast.makeText(this,
-                        "Failed to save file, try some different image!",
-                        Toast.LENGTH_SHORT).show()
+                    val toFile = File(savePath)
+                    val b: Boolean = fromFile.renameTo(toFile)
+                    Log.d(Constants.TAG,
+                        "onActivityResult: saved custom image size : " + toFile.length() / (1024))
+                    if (b) {
+                        when (backgroundSelectionStatus) {
+                            MAIN_LIB -> MyApp.getPref()!!.edit()
+                                .putInt(getString(R.string.pref_main_library_back), 1).apply()
+                            NOW_PLAYING -> MyApp.getPref()!!.edit()
+                                .putInt(getString(R.string.pref_now_playing_back), 3).apply()
+                            DEFAULT_ALBUM_ART -> MyApp.getPref()!!.edit()
+                                .putInt(getString(R.string.pref_default_album_art), 1).apply()
+                            NAVIGATION_DRAWER -> MyApp.getPref()!!.edit()
+                                .putInt(getString(R.string.pref_nav_library_back), 1).apply()
+                            else -> MyApp.getPref()!!.edit()
+                                .putInt(getString(R.string.pref_nav_library_back), 1).apply()
+                        }
+                        Toast.makeText(this, "Background successfully updated!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Toast.makeText(this,
+                            "Failed to save file, try some different image!",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                    Log.d(Constants.TAG, "onActivityResult: $result")
                 }
-                Log.d(Constants.TAG, "onActivityResult: $result")
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Toast.makeText(this, "Failed to select image, try again!", Toast.LENGTH_SHORT)
-                    .show()
+                CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE -> {
+                    Toast.makeText(this, "Failed to select image, try again!", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
     }
@@ -216,42 +219,13 @@ class ActivitySettings : AppCompatActivity() {
         val ASAP: String = "Asap"
         val SYSTEM_DEFAULT: String = "System Default"
         val ROBOTO: String = "Roboto"
-
-        /*final String ACLONICA = "Aclonica";
-        final String CHERRY_SWASH = "Cherry Swash";
-        final String CORBEN = "Corben";
-        final String NOVA_ROUND = "Nova (Round)";
-        final String NOVA_SCRIPT = "Nova (Script)";
-        final String PACIFITO = "Pacifito";
-        final String PURPLE_PURSE = "Purple Purse";
-        final String QUANTICO = "Quantico";
-        final String ROBOTO_C = "Roboto (Condensed)";
-        final String ROBOTO_M = "Roboto (Mono)";
-        final String TRADE_WINDS = "Trade Winds";
-        final String UBUNTU = "Ubuntu";
-
-        final String CONCERT_ONE = "Concert One";
-        final String LATO = "Lato";
-        final String LATO_ITALIC = "Lato (Italic)";
-        final String LORA = "Lora";
-        final String MONTSERRAT = "Montserrat";
-        final String OPEN_SANS_LIGHT = "Open Sans Light";
-        final String OSWALD = "Oswald";
-        final String PROMPT = "Prompt";
-        final String PROMPY_MEDIUM = "Prompt (Medium)";
-        final String PT_SANS = "PT Sans";
-        final String RALEWAY = "Raleway";
-        final String SLABO = "Slabo";
-        final String SOURCE_SANS_PRO = "Source Sans Pro";*/
         val LIST: String = "List View"
         val GRID: String = "Grid View"
         private var instantLyricStatus: CheckBoxPreference? = null
         private var mItemTouchHelper: ItemTouchHelper? = null
         override fun onResume() {
             super.onResume()
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                setInstantLyricStatus()
-            }
+            setInstantLyricStatus()
         }
 
         private fun setInstantLyricStatus() {
@@ -274,7 +248,7 @@ class ActivitySettings : AppCompatActivity() {
 
             //Theme color
             val primaryColorPref = findPreference(getString(R.string.pref_theme_color))
-            primaryColorpref!!.onPreferenceClickListener =
+            primaryColorPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     //PrimarySelectionDialog();
@@ -285,7 +259,7 @@ class ActivitySettings : AppCompatActivity() {
             //now playing back
             val nowPlayingBackPref: Preference =
                 findPreference(getString(R.string.pref_now_playing_back))
-            nowPlayingBackpref!!.onPreferenceClickListener =
+            nowPlayingBackPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     nowPlayingBackDialog()
                     true
@@ -294,7 +268,7 @@ class ActivitySettings : AppCompatActivity() {
             //Main library back
             val mainLibBackPref: Preference =
                 findPreference(getString(R.string.pref_main_library_back))
-            mainLibBackpref!!.onPreferenceClickListener =
+            mainLibBackPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     mainLibBackDialog()
                     true
@@ -303,7 +277,7 @@ class ActivitySettings : AppCompatActivity() {
             //Main library back
             val navLibBackPref: Preference =
                 findPreference(getString(R.string.pref_nav_library_back))
-            navLibBackpref!!.onPreferenceClickListener =
+            navLibBackPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     navBackDialog()
                     true
@@ -312,7 +286,7 @@ class ActivitySettings : AppCompatActivity() {
             //Main library back
             val defAlbumArtPref: Preference =
                 findPreference(getString(R.string.pref_default_album_art))
-            defAlbumArtpref!!.onPreferenceClickListener =
+            defAlbumArtPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     defAlbumArtDialog()
                     true
@@ -320,8 +294,7 @@ class ActivitySettings : AppCompatActivity() {
 
             //text font
             val fontPref: Preference = findPreference(getString(R.string.pref_text_font))
-            val textFontPref: Int = MyApp.getPref()!!.getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE)
-            when (textFontPref) {
+            when (MyApp.getPref()!!.getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE)) {
                 Constants.TYPEFACE.MONOSPACE -> findPreference(getString(R.string.pref_text_font)).summary =
                     MONOSPACE
                 Constants.TYPEFACE.SOFIA -> findPreference(getString(R.string.pref_text_font)).summary =
@@ -335,7 +308,7 @@ class ActivitySettings : AppCompatActivity() {
                 Constants.TYPEFACE.ROBOTO -> findPreference(getString(R.string.pref_text_font)).summary =
                     ROBOTO
             }
-            fontpref!!.onPreferenceClickListener =
+            fontPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     fontPrefSelectionDialog()
@@ -445,20 +418,19 @@ class ActivitySettings : AppCompatActivity() {
                     if ((newValue as Boolean)) {
                         MyApp.getPref()!!.edit()
                             .putBoolean(getString(R.string.pref_shake), true).apply()
-                        playerService!!.setShakeListener(true)
+                        //playerService!!.setShakeListener(true)
                     } else {
                         MyApp.getPref()!!.edit()
                             .putBoolean(getString(R.string.pref_shake), false).apply()
-                        playerService!!.setShakeListener(false)
+                       // playerService!!.setShakeListener(false)
                     }
                     true
                 }
             val continuousPlaybackPref: CheckBoxPreference =
                 findPreference(getString(R.string.pref_continuous_playback)) as CheckBoxPreference
-            continuousPlaybackpref!!.onPreferenceChangeListener =
+            continuousPlaybackPref!!.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
-                    val pos_text: String
-                    pos_text = if ((newValue as Boolean)) {
+                    val pos_text: String = if ((newValue as Boolean)) {
                         getString(R.string.turn_on)
                     } else {
                         getString(R.string.turn_off)
@@ -487,13 +459,12 @@ class ActivitySettings : AppCompatActivity() {
                 }
             val dataSaverPref: CheckBoxPreference =
                 findPreference(getString(R.string.pref_data_saver)) as CheckBoxPreference
-            dataSaverpref!!.onPreferenceChangeListener =
+            dataSaverPref!!.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
-                    val pos_text: String
-                    if ((newValue as Boolean)) {
-                        pos_text = getString(R.string.turn_on)
+                    val pos_text: String = if ((newValue as Boolean)) {
+                        getString(R.string.turn_on)
                     } else {
-                        pos_text = getString(R.string.turn_off)
+                        getString(R.string.turn_off)
                     }
 //                    val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                        .title(R.string.title_data_Saver)
@@ -517,56 +488,45 @@ class ActivitySettings : AppCompatActivity() {
                 }
             instantLyricStatus =
                 findPreference(getString(R.string.pref_instant_lyric)) as CheckBoxPreference?
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                //instant lyric
-                instantLyricStatus!!.onPreferenceChangeListener =
-                    Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
-                        val pos_text: String
-                        pos_text = if ((newValue as Boolean)) {
-                            getString(R.string.turn_on)
-                        } else {
-                            getString(R.string.turn_off)
-                        }
-            //                    val dialog: MaterialDialog = MyDialogBuilder(activity)
-            //                        .title(R.string.instant_lyrics_title)
-            //                        .content(R.string.instant_lyrics_content)
-            //                        .positiveText(pos_text)
-            //                        .negativeText(getString(R.string.cancel))
-            //                        .onPositive({ dialog1, which ->
-            //                            if (newValue) {
-            //                                val intent: Intent =
-            //                                    Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-            //                                startActivity(intent)
-            //                                Toast.makeText(MyApp.getContext(),
-            //                                    "Click on AB Music to enable!",
-            //                                    Toast.LENGTH_LONG).show()
-            //                            } else {
-            //                                val intent: Intent =
-            //                                    Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-            //                                startActivity(intent)
-            //                                Toast.makeText(MyApp.getContext(),
-            //                                    "Click on AB Music to disable!",
-            //                                    Toast.LENGTH_LONG).show()
-            //                            }
-            //                        })
-            //                        .build()
-            //                    dialog.show()
-                        false
+            //instant lyric
+            instantLyricStatus!!.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
+                    val pos_text: String
+                    pos_text = if ((newValue as Boolean)) {
+                        getString(R.string.turn_on)
+                    } else {
+                        getString(R.string.turn_off)
                     }
-            } else {
-                instantLyricStatus!!.onPreferenceChangeListener =
-                    Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any? ->
-                        Toast.makeText(activity,
-                            "Feature is only available on Jelly Bean MR2 and above!",
-                            Toast.LENGTH_LONG).show()
-                        false
-                    }
-            }
+        //                    val dialog: MaterialDialog = MyDialogBuilder(activity)
+        //                        .title(R.string.instant_lyrics_title)
+        //                        .content(R.string.instant_lyrics_content)
+        //                        .positiveText(pos_text)
+        //                        .negativeText(getString(R.string.cancel))
+        //                        .onPositive({ dialog1, which ->
+        //                            if (newValue) {
+        //                                val intent: Intent =
+        //                                    Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+        //                                startActivity(intent)
+        //                                Toast.makeText(MyApp.getContext(),
+        //                                    "Click on AB Music to enable!",
+        //                                    Toast.LENGTH_LONG).show()
+        //                            } else {
+        //                                val intent: Intent =
+        //                                    Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+        //                                startActivity(intent)
+        //                                Toast.makeText(MyApp.getContext(),
+        //                                    "Click on AB Music to disable!",
+        //                                    Toast.LENGTH_LONG).show()
+        //                            }
+        //                        })
+        //                        .build()
+        //                    dialog.show()
+                    false
+                }
 
             //shake
             val shakeAction: Preference = findPreference(getString(R.string.pref_shake_action))
-            val shakeActionRead: Int = MyApp.getPref()!!.getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT)
-            when (shakeActionRead) {
+            when (MyApp.getPref()!!.getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT)) {
                 Constants.SHAKE_ACTIONS.NEXT -> {
                     shakeAction.summary = NEXT
                 }
@@ -589,8 +549,8 @@ class ActivitySettings : AppCompatActivity() {
             val hideShortClipsPref: Preference =
                 findPreference(getString(R.string.pref_hide_short_clips))
             val summary = MyApp.getPref()!!.getInt(getString(R.string.pref_hide_short_clips), 10).toString() + " seconds"
-            hideShortClipspref!!.summary = summary
-            hideShortClipspref!!.onPreferenceClickListener =
+            hideShortClipsPref!!.summary = summary
+            hideShortClipsPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     shortClipDialog()
@@ -600,7 +560,7 @@ class ActivitySettings : AppCompatActivity() {
             //excluded folders preference
             val excludedFoldersPref: Preference =
                 findPreference(getString(R.string.pref_excluded_folders))
-            excludedFolderspref!!.onPreferenceClickListener =
+            excludedFoldersPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     displayExcludedFolders()
@@ -610,8 +570,8 @@ class ActivitySettings : AppCompatActivity() {
             val text1 = MyApp.getPref()!!.getString(getString(R.string.pref_hide_tracks_starting_with_1), "")
             val text2 = MyApp.getPref()!!.getString(getString(R.string.pref_hide_tracks_starting_with_2), "")
             val text3 = MyApp.getPref()!!.getString(getString(R.string.pref_hide_tracks_starting_with_3), "")
-            hideByStartpref!!.summary = "$text1, $text2, $text3"
-            hideByStartpref!!.onPreferenceClickListener =
+            hideByStartPref!!.summary = "$text1, $text2, $text3"
+            hideByStartPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     hideByStartDialog()
@@ -621,7 +581,7 @@ class ActivitySettings : AppCompatActivity() {
 
             //opening tab preference
             val openingTabPref: Preference = findPreference(getString(R.string.pref_opening_tab))
-            openingTabpref!!.onPreferenceClickListener =
+            openingTabPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     tabSeqDialog()
@@ -676,7 +636,7 @@ class ActivitySettings : AppCompatActivity() {
 
             //reset  preference
             val resetPref: Preference = findPreference(getString(R.string.pref_reset_pref))
-            resetpref!!.onPreferenceClickListener =
+            resetPref!!.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     resetPrefDialog()
                     true

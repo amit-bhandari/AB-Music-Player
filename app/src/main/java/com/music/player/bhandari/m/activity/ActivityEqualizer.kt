@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.media.audiofx.PresetReverb
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import butterknife.BindView
@@ -26,13 +28,10 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 /**
  * Copyright 2017 Amit Bhandari AB
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
  * http://www.apache.org/licenses/LICENSE-2.0
- *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,137 +40,174 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
  */
 class ActivityEqualizer : AppCompatActivity() {
     //views
-    @JvmField @BindView(R.id.equalizerScrollView)
+    @JvmField
+    @BindView(R.id.equalizerScrollView)
     var mScrollView: ScrollView? = null
 
-    @JvmField @BindView(R.id.equalizerLinearLayout)
+    @JvmField
+    @BindView(R.id.equalizerLinearLayout)
     var equalizerView: View? = null
 
     // 50Hz equalizer controls.
-    @JvmField @BindView(R.id.equalizer50Hz)
+    @JvmField
+    @BindView(R.id.equalizer50Hz)
     var equalizer50HzSeekBar: VerticalSeekBar? = null
 
-    @JvmField @BindView(R.id.text50HzGain)
+    @JvmField
+    @BindView(R.id.text50HzGain)
     var text50HzGainTextView: TextView? = null
 
-    @JvmField @BindView(R.id.text50Hz)
+    @JvmField
+    @BindView(R.id.text50Hz)
     var text50Hz: TextView? = null
 
     // 130Hz equalizer controls.
-    @JvmField @BindView(R.id.equalizer130Hz)
+    @JvmField
+    @BindView(R.id.equalizer130Hz)
     var equalizer130HzSeekBar: VerticalSeekBar? = null
 
-    @JvmField @BindView(R.id.text130HzGain)
+    @JvmField
+    @BindView(R.id.text130HzGain)
     var text130HzGainTextView: TextView? = null
 
-    @JvmField @BindView(R.id.text130Hz)
+    @JvmField
+    @BindView(R.id.text130Hz)
     var text130Hz: TextView? = null
 
     // 320Hz equalizer controls.
-    @JvmField @BindView(R.id.equalizer320Hz)
+    @JvmField
+    @BindView(R.id.equalizer320Hz)
     var equalizer320HzSeekBar: VerticalSeekBar? = null
 
-    @JvmField @BindView(R.id.text320HzGain)
+    @JvmField
+    @BindView(R.id.text320HzGain)
     var text320HzGainTextView: TextView? = null
 
-    @JvmField @BindView(R.id.text320Hz)
+    @JvmField
+    @BindView(R.id.text320Hz)
     var text320Hz: TextView? = null
 
     // 800 Hz equalizer controls.
-    @JvmField @BindView(R.id.equalizer800Hz)
+    @JvmField
+    @BindView(R.id.equalizer800Hz)
     var equalizer800HzSeekBar: VerticalSeekBar? = null
 
-    @JvmField @BindView(R.id.text800HzGain)
+    @JvmField
+    @BindView(R.id.text800HzGain)
     var text800HzGainTextView: TextView? = null
 
-    @JvmField @BindView(R.id.text800Hz)
+    @JvmField
+    @BindView(R.id.text800Hz)
     var text800Hz: TextView? = null
 
     // 2 kHz equalizer controls.
-    @JvmField @BindView(R.id.equalizer2kHz)
+    @JvmField
+    @BindView(R.id.equalizer2kHz)
     var equalizer2kHzSeekBar: VerticalSeekBar? = null
 
-    @JvmField @BindView(R.id.text2kHzGain)
+    @JvmField
+    @BindView(R.id.text2kHzGain)
     var text2kHzGainTextView: TextView? = null
 
-    @JvmField @BindView(R.id.text2kHz)
+    @JvmField
+    @BindView(R.id.text2kHz)
     var text2kHz: TextView? = null
 
     // 5 kHz equalizer controls.
-    @JvmField @BindView(R.id.equalizer5kHz)
+    @JvmField
+    @BindView(R.id.equalizer5kHz)
     var equalizer5kHzSeekBar: VerticalSeekBar? = null
 
-    @JvmField @BindView(R.id.text5kHzGain)
+    @JvmField
+    @BindView(R.id.text5kHzGain)
     var text5kHzGainTextView: TextView? = null
 
-    @JvmField @BindView(R.id.text5kHz)
+    @JvmField
+    @BindView(R.id.text5kHz)
     var text5kHz: TextView? = null
 
     // 12.5 kHz equalizer controls.
-    @JvmField @BindView(R.id.equalizer12_5kHz)
+    @JvmField
+    @BindView(R.id.equalizer12_5kHz)
     var equalizer12_5kHzSeekBar: VerticalSeekBar? = null
 
-    @JvmField @BindView(R.id.text12_5kHzGain)
+    @JvmField
+    @BindView(R.id.text12_5kHzGain)
     var text12_5kHzGainTextView: TextView? = null
 
-    @JvmField @BindView(R.id.text12_5kHz)
+    @JvmField
+    @BindView(R.id.text12_5kHz)
     var text12_5kHz: TextView? = null
 
     // Equalizer preset controls.
-    @JvmField @BindView(R.id.loadPresetButton)
+    @JvmField
+    @BindView(R.id.loadPresetButton)
     var loadPresetButton: RelativeLayout? = null
 
-    @JvmField @BindView(R.id.saveAsPresetButton)
+    @JvmField
+    @BindView(R.id.saveAsPresetButton)
     var saveAsPresetButton: RelativeLayout? = null
 
-    @JvmField @BindView(R.id.resetAllButton)
+    @JvmField
+    @BindView(R.id.resetAllButton)
     var resetAllButton: RelativeLayout? = null
 
-    @JvmField @BindView(R.id.load_preset_text)
+    @JvmField
+    @BindView(R.id.load_preset_text)
     var loadPresetText: TextView? = null
 
-    @JvmField @BindView(R.id.save_as_preset_text)
+    @JvmField
+    @BindView(R.id.save_as_preset_text)
     var savePresetText: TextView? = null
 
-    @JvmField @BindView(R.id.reset_all_text)
+    @JvmField
+    @BindView(R.id.reset_all_text)
     var resetAllText: TextView? = null
 
     // Temp variables that hold the equalizer's settings.
-    private var fiftyHertzLevel: Int = 16
-    private var oneThirtyHertzLevel: Int = 16
-    private var threeTwentyHertzLevel: Int = 16
-    private var eightHundredHertzLevel: Int = 16
-    private var twoKilohertzLevel: Int = 16
-    private var fiveKilohertzLevel: Int = 16
-    private var twelvePointFiveKilohertzLevel: Int = 16
+    private var fiftyHertzLevel = 16
+    private var oneThirtyHertzLevel = 16
+    private var threeTwentyHertzLevel = 16
+    private var eightHundredHertzLevel = 16
+    private var twoKilohertzLevel = 16
+    private var fiveKilohertzLevel = 16
+    private var twelvePointFiveKilohertzLevel = 16
 
     // Temp variables that hold audio fx settings.
-    private var virtualizerLevel: Int = 0
-    private var bassBoostLevel: Int = 0
-    private var enhancementLevel: Int = 0
-    private var reverbSetting: Int = 0
+    private var virtualizerLevel = 0
+    private var bassBoostLevel = 0
+    private var enhancementLevel = 0
+    private var reverbSetting = 0
 
     //Audio FX elements.
-    @JvmField @BindView(R.id.virtualizer_seekbar)
+    @JvmField
+    @BindView(R.id.virtualizer_seekbar)
     var virtualizerSeekBar: SeekBar? = null
 
-    @JvmField @BindView(R.id.bass_boost_seekbar)
+    @JvmField
+    @BindView(R.id.bass_boost_seekbar)
     var bassBoostSeekBar: SeekBar? = null
 
-    @JvmField @BindView(R.id.enhancer_seekbar)
+    @JvmField
+    @BindView(R.id.enhancer_seekbar)
     var enhanceSeekBar: SeekBar? = null
 
-    @JvmField @BindView(R.id.reverb_spinner)
+    @JvmField
+    @BindView(R.id.reverb_spinner)
     var reverbSpinner: Spinner? = null
 
-    @JvmField @BindView(R.id.virtualizer_title_text)
+    @JvmField
+    @BindView(R.id.virtualizer_title_text)
     var virtualizerTitle: TextView? = null
 
-    @JvmField @BindView(R.id.bass_boost_title_text)
+    @JvmField
+    @BindView(R.id.bass_boost_title_text)
     var bassBoostTitle: TextView? = null
 
-    @JvmField @BindView(R.id.reverb_title_text)
+    @JvmField
+    @BindView(R.id.reverb_title_text)
     var reverbTitle: TextView? = null
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.home -> finish()
@@ -183,9 +219,7 @@ class ActivityEqualizer : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ColorHelper.setStatusBarGradiant(this)
-        val themeSelector: Int = MyApp.getPref()
-            .getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
-        when (themeSelector) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
@@ -214,7 +248,7 @@ class ActivityEqualizer : AppCompatActivity() {
         }*/
 
         //Init reverb presets.
-        val reverbPresets: ArrayList<String> = ArrayList()
+        val reverbPresets = ArrayList<String>()
         reverbPresets.add(getString(R.string.preset_none))
         reverbPresets.add(getString(R.string.preset_large_hall))
         reverbPresets.add(getString(R.string.preset_large_room))
@@ -222,10 +256,9 @@ class ActivityEqualizer : AppCompatActivity() {
         reverbPresets.add(getString(R.string.preset_medium_room))
         reverbPresets.add(getString(R.string.preset_small_room))
         reverbPresets.add(getString(R.string.preset_plate))
-        val dataAdapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(this, R.layout.simple_spinner_item, reverbPresets)
-        dataAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        reverbSpinner.setAdapter(dataAdapter)
+        val dataAdapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, reverbPresets)
+        dataAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+        reverbSpinner!!.setAdapter(dataAdapter)
 
         //Set the max values for the seekbars.
         virtualizerSeekBar!!.max = 1000
@@ -248,12 +281,11 @@ class ActivityEqualizer : AppCompatActivity() {
             applyCurrentEQSettings()
 
             //Show a confirmation toast.
-            Toast.makeText(applicationContext,
-                R.string.equ_reset_toast,
-                Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, R.string.equ_reset_toast, Toast.LENGTH_SHORT)
+                .show()
         })
-        loadPresetButton!!.setOnClickListener { showLoadPresetDialog() }
-        saveAsPresetButton!!.setOnClickListener { showSavePresetDialog() }
+        loadPresetButton!!.setOnClickListener(View.OnClickListener { showLoadPresetDialog() })
+        saveAsPresetButton!!.setOnClickListener(View.OnClickListener { showSavePresetDialog() })
         equalizer50HzSeekBar!!.setOnSeekBarChangeListener(equalizer50HzListener)
         equalizer130HzSeekBar!!.setOnSeekBarChangeListener(equalizer130HzListener)
         equalizer320HzSeekBar!!.setOnSeekBarChangeListener(equalizer320HzListener)
@@ -263,9 +295,9 @@ class ActivityEqualizer : AppCompatActivity() {
         equalizer12_5kHzSeekBar!!.setOnSeekBarChangeListener(equalizer12_5kHzListener)
         virtualizerSeekBar!!.setOnSeekBarChangeListener(virtualizerListener)
         bassBoostSeekBar!!.setOnSeekBarChangeListener(bassBoostListener)
-        reverbSpinner.setOnItemSelectedListener(reverbListener)
+        reverbSpinner!!.onItemSelectedListener = reverbListener
         enhanceSeekBar!!.setOnSeekBarChangeListener(enhanceListener)
-        AsyncInitSlidersTask().execute(MyApp.getService()!!.getEqualizerHelper()!!.getLastEquSetting())
+        AsyncInitSlidersTask().execute(MyApp.getService().getEqualizerHelper().getLastEquSetting())
         try {
             val bundle = Bundle()
             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "equalizer_launched")
@@ -281,81 +313,85 @@ class ActivityEqualizer : AppCompatActivity() {
         equalizer12_5kHzSeekBar!!.setOnTouchListener(listener)
     }
 
-    var listener = View.OnTouchListener { v, event ->
+    var listener: View.OnTouchListener = View.OnTouchListener { v, event ->
         Log.d("ActivityEqualizer", "onTouch: $event")
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            mScrollView.requestDisallowInterceptTouchEvent(true)
-        } else if (event.action == MotionEvent.ACTION_UP) {
-            mScrollView.requestDisallowInterceptTouchEvent(false)
+        when {
+            event.action == MotionEvent.ACTION_DOWN -> {
+                mScrollView!!.requestDisallowInterceptTouchEvent(true)
+            }
+            event.action == MotionEvent.ACTION_UP -> {
+                mScrollView!!.requestDisallowInterceptTouchEvent(false)
+            }
         }
         false
     }
 
     override fun onResume() {
         super.onResume()
-        MyApp.Companion.isAppVisible = true
+        MyApp.isAppVisible = true
     }
 
     override fun onPause() {
         try {
-            val equalizerSetting: EqualizerSetting = getCurrentEquSetting()
-            MyApp.Companion.getService().getEqualizerHelper().storeLastEquSetting(equalizerSetting)
-            Log.d("ActivityEqualizer",
-                "onPause: stored equ setting : $equalizerSetting")
-            MyApp.Companion.isAppVisible = false
+            val equalizerSetting: EqualizerSetting = currentEquSetting
+            MyApp.getService().getEqualizerHelper().storeLastEquSetting(equalizerSetting)
+            Log.d("ActivityEqualizer", "onPause: stored equ setting : $equalizerSetting")
+            MyApp.isAppVisible = false
         } catch (ignore: Exception) {
         }
         super.onPause()
     }
 
-    private fun getCurrentEquSetting(): EqualizerSetting {
-        val equalizerSetting: EqualizerSetting = EqualizerSetting()
-        equalizerSetting.setFiftyHertz(fiftyHertzLevel)
-        equalizerSetting.setOneThirtyHertz(oneThirtyHertzLevel)
-        equalizerSetting.setThreeTwentyHertz(threeTwentyHertzLevel)
-        equalizerSetting.setEightHundredHertz(eightHundredHertzLevel)
-        equalizerSetting.setTwoKilohertz(twoKilohertzLevel)
-        equalizerSetting.setFiveKilohertz(fiveKilohertzLevel)
-        equalizerSetting.setTwelvePointFiveKilohertz(twelvePointFiveKilohertzLevel)
-        equalizerSetting.setVirtualizer(virtualizerLevel)
-        equalizerSetting.setBassBoost(bassBoostLevel)
-        equalizerSetting.setEnhancement(enhancementLevel)
-        equalizerSetting.setReverb(reverbSetting)
-        return equalizerSetting
-    }
+    private val currentEquSetting: EqualizerSetting get() {
+            val equalizerSetting = EqualizerSetting()
+            equalizerSetting.setFiftyHertz(fiftyHertzLevel)
+            equalizerSetting.setOneThirtyHertz(oneThirtyHertzLevel)
+            equalizerSetting.setThreeTwentyHertz(threeTwentyHertzLevel)
+            equalizerSetting.setEightHundredHertz(eightHundredHertzLevel)
+            equalizerSetting.setTwoKilohertz(twoKilohertzLevel)
+            equalizerSetting.setFiveKilohertz(fiveKilohertzLevel)
+            equalizerSetting.setTwelvePointFiveKilohertz(twelvePointFiveKilohertzLevel)
+            equalizerSetting.setVirtualizer(virtualizerLevel)
+            equalizerSetting.setBassBoost(bassBoostLevel)
+            equalizerSetting.setEnhancement(enhancementLevel)
+            equalizerSetting.setReverb(reverbSetting)
+            return equalizerSetting
+        }
 
     /**
      * 50 Hz equalizer seekbar listener.
      */
-    private val equalizer50HzListener = object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(
-            arg0: SeekBar,
-            seekBarLevel: Int,
-            changedByUser: Boolean
-        ) {
+    private val equalizer50HzListener: SeekBar.OnSeekBarChangeListener = object :
+        SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(arg0: SeekBar, seekBarLevel: Int, changedByUser: Boolean) {
             Log.d("ActivityEqualizer", "onProgressChanged : ")
             try {
                 //Get the appropriate equalizer band.
-                val sixtyHertzBand = MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer().getBand(50000)
+                val sixtyHertzBand: Short =
+                    MyApp.getService().getEqualizerHelper().getEqualizer().getBand(50000)
 
                 //Set the gain level text based on the slider position.
                 when {
                     seekBarLevel == 16 -> {
                         text50HzGainTextView!!.text = "0 dB"
-                        MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(sixtyHertzBand, 0.toShort())
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(sixtyHertzBand, 0.toShort())
                     }
                     seekBarLevel < 16 -> {
                         if (seekBarLevel == 0) {
                             text50HzGainTextView!!.text = "-" + "15 dB"
-                            MyApp.getService().getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(sixtyHertzBand, (-1500).toShort())
+                            MyApp.getService().getEqualizerHelper().getEqualizer()
+                                .setBandLevel(sixtyHertzBand, (-1500).toShort())
                         } else {
                             text50HzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
-                            MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(sixtyHertzBand, (-((16 - seekBarLevel) * 100)).toShort())
+                            MyApp.getService().getEqualizerHelper().getEqualizer()
+                                .setBandLevel(sixtyHertzBand, (-((16 - seekBarLevel) * 100)).toShort())
                         }
                     }
                     seekBarLevel > 16 -> {
                         text50HzGainTextView!!.text = "+" + (seekBarLevel - 16) + " dB"
-                        MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(sixtyHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(sixtyHertzBand, ((seekBarLevel - 16) * 100).toShort())
                     }
                 }
                 fiftyHertzLevel = seekBarLevel
@@ -376,30 +412,37 @@ class ActivityEqualizer : AppCompatActivity() {
     /**
      * 130 Hz equalizer seekbar listener.
      */
-    private val equalizer130HzListener = object : SeekBar.OnSeekBarChangeListener {
+    private val equalizer130HzListener: SeekBar.OnSeekBarChangeListener = object :
+        SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(arg0: SeekBar, seekBarLevel: Int, changedByUser: Boolean) {
             try {
                 //Get the appropriate equalizer band.
-                val twoThirtyHertzBand = MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.getBand(130000)
+                val twoThirtyHertzBand: Short =
+                    MyApp.getService().getEqualizerHelper().getEqualizer().getBand(130000)
 
                 //Set the gain level text based on the slider position.
                 when {
                     seekBarLevel == 16 -> {
                         text130HzGainTextView!!.text = "0 dB"
-                        MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(twoThirtyHertzBand, 0.toShort())
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(twoThirtyHertzBand, 0.toShort())
                     }
                     seekBarLevel < 16 -> {
                         if (seekBarLevel == 0) {
                             text130HzGainTextView!!.text = "-" + "15 dB"
-                            MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(twoThirtyHertzBand, (-1500).toShort())
+                            MyApp.getService().getEqualizerHelper().getEqualizer()
+                                .setBandLevel(twoThirtyHertzBand, (-1500).toShort())
                         } else {
                             text130HzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
-                            MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(twoThirtyHertzBand, (-((16 - seekBarLevel) * 100)).toShort())
+                            MyApp.getService().getEqualizerHelper().getEqualizer().setBandLevel(
+                                twoThirtyHertzBand,
+                                (-((16 - seekBarLevel) * 100)).toShort())
                         }
                     }
                     seekBarLevel > 16 -> {
                         text130HzGainTextView!!.text = "+" + (seekBarLevel - 16) + " dB"
-                        MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(twoThirtyHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(twoThirtyHertzBand, ((seekBarLevel - 16) * 100).toShort())
                     }
                 }
                 oneThirtyHertzLevel = seekBarLevel
@@ -421,36 +464,36 @@ class ActivityEqualizer : AppCompatActivity() {
      * 320 Hz equalizer seekbar listener.
      */
     private val equalizer320HzListener = object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(
-            arg0: SeekBar,
-            seekBarLevel: Int,
-            changedByUser: Boolean
-        ) {
+        override fun onProgressChanged(arg0: SeekBar, seekBarLevel: Int, changedByUser: Boolean) {
             try {
                 //Get the appropriate equalizer band.
                 val nineTenHertzBand: Short =
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer().getBand(320000)
+                    MyApp.getService().getEqualizerHelper().getEqualizer().getBand(320000)
 
                 //Set the gain level text based on the slider position.
-                if (seekBarLevel == 16) {
-                    text320HzGainTextView.setText("0 dB")
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .setBandLevel(nineTenHertzBand, 0.toShort())
-                } else if (seekBarLevel < 16) {
-                    if (seekBarLevel == 0) {
-                        text320HzGainTextView.setText("-" + "15 dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(nineTenHertzBand, (-1500).toShort())
-                    } else {
-                        text320HzGainTextView.setText("-" + (16 - seekBarLevel) + " dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(nineTenHertzBand,
-                                (-((16 - seekBarLevel) * 100)).toShort())
+                when {
+                    seekBarLevel == 16 -> {
+                        text320HzGainTextView!!.text = "0 dB"
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(nineTenHertzBand, 0.toShort())
                     }
-                } else if (seekBarLevel > 16) {
-                    text320HzGainTextView.setText("+" + (seekBarLevel - 16) + " dB")
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .setBandLevel(nineTenHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                    seekBarLevel < 16 -> {
+                        if (seekBarLevel == 0) {
+                            text320HzGainTextView!!.text = "-" + "15 dB"
+                            MyApp.getService().getEqualizerHelper().getEqualizer()
+                                .setBandLevel(nineTenHertzBand, (-1500).toShort())
+                        } else {
+                            text320HzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
+                            MyApp.getService().getEqualizerHelper().getEqualizer().setBandLevel(
+                                nineTenHertzBand,
+                                (-((16 - seekBarLevel) * 100)).toShort())
+                        }
+                    }
+                    seekBarLevel > 16 -> {
+                        text320HzGainTextView!!.text = "+" + (seekBarLevel - 16) + " dB"
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(nineTenHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                    }
                 }
                 threeTwentyHertzLevel = seekBarLevel
             } catch (e: Exception) {
@@ -470,37 +513,38 @@ class ActivityEqualizer : AppCompatActivity() {
     /**
      * 800 Hz equalizer seekbar listener.
      */
-    private val equalizer800HzListener = object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(
-            arg0: SeekBar,
-            seekBarLevel: Int,
-            changedByUser: Boolean
-        ) {
+    private val equalizer800HzListener = object :
+        SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(arg0: SeekBar, seekBarLevel: Int, changedByUser: Boolean) {
             try {
                 //Get the appropriate equalizer band.
                 val threeKiloHertzBand: Short =
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer().getBand(800000)
+                    MyApp.getService().getEqualizerHelper().getEqualizer().getBand(800000)
 
                 //Set the gain level text based on the slider position.
-                if (seekBarLevel == 16) {
-                    text800HzGainTextView.setText("0 dB")
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .setBandLevel(threeKiloHertzBand, 0.toShort())
-                } else if (seekBarLevel < 16) {
-                    if (seekBarLevel == 0) {
-                        text800HzGainTextView.setText("-" + "15 dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(threeKiloHertzBand, (-1500).toShort())
-                    } else {
-                        text800HzGainTextView.setText("-" + (16 - seekBarLevel) + " dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(threeKiloHertzBand,
-                                (-((16 - seekBarLevel) * 100)).toShort())
+                when {
+                    seekBarLevel == 16 -> {
+                        text800HzGainTextView!!.text = "0 dB"
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(threeKiloHertzBand, 0.toShort())
                     }
-                } else if (seekBarLevel > 16) {
-                    text800HzGainTextView.setText("+" + (seekBarLevel - 16) + " dB")
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .setBandLevel(threeKiloHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                    seekBarLevel < 16 -> {
+                        if (seekBarLevel == 0) {
+                            text800HzGainTextView!!.text = "-" + "15 dB"
+                            MyApp.getService().getEqualizerHelper().getEqualizer()
+                                .setBandLevel(threeKiloHertzBand, (-1500).toShort())
+                        } else {
+                            text800HzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
+                            MyApp.getService().getEqualizerHelper().getEqualizer().setBandLevel(
+                                threeKiloHertzBand,
+                                (-((16 - seekBarLevel) * 100)).toShort())
+                        }
+                    }
+                    seekBarLevel > 16 -> {
+                        text800HzGainTextView!!.text = "+" + (seekBarLevel - 16) + " dB"
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(threeKiloHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                    }
                 }
                 eightHundredHertzLevel = seekBarLevel
             } catch (e: Exception) {
@@ -521,37 +565,36 @@ class ActivityEqualizer : AppCompatActivity() {
      * 2 kHz equalizer seekbar listener.
      */
     private val equalizer2kHzListener = object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(
-            arg0: SeekBar,
-            seekBarLevel: Int,
-            changedByUser: Boolean
-        ) {
+        override fun onProgressChanged(arg0: SeekBar, seekBarLevel: Int, changedByUser: Boolean) {
             try {
                 //Get the appropriate equalizer band.
                 val fourteenKiloHertzBand: Short =
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .getBand(2000000)
+                    MyApp.getService().getEqualizerHelper().getEqualizer().getBand(2000000)
 
                 //Set the gain level text based on the slider position.
-                if (seekBarLevel == 16) {
-                    text2kHzGainTextView.setText("0 dB")
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .setBandLevel(fourteenKiloHertzBand, 0.toShort())
-                } else if (seekBarLevel < 16) {
-                    if (seekBarLevel == 0) {
-                        text2kHzGainTextView.setText("-" + "15 dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(fourteenKiloHertzBand, (-1500).toShort())
-                    } else {
-                        text2kHzGainTextView.setText("-" + (16 - seekBarLevel) + " dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(fourteenKiloHertzBand,
-                                (-((16 - seekBarLevel) * 100)).toShort())
+                when {
+                    seekBarLevel == 16 -> {
+                        text2kHzGainTextView!!.text = "0 dB"
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(fourteenKiloHertzBand, 0.toShort())
                     }
-                } else if (seekBarLevel > 16) {
-                    text2kHzGainTextView.setText("+" + (seekBarLevel - 16) + " dB")
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .setBandLevel(fourteenKiloHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                    seekBarLevel < 16 -> {
+                        if (seekBarLevel == 0) {
+                            text2kHzGainTextView!!.text = "-" + "15 dB"
+                            MyApp.getService().getEqualizerHelper().getEqualizer()
+                                .setBandLevel(fourteenKiloHertzBand, (-1500).toShort())
+                        } else {
+                            text2kHzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
+                            MyApp.getService().getEqualizerHelper().getEqualizer().setBandLevel(
+                                fourteenKiloHertzBand,
+                                (-((16 - seekBarLevel) * 100)).toShort())
+                        }
+                    }
+                    seekBarLevel > 16 -> {
+                        text2kHzGainTextView!!.text = "+" + (seekBarLevel - 16) + " dB"
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(fourteenKiloHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                    }
                 }
                 twoKilohertzLevel = seekBarLevel
             } catch (e: Exception) {
@@ -572,37 +615,36 @@ class ActivityEqualizer : AppCompatActivity() {
      * 5 kHz equalizer seekbar listener.
      */
     private val equalizer5kHzListener = object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(
-            arg0: SeekBar,
-            seekBarLevel: Int,
-            changedByUser: Boolean
-        ) {
+        override fun onProgressChanged(arg0: SeekBar, seekBarLevel: Int, changedByUser: Boolean) {
             try {
                 //Get the appropriate equalizer band.
                 val fiveKiloHertzBand: Short =
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .getBand(5000000)
+                    MyApp.getService().getEqualizerHelper().getEqualizer().getBand(5000000)
 
                 //Set the gain level text based on the slider position.
-                if (seekBarLevel == 16) {
-                    text5kHzGainTextView.setText("0 dB")
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .setBandLevel(fiveKiloHertzBand, 0.toShort())
-                } else if (seekBarLevel < 16) {
-                    if (seekBarLevel == 0) {
-                        text5kHzGainTextView.setText("-" + "15 dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(fiveKiloHertzBand, (-1500).toShort())
-                    } else {
-                        text5kHzGainTextView.setText("-" + (16 - seekBarLevel) + " dB")
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .setBandLevel(fiveKiloHertzBand,
-                                (-((16 - seekBarLevel) * 100)).toShort())
+                when {
+                    seekBarLevel == 16 -> {
+                        text5kHzGainTextView!!.text = "0 dB"
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(fiveKiloHertzBand, 0.toShort())
                     }
-                } else if (seekBarLevel > 16) {
-                    text5kHzGainTextView.setText("+" + (seekBarLevel - 16) + " dB")
-                    MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                        .setBandLevel(fiveKiloHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                    seekBarLevel < 16 -> {
+                        if (seekBarLevel == 0) {
+                            text5kHzGainTextView!!.text = "-" + "15 dB"
+                            MyApp.getService().getEqualizerHelper().getEqualizer()
+                                .setBandLevel(fiveKiloHertzBand, (-1500).toShort())
+                        } else {
+                            text5kHzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
+                            MyApp.getService().getEqualizerHelper().getEqualizer().setBandLevel(
+                                fiveKiloHertzBand,
+                                (-((16 - seekBarLevel) * 100)).toShort())
+                        }
+                    }
+                    seekBarLevel > 16 -> {
+                        text5kHzGainTextView!!.text = "+" + (seekBarLevel - 16) + " dB"
+                        MyApp.getService().getEqualizerHelper().getEqualizer()
+                            .setBandLevel(fiveKiloHertzBand, ((seekBarLevel - 16) * 100).toShort())
+                    }
                 }
                 fiveKilohertzLevel = seekBarLevel
             } catch (e: Exception) {
@@ -632,28 +674,31 @@ class ActivityEqualizer : AppCompatActivity() {
                 try {
                     //Get the appropriate equalizer band.
                     val twelvePointFiveKiloHertzBand: Short =
-                        MyApp.Companion.getService().getEqualizerHelper().getEqualizer()
-                            .getBand(9000000)
+                        MyApp.getService().getEqualizerHelper().getEqualizer().getBand(9000000)
 
                     //Set the gain level text based on the slider position.
                     when {
                         seekBarLevel == 16 -> {
-                            text12_5kHzGainTextView!!.setText("0 dB")
-                            MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(twelvePointFiveKiloHertzBand, 0.toShort())
+                            text12_5kHzGainTextView!!.text = "0 dB"
+                            MyApp.getService().getEqualizerHelper().getEqualizer()
+                                .setBandLevel(twelvePointFiveKiloHertzBand, 0.toShort())
                         }
                         seekBarLevel < 16 -> {
                             if (seekBarLevel == 0) {
                                 text12_5kHzGainTextView!!.text = "-" + "15 dB"
-                                MyApp.getService()!!.getEqualizerHelper().getEqualizer()!!.setBandLevel(twelvePointFiveKiloHertzBand, (-1500).toShort())
+                                MyApp.getService().getEqualizerHelper().getEqualizer()
+                                    .setBandLevel(twelvePointFiveKiloHertzBand, (-1500).toShort())
                             } else {
                                 text12_5kHzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
-                                MyApp.getService()!!.getEqualizerHelper().getEqualizer()!!.setBandLevel(twelvePointFiveKiloHertzBand,
+                                MyApp.getService().getEqualizerHelper().getEqualizer().setBandLevel(
+                                    twelvePointFiveKiloHertzBand,
                                     (-((16 - seekBarLevel) * 100)).toShort())
                             }
                         }
                         seekBarLevel > 16 -> {
                             text12_5kHzGainTextView!!.text = "+" + (seekBarLevel - 16) + " dB"
-                            MyApp.getService()!!.getEqualizerHelper()!!.getEqualizer()!!.setBandLevel(twelvePointFiveKiloHertzBand,
+                            MyApp.getService().getEqualizerHelper().getEqualizer().setBandLevel(
+                                twelvePointFiveKiloHertzBand,
                                 ((seekBarLevel - 16) * 100).toShort())
                         }
                     }
@@ -677,49 +722,44 @@ class ActivityEqualizer : AppCompatActivity() {
      */
     private val reverbListener: AdapterView.OnItemSelectedListener =
         object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                arg0: AdapterView<*>?,
-                arg1: View,
-                index: Int,
-                arg3: Long
-            ) {
-                if (MyApp.getService() != null) when (index) {
+            override fun onItemSelected(arg0: AdapterView<*>?, arg1: View, index: Int, arg3: Long) {
+                reverbSetting = when (index) {
                     0 -> {
-                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                        MyApp.getService().getEqualizerHelper().getPresetReverb().preset =
                             PresetReverb.PRESET_NONE
-                        reverbSetting = 0
+                        0
                     }
                     1 -> {
-                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                        MyApp.getService().getEqualizerHelper().getPresetReverb().preset =
                             PresetReverb.PRESET_LARGEHALL
-                        reverbSetting = 1
+                        1
                     }
                     2 -> {
-                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                        MyApp.getService().getEqualizerHelper().getPresetReverb().preset =
                             PresetReverb.PRESET_LARGEROOM
-                        reverbSetting = 2
+                        2
                     }
                     3 -> {
-                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                        MyApp.getService().getEqualizerHelper().getPresetReverb().preset =
                             PresetReverb.PRESET_MEDIUMHALL
-                        reverbSetting = 3
+                        3
                     }
                     4 -> {
-                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                        MyApp.getService().getEqualizerHelper().getPresetReverb().preset =
                             PresetReverb.PRESET_MEDIUMROOM
-                        reverbSetting = 4
+                        4
                     }
                     5 -> {
-                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                        MyApp.getService().getEqualizerHelper().getPresetReverb().preset =
                             PresetReverb.PRESET_SMALLROOM
-                        reverbSetting = 5
+                        5
                     }
                     6 -> {
-                        MyApp.getService()!!.getEqualizerHelper()!!.getPresetReverb()!!.preset =
+                        MyApp.getService().getEqualizerHelper().getPresetReverb().preset =
                             PresetReverb.PRESET_PLATE
-                        reverbSetting = 6
+                        6
                     }
-                    else -> reverbSetting = 0
+                    else -> 0
                 }
             }
 
@@ -731,11 +771,9 @@ class ActivityEqualizer : AppCompatActivity() {
     /**
      * Bass boost listener.
      */
-    private val bassBoostListener = object :
-        SeekBar.OnSeekBarChangeListener {
+    private val bassBoostListener = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(arg0: SeekBar, arg1: Int, arg2: Boolean) {
-            MyApp.Companion.getService().getEqualizerHelper().getBassBoost()
-                .setStrength(arg1.toShort())
+            MyApp.getService().getEqualizerHelper().getBassBoost().setStrength(arg1.toShort())
             bassBoostLevel = arg1
         }
 
@@ -751,12 +789,10 @@ class ActivityEqualizer : AppCompatActivity() {
     /**
      * Enhance listener.
      */
-    private val enhanceListener = object :
-        SeekBar.OnSeekBarChangeListener {
-
+    private val enhanceListener = object : SeekBar.OnSeekBarChangeListener {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         override fun onProgressChanged(arg0: SeekBar, arg1: Int, arg2: Boolean) {
-            MyApp.getService()?.getEqualizerHelper().getEnhancer()
-                .setTargetGain(arg1.toShort())
+            MyApp.getService().getEqualizerHelper().getEnhancer().setTargetGain(arg1)
             enhancementLevel = arg1
         }
 
@@ -774,8 +810,7 @@ class ActivityEqualizer : AppCompatActivity() {
      */
     private val virtualizerListener = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(arg0: SeekBar, arg1: Int, arg2: Boolean) {
-            MyApp.getService()?.getEqualizerHelper().getVirtualizer()
-                .setStrength(arg1.toShort())
+            MyApp.getService().getEqualizerHelper().getVirtualizer().setStrength(arg1.toShort())
             virtualizerLevel = arg1
         }
 
@@ -802,14 +837,14 @@ class ActivityEqualizer : AppCompatActivity() {
 //                fun onInput(dialog: MaterialDialog, input: CharSequence) {
 //                    // Do something
 //                    //Get the preset name from the text field.
-//                    if ((input == "")) {
+//                    if (input == "") {
 //                        Toast.makeText(applicationContext,
 //                            R.string.error_valid_preset_name_toast,
 //                            Toast.LENGTH_SHORT).show()
 //                        return
 //                    }
-//                    MyApp.Companion.getService().getEqualizerHelper()
-//                        .insertPreset(input.toString(), getCurrentEquSetting())
+//                    MyApp.getService().getEqualizerHelper()
+//                        .insertPreset(input.toString(), currentEquSetting)
 //                    Toast.makeText(applicationContext,
 //                        R.string.preset_saved_toast,
 //                        Toast.LENGTH_SHORT).show()
@@ -834,7 +869,7 @@ class ActivityEqualizer : AppCompatActivity() {
     private fun showLoadPresetDialog() {
 
         //load data from db here
-        val array = MyApp.getService()!!.getEqualizerHelper()!!.getPresetList()
+        val array = MyApp.getService().getEqualizerHelper().getPresetList()
         for (s in array) {
             Log.d("ActivityEqualizer", "showLoadPresetDialog: array $s")
         }
@@ -848,7 +883,7 @@ class ActivityEqualizer : AppCompatActivity() {
 //                    which: Int,
 //                    text: CharSequence
 //                ) {
-//                    AsyncInitSlidersTask().execute(MyApp.Companion.getService().getEqualizerHelper()
+//                    AsyncInitSlidersTask().execute(MyApp.getService().getEqualizerHelper()
 //                        .getPreset(text.toString()))
 //                }
 //            })
@@ -860,9 +895,15 @@ class ActivityEqualizer : AppCompatActivity() {
      */
     fun applyCurrentEQSettings() {
         if (MyApp.getService() != null) return
-        equalizer50HzListener.onProgressChanged(equalizer50HzSeekBar!!, equalizer50HzSeekBar!!.progress, true)
-        equalizer130HzListener.onProgressChanged(equalizer130HzSeekBar!!, equalizer130HzSeekBar!!.progress, true)
-        equalizer320HzListener.onProgressChanged(equalizer320HzSeekBar!!, equalizer320HzSeekBar!!.progress, true)
+        equalizer50HzListener.onProgressChanged(equalizer50HzSeekBar,
+            equalizer50HzSeekBar!!.progress,
+            true)
+        equalizer130HzListener.onProgressChanged(equalizer130HzSeekBar,
+            equalizer130HzSeekBar!!.progress,
+            true)
+        equalizer320HzListener.onProgressChanged(equalizer320HzSeekBar!!,
+            equalizer320HzSeekBar!!.progress,
+            true)
         equalizer800HzListener.onProgressChanged(equalizer800HzSeekBar!!,
             equalizer800HzSeekBar!!.progress,
             true)
@@ -882,15 +923,13 @@ class ActivityEqualizer : AppCompatActivity() {
         enhanceListener.onProgressChanged(enhanceSeekBar!!, enhanceSeekBar!!.progress, true)
         reverbListener.onItemSelected(reverbSpinner,
             null,
-            reverbSpinner.getSelectedItemPosition(),
+            reverbSpinner!!.selectedItemPosition,
             0L)
     }
 
     @SuppressLint("StaticFieldLeak")
-    inner class AsyncInitSlidersTask :
-        AsyncTask<EqualizerSetting?, String?, Boolean?>() {
+    inner class AsyncInitSlidersTask : AsyncTask<EqualizerSetting?, String?, Boolean?>() {
         var equalizerSetting: EqualizerSetting? = null
-
         override fun doInBackground(vararg p0: EqualizerSetting?): Boolean? {
             equalizerSetting = p0[0]
             return null

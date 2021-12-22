@@ -373,7 +373,9 @@ object ViewLyrics {
         val neomagic = ByteArrayOutputStream()
 
         // Decrypts only the XML
-        for (i in 22 until value.length) neomagic.write((value[i] xor (magickey)))
+        for (i in 22 until value.length){
+           // neomagic.write((value[i] xor (magickey)))
+        }
         Log.d("ViewLyrics", "decryptResultXML: $neomagic")
         // Return value
         return neomagic.toString()

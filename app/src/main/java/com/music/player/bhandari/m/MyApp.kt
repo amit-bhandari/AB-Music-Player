@@ -81,8 +81,8 @@ class MyApp constructor() : Application() {
             service = s
         }
 
-        fun getService(): PlayerService? {
-            return service
+        fun getService(): PlayerService {
+            return service!!
         }
 
         fun isLocked(): Boolean {

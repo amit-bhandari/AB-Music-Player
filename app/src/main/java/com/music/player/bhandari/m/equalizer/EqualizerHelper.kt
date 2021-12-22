@@ -51,24 +51,24 @@ class EqualizerHelper constructor(
         presetReverb = null
     }
 
-    fun getEqualizer(): Equalizer? {
-        return equalizer
+    fun getEqualizer(): Equalizer {
+        return equalizer!!
     }
 
-    fun getVirtualizer(): Virtualizer? {
-        return virtualizer
+    fun getVirtualizer(): Virtualizer {
+        return virtualizer!!
     }
 
-    fun getBassBoost(): BassBoost? {
-        return bassBoost
+    fun getBassBoost(): BassBoost {
+        return bassBoost!!
     }
 
-    fun getEnhancer(): LoudnessEnhancer? {
-        return loudnessEnhancer
+    fun getEnhancer(): LoudnessEnhancer {
+        return loudnessEnhancer!!
     }
 
-    fun getPresetReverb(): PresetReverb? {
-        return presetReverb
+    fun getPresetReverb(): PresetReverb {
+        return presetReverb!!
     }
 
     //general equ setting is stored in shared preference to reemove db complications and calls
@@ -85,7 +85,7 @@ class EqualizerHelper constructor(
 
     @SuppressLint("Range")
     fun getPresetList(): Array<String?> {
-        val cursor: Cursor = dbHelperEqualizer!!.getReadableDatabase()
+        val cursor: Cursor = dbHelperEqualizer!!.readableDatabase
             .rawQuery("select * from " + DbHelperEqualizer.TABLE_NAME, null)
         val size: Int = cursor.count
         val array: Array<String?> = arrayOfNulls(size)
@@ -115,7 +115,7 @@ class EqualizerHelper constructor(
                 "''") + "'"
         val columnsToReturn: Array<String> =
             arrayOf(DbHelperEqualizer.EQU_PRESET_NAME, DbHelperEqualizer.EQU_SETTING_STRING)
-        val cursor: Cursor? = dbHelperEqualizer!!.getReadableDatabase()
+        val cursor: Cursor? = dbHelperEqualizer!!.readableDatabase
             .query(DbHelperEqualizer.TABLE_NAME, columnsToReturn, condition, null, null, null, null)
         if (cursor != null && cursor.count > 0) {
             cursor.moveToFirst()
