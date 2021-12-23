@@ -262,7 +262,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".fcm.MyFirebaseMessagingService$generatePictureStyleNotification$NotificationActionService" />
+        <service android:name=".fcm.MyFirebaseMessagingService$GeneratePictureStyleNotification$NotificationActionService" />
 
         <receiver android:name="com.music.player.bhandari.m.widget.WidgetReceiver"
             android:exported="false">

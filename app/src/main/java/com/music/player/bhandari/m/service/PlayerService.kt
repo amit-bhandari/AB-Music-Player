@@ -150,7 +150,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                                 ) {
                                     if (trackList.size < 10) {
                                         val dataItems: List<Int> =
-                                            MusicLibrary.instance!!.defaultTracklistNew
+                                            MusicLibrary.instance.defaultTracklistNew
                                         Collections.shuffle(dataItems)
                                         trackList.addAll(dataItems)
                                         playTrack(currentTrackPosition + 1)
@@ -331,16 +331,16 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     }
                     Constants.ACTION.REFRESH_LIB -> if (currentTrack == null || trackList.isEmpty()) {
                         trackList.clear()
-                        trackList.addAll(MusicLibrary.instance!!.defaultTracklistNew)
+                        trackList.addAll(MusicLibrary.instance.defaultTracklistNew)
                         if (trackList.isNotEmpty()) {
                             try {
                                 if (trackList.size == 1) {
                                     //to avoid sending 0 to nextInt function
-                                    currentTrack = MusicLibrary.instance!!.getTrackItemFromId(trackList.get(0))
+                                    currentTrack = MusicLibrary.instance.getTrackItemFromId(trackList.get(0))
                                     currentTrackPosition = 1
                                 } else {
                                     val random: Int = Random().nextInt(trackList.size - 1)
-                                    currentTrack = MusicLibrary.instance!!.getTrackItemFromId(trackList.get(random))
+                                    currentTrack = MusicLibrary.instance.getTrackItemFromId(trackList.get(random))
                                     currentTrackPosition = random
                                 }
                             } catch (ignored: Exception) {
@@ -769,7 +769,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                 var b: Bitmap? = null
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                        b = MusicLibrary.instance.getAlbumArtFromTrack(getCurrentTrack()!!.id)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -813,7 +813,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                             secondaryText += getString(R.string.empty_queue)
                         } else {
                             try {
-                                secondaryText += MusicLibrary.instance!!.getTrackItemFromId(trackList.get(currentTrackPosition + 1))!!.title
+                                secondaryText += MusicLibrary.instance.getTrackItemFromId(trackList.get(currentTrackPosition + 1))!!.title
                             } catch (e: IndexOutOfBoundsException) {
                                 Log.v(Constants.TAG, e.toString())
                             } catch (ignored: Exception) {
@@ -918,8 +918,8 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     val time: Long = System.currentTimeMillis()
                     trackList.sortWith { integer, t1 ->
                         try {
-                            MusicLibrary.instance!!.getTrackMap().get(integer)
-                                .compareTo(MusicLibrary.instance!!.getTrackMap()
+                            MusicLibrary.instance.getTrackMap().get(integer)
+                                .compareTo(MusicLibrary.instance.getTrackMap()
                                     .get(t1))
                         } catch (e: NullPointerException) {
                             0
@@ -994,7 +994,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
             var b: Bitmap? = null
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                    b = MusicLibrary.instance.getAlbumArtFromTrack(getCurrentTrack()!!.id)
                 }
             } catch (e: Exception) {
                 //e.printStackTrace();
@@ -1111,7 +1111,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     var b: Bitmap? = null
                     try {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            b = MusicLibrary.instance!!.getAlbumArtFromTrack(getCurrentTrack()!!.id)
+                            b = MusicLibrary.instance.getAlbumArtFromTrack(getCurrentTrack()!!.id)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -1131,7 +1131,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         } catch (ignored: Exception) {
             return
         }
-        val temp: TrackItem? = MusicLibrary.instance!!.getTrackItemFromId(trackList[pos])
+        val temp: TrackItem? = MusicLibrary.instance.getTrackItemFromId(trackList[pos])
         if (temp == null) {
             val h = Handler(applicationContext.mainLooper)
             h.post {
@@ -1277,7 +1277,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
     }
 
     fun shuffleAll() {
-        val tempList: ArrayList<Int>? = MusicLibrary.instance!!.defaultTracklistNew
+        val tempList: ArrayList<Int>? = MusicLibrary.instance.defaultTracklistNew
         if (tempList != null) {
             tempList.shuffle()
             setTrackList(tempList)
@@ -1326,7 +1326,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     ) {
                         if (trackList.size < 10) {
                             val dataItems: List<Int> =
-                                MusicLibrary.instance!!.defaultTracklistNew
+                                MusicLibrary.instance.defaultTracklistNew
                             Collections.shuffle(dataItems)
                             trackList.addAll(dataItems)
                             playTrack(currentTrackPosition + 1)
@@ -1546,7 +1546,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
             Log.d("PlayerService", "restoreTracklist: load default list")
             trackList.clear()
             try {
-                trackList.addAll(MusicLibrary.instance!!.defaultTracklistNew)
+                trackList.addAll(MusicLibrary.instance.defaultTracklistNew)
             } catch (e: Exception) {
                 trackList.clear()
                 Log.v(Constants.TAG, e.toString())
@@ -1554,12 +1554,12 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
             if (trackList.isNotEmpty()) {
                 if (trackList.size == 1) {
                     //to avoid sending 0 to nextInt function
-                    currentTrack = MusicLibrary.instance!!.getTrackItemFromId(trackList.get(0))
+                    currentTrack = MusicLibrary.instance.getTrackItemFromId(trackList.get(0))
                     currentTrackPosition = 1
                 } else {
                     val random: Int = Random().nextInt(trackList.size - 1)
                     currentTrack =
-                        MusicLibrary.instance!!.getTrackItemFromId(trackList.get(random))
+                        MusicLibrary.instance.getTrackItemFromId(trackList.get(random))
                     currentTrackPosition = random
                 }
             } else {
@@ -1569,7 +1569,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         } else {
             currentTrackPosition = trackList.indexOf(id)
             try {
-                currentTrack = MusicLibrary.instance!!.getTrackItemFromId(id)
+                currentTrack = MusicLibrary.instance.getTrackItemFromId(id)
             } catch (e: Exception) {
                 Log.e(Constants.TAG, Arrays.toString(e.stackTrace), e)
             }

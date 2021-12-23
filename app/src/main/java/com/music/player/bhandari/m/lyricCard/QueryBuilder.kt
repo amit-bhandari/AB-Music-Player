@@ -35,6 +35,7 @@ internal class QueryBuilder constructor(private var mFamilyName: String) {
     private var mWeight: Int? = null
     private var mItalic: Float? = null
     private var mBesteffort: Boolean? = null
+
     fun withFamilyName(familyName: String): QueryBuilder {
         mFamilyName = familyName
         return this

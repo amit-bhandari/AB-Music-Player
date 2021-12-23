@@ -7,7 +7,8 @@ import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
-import android.widget.TextView
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -71,7 +72,7 @@ class ZoomTextView : androidx.appcompat.widget.AppCompatTextView {
     private inner class ScaleListener : SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
             mScaleFactor *= detector.scaleFactor
-            mScaleFactor = Math.max(1.0f, Math.min(mScaleFactor, zoomLimit))
+            mScaleFactor = max(1.0f, min(mScaleFactor, zoomLimit))
             setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultSize * mScaleFactor)
             Log.e(TAG, mScaleFactor.toString())
             return true

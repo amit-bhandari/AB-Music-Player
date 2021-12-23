@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -26,14 +27,12 @@ import com.music.player.bhandari.m.UIElementHelper.ColorHelper
 import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary
-import com.music.player.bhandari.m.model.TrackItem
 import com.music.player.bhandari.m.model.dataItem
 import com.music.player.bhandari.m.service.PlayerService
 import com.music.player.bhandari.m.utils.UtilityFun
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import java.io.File
 import java.util.*
-import kotlin.Comparator
 import kotlin.collections.ArrayList
 
 /**
@@ -54,18 +53,19 @@ import kotlin.collections.ArrayList
 class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayList<dataItem>) :
     RecyclerView.Adapter<AlbumLibraryAdapter.MyViewHolder?>(), PopupMenu.OnMenuItemClickListener,
     FastScrollRecyclerView.SectionedAdapter, BubbleTextGetter {
+
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private val playerService: PlayerService
+    private val playerService: PlayerService = MyApp.getService()!!
     private var position: Int = 0
     private var dataItems: ArrayList<dataItem> = ArrayList() //actual data
     private val filteredDataItems: ArrayList<dataItem> = ArrayList()
-    private var viewParent: View? = null
+    private lateinit var viewParent: View
     private var batmanDrawable: Drawable? = null
+
     fun sort(sort_id: Int) {
-        val sort_order: Int = MyApp.getPref()
-            .getInt(context.resources.getString(R.string.pref_order_by), Constants.SORT_BY.ASC)
+        val sortOrder = MyApp.getPref().getInt(context.resources.getString(R.string.pref_order_by), Constants.SORT_BY.ASC)
         when (sort_id) {
-            Constants.SORT_BY.NAME -> if (sort_order == Constants.SORT_BY.ASC) {
+            Constants.SORT_BY.NAME -> if (sortOrder == Constants.SORT_BY.ASC) {
                 filteredDataItems.sortWith { o1, o2 ->
                     o1.albumName.compareTo(o2.albumName,
                         ignoreCase = true)
@@ -76,7 +76,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
                         ignoreCase = true)
                 }
             }
-            Constants.SORT_BY.YEAR -> if (sort_order == Constants.SORT_BY.ASC) {
+            Constants.SORT_BY.YEAR -> if (sortOrder == Constants.SORT_BY.ASC) {
                 filteredDataItems.sortWith { o1, o2 ->
                     o1.year.compareTo(o2.year,
                         ignoreCase = true)
@@ -92,7 +92,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
     }
 
     fun filter(searchQuery: String) {
-        if (!(searchQuery == "")) {
+        if (searchQuery != "") {
             filteredDataItems.clear()
             for (d: dataItem in dataItems) {
                 if ((d.title.lowercase(Locale.getDefault()).contains(searchQuery)
@@ -124,7 +124,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
         holder.title.text = filteredDataItems.get(position).albumName
         var builder: RequestBuilder<Bitmap?>? = null
         if (!MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) {
-            val url = MusicLibrary.instance!!.artistUrls.get(filteredDataItems[position].artist_name)
+            val url = MusicLibrary.instance.artistUrls[filteredDataItems[position].artist_name]
             builder = Glide
                 .with(context)
                 .asBitmap()
@@ -135,7 +135,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
                 .placeholder(batmanDrawable)
         }
         val bm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MusicLibrary.instance!!.getAlbumArtFromTrack(filteredDataItems.get(position).album_id)
+            MusicLibrary.instance.getAlbumArtFromTrack(filteredDataItems.get(position).album_id)
         } else {
             TODO("VERSION.SDK_INT < Q")
         }
@@ -204,7 +204,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
             R.id.action_play -> {
                 if (MyApp.Companion.isLocked()) {
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent!!,
+                    Snackbar.make(viewParent,
                         context.getString(R.string.music_is_locked),
                         Snackbar.LENGTH_SHORT).show()
                     return true
@@ -214,7 +214,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
             R.id.action_add_to_playlist -> {
                 val temp: ArrayList<Int>
                 val album_id: Int = filteredDataItems[position].album_id
-                temp = MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)!!
+                temp = MusicLibrary.instance.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)!!
                 val ids = IntArray(temp.size)
                 var i = 0
                 while (i < ids.size) {
@@ -225,17 +225,14 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
             }
             R.id.action_share -> {
                 val files: ArrayList<Uri> = ArrayList() //for sending multiple files
-                for (id: Int in MusicLibrary.instance!!.getSongListFromAlbumIdNew(filteredDataItems[position].album_id, Constants.SORT_ORDER.ASC)!!) {
+                for (id: Int in MusicLibrary.instance.getSongListFromAlbumIdNew(filteredDataItems[position].album_id, Constants.SORT_ORDER.ASC)!!) {
                     try {
-                        val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
-                        val fileUri: Uri = FileProvider.getUriForFile(context,
-                            context.applicationContext
-                                .packageName + "com.bhandari.music.provider",
-                            file)
+                        val file = File(MusicLibrary.instance.getTrackItemFromId(id)!!.getFilePath())
+                        val fileUri = FileProvider.getUriForFile(context, context.applicationContext.packageName + "com.bhandari.music.provider", file)
                         files.add(fileUri)
                     } catch (e: Exception) {
                         // Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
-                        Snackbar.make(viewParent!!,
+                        Snackbar.make(viewParent,
                             context.getString(R.string.error_something_wrong),
                             Snackbar.LENGTH_SHORT).show()
                         return true
@@ -243,7 +240,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
                 }
                 UtilityFun.Share(context, files, "Multiple audio files")
             }
-            R.id.action_delete -> Delete()
+            R.id.action_delete -> delete()
             R.id.action_play_next -> AddToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
             R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
             R.id.action_search_youtube -> UtilityFun.LaunchYoutube(context,
@@ -255,16 +252,18 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
 
     private fun Play() {
         val album_id: Int = filteredDataItems[position].album_id
-        playerService.setTrackList(MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
+        playerService.setTrackList(MusicLibrary.instance.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
         playerService.playAtPosition(0)
     }
 
     private fun AddToQ(positionToAdd: Int) {
         //we are using same function for adding to q and playing next
         // toastString is to identify which string to disokay as toast
-        val toastString: String =
-            (if (positionToAdd == Constants.ADD_TO_Q.AT_LAST) context.getString(R.string.added_to_q) else context.getString(
-                R.string.playing_next))
+        val toastString = when (positionToAdd) {
+            Constants.ADD_TO_Q.AT_LAST -> context.getString(R.string.added_to_q)
+            else -> context.getString(
+                R.string.playing_next)
+        }
         //when adding to playing next, order of songs should be desc
         //and asc for adding at last
         //this is how the function in player service is writte, deal with it
@@ -272,8 +271,8 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
             Constants.ADD_TO_Q.AT_LAST -> Constants.SORT_ORDER.ASC
             else -> Constants.SORT_ORDER.DESC
         }
-        val album_id: Int = filteredDataItems[position].album_id
-        for (id: Int in MusicLibrary.instance?.getSongListFromAlbumIdNew(album_id, sortOrder)!!) {
+        val albumId = filteredDataItems[position].album_id
+        for (id: Int in MusicLibrary.instance.getSongListFromAlbumIdNew(albumId, sortOrder)!!) {
             playerService.addToQ(id, positionToAdd)
         }
 
@@ -282,60 +281,54 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
         //Toast.makeText(context
         //,toastString+filteredDataItems.get(position).title
         //  ,Toast.LENGTH_SHORT).show();
-        Snackbar.make(viewParent!!,
+        Snackbar.make(viewParent,
             toastString + filteredDataItems[position].title,
             Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun Delete() {
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.are_u_sure))
-//            .positiveText(R.string.yes)
-//            .negativeText(R.string.no)
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val ids: ArrayList<Int> = ArrayList()
-//                    val files: ArrayList<File> = ArrayList<File>()
-//                    val tracklist: ArrayList<Int> = MusicLibrary.getInstance()
-//                        .getSongListFromAlbumIdNew(filteredDataItems.get(position).album_id,
-//                            Constants.SORT_ORDER.ASC)
-//                    for (id: Int in tracklist) {
-//                        if (playerService!!.getCurrentTrack().getId() === id) {
-//                            //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
-//                            Snackbar.make(viewParent,
-//                                context.getString(R.string.song_is_playing),
-//                                Snackbar.LENGTH_SHORT).show()
-//                            return
-//                        }
-//                        val item: TrackItem? = MusicLibrary.getInstance().getTrackItemFromId(id)
-//                        if (item == null) {
-//                            // Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
-//                            Snackbar.make(viewParent,
-//                                context.getString(R.string.unable_to_del),
-//                                Snackbar.LENGTH_SHORT).show()
-//                            return
-//                        }
-//                        files.add(File(item.getFilePath()))
-//                        ids.add(item.id)
-//                    }
-//                    if (UtilityFun.Delete(context, files, ids)) {
-//                        // Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-//                        Snackbar.make(viewParent,
-//                            context.getString(R.string.deleted) + filteredDataItems.get(position).title,
-//                            Snackbar.LENGTH_SHORT).show()
-//                        dataItems.remove(dataItems.get(position))
-//                        filteredDataItems.remove(filteredDataItems.get(position))
-//                        notifyItemRemoved(position)
-//                        // notifyDataSetChanged();
-//                    } else {
-//                        //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-//                        Snackbar.make(viewParent,
-//                            context.getString(R.string.unable_to_del),
-//                            Snackbar.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//            .show()
+    private fun delete() {
+        MaterialDialog(context)
+            .title(text = context.getString(R.string.are_u_sure))
+            .positiveButton(res = R.string.yes){
+                val ids: ArrayList<Int> = ArrayList()
+                val files: ArrayList<File> = ArrayList()
+                val tracklist = MusicLibrary.instance.getSongListFromAlbumIdNew(filteredDataItems.get(position).album_id,
+                        Constants.SORT_ORDER.ASC)
+                if (tracklist != null) {
+                    for (id: Int in tracklist) {
+                        if (playerService.getCurrentTrack()!!.id == id) {
+                            //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
+                            Snackbar.make(viewParent,
+                                context.getString(R.string.song_is_playing),
+                                Snackbar.LENGTH_SHORT).show()
+                            return@positiveButton
+                        }
+                        val item = MusicLibrary.instance.getTrackItemFromId(id)
+                        if (item == null) {
+                            // Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
+                            Snackbar.make(viewParent,
+                                context.getString(R.string.unable_to_del),
+                                Snackbar.LENGTH_SHORT).show()
+                            return@positiveButton
+                        }
+                        files.add(File(item.getFilePath()))
+                        ids.add(item.id)
+                    }
+                }
+                if (UtilityFun.Delete(context, files, ids)) {
+                    // Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                    Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems[position].title, Snackbar.LENGTH_SHORT).show()
+                    dataItems.remove(dataItems[position])
+                    filteredDataItems.remove(filteredDataItems[position])
+                    notifyItemRemoved(position)
+                    // notifyDataSetChanged();
+                } else {
+                    //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                    Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            .negativeButton(R.string.no)
+            .show()
     }
 
     override fun getSectionName(position: Int): String {
@@ -365,7 +358,6 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
     }
 
     init {
-        playerService = MyApp.getService()!!
         dataItems = data
         filteredDataItems.addAll(dataItems)
         setHasStableIds(true)

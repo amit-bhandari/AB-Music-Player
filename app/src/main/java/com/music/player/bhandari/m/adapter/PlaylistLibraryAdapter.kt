@@ -137,7 +137,7 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
         }
         for (id: Int in trackList) {
             try {
-                val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
+                val file = File(MusicLibrary.instance.getTrackItemFromId(id)!!.getFilePath())
                 val fileUri: Uri = FileProvider.getUriForFile(context,
                     context.applicationContext
                         .packageName + "com.bhandari.music.provider",

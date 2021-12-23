@@ -52,7 +52,7 @@ class FragmentAlbumLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         mRefreshLibraryReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 albumLibraryAdapter = AlbumLibraryAdapter(requireContext(),
-                    MusicLibrary.instance!!.getDataItemsForAlbums())
+                    MusicLibrary.instance.getDataItemsForAlbums())
                 mRecyclerView!!.adapter = albumLibraryAdapter
                 //swipeRefreshLayout.setRefreshing(false);
             }
@@ -101,7 +101,7 @@ class FragmentAlbumLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         /*mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
         mRecyclerView.setThumbColor(ColorHelper.getAccentColor());
         mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/albumLibraryAdapter =
-            AlbumLibraryAdapter(requireContext(), MusicLibrary.instance!!.getDataItemsForAlbums())
+            AlbumLibraryAdapter(requireContext(), MusicLibrary.instance.getDataItemsForAlbums())
         albumLibraryAdapter!!.sort(MyApp.getPref()
             .getInt(getString(R.string.pref_album_sort_by), Constants.SORT_BY.NAME))
         mRecyclerView!!.adapter = albumLibraryAdapter
@@ -128,7 +128,7 @@ class FragmentAlbumLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onRefresh() {
         Executors.newSingleThreadExecutor().execute {
-            MusicLibrary.instance!!.RefreshLibrary()
+            MusicLibrary.instance.RefreshLibrary()
             try {
                 Thread.sleep(2000)
             } catch (e: InterruptedException) {

@@ -53,32 +53,32 @@ class FragmentLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
         mRefreshLibraryReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                Log.v("FragmentLibrary", "Items found tracks = " + MusicLibrary.instance!!.getDataItemsForTracks()!!.size)
-                Log.v("FragmentLibrary", "Items found art= " + MusicLibrary.instance!!.dataItemsArtist.size)
-                Log.v("FragmentLibrary", "Items found alb= " + MusicLibrary.instance!!.getDataItemsForAlbums().size)
-                Log.v("FragmentLibrary", "Items found genr= " + MusicLibrary.instance!!.getDataItemsForGenres().size)
+                Log.v("FragmentLibrary", "Items found tracks = " + MusicLibrary.instance.getDataItemsForTracks()!!.size)
+                Log.v("FragmentLibrary", "Items found art= " + MusicLibrary.instance.dataItemsArtist.size)
+                Log.v("FragmentLibrary", "Items found alb= " + MusicLibrary.instance.getDataItemsForAlbums().size)
+                Log.v("FragmentLibrary", "Items found genr= " + MusicLibrary.instance.getDataItemsForGenres().size)
                 when (status) {
                     Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
-                        cursoradapter = MainLibraryAdapter(this@FragmentLibrary, requireContext(), ArrayList(MusicLibrary.instance!!.getDataItemsForTracks()!!.values))
+                        cursoradapter = MainLibraryAdapter(this@FragmentLibrary, requireContext(), ArrayList(MusicLibrary.instance.getDataItemsForTracks()!!.values))
                         cursoradapter!!.sort(MyApp.getPref()
                             .getInt(getString(R.string.pref_tracks_sort_by), Constants.SORT_BY.NAME))
                     }
                     Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
-                        cursoradapter = MainLibraryAdapter(this@FragmentLibrary, requireContext(), MusicLibrary.instance!!.dataItemsArtist)
+                        cursoradapter = MainLibraryAdapter(this@FragmentLibrary, requireContext(), MusicLibrary.instance.dataItemsArtist)
                         cursoradapter!!.sort(MyApp.getPref()
                             .getInt(getString(R.string.pref_artist_sort_by), Constants.SORT_BY.NAME))
                     }
                     Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                         cursoradapter = MainLibraryAdapter(this@FragmentLibrary,
                             requireContext(),
-                            MusicLibrary.instance!!.getDataItemsForAlbums())
+                            MusicLibrary.instance.getDataItemsForAlbums())
                         cursoradapter!!.sort(MyApp.getPref()
                             .getInt(getString(R.string.pref_album_sort_by), Constants.SORT_BY.NAME))
                     }
                     Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                         cursoradapter = MainLibraryAdapter(this@FragmentLibrary,
                             requireContext(),
-                            MusicLibrary.instance!!.getDataItemsForGenres())
+                            MusicLibrary.instance.getDataItemsForGenres())
                         cursoradapter!!.sort(MyApp.getPref()
                             .getInt(getString(R.string.pref_genre_sort_by), Constants.SORT_BY.NAME))
                     }
@@ -156,28 +156,28 @@ class FragmentLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
                 cursoradapter = MainLibraryAdapter(this@FragmentLibrary,
                     requireContext(),
-                    ArrayList(MusicLibrary.instance!!.getDataItemsForTracks()!!.values))
+                    ArrayList(MusicLibrary.instance.getDataItemsForTracks()!!.values))
                 cursoradapter!!.sort(MyApp.getPref()
                     .getInt(getString(R.string.pref_tracks_sort_by), Constants.SORT_BY.NAME))
             }
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 cursoradapter = MainLibraryAdapter(this@FragmentLibrary,
                     requireContext(),
-                    MusicLibrary.instance!!.dataItemsArtist)
+                    MusicLibrary.instance.dataItemsArtist)
                 cursoradapter!!.sort(MyApp.getPref()
                     .getInt(getString(R.string.pref_artist_sort_by), Constants.SORT_BY.NAME))
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 cursoradapter = MainLibraryAdapter(this@FragmentLibrary,
                     requireContext(),
-                    MusicLibrary.instance!!.getDataItemsForAlbums())
+                    MusicLibrary.instance.getDataItemsForAlbums())
                 cursoradapter!!.sort(MyApp.getPref()
                     .getInt(getString(R.string.pref_album_sort_by), Constants.SORT_BY.NAME))
             }
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                 cursoradapter = MainLibraryAdapter(this@FragmentLibrary,
                     requireContext(),
-                    MusicLibrary.instance!!.getDataItemsForGenres())
+                    MusicLibrary.instance.getDataItemsForGenres())
                 cursoradapter!!.sort(MyApp.getPref()
                     .getInt(getString(R.string.pref_genre_sort_by), Constants.SORT_BY.NAME))
             }
@@ -200,7 +200,7 @@ class FragmentLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        MusicLibrary.instance!!.RefreshLibrary()
+        MusicLibrary.instance.RefreshLibrary()
     }
 
     //for catching exception generated by recycler view which was causing abend, no other way to handle this

@@ -36,16 +36,16 @@ import kotlin.collections.ArrayList
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
-    RecyclerView.Adapter<LyricsViewAdapter.MyViewHolder?>() {
+class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) : RecyclerView.Adapter<LyricsViewAdapter.MyViewHolder?>() {
+
     private val copyRightText: String = context.getString(R.string.lyric_copy_right_msg)
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val mLyrics: Lyrics? = lyrics
-    private val dictionary: TreeMap<Long, String>? = TreeMap<Long, String>()
+    private val dictionary: TreeMap<Long, String> = TreeMap<Long, String>()
     private var mCurrentTime = 0L
     private var mNextTime = 0L
     private var mPrevTime = 0L
-    private val mTimes: MutableList<Long>? = ArrayList()
+    private val mTimes: MutableList<Long> = ArrayList()
     private val selectedItems: SparseBooleanArray
 
     //flag is used when lyric are searched through explre feature
@@ -63,20 +63,13 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view: View
         //calligraphy problem in kitkat
         //with text view having background
-        view = try {
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-                inflater.inflate(R.layout.lyrics_line_text_view_kitkat, parent, false)
-            } else {
-                inflater.inflate(R.layout.lyrics_line_text_view, parent, false)
-            }
+        val view: View = try {
+            inflater.inflate(R.layout.lyrics_line_text_view, parent, false)
         } catch (e: InflateException) {
             val textView = TextView(context)
-            val param: LinearLayout.LayoutParams =
-                LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT)
+            val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             textView.layoutParams = param
             textView.textSize = 20f
             textView.gravity = Gravity.CENTER_HORIZONTAL
@@ -90,22 +83,26 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        var line = ""
-        line = dictionary!!.get(mTimes!![position])!!
+        val line: String = dictionary[mTimes[position]]!!
         holder.line.text = line
         Log.d("LyricsViewAdapter", "onBindViewHolder: current time $mCurrentTime")
         //when lyrics are searched through explore, no need of running lyrics
-        if (mLyrics!!.isLRC() && !noDynamicLyrics) {
-            val color = if (mTimes[position] <= mCurrentTime) Color.YELLOW else Color.WHITE
-            holder.line.setTextColor(color)
-            Log.d("LyricsViewAdapter", "onBindViewHolder: setting color $color")
+        when {
+            mLyrics!!.isLRC() && !noDynamicLyrics -> {
+                val color = if (mTimes[position] <= mCurrentTime) Color.YELLOW else Color.WHITE
+                holder.line.setTextColor(color)
+                Log.d("LyricsViewAdapter", "onBindViewHolder: setting color $color")
+            }
         }
 
         //last item is copyright text
-        if (position == mTimes.size - 1) {
-            holder.line.textSize = 10f
-        } else {
-            holder.line.textSize = 22f
+        when (position) {
+            mTimes.size - 1 -> {
+                holder.line.textSize = 10f
+            }
+            else -> {
+                holder.line.textSize = 22f
+            }
         }
 
         //holder.line.setTypeface(TypeFaceHelper.getTypeFace(context));
@@ -113,11 +110,11 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
     }
 
     override fun getItemCount(): Int {
-        return mTimes!!.size
+        return mTimes.size
     }
 
     fun getLineAtPosition(position: Int): String {
-        return dictionary!![mTimes!![position]]!!
+        return dictionary[mTimes[position]]!!
     }
 
     private fun setStaticDictionary() {
@@ -127,14 +124,14 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
             var str: String?
             while (br.readLine().also { str = it } != null) {
                 //lyricLines.add(str);
-                dictionary!![i] = str!!
-                mTimes!!.add(i)
+                dictionary[i] = str!!
+                mTimes.add(i)
                 i++
             }
 
             //put last element as lyrics copyright text
-            if (mTimes!!.size != 0) {
-                dictionary!![i] = copyRightText
+            if (mTimes.size != 0) {
+                dictionary[i] = copyRightText
                 mTimes.add(i)
             }
             br.close()
@@ -163,7 +160,7 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
                     continue
                 }
                 for (i in 0 until arr.size - 1) {
-                    mTimes!!.add(arr[i].toLong())
+                    mTimes.add(arr[i].toLong())
                     texts.add(arr[arr.size - 1])
                 }
             }
@@ -172,8 +169,8 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
             e.printStackTrace()
         }
         // Collections.sort(mTimes);
-        for (i in mTimes!!.indices) {
-            if (!(dictionary!!.isEmpty() && texts[i].replace("\\s".toRegex(), "").isEmpty())) {
+        for (i in mTimes.indices) {
+            if (!(dictionary.isEmpty() && texts[i].replace("\\s".toRegex(), "").isEmpty())) {
                 // Log.v(Constants.L_TAG+" chavan",texts.get(i));
                 dictionary[mTimes[i]] = texts[i]
             }
@@ -223,7 +220,7 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
 
     @Synchronized
     fun changeCurrent(time: Long): Int {
-        if (dictionary == null || dictionary.isEmpty()) {
+        if (dictionary.isEmpty()) {
             return -1
         }
         mPrevTime = mCurrentTime
@@ -232,7 +229,7 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
         mCurrentTime = dictionary.firstKey()
         if (time > mCurrentTime) mCurrentTime = dictionary.floorKey(time)
         if (mCurrentTime != mPrevTime && mPrevTime != 0L) {
-            val index = mTimes!!.indexOf(mCurrentTime)
+            val index = mTimes.indexOf(mCurrentTime)
             notifyItemChanged(index)
             return index
         }
@@ -240,12 +237,12 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
     }
 
     fun getCurrentTimeIndex(): Int {
-        return mTimes?.indexOf(dictionary!!.floorKey(mCurrentTime)) ?: -1
+        return mTimes.indexOf(dictionary!!.floorKey(mCurrentTime)) ?: -1
     }
 
     fun getStaticLyrics(): String {
         val text = StringBuilder()
-        val iterator: Iterator<String> = dictionary!!.values.iterator()
+        val iterator: Iterator<String> = dictionary.values.iterator()
         while (iterator.hasNext()) {
             val next = iterator.next()
             if (text.isEmpty() && next.replace("\\s".toRegex(), "").isEmpty()) continue
@@ -286,11 +283,11 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
     }
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var line: TextView = itemView.findViewById<TextView>(R.id.lyrics_line)
+        var line: TextView = itemView.findViewById(R.id.lyrics_line)
     }
 
     init {
-        dictionary!!.clear()
+        dictionary.clear()
 
 
         //ignore null pointer expcetion
@@ -301,7 +298,7 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
         }
         mNextTime = 0L
         mPrevTime = 0L
-        mTimes!!.clear()
+        mTimes.clear()
         selectedItems = SparseBooleanArray()
         if (mLyrics!!.isLRC()) {
             setDynamicDictionary()

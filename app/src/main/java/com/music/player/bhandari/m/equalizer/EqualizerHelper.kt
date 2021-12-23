@@ -6,7 +6,7 @@ import android.content.Context
 import android.database.Cursor
 import android.media.audiofx.*
 import com.google.gson.Gson
-import com.music.player.bhandari.m.DBHelper.DbHelperEqualizer
+import com.music.player.bhandari.m.dbHelper.DbHelperEqualizer
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 

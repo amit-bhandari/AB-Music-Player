@@ -8,8 +8,8 @@ android {
     compileSdk 31
     defaultConfig {
         applicationId 'com.bhandari.music'
-        minSdkVersion 21
-        targetSdkVersion 31
+        minSdk 21
+        targetSdk 31
         versionCode 1 //To be updated
         versionName "1.0.0" //To be updated
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -118,6 +118,11 @@ dependencies {
 
     //flow layout
     implementation 'com.google.android:flexbox:1.0.0'
+
+    //Dialogs
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
+    implementation 'com.afollestad.material-dialogs:bottomsheets:3.3.0'
+    implementation 'com.afollestad.material-dialogs:lifecycle:3.3.0'
 
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

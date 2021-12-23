@@ -511,7 +511,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                             isArtistLoadedInBackground = b != null
                             Log.d(Constants.TAG, "UpdateUI: settingArtistImageBackground")
                         }
-                        2 -> b = MusicLibrary.instance!!.getAlbumArtFromId(item.id)
+                        2 -> b = MusicLibrary.instance.getAlbumArtFromId(item.id)
                         3 -> b = getNowPlayingBackBitmap()
                     }
                 } catch (e: Exception) {
@@ -860,7 +860,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 val abPath: String = trackItem.getFilePath()
                 UtilityFun.SetRingtone(this,
                     abPath,
-                    MusicLibrary.instance!!.getIdFromFilePath(abPath))
+                    MusicLibrary.instance.getIdFromFilePath(abPath))
             } else {
                 Snackbar.make(rootView!!,
                     getString(R.string.main_act_empty_lib),

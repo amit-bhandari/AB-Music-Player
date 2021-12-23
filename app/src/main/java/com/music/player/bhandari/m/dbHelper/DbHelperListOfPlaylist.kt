@@ -1,4 +1,4 @@
-package com.music.player.bhandari.m.DBHelper
+package com.music.player.bhandari.m.dbHelper
 
 import android.content.ContentValues
 import android.content.Context

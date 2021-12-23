@@ -16,7 +16,8 @@ class MyRecyclerView : RecyclerView {
 
     override fun getTopFadingEdgeStrength(): Float {
         return 0F
-    } /*@Override
+    }
+    /*@Override
     protected float getBottomFadingEdgeStrength() {
         return 1000;
     }*/

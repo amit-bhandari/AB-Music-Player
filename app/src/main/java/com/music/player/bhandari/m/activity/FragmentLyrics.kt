@@ -634,7 +634,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
                             values,
                             MediaStore.Audio.Media.TITLE + "=?",
                             arrayOf(item!!.title))
-                    val d = MusicLibrary.instance!!.updateTrackNew(item!!.id, edited_title, edited_artist, item!!.album!!)
+                    val d = MusicLibrary.instance.updateTrackNew(item!!.id, edited_title, edited_artist, item!!.album!!)
                     PlaylistManager.getInstance(MyApp.getContext())!!.addEntryToMusicTable(d!!)
                     val intent = Intent(context, ActivityNowPlaying::class.java)
                     intent.putExtra("refresh", true)

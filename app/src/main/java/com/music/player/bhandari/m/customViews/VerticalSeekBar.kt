@@ -41,6 +41,7 @@ import androidx.appcompat.widget.AppCompatSeekBar
 //Creates a Vertical SeekBar using Android's basic UI elements.
 class VerticalSeekBar : AppCompatSeekBar {
     constructor(context: Context?) : super((context)!!)
+
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
         (context)!!, attrs, defStyle)
 

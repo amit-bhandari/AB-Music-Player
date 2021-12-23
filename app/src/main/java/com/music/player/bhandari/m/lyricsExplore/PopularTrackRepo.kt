@@ -30,30 +30,16 @@ import java.net.URL
  * limitations under the License.
  */
 class PopularTrackRepo {
-    fun fetchPopularTracks(
-        country: String,
-        callback: OnPopularTracksReady?,
-        lookInCache: Boolean
-    ) {
+    fun fetchPopularTracks(country: String, callback: OnPopularTracksReady?, lookInCache: Boolean) {
         LastFM(country, callback, lookInCache).start()
     }
 
-    internal class LastFM(
-        country: String,
-        callback: OnPopularTracksReady?,
-        lookInCache: Boolean
-    ) : Thread(
-        getRunnable(country, callback, lookInCache)) {
+    internal class LastFM(country: String, callback: OnPopularTracksReady?, lookInCache: Boolean) : Thread(getRunnable(country, callback, lookInCache)) {
         companion object {
-            private fun getRunnable(
-                country: String,
-                callback: OnPopularTracksReady?,
-                lookInCache: Boolean
-            ): Runnable {
+            private fun getRunnable(country: String, callback: OnPopularTracksReady?, lookInCache: Boolean): Runnable {
                 return object : Runnable {
                     val DAYS_UNTIL_OFFLINE_STALE = 1
                     override fun run() {
-
                         //check offline content first
                         if (lookInCache) {
                             val trackList: List<Track>? =
@@ -68,11 +54,8 @@ class PopularTrackRepo {
                             globalTopTracks
                             return
                         }
-                        val url =
-                            java.lang.String.format(API_ROOT_URL + GEO_TOP_TRACKS_FORMAT_STRING,
-                                country,
-                                Keys.LASTFM)
-                        var response: JsonObject? = null
+                        val url = String.format(API_ROOT_URL + GEO_TOP_TRACKS_FORMAT_STRING, country, Keys.LASTFM)
+                        val response: JsonObject?
                         try {
                             val queryURL = URL(url)
                             val connection: Connection = Jsoup.connect(queryURL.toExternalForm())
@@ -118,13 +101,10 @@ class PopularTrackRepo {
                     }
 
                     //10 seconds timeout
-                    private val globalTopTracks: Unit
-                        private get() {
-                            val url =
-                                java.lang.String.format(API_ROOT_URL + GLOBAL_TOP_TRACKS_FORMAT_STRING,
-                                    Keys.LASTFM)
-                            var response: JsonObject? = null
-                            try {
+                    private val globalTopTracks: Unit get() {
+                        val url = String.format(API_ROOT_URL + GLOBAL_TOP_TRACKS_FORMAT_STRING, Keys.LASTFM)
+                        val response: JsonObject?
+                        try {
                                 val queryURL = URL(url)
                                 val connection: Connection =
                                     Jsoup.connect(queryURL.toExternalForm())
@@ -133,11 +113,10 @@ class PopularTrackRepo {
                                         .ignoreContentType(true)
                                 val document = connection.userAgent(Net.USER_AGENT).get()
                                 response = JsonParser().parse(document.text()).asJsonObject
-                                val tracks: MutableList<Track> =
-                                    ArrayList<Track>()
+                                val tracks: MutableList<Track> = ArrayList()
                                 if (response != null) {
                                     val arrJson =
-                                        response!!.getAsJsonObject("tracks").getAsJsonArray("track")
+                                        response.getAsJsonObject("tracks").getAsJsonArray("track")
                                     for (element in arrJson) {
                                         val imgString: String =
                                             element.asJsonObject.get("image").asJsonArray
@@ -155,7 +134,7 @@ class PopularTrackRepo {
                                     if (tracks.size != 0) storeTrackListOffline(tracks)
                                     callback?.popularTracksReady(tracks,
                                         "World")
-                                    Log.d("LastFM", "run: " + response.toString())
+                                    Log.d("LastFM", "run: $response")
                                 } else {
                                     callback?.error()
                                 }
@@ -175,14 +154,11 @@ class PopularTrackRepo {
 
                     private val trackListOffline: List<Track>?
                         get() {
-                            val prefs =
-                                MyApp.getContext().getSharedPreferences("explore_track_list", 0)
+                            val prefs = MyApp.getContext().getSharedPreferences("explore_track_list", 0)
                             val gsonString = prefs.getString("track_list", "")
                             val time: Long = prefs.getLong("time", -1)
                             if (gsonString == "" || time == -1L) return null
-                            if (System.currentTimeMillis() >= time +
-                                DAYS_UNTIL_OFFLINE_STALE * 24 * 60 * 60 * 1000
-                            ) {
+                            if (System.currentTimeMillis() >= time + DAYS_UNTIL_OFFLINE_STALE * 24 * 60 * 60 * 1000) {
                                 return null
                             }
                             val listType: Type = object :
@@ -196,9 +172,7 @@ class PopularTrackRepo {
 
     companion object {
         private const val API_ROOT_URL = "http://ws.audioscrobbler.com/2.0"
-        private const val GEO_TOP_TRACKS_FORMAT_STRING =
-            "/?method=geo.gettoptracks&country=%s&api_key=%s&format=json&limit=100"
-        private const val GLOBAL_TOP_TRACKS_FORMAT_STRING =
-            "/?method=chart.gettoptracks&api_key=%s&format=json&limit=100"
+        private const val GEO_TOP_TRACKS_FORMAT_STRING = "/?method=geo.gettoptracks&country=%s&api_key=%s&format=json&limit=100"
+        private const val GLOBAL_TOP_TRACKS_FORMAT_STRING = "/?method=chart.gettoptracks&api_key=%s&format=json&limit=100"
     }
 }

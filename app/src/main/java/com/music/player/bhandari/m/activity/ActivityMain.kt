@@ -282,7 +282,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         mReceiverForLibraryRefresh = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 //updateUI();
-                if (MusicLibrary.instance!!.defaultTracklistNew.isEmpty()) {
+                if (MusicLibrary.instance.defaultTracklistNew.isEmpty()) {
                     Snackbar.make(rootView!!,
                         getString(R.string.main_act_empty_lib),
                         Snackbar.LENGTH_SHORT).show()
@@ -674,7 +674,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
             if (playerService != null) {
                 if (playerService!!.getCurrentTrack() != null) {
                     var builder: RequestBuilder<Drawable?>? = null
-                    val url: String? = MusicLibrary.instance!!.artistUrls
+                    val url: String? = MusicLibrary.instance.artistUrls
                         .get(playerService!!.getCurrentTrack()!!.getArtist())
                     if (url != null) {
                         when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
@@ -686,7 +686,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         Glide.with(this)
-                            .load(MusicLibrary.instance!!.getAlbumArtFromTrack(playerService!!.getCurrentTrack()!!.id))
+                            .load(MusicLibrary.instance.getAlbumArtFromTrack(playerService!!.getCurrentTrack()!!.id))
                             .dontAnimate()
                             .error(builder)
                             .placeholder(R.drawable.ic_batman_1)
@@ -842,7 +842,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
             }
             R.id.action_refresh -> {
                 Toast.makeText(this, R.string.refreshing_library, Toast.LENGTH_SHORT).show()
-                MusicLibrary.instance!!.RefreshLibrary()
+                MusicLibrary.instance.RefreshLibrary()
             }
             R.id.action_sleep_timer -> setSleepTimerDialog()
             R.id.action_search -> handleSearch()

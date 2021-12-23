@@ -867,7 +867,7 @@ class ActivitySettings : AppCompatActivity() {
         }
 
         private fun RescanLibrary() {
-            MusicLibrary.instance!!.RefreshLibrary()
+            MusicLibrary.instance.RefreshLibrary()
             val dialog: ProgressDialog = ProgressDialog.show(activity, "",
                 getString(R.string.library_rescan), true)
             Executors.newSingleThreadExecutor().execute {

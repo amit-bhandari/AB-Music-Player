@@ -1,4 +1,4 @@
-package com.music.player.bhandari.m.DBHelper
+package com.music.player.bhandari.m.dbHelper
 
 import android.content.ContentValues
 import android.content.Context
@@ -80,19 +80,18 @@ class DbHelperEqualizer constructor(context: Context?) :
     }
 
     companion object {
-        private val DATABASE_VERSION: Int = 3
-        private val DATABASE_NAME: String = "equalizer_setting"
+        private const val DATABASE_VERSION: Int = 3
+        private const val DATABASE_NAME: String = "equalizer_setting"
 
         //EQUALIZER SETTING OBJECT WILL BE STORED AS STRING
         private val EQU_ID: String = "_id"
-        val EQU_PRESET_NAME: String = "equ_preset_name"
-        val EQU_SETTING_STRING: String = "equ_setting_string"
-        val TABLE_NAME: String = "equalizer_table"
+        const val EQU_PRESET_NAME: String = "equ_preset_name"
+        const val EQU_SETTING_STRING: String = "equ_setting_string"
+        const val TABLE_NAME: String = "equalizer_table"
         private var TABLE_CREATE: String = ""
     }
 
     init {
-        TABLE_CREATE =
-            "CREATE TABLE IF NOT EXISTS $TABLE_NAME ($EQU_ID INTEGER PRIMARY KEY, $EQU_PRESET_NAME TEXT, $EQU_SETTING_STRING TEXT);"
+        TABLE_CREATE = "CREATE TABLE IF NOT EXISTS $TABLE_NAME ($EQU_ID INTEGER PRIMARY KEY, $EQU_PRESET_NAME TEXT, $EQU_SETTING_STRING TEXT);"
     }
 }

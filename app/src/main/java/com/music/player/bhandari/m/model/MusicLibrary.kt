@@ -78,21 +78,16 @@ class MusicLibrary private constructor() {
     //used for shuffling tracks using track name in now playing
     private val trackMap: SparseArray<String> = SparseArray<String>()
     fun RefreshLibrary() {
-        val excludedFoldersString = MyApp.getPref()
-            .getString(context.getString(R.string.pref_excluded_folders), "")
+        val excludedFoldersString = MyApp.getPref().getString(context.getString(R.string.pref_excluded_folders), "")
         excludedFolders = excludedFoldersString!!.split(",".toRegex()).toTypedArray()
 
         //filter audio based on track duration
-        SHORT_CLIPS_TIME_IN_MS = MyApp.getPref()
-            .getInt(context.getString(R.string.pref_hide_short_clips), 10) * 1000
+        SHORT_CLIPS_TIME_IN_MS = MyApp.getPref().getInt(context.getString(R.string.pref_hide_short_clips), 10) * 1000
 
         //filter audio based on name
-        REMOVE_TRACK_CONTAINING_1 = MyApp.getPref()
-            .getString(context.getString(R.string.pref_hide_tracks_starting_with_1), "")
-        REMOVE_TRACK_CONTAINING_2 = MyApp.getPref()
-            .getString(context.getString(R.string.pref_hide_tracks_starting_with_2), "")
-        REMOVE_TRACK_CONTAINING_3 = MyApp.getPref()
-            .getString(context.getString(R.string.pref_hide_tracks_starting_with_3), "")
+        REMOVE_TRACK_CONTAINING_1 = MyApp.getPref().getString(context.getString(R.string.pref_hide_tracks_starting_with_1), "")
+        REMOVE_TRACK_CONTAINING_2 = MyApp.getPref().getString(context.getString(R.string.pref_hide_tracks_starting_with_2), "")
+        REMOVE_TRACK_CONTAINING_3 = MyApp.getPref().getString(context.getString(R.string.pref_hide_tracks_starting_with_3), "")
         atomicInt.set(0)
         dataItemsForTracks!!.clear()
         dataItemsForGenres.clear()
@@ -240,7 +235,7 @@ class MusicLibrary private constructor() {
 
     private fun fillDataForArtist() {
         Executors.newSingleThreadExecutor().execute {
-            val mProjection = arrayOf<String>(
+            val mProjection = arrayOf(
                 MediaStore.Audio.Artists._ID,
                 MediaStore.Audio.Artists.ARTIST,
                 MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
@@ -609,7 +604,7 @@ class MusicLibrary private constructor() {
         var uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val selection: String = (MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
                 + MediaStore.Audio.Media._ID + "=" + "'" + id + "'")
-        val projection = arrayOf<String>(
+        val projection = arrayOf(
             MediaStore.Audio.Media.ALBUM_ID
         )
         var cursor: Cursor? = null
@@ -704,12 +699,12 @@ class MusicLibrary private constructor() {
 
         //artist photo urls for art library fragment only
         private val artistUrls = HashMap<String, String>()
-        val instance: MusicLibrary?
+        val instance: MusicLibrary
             get() {
                 if (musicLibrary == null) {
                     musicLibrary = MusicLibrary()
                 }
-                return musicLibrary
+                return musicLibrary as MusicLibrary
             }
     }
 

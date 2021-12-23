@@ -14,6 +14,8 @@ import androidx.core.content.FileProvider
 import androidx.core.view.MotionEventCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
@@ -73,7 +75,7 @@ class CurrentTracklistAdapter constructor(
             try {
                 for (id: Int in temp) {
                     val d: dataItem? =
-                        MusicLibrary.instance!!.getDataItemsForTracks()!!.get(id)
+                        MusicLibrary.instance.getDataItemsForTracks()!!.get(id)
                     if (d != null) {
                         dataItems.add(d)
                     }
@@ -105,21 +107,27 @@ class CurrentTracklistAdapter constructor(
             }
             false
         }
-        if (playerService != null && position == playerService.getCurrentTrackPosition()) {
-            holder.cv.setBackgroundColor(ColorHelper.getColor(R.color.gray3))
-            holder.playAnimation.visibility = View.VISIBLE
-            if (playerService.getStatus() === playerService.PLAYING) {
-                //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
-                holder.playAnimation.smoothToShow()
-            } else {
-                holder.playAnimation.smoothToHide()
-                //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_play_arrow_black_24dp));
+        when {
+            playerService != null && position == playerService.getCurrentTrackPosition() -> {
+                holder.cv.setBackgroundColor(ColorHelper.getColor(R.color.gray3))
+                holder.playAnimation.visibility = View.VISIBLE
+                when {
+                    playerService.getStatus() === playerService.PLAYING -> {
+                        //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
+                        holder.playAnimation.smoothToShow()
+                    }
+                    else -> {
+                        holder.playAnimation.smoothToHide()
+                        //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_play_arrow_black_24dp));
+                    }
+                }
+                //holder.iv.setVisibility(View.VISIBLE);
             }
-            //holder.iv.setVisibility(View.VISIBLE);
-        } else {
-            holder.cv.setBackgroundColor(context.resources.getColor(R.color.colorTransparent))
-            //holder.iv.setVisibility(View.GONE);
-            holder.playAnimation.visibility = View.GONE
+            else -> {
+                holder.cv.setBackgroundColor(context.resources.getColor(R.color.colorTransparent))
+                //holder.iv.setVisibility(View.GONE);
+                holder.playAnimation.visibility = View.GONE
+            }
         }
     }
 
@@ -139,14 +147,17 @@ class CurrentTracklistAdapter constructor(
     }
 
     override fun onItemDismiss(position: Int) {
-        if (playerService!!.getCurrentTrackPosition() !== position) {
-            //listOfHeader.remove(position);
-            playerService!!.removeTrack(position)
-            dataItems.removeAt(position)
-            notifyItemRemoved(position)
-        } else {
-            notifyItemChanged(position)
-            //notifyDataSetChanged();
+        when {
+            playerService!!.getCurrentTrackPosition() !== position -> {
+                //listOfHeader.remove(position);
+                playerService!!.removeTrack(position)
+                dataItems.removeAt(position)
+                notifyItemRemoved(position)
+            }
+            else -> {
+                notifyItemChanged(position)
+                //notifyDataSetChanged();
+            }
         }
     }
 
@@ -184,7 +195,7 @@ class CurrentTracklistAdapter constructor(
                         Toast.LENGTH_SHORT).show()
                 }
             }
-            R.id.action_delete -> Delete()
+            R.id.action_delete -> delete()
             R.id.action_track_info -> setTrackInfoDialog()
             R.id.action_edit_track_info -> {
                 context.startActivity(Intent(context, ActivityTagEditor::class.java)
@@ -226,9 +237,9 @@ class CurrentTracklistAdapter constructor(
     private fun setTrackInfoDialog() {
         //final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         //alert.setTitle(context.getString(R.string.track_info_title));
-        val linear: LinearLayout = LinearLayout(context)
+        val linear = LinearLayout(context)
         linear.orientation = LinearLayout.VERTICAL
-        val text: TextView = TextView(context)
+        val text = TextView(context)
         text.typeface = TypeFaceHelper.getTypeFace(context)
         text.text = UtilityFun.trackInfoBuild(dataItems[position]!!.id).toString()
         text.setPadding(20, 20, 20, 10)
@@ -238,54 +249,55 @@ class CurrentTracklistAdapter constructor(
         linear.addView(text)
         //alert.setView(linear);
         //alert.show();
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.track_info_title))
-//            .customView(linear, true)
-//            .positiveText(R.string.okay)
-//            .show()
+        MaterialDialog(context)
+            .title(text = context.getString(R.string.track_info_title))
+            .customView(view = linear, dialogWrapContent = true)
+            .positiveButton(R.string.okay)
+            .show()
     }
 
-    private fun Delete() {
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.are_u_sure))
-//            .positiveText(R.string.yes)
-//            .negativeText(R.string.no)
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val ids: ArrayList<Int> = ArrayList()
-//                    val files: ArrayList<File> = ArrayList<File>()
-//                    files.add(File(dataItems.get(position).file_path))
-//                    ids.add(dataItems.get(position).id)
-//                    if (UtilityFun.Delete(context, files, ids)) {  //last parameter not needed
-//                        Toast.makeText(context,
-//                            context.getString(R.string.deleted) + dataItems.get(position).title,
-//                            Toast.LENGTH_SHORT).show()
-//                        if (playerService!!.getCurrentTrack().getTitle()
-//                                .equals(dataItems.get(position).title)
-//                        ) {
-//                            playerService!!.nextTrack()
-//                            //playerService!!.notifyUI();
-//                            notifyItemChanged(position + 1)
-//                        }
-//                        playerService!!.removeTrack(position)
-//                        dataItems.removeAt(position)
-//                        notifyItemRemoved(position)
-//                        // notifyDataSetChanged();
-//                    } else {
-//                        Toast.makeText(context,
-//                            context.getString(R.string.unable_to_del),
-//                            Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//            .show()
+    private fun delete() {
+        MaterialDialog(context)
+            .title(text = context.getString(R.string.are_u_sure))
+            .positiveButton(R.string.yes){
+                val ids: ArrayList<Int> = ArrayList()
+                val files: ArrayList<File> = ArrayList()
+                files.add(File(dataItems[position]!!.file_path))
+                ids.add(dataItems[position]!!.id)
+                when {
+                    UtilityFun.Delete(context, files, ids) -> {  //last parameter not needed
+                        Toast.makeText(context,
+                            context.getString(R.string.deleted) + dataItems[position]!!.title,
+                            Toast.LENGTH_SHORT).show()
+                        when {
+                            playerService!!.getCurrentTrack()!!.title
+                                .equals(dataItems[position]!!.title) -> {
+                                playerService.nextTrack()
+                                //playerService!!.notifyUI();
+                                notifyItemChanged(position + 1)
+                            }
+                        }
+                        playerService?.removeTrack(position)
+                        dataItems.removeAt(position)
+                        notifyItemRemoved(position)
+                        // notifyDataSetChanged();
+                    }
+                    else -> {
+                        Toast.makeText(context,
+                            context.getString(R.string.unable_to_del),
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .negativeButton(R.string.no)
+            .show()
     }
 
     fun onClick(view: View, position: Int) {
         tempPosition = position
         when (view.id) {
             R.id.more -> {
-                val popup: PopupMenu = PopupMenu(context, view)
+                val popup = PopupMenu(context, view)
                 val inflater: MenuInflater = popup.menuInflater
                 inflater.inflate(R.menu.menu_tracks_by_title, popup.menu)
                 popup.menu.removeItem(R.id.action_set_as_ringtone)

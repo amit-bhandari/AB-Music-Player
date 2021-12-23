@@ -10,8 +10,8 @@ import android.os.Looper
 import android.util.Log
 import android.view.Gravity
 import android.widget.Toast
-import com.music.player.bhandari.m.DBHelper.DbHelperListOfPlaylist
-import com.music.player.bhandari.m.DBHelper.DbHelperUserMusicData
+import com.music.player.bhandari.m.dbHelper.DbHelperListOfPlaylist
+import com.music.player.bhandari.m.dbHelper.DbHelperUserMusicData
 import com.music.player.bhandari.m.R
 import java.io.File
 import java.util.*
@@ -54,7 +54,7 @@ class PlaylistManager private constructor(
                 val db: SQLiteDatabase = dbHelperUserMusicData.writableDatabase
                 var cur: Cursor
                 //ArrayList<dataItem> dataItems = MusicLibrary.getInstance().getDataItemsForTracks();
-                for (item in MusicLibrary.instance!!.getDataItemsForTracks()!!.values) {
+                for (item in MusicLibrary.instance.getDataItemsForTracks()!!.values) {
                     //check if song already contains in db, if no, add it
                     val where: String = (DbHelperUserMusicData.KEY_ID.toString() + " = "
                             + item.id)
@@ -609,7 +609,7 @@ class PlaylistManager private constructor(
             DbHelperUserMusicData.KEY_FAV)
         val tracklist: ArrayList<dataItem> = ArrayList()
         while (c.moveToNext()) {
-            for (d in MusicLibrary.instance!!.getDataItemsForTracks()!!.values) {
+            for (d in MusicLibrary.instance.getDataItemsForTracks()!!.values) {
                 if (d.id === c.getInt(0)) {
                     tracklist.add(d)
                     break
@@ -635,7 +635,7 @@ class PlaylistManager private constructor(
             DbHelperUserMusicData.KEY_TIME_STAMP.toString() + " DESC",
             "" + Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED_MAX)
         while (cursor.moveToNext()) {
-            for (d in MusicLibrary.instance!!.getDataItemsForTracks()!!.values) {
+            for (d in MusicLibrary.instance.getDataItemsForTracks()!!.values) {
                 if (d.id === cursor.getInt(0)) {
                     tracklist.add(d)
                     break
@@ -649,7 +649,7 @@ class PlaylistManager private constructor(
     private fun GetRecentlyAdded(): ArrayList<dataItem> {
         val pathToId = HashMap<String?, Int>()
         val musicFiles: ArrayList<File> = ArrayList()
-        for (item in MusicLibrary.instance!!.getDataItemsForTracks()!!.values) {
+        for (item in MusicLibrary.instance.getDataItemsForTracks()!!.values) {
             var f: File
             //for console error log
             try {
@@ -676,7 +676,7 @@ class PlaylistManager private constructor(
         val tracklist: ArrayList<dataItem> = ArrayList()
         val lessThanCount = if (musicFiles.size > 50) 50 else musicFiles.size
         for (i in 0 until lessThanCount) {
-            for (d in MusicLibrary.instance!!.getDataItemsForTracks()!!.values) {
+            for (d in MusicLibrary.instance.getDataItemsForTracks()!!.values) {
                 if (d.id === pathToId[musicFiles[i].absolutePath]) {
                     tracklist.add(d)
                     break
@@ -703,7 +703,7 @@ class PlaylistManager private constructor(
             playlist_name)
         val tracklist: ArrayList<dataItem> = ArrayList()
         while (c.moveToNext()) {
-            for (d in MusicLibrary.instance!!.getDataItemsForTracks()!!.values) {
+            for (d in MusicLibrary.instance.getDataItemsForTracks()!!.values) {
                 if (d.id === c.getInt(0)) {
                     tracklist.add(d)
                     break
@@ -732,7 +732,7 @@ class PlaylistManager private constructor(
         /*while (cursor.moveToNext()){
             tracklist.add(cursor.getString(0));
         }*/while (cursor.moveToNext()) {
-            for (d in MusicLibrary.instance!!.getDataItemsForTracks()!!.values) {
+            for (d in MusicLibrary.instance.getDataItemsForTracks()!!.values) {
                 if (d.id === cursor.getInt(0)) {
                     tracklist.add(d)
                     break

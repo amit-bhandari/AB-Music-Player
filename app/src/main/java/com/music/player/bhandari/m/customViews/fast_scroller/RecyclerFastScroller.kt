@@ -49,12 +49,12 @@ class RecyclerFastScroller @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    protected val mBar: View
-    protected val mHandle: View?
+    val mBar: View
+    val mHandle: View?
     val mHiddenTranslationX: Int
     private val mHide: Runnable
     private val mMinScrollHandleHeight: Int
-    protected var mOnTouchListener: OnTouchListener? = null
+    var mOnTouchListener: OnTouchListener? = null
     var mAppBarLayoutOffset: Int = 0
     var mRecyclerView: RecyclerView? = null
     var mCoordinatorLayout: CoordinatorLayout? = null

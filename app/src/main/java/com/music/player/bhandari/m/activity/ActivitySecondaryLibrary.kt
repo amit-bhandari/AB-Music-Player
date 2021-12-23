@@ -213,7 +213,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                     Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                         adapter = SecondaryLibraryAdapter(
                             this@ActivitySecondaryLibrary,
-                            MusicLibrary.instance!!.getSongListFromArtistIdNew(key, Constants.SORT_ORDER.ASC)!!
+                            MusicLibrary.instance.getSongListFromArtistIdNew(key, Constants.SORT_ORDER.ASC)!!
                         )
                         if (adapter!!.getList()!!.isEmpty()) {
                             return
@@ -221,7 +221,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
 
                         //get album list for artist
                         val data: ArrayList<dataItem> = ArrayList<dataItem>()
-                        for (d: dataItem in MusicLibrary.instance!!.getDataItemsForAlbums()) {
+                        for (d: dataItem in MusicLibrary.instance.getDataItemsForAlbums()) {
                             if (d.artist_id == key) data.add(d)
                         }
                         handler.post { mAlbumsRecyclerView!!.visibility = View.VISIBLE }
@@ -252,7 +252,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                     }
                     Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                         adapter = SecondaryLibraryAdapter(this@ActivitySecondaryLibrary,
-                            MusicLibrary.instance!!.getSongListFromAlbumIdNew(key, Constants.SORT_ORDER.ASC)!!)
+                            MusicLibrary.instance.getSongListFromAlbumIdNew(key, Constants.SORT_ORDER.ASC)!!)
                         Collections.sort(adapter!!.getList(), object : Comparator<dataItem> {
                             override fun compare(dataItem: dataItem, t1: dataItem): Int {
                                 if (dataItem.trackNumber > t1.trackNumber) return 1 else if (dataItem.trackNumber < t1.trackNumber) return -1 else return 0
@@ -261,7 +261,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                     }
                     Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                         adapter = SecondaryLibraryAdapter(this@ActivitySecondaryLibrary,
-                            MusicLibrary.instance!!.getSongListFromGenreIdNew(key, Constants.SORT_ORDER.ASC)!!)
+                            MusicLibrary.instance.getSongListFromGenreIdNew(key, Constants.SORT_ORDER.ASC)!!)
                         if (adapter!!.getList()!!.isEmpty()) {
                             return
                         }
@@ -329,12 +329,12 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                     progressBar!!.visibility = View.INVISIBLE
                     var item: TrackItem? = null
                     if ((adapter != null) && (adapter!!.getList() != null) && (adapter!!.getList()!!.size > 0)) {
-                        item = MusicLibrary.instance!!.getTrackItemFromId(adapter!!.getList()!![0].id)
+                        item = MusicLibrary.instance.getTrackItemFromId(adapter!!.getList()!![0].id)
                     }
                     Log.d("SecondaryLibraryActivi", "onCreate: item $item")
                     if (item != null) {
                         val url: String? =
-                            MusicLibrary.instance!!.artistUrls[item.getArtist()]
+                            MusicLibrary.instance.artistUrls[item.getArtist()]
                         Log.d("SecondaryLibraryActivi", "onCreate: url $url")
                         if (UtilityFun.isConnectedToInternet && url != null) {
                             setArtistImage(url)
@@ -350,7 +350,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                                     .transition(DrawableTransitionOptions.withCrossFade())
                                     .into(mainBackdrop!!)
                                 1 -> Glide.with(this@ActivitySecondaryLibrary)
-                                    .load(MusicLibrary.instance!!.getAlbumArtUri(item.albumId))
+                                    .load(MusicLibrary.instance.getAlbumArtUri(item.albumId))
                                     .centerCrop()
                                     .placeholder(UtilityFun.defaultAlbumArtDrawable)
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -431,7 +431,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                 if (playerService!!.getCurrentTrack() != null) {
                     val request: RequestBuilder<Drawable> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         Glide.with(this)
-                            .load(MusicLibrary.instance!!.getAlbumArtFromTrack(playerService!!.getCurrentTrack()!!.id))
+                            .load(MusicLibrary.instance.getAlbumArtFromTrack(playerService!!.getCurrentTrack()!!.id))
                             .centerCrop()
                             .transition(DrawableTransitionOptions.withCrossFade())
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -440,7 +440,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                     }
                     var builder: RequestBuilder<Drawable>? = null
                     val url: String? =
-                        MusicLibrary.instance!!.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
+                        MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
                     if (url != null) {
                         when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
                             0 -> builder = Glide.with(this)

@@ -35,6 +35,7 @@ import com.music.player.bhandari.m.utils.UtilityFun
  */
 class TopTracksAdapter(private val context: Context, private val trackList: List<Track>) :
     RecyclerView.Adapter<TopTracksAdapter.MyViewHolder?>(), PopupMenu.OnMenuItemClickListener {
+
     private val inflater = LayoutInflater.from(context)
     private var clickedPostion = 0
 

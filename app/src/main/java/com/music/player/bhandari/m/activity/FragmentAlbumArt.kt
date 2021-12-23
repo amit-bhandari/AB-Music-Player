@@ -141,7 +141,7 @@ class FragmentAlbumArt : Fragment() {
         } else {
             val request: RequestBuilder<Drawable> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 Glide.with(this)
-                    .load(MusicLibrary.instance!!.getAlbumArtFromTrack(playerService!!.getCurrentTrack()!!.id))
+                    .load(MusicLibrary.instance.getAlbumArtFromTrack(playerService!!.getCurrentTrack()!!.id))
                     .centerCrop()
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -159,7 +159,7 @@ class FragmentAlbumArt : Fragment() {
                         //Log.d("AlbumLibraryAdapter", "onException: ");
                         if (UtilityFun.isConnectedToInternet && !MyApp.getPref()
                                 .getBoolean(getString(R.string.pref_data_saver), false)) {
-                            val url: String? = MusicLibrary.instance!!.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
+                            val url: String? = MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
                             if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))
                                 .into(albumArt!!)
                             return true
@@ -187,7 +187,7 @@ class FragmentAlbumArt : Fragment() {
                         if (UtilityFun.isConnectedToInternet &&
                             !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)
                         ) {
-                            val url: String? = MusicLibrary.instance!!.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
+                            val url: String? = MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
                             if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))
                                 .into(albumArt!!)
                             return true

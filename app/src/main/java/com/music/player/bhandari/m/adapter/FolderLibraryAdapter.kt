@@ -12,6 +12,7 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
@@ -54,7 +55,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
     private var inflater: LayoutInflater?
     private var clickedItemPosition: Int = 0
     private var clickedFile: File? = null
-    private var viewParent: View? = null
+    private lateinit var viewParent: View
     private val playerService: PlayerService
     private var backPressedOnce: Boolean = false
 
@@ -74,7 +75,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         filteredHeaders.clear()
         files.clear()
         //list all the folders having songs
-        for (path: String in MusicLibrary.instance!!.foldersList) {
+        for (path: String in MusicLibrary.instance.foldersList) {
             if ((path == Environment.getExternalStorageDirectory().absolutePath)) {
                 continue
             }
@@ -100,7 +101,9 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         Collections.sort<String>(filteredHeaders)
         notifyDataSetChanged()
         isHomeFolder = true
-        if (rv != null && rv!!.layoutManager != null) rv!!.layoutManager!!.onRestoreInstanceState(recyclerViewState)
+        when {
+            rv != null && rv!!.layoutManager != null -> rv!!.layoutManager!!.onRestoreInstanceState(recyclerViewState)
+        }
     }
 
     private fun isFileExtensionValid(f: File): Boolean {
@@ -221,32 +224,38 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         clickedFile = files.get(filteredHeaders.get(clickedItemPosition))
         if (clickedFile == null) return
         when (view.id) {
-            R.id.libraryItem -> if (clickedFile!!.isDirectory) {
-                //update list here
-                if (rv!!.layoutManager != null) recyclerViewState =
-                    rv!!.layoutManager!!.onSaveInstanceState()
-                refreshList(clickedFile)
-                isHomeFolder = false
-            } else {
-                if (MyApp.Companion.isLocked()) {
-                    //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent!!,
-                        context.getString(R.string.music_is_locked),
-                        Snackbar.LENGTH_SHORT).show()
-                    return
+            R.id.libraryItem -> when {
+                clickedFile!!.isDirectory -> {
+                    //update list here
+                    if (rv!!.layoutManager != null) recyclerViewState =
+                        rv!!.layoutManager!!.onSaveInstanceState()
+                    refreshList(clickedFile)
+                    isHomeFolder = false
                 }
-                Play()
+                else -> {
+                    if (MyApp.isLocked()) {
+                        //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
+                        Snackbar.make(viewParent,
+                            context.getString(R.string.music_is_locked),
+                            Snackbar.LENGTH_SHORT).show()
+                        return
+                    }
+                    Play()
+                }
             }
             R.id.menuPopup -> {
-                val popup: PopupMenu = PopupMenu(context, view)
+                val popup = PopupMenu(context, view)
                 val inflater: MenuInflater = popup.menuInflater
                 inflater.inflate(R.menu.menu_tracks_by_title, popup.menu)
                 //popup.getMenu().removeItem(R.id.action_delete);
                 popup.menu.removeItem(R.id.action_edit_track_info)
-                if (clickedFile!!.isDirectory) {
-                    popup.menu.removeItem(R.id.action_set_as_ringtone)
-                } else {
-                    popup.menu.removeItem(R.id.action_exclude_folder)
+                when {
+                    clickedFile!!.isDirectory -> {
+                        popup.menu.removeItem(R.id.action_set_as_ringtone)
+                    }
+                    else -> {
+                        popup.menu.removeItem(R.id.action_exclude_folder)
+                    }
                 }
                 popup.show()
                 popup.setOnMenuItemClickListener(this)
@@ -260,9 +269,9 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         }
         when (item.itemId) {
             R.id.action_play -> {
-                if (MyApp.Companion.isLocked()) {
+                if (MyApp.isLocked()) {
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent!!,
+                    Snackbar.make(viewParent,
                         context.getString(R.string.music_is_locked),
                         Snackbar.LENGTH_SHORT).show()
                     return true
@@ -277,10 +286,10 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                 val abPath = files[filteredHeaders[clickedItemPosition]]!!.absolutePath
                 UtilityFun.SetRingtone(context,
                     abPath,
-                    MusicLibrary.instance!!.getIdFromFilePath(abPath))
+                    MusicLibrary.instance.getIdFromFilePath(abPath))
             }
             R.id.action_track_info -> setTrackInfoDialog()
-            R.id.action_delete -> Delete()
+            R.id.action_delete -> delete()
             R.id.action_exclude_folder -> excludeFolder()
             R.id.action_search_youtube -> UtilityFun.LaunchYoutube(context, filteredHeaders[clickedItemPosition]!!)
         }
@@ -299,7 +308,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
             notifyItemRemoved(clickedItemPosition)
         } catch (ignored: ArrayIndexOutOfBoundsException) {
         }
-        MusicLibrary.instance!!.RefreshLibrary()
+        MusicLibrary.instance.RefreshLibrary()
     }
 
     private fun setTrackInfoDialog() {
@@ -311,17 +320,23 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         linear.orientation = LinearLayout.VERTICAL
         val text = TextView(context)
         text.typeface = TypeFaceHelper.getTypeFace(context)
-        if (clickedFile!!.isFile) {
-            val id: Int =
-                MusicLibrary.instance!!.getIdFromFilePath(clickedFile!!.absolutePath)
-            if (id != -1) {
-                text.text = UtilityFun.trackInfoBuild(id).toString()
-            } else {
-                text.text = context.getString(R.string.no_info_available)
+        when {
+            clickedFile!!.isFile -> {
+                val id: Int =
+                    MusicLibrary.instance.getIdFromFilePath(clickedFile!!.absolutePath)
+                when {
+                    id != -1 -> {
+                        text.text = UtilityFun.trackInfoBuild(id).toString()
+                    }
+                    else -> {
+                        text.text = context.getString(R.string.no_info_available)
+                    }
+                }
             }
-        } else {
-            val info: String = "File path : " + clickedFile!!.absolutePath
-            text.text = info
+            else -> {
+                val info: String = "File path : " + clickedFile!!.absolutePath
+                text.text = info
+            }
         }
         text.setPadding(20, 20, 20, 10)
         text.textSize = 15f
@@ -338,115 +353,127 @@ class FolderLibraryAdapter constructor(private val context: Context) :
     }
 
     private fun Play() {
-        if (clickedFile!!.isFile) {
-            val fileList: Array<File> = clickedFile!!.parentFile.listFiles()
-            val songTitles: ArrayList<Int> = ArrayList()
-            var i: Int = 0
-            var original_file_index = 0
-            for (f: File in fileList) {
-                if (isFileExtensionValid(f)) {
-                    val id: Int = MusicLibrary.instance!!.getIdFromFilePath(f.absolutePath)
-                    songTitles.add(id)
-                    if ((f == clickedFile)) {
-                        original_file_index = i
-                    }
-                    i++
-                }
-            }
-            if (songTitles.isEmpty()) {
-                Snackbar.make(viewParent!!,
-                    context.getString(R.string.nothing_to_play),
-                    Snackbar.LENGTH_SHORT).show()
-                return
-            }
-            playerService.setTrackList(songTitles)
-            playerService.playAtPosition(original_file_index)
-        } else {
-            val fileList: Array<File>? = clickedFile!!.listFiles()
-            val songTitles: ArrayList<Int> = ArrayList()
-            if (fileList != null) {
+        when {
+            clickedFile!!.isFile -> {
+                val fileList: Array<File> = clickedFile!!.parentFile.listFiles()
+                val songTitles: ArrayList<Int> = ArrayList()
+                var i = 0
+                var original_file_index = 0
                 for (f: File in fileList) {
                     if (isFileExtensionValid(f)) {
-                        val id: Int =
-                            MusicLibrary.instance!!.getIdFromFilePath(f.absolutePath)
+                        val id: Int = MusicLibrary.instance.getIdFromFilePath(f.absolutePath)
                         songTitles.add(id)
+                        if ((f == clickedFile)) {
+                            original_file_index = i
+                        }
+                        i++
                     }
                 }
+                if (songTitles.isEmpty()) {
+                    Snackbar.make(viewParent,
+                        context.getString(R.string.nothing_to_play),
+                        Snackbar.LENGTH_SHORT).show()
+                    return
+                }
+                playerService.setTrackList(songTitles)
+                playerService.playAtPosition(original_file_index)
             }
-            if (songTitles.isEmpty()) {
-                Snackbar.make(viewParent!!,
-                    context.getString(R.string.nothing_to_play),
-                    Snackbar.LENGTH_SHORT).show()
-                return
+            else -> {
+                val fileList: Array<File>? = clickedFile!!.listFiles()
+                val songTitles: ArrayList<Int> = ArrayList()
+                if (fileList != null) {
+                    for (f: File in fileList) {
+                        if (isFileExtensionValid(f)) {
+                            val id: Int =
+                                MusicLibrary.instance.getIdFromFilePath(f.absolutePath)
+                            songTitles.add(id)
+                        }
+                    }
+                }
+                if (songTitles.isEmpty()) {
+                    Snackbar.make(viewParent,
+                        context.getString(R.string.nothing_to_play),
+                        Snackbar.LENGTH_SHORT).show()
+                    return
+                }
+                playerService.setTrackList(songTitles)
+                playerService.playAtPosition(0)
             }
-            playerService.setTrackList(songTitles)
-            playerService.playAtPosition(0)
         }
     }
 
     private fun AddToPlaylist() {
         val temp: ArrayList<Int> = ArrayList()
         val ids: IntArray
-        if (clickedFile!!.isFile) {
-            val id: Int =
-                MusicLibrary.instance!!.getIdFromFilePath(clickedFile!!.absolutePath)
-            ids = IntArray(temp.size)
-            for (i in ids.indices) {
-                ids[i] = temp.get(i)
-            }
-            UtilityFun.AddToPlaylist(context, ids)
-        } else {
-            val fileList: Array<File> = clickedFile!!.listFiles()
-            for (f: File in fileList) {
-                if (isFileExtensionValid(f)) {
-                    val id: Int = MusicLibrary.instance!!.getIdFromFilePath(f.absolutePath)
-                    temp.add(id)
+        when {
+            clickedFile!!.isFile -> {
+                val id: Int =
+                    MusicLibrary.instance.getIdFromFilePath(clickedFile!!.absolutePath)
+                ids = IntArray(temp.size)
+                for (i in ids.indices) {
+                    ids[i] = temp.get(i)
                 }
+                UtilityFun.AddToPlaylist(context, ids)
             }
-            if (temp.isEmpty()) {
-                //Toast.makeText(context,"Nothing to add!",Toast.LENGTH_LONG).show();
-                Snackbar.make(viewParent!!, "Nothing to add!", Snackbar.LENGTH_SHORT).show()
-                return
+            else -> {
+                val fileList: Array<File> = clickedFile!!.listFiles()
+                for (f: File in fileList) {
+                    if (isFileExtensionValid(f)) {
+                        val id: Int = MusicLibrary.instance.getIdFromFilePath(f.absolutePath)
+                        temp.add(id)
+                    }
+                }
+                if (temp.isEmpty()) {
+                    //Toast.makeText(context,"Nothing to add!",Toast.LENGTH_LONG).show();
+                    Snackbar.make(viewParent, "Nothing to add!", Snackbar.LENGTH_SHORT).show()
+                    return
+                }
+                ids = IntArray(temp.size)
+                for (i in ids.indices) {
+                    ids[i] = temp[i]
+                }
+                UtilityFun.AddToPlaylist(context, ids)
             }
-            ids = IntArray(temp.size)
-            for (i in ids.indices) {
-                ids[i] = temp[i]
-            }
-            UtilityFun.AddToPlaylist(context, ids)
         }
     }
 
     private fun Share() {
         try {
-            val files: ArrayList<Uri> = ArrayList<Uri>() //for sending multiple files
-            if (clickedFile!!.isFile) {
-                files.add(
-                    FileProvider.getUriForFile(context,
-                        context.applicationContext
-                            .packageName + "com.bhandari.music.provider",
-                        clickedFile!!))
-            } else {
-                val fileList: Array<File> = clickedFile!!.listFiles()
-                for (f: File in fileList) {
-                    if (isFileExtensionValid(f)) {
-                        files.add(
-                            FileProvider.getUriForFile(context,
-                                context.applicationContext
-                                    .packageName + "com.bhandari.music.provider",
-                                f))
+            val files: ArrayList<Uri> = ArrayList() //for sending multiple files
+            when {
+                clickedFile!!.isFile -> {
+                    files.add(
+                        FileProvider.getUriForFile(context,
+                            context.applicationContext
+                                .packageName + "com.bhandari.music.provider",
+                            clickedFile!!))
+                }
+                else -> {
+                    val fileList: Array<File> = clickedFile!!.listFiles()
+                    for (f: File in fileList) {
+                        if (isFileExtensionValid(f)) {
+                            files.add(
+                                FileProvider.getUriForFile(context,
+                                    context.applicationContext
+                                        .packageName + "com.bhandari.music.provider",
+                                    f))
+                        }
                     }
                 }
             }
             UtilityFun.Share(context, files, "music")
         } catch (e: IllegalArgumentException) {
             try {
-                if (clickedFile!!.isFile) {
-                    UtilityFun.ShareFromPath(context, clickedFile!!.absolutePath)
-                } else {
-                    throw Exception()
+                when {
+                    clickedFile!!.isFile -> {
+                        UtilityFun.ShareFromPath(context, clickedFile!!.absolutePath)
+                    }
+                    else -> {
+                        throw Exception()
+                    }
                 }
             } catch (ex: Exception) {
-                Snackbar.make(viewParent!!, R.string.error_unable_to_share, Snackbar.LENGTH_SHORT)
+                Snackbar.make(viewParent, R.string.error_unable_to_share, Snackbar.LENGTH_SHORT)
                     .show()
             }
         }
@@ -455,30 +482,32 @@ class FolderLibraryAdapter constructor(private val context: Context) :
     private fun AddToQ(positionToAdd: Int) {
         //we are using same function for adding to q and playing next
         // toastString is to identify which string to disokay as toast
-        val toastString: String =
-            (if (positionToAdd == Constants.ADD_TO_Q.AT_LAST) context.getString(R.string.added_to_q) else context.getString(
-                R.string.playing_next))
-        if (clickedFile!!.isFile) {
-            val id: Int =
-                MusicLibrary.instance!!.getIdFromFilePath(clickedFile!!.absolutePath)
-            playerService.addToQ(id, positionToAdd)
-            /*Toast.makeText(context
-                    ,toastString+title
-                    ,Toast.LENGTH_SHORT).show();*/
-            Snackbar.make(viewParent!!,
-                toastString + clickedFile!!.name,
-                Snackbar.LENGTH_SHORT).show()
-        } else {
+        val toastString = when (positionToAdd) {
+                Constants.ADD_TO_Q.AT_LAST -> context.getString(R.string.added_to_q)
+                else -> context.getString(
+                    R.string.playing_next)
+            }
+        if (!clickedFile!!.isFile) {
             val fileList: Array<File> = clickedFile!!.listFiles()
             for (f: File in fileList) {
                 if (isFileExtensionValid(f)) {
-                    val id: Int = MusicLibrary.instance!!.getIdFromFilePath(f.absolutePath)
+                    val id: Int = MusicLibrary.instance.getIdFromFilePath(f.absolutePath)
                     playerService.addToQ(id, positionToAdd)
                 }
             }
             /*Toast.makeText(context
-                    ,toastString+clickedFile.getName()
-                    ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent!!,
+                        ,toastString+clickedFile.getName()
+                        ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent,
+                toastString + clickedFile!!.name,
+                Snackbar.LENGTH_SHORT).show()
+        } else {
+            val id: Int =
+                MusicLibrary.instance.getIdFromFilePath(clickedFile!!.absolutePath)
+            playerService.addToQ(id, positionToAdd)
+            /*Toast.makeText(context
+                        ,toastString+title
+                        ,Toast.LENGTH_SHORT).show();*/
+            Snackbar.make(viewParent,
                 toastString + clickedFile!!.name,
                 Snackbar.LENGTH_SHORT).show()
         }
@@ -487,38 +516,41 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         MyApp.getService()!!.PostNotification()
     }
 
-    private fun Delete() {
+    private fun delete() {
 
         /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(context.getString(R.string.are_u_sure))
                 .setPositiveButton(context.getString(R.string.yes), dialogClickListener)
                 .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();*/
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.are_u_sure))
-//            .positiveText(R.string.yes)
-//            .negativeText(R.string.no)
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val files: ArrayList<File?> = ArrayList<File?>()
-//                    if (clickedFile.isFile()) {
-//                        files.add(clickedFile)
-//                    } else {
-//                        files.addAll(Arrays.asList<File>(*clickedFile.listFiles()))
-//                        files.add(clickedFile)
-//                    }
-//                    if (UtilityFun.Delete(context, files, null)) {
-//                        deleteSuccess()
-//                        Toast.makeText(context,
-//                            context.getString(R.string.deleted),
-//                            Toast.LENGTH_SHORT).show()
-//                    } else {
-//                        Toast.makeText(context,
-//                            context.getString(R.string.unable_to_del),
-//                            Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//            .show()
+        MaterialDialog(context)
+            .title(text = context.getString(R.string.are_u_sure))
+            .positiveButton(R.string.yes){
+                val files = ArrayList<File>()
+                when {
+                    clickedFile!!.isFile -> {
+                        files.add(clickedFile!!)
+                    }
+                    else -> {
+                        files.addAll(mutableListOf(*clickedFile!!.listFiles()))
+                        files.add(clickedFile!!)
+                    }
+                }
+                when {
+                    UtilityFun.Delete(context, files, null) -> {
+                        deleteSuccess()
+                        Toast.makeText(context,
+                            context.getString(R.string.deleted),
+                            Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Toast.makeText(context,
+                            context.getString(R.string.unable_to_del),
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .negativeButton(R.string.no)
+            .show()
     }
 
     private fun deleteSuccess() {
@@ -532,7 +564,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
     }
 
     override fun getSectionName(position: Int): String {
-        return filteredHeaders.get(position)!!.substring(0, 1).uppercase(Locale.getDefault())
+        return filteredHeaders[position]!!.substring(0, 1).uppercase(Locale.getDefault())
     }
 
     override fun getTextToShowInBubble(pos: Int): String {
@@ -567,6 +599,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         initializeFirstPage()
         /*if(context instanceof ActivityMain){
             recyclerView=((ActivityMain) context).findViewById(R.id.recyclerviewList);
-        }*/playerService = MyApp.getService()!!
+        }*/
+        playerService = MyApp.getService()!!
     }
 }

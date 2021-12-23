@@ -54,7 +54,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         this.context = context
         inflater = LayoutInflater.from(context)
         for (id: Int? in data) {
-            val d: dataItem? = MusicLibrary.instance!!.getDataItemsForTracks()!![id]
+            val d: dataItem? = MusicLibrary.instance.getDataItemsForTracks()!![id]
             if (d != null) {
                 dataItems!!.add(d)
             }
@@ -220,7 +220,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
             }
             R.id.action_share -> {
                 val files: ArrayList<Uri> = ArrayList()
-                val fileToBeShared = File(MusicLibrary.instance!!.getTrackItemFromId(clikedON)!!.getFilePath())
+                val fileToBeShared = File(MusicLibrary.instance.getTrackItemFromId(clikedON)!!.getFilePath())
                 try {
                     files.add(FileProvider.getUriForFile(context,
                         context.applicationContext
@@ -242,7 +242,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
             R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
             R.id.action_track_info -> setTrackInfoDialog()
             R.id.action_edit_track_info -> {
-                val editItem: TrackItem? = MusicLibrary.instance!!.getTrackItemFromId(
+                val editItem: TrackItem? = MusicLibrary.instance.getTrackItemFromId(
                     dataItems!!.get(position).id)
                 if (editItem == null) {
                     Toast.makeText(context,
@@ -259,7 +259,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
                     .putExtra("id", editItem.id))
             }
             R.id.action_set_as_ringtone -> {
-                val tempItem: TrackItem? = MusicLibrary.instance!!.getTrackItemFromId(
+                val tempItem: TrackItem? = MusicLibrary.instance.getTrackItemFromId(
                     dataItems!!.get(position).id)
                 if (tempItem == null) {
                     Toast.makeText(context,

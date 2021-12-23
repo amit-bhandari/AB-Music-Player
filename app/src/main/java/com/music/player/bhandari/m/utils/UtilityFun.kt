@@ -27,6 +27,7 @@ import com.music.player.bhandari.m.activity.ActivityPermissionSeek
 import com.music.player.bhandari.m.model.MusicLibrary
 import java.io.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -342,7 +343,7 @@ object UtilityFun {
 
     fun trackInfoBuild(id: Int): StringBuilder {
         val trackInfo = StringBuilder()
-        val item = MusicLibrary.instance!!.getTrackItemFromId(id) ?: return trackInfo
+        val item = MusicLibrary.instance.getTrackItemFromId(id) ?: return trackInfo
         trackInfo.append("Title : ")
             .append(item.title)
             .append("\n\n")

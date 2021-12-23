@@ -112,6 +112,6 @@ class TrackItem : Serializable {
     }
 
     fun haveAlbumArt(): Boolean {
-        return MusicLibrary.instance!!.getAlbumArtUri(albumId) != null
+        return MusicLibrary.instance.getAlbumArtUri(albumId) != null
     }
 }

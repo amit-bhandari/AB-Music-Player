@@ -106,7 +106,7 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
         }
         track_title = intent.getStringExtra("track_title")
         song_id = intent.getIntExtra("id", 0)
-        item = MusicLibrary.instance!!.getTrackItemFromId(song_id)
+        item = MusicLibrary.instance.getTrackItemFromId(song_id)
         val toolbar: Toolbar = findViewById<Toolbar>(R.id.toolbar_)
         setSupportActionBar(toolbar)
 
@@ -145,12 +145,12 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
         original_artist = item!!.getArtist()
         when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
             0 -> Glide.with(this)
-                .load(MusicLibrary.instance!!.getAlbumArtUri(item!!.albumId))
+                .load(MusicLibrary.instance.getAlbumArtUri(item!!.albumId))
                 .signature(ObjectKey(System.currentTimeMillis().toString()))
                 .placeholder(R.drawable.ic_batman_1)
                 .into(album_art!!)
             1 -> Glide.with(this)
-                .load(MusicLibrary.instance!!.getAlbumArtUri(item!!.albumId))
+                .load(MusicLibrary.instance.getAlbumArtUri(item!!.albumId))
                 .signature(ObjectKey(System.currentTimeMillis().toString()))
                 .placeholder(UtilityFun.defaultAlbumArtDrawable)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -292,7 +292,7 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
             values.put("_data", new_artwork_path)
             contentResolver.insert(sArtworkUri, values)
         }
-        val d = MusicLibrary.instance!!.updateTrackNew(song_id, edited_title, edited_artist, edited_album)
+        val d = MusicLibrary.instance.updateTrackNew(song_id, edited_title, edited_artist, edited_album)
         PlaylistManager.getInstance(MyApp.getContext())!!.addEntryToMusicTable(d!!)
         //   PlaylistManager.getInstance(MyApp.getContext()).PopulateUserMusicTable();
         val intent: Intent = when (intent.getIntExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB)) {

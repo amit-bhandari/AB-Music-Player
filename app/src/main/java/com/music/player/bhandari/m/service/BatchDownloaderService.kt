@@ -67,7 +67,7 @@ class BatchDownloaderService : Service(), Lyrics.Callback {
                 mNotificationManager!!.notify(Constants.NOTIFICATION_ID.BATCH_DOWNLOADER,
                     mBuilder!!.build())
                 try {
-                    val size: Int = MusicLibrary.instance!!.getDataItemsForTracks()!!.size
+                    val size: Int = MusicLibrary.instance.getDataItemsForTracks()!!.size
                     val bundle = Bundle()
                     bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, 2)
                     bundle.putString(FirebaseAnalytics.Param.ITEM_NAME,
@@ -130,7 +130,7 @@ class BatchDownloaderService : Service(), Lyrics.Callback {
     private fun runThread() {
         Thread {
             val dataItems: ArrayList<dataItem> =
-                ArrayList(MusicLibrary.instance!!.getDataItemsForTracks()!!.values)
+                ArrayList(MusicLibrary.instance.getDataItemsForTracks()!!.values)
             val size: Int = dataItems.size
             for (i in 0 until size) {
                 var currentItem: dataItem
@@ -155,7 +155,7 @@ class BatchDownloaderService : Service(), Lyrics.Callback {
                 }
                 DownloadLyricThread(this@BatchDownloaderService,
                     true,
-                    MusicLibrary.instance!!.getTrackItemFromId(currentItem.id),
+                    MusicLibrary.instance.getTrackItemFromId(currentItem.id),
                     currentItem.artist_name,
                     currentItem.title).start()
                 subtitleDownloadThreadRunning = true

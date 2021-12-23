@@ -48,9 +48,10 @@ import java.util.*
  * limitations under the License.
  */
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        Log.d("MyFirebaseMessaging", "onMessageReceived: " + remoteMessage.toString())
+        Log.d("MyFirebaseMessaging", "onMessageReceived: $remoteMessage")
         val map: Map<String, String> = remoteMessage.data
         for (keys in map.keys) {
             Log.d("MyFirebaseMessaging", "onMessageReceived: $keys")
@@ -73,10 +74,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             return
         }
         val handler = Handler(Looper.getMainLooper())
-        handler.post { generatePictureStyleNotification(map).execute() }
+        handler.post { GeneratePictureStyleNotification(map).execute() }
     }
 
-    class generatePictureStyleNotification internal constructor(private val map: Map<String, String>) :
+    class GeneratePictureStyleNotification internal constructor(private val map: Map<String, String>) :
         AsyncTask<String?, Void?, Bitmap?>() {
         private var builder: NotificationCompat.Builder? = null
         override fun doInBackground(vararg params: String?): Bitmap? {
@@ -115,7 +116,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     .setAutoCancel(true)
                     .setStyle(NotificationCompat.BigPictureStyle().bigPicture(result)
                         .setSummaryText(contentText))
-                builder!!.setVisibility(Notification.VISIBILITY_PUBLIC)
+                builder!!.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 builder!!.priority = Notification.PRIORITY_MAX
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     builder!!.setChannelId(MyApp.getContext()
@@ -152,15 +153,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         private fun discountNotif() {}
         private fun trending_tracksNotif() {
             val requestCode = Random().nextInt()
-            val notificationIntent =
-                Intent(MyApp.getContext(), ActivityExploreLyrics::class.java)
+            val notificationIntent = Intent(MyApp.getContext(), ActivityExploreLyrics::class.java)
             notificationIntent.action = Constants.ACTION.MAIN_ACTION
             notificationIntent.putExtra("fresh_load", true)
             notificationIntent.putExtra("from_notif", true)
             notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            val contentIntent: PendingIntent =
-                PendingIntent.getActivity(MyApp.getContext(), requestCode,
-                    notificationIntent, 0)
+            val contentIntent = PendingIntent.getActivity(MyApp.getContext(), requestCode, notificationIntent, 0)
             builder!!.setContentIntent(contentIntent)
         }
 
@@ -168,57 +166,41 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val trackTitle = map["trackname"]
             val artist = map["artist"]
             val requestCode = Random().nextInt()
-            val notificationIntent =
-                Intent(MyApp.getContext(), ActivityLyricView::class.java)
+            val notificationIntent = Intent(MyApp.getContext(), ActivityLyricView::class.java)
             notificationIntent.action = Constants.ACTION.MAIN_ACTION
             notificationIntent.putExtra("track_title", trackTitle)
             notificationIntent.putExtra("artist", artist)
             notificationIntent.putExtra("from_notif", true)
             notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            val contentIntent: PendingIntent =
-                PendingIntent.getActivity(MyApp.Companion.getContext(), requestCode,
-                    notificationIntent, 0)
+            val contentIntent: PendingIntent = PendingIntent.getActivity(MyApp.Companion.getContext(), requestCode, notificationIntent, 0)
             builder!!.setContentIntent(contentIntent)
         }
 
         private fun UnknownNotif(map: Map<String, String>) {
             val notificationIntent = Intent(Intent.ACTION_VIEW)
             notificationIntent.data = Uri.parse(map["link"])
-            val contentIntent: PendingIntent =
-                PendingIntent.getActivity(MyApp.Companion.getContext(), 0,
-                    notificationIntent, 0)
+            val contentIntent = PendingIntent.getActivity(MyApp.getContext(), 0, notificationIntent, 0)
             builder!!.setContentIntent(contentIntent)
         }
 
         private fun searchLyricNotif() {
             val requestCode = Random().nextInt()
-            val notificationIntent =
-                Intent(MyApp.getContext(), ActivityExploreLyrics::class.java)
+            val notificationIntent = Intent(MyApp.getContext(), ActivityExploreLyrics::class.java)
             notificationIntent.action = Constants.ACTION.MAIN_ACTION
             notificationIntent.putExtra("search_on_launch", true)
             notificationIntent.putExtra("from_notif", true)
             notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            val contentIntent: PendingIntent =
-                PendingIntent.getActivity(MyApp.Companion.getContext(), requestCode,
-                    notificationIntent, 0)
+            val contentIntent = PendingIntent.getActivity(MyApp.getContext(), requestCode, notificationIntent, 0)
             builder!!.setContentIntent(contentIntent)
         }
 
         private fun reviewNotif(map: Map<String, String>) {
-            val action1Intent: Intent =
-                Intent(MyApp.getContext(), NotificationActionService::class.java)
-                    .setAction(ALREADY_RATED)
+            val action1Intent = Intent(MyApp.getContext(), NotificationActionService::class.java).setAction(ALREADY_RATED)
             action1Intent.putExtra("from_notif", true)
-            val alreadyRatedIntent: PendingIntent =
-                PendingIntent.getService(MyApp.Companion.getContext(), 20,
-                    action1Intent, PendingIntent.FLAG_ONE_SHOT)
-            val action2Intent: Intent =
-                Intent(MyApp.Companion.getContext(), NotificationActionService::class.java)
-                    .setAction(RATE_NOW)
+            val alreadyRatedIntent = PendingIntent.getService(MyApp.getContext(), 20, action1Intent, PendingIntent.FLAG_ONE_SHOT)
+            val action2Intent = Intent(MyApp.getContext(), NotificationActionService::class.java).setAction(RATE_NOW)
             action2Intent.putExtra("from_notif", true)
-            val rateNowIntent: PendingIntent =
-                PendingIntent.getService(MyApp.Companion.getContext(), 20,
-                    action2Intent, PendingIntent.FLAG_ONE_SHOT)
+            val rateNowIntent = PendingIntent.getService(MyApp.getContext(), 20, action2Intent, PendingIntent.FLAG_ONE_SHOT)
             builder!!.addAction(NotificationCompat.Action(R.drawable.ic_close_white_24dp,
                 "Rate now!",
                 rateNowIntent))

@@ -17,6 +17,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -77,7 +79,7 @@ class MainLibraryAdapter(
     private val mItemHeight = 0
     private var mLastClickTime: Long = 0
     private var batmanDrawable: Drawable? = null
-    private var viewParent: View? = null
+    private lateinit var viewParent: View
     private val selectedItems: SparseBooleanArray = SparseBooleanArray()
 
     fun filter(searchQuery: String) {
@@ -118,7 +120,7 @@ class MainLibraryAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val url = MusicLibrary.instance!!.artistUrls[filteredDataItems[position].artist_name]
+        val url = MusicLibrary.instance.artistUrls[filteredDataItems[position].artist_name]
         when (fl!!.getStatus()) {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
                 var builder: RequestBuilder<Drawable?>? = null
@@ -132,7 +134,7 @@ class MainLibraryAdapter(
                     .placeholder(batmanDrawable)
                 Glide
                     .with(context)
-                    .load(MusicLibrary.instance!!.getAlbumArtUri(filteredDataItems[position].album_id))
+                    .load(MusicLibrary.instance.getAlbumArtUri(filteredDataItems[position].album_id))
                     .error(builder)
                     .placeholder(batmanDrawable)
                     .transition(DrawableTransitionOptions.withCrossFade())
@@ -148,7 +150,7 @@ class MainLibraryAdapter(
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 Glide.with(context)
-                    .load(MusicLibrary.instance!!.getAlbumArtUri(filteredDataItems[position].album_id))
+                    .load(MusicLibrary.instance.getAlbumArtUri(filteredDataItems[position].album_id))
                     .placeholder(batmanDrawable)
                     .into(holder.image)
                 holder.title.text = filteredDataItems[position].albumName
@@ -235,7 +237,7 @@ class MainLibraryAdapter(
                             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
                                 if (MyApp.isLocked()) {
                                     Handler(context.mainLooper).post { //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                                        Snackbar.make(viewParent!!,
+                                        Snackbar.make(viewParent,
                                             context.getString(R.string.music_is_locked),
                                             Snackbar.LENGTH_SHORT).show()
                                     }
@@ -289,25 +291,25 @@ class MainLibraryAdapter(
             R.id.action_play -> {
                 if (MyApp.isLocked()) {
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent!!,
+                    Snackbar.make(viewParent,
                         context.getString(R.string.music_is_locked),
                         Snackbar.LENGTH_SHORT).show()
                     return true
                 }
                 Play()
             }
-            R.id.action_add_to_playlist -> AddToPlaylist()
+            R.id.action_add_to_playlist -> addToPlaylist()
             R.id.action_share -> try {
                 Share()
             } catch (e: Exception) {
                 //Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
-                Snackbar.make(viewParent!!,
+                Snackbar.make(viewParent,
                     context.getString(R.string.error_unable_to_share),
                     Snackbar.LENGTH_SHORT).show()
             }
-            R.id.action_delete -> DeleteDialog()
-            R.id.action_play_next -> AddToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
-            R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
+            R.id.action_delete -> deleteDialog()
+            R.id.action_play_next -> addToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
+            R.id.action_add_to_q -> addToQ(Constants.ADD_TO_Q.AT_LAST)
             R.id.action_set_as_ringtone -> UtilityFun.SetRingtone(context,
                 filteredDataItems[position].file_path,
                 filteredDataItems[position].id)
@@ -411,11 +413,11 @@ class MainLibraryAdapter(
         text.typeface = TypeFaceHelper.getTypeFace(context)
         //text.setGravity(Gravity.CENTER);
         linear.addView(text)
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.track_info_title))
-//            .customView(linear, true)
-//            .positiveText(R.string.okay)
-//            .show()
+        MaterialDialog(context)
+            .title(text = context.getString(R.string.track_info_title))
+            .customView(view = linear, scrollable =  true)
+            .positiveButton(R.string.okay)
+            .show()
     }
 
     private fun Play() {
@@ -432,12 +434,12 @@ class MainLibraryAdapter(
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 val album_id: Int = filteredDataItems[position].album_id
-                playerService.setTrackList(MusicLibrary.instance!!
+                playerService.setTrackList(MusicLibrary.instance
                     .getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
             }
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 val artist_id: Int = filteredDataItems[position].artist_id
-                playerService.setTrackList(MusicLibrary.instance!!
+                playerService.setTrackList(MusicLibrary.instance
                     .getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC))
             }
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
@@ -451,7 +453,7 @@ class MainLibraryAdapter(
         }
     }
 
-    private fun AddToPlaylist() {
+    private fun addToPlaylist() {
         val ids: IntArray
         val temp: ArrayList<Int>
         when (fl!!.getStatus()) {
@@ -461,7 +463,7 @@ class MainLibraryAdapter(
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 val album_id: Int = filteredDataItems[position].album_id
-                temp = MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)!!
+                temp = MusicLibrary.instance.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)!!
                 ids = IntArray(temp.size)
                 var i = 0
                 while (i < ids.size) {
@@ -472,7 +474,7 @@ class MainLibraryAdapter(
             }
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 val artist_id: Int = filteredDataItems[position].artist_id
-                temp = MusicLibrary.instance!!.getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)!!
+                temp = MusicLibrary.instance.getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)!!
                 ids = IntArray(temp.size)
                 var i = 0
                 while (i < ids.size) {
@@ -483,7 +485,7 @@ class MainLibraryAdapter(
             }
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                 val genre_id: Int = filteredDataItems[position].id
-                temp = MusicLibrary.instance!!.getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC)!!
+                temp = MusicLibrary.instance.getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC)!!
                 ids = IntArray(temp.size)
                 var i = 0
                 while (i < ids.size) {
@@ -509,14 +511,14 @@ class MainLibraryAdapter(
                 try {
                     UtilityFun.ShareFromPath(context, filteredDataItems[position].file_path!!)
                 } catch (ex: Exception) {
-                    Snackbar.make(viewParent!!, R.string.error_unable_to_share, Snackbar.LENGTH_SHORT)
+                    Snackbar.make(viewParent, R.string.error_unable_to_share, Snackbar.LENGTH_SHORT)
                         .show()
                 }
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 val album_id: Int = filteredDataItems[position].album_id
-                for (id: Int in MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)!!) {
-                    val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
+                for (id: Int in MusicLibrary.instance.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)!!) {
+                    val file = File(MusicLibrary.instance.getTrackItemFromId(id)!!.getFilePath())
                     val fileUri: Uri = FileProvider.getUriForFile(context,
                         context.applicationContext.packageName + "com.bhandari.music.provider",
                         file)
@@ -525,8 +527,8 @@ class MainLibraryAdapter(
             }
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 val artist_id: Int = filteredDataItems[position].artist_id
-                for (id: Int in MusicLibrary.instance!!.getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)!!) {
-                    val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
+                for (id: Int in MusicLibrary.instance.getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)!!) {
+                    val file = File(MusicLibrary.instance.getTrackItemFromId(id)!!.getFilePath())
                     val fileUri: Uri = FileProvider.getUriForFile(context,
                         context.applicationContext.packageName + "com.bhandari.music.provider",
                         file)
@@ -535,8 +537,8 @@ class MainLibraryAdapter(
             }
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                 val genre_id: Int = filteredDataItems[position].id
-                for (id: Int in MusicLibrary.instance!!.getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC)!!) {
-                    val file = File(MusicLibrary.instance!!.getTrackItemFromId(id)!!.getFilePath())
+                for (id: Int in MusicLibrary.instance.getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC)!!) {
+                    val file = File(MusicLibrary.instance.getTrackItemFromId(id)!!.getFilePath())
                     val fileUri: Uri = FileProvider.getUriForFile(context,
                         context.applicationContext.packageName + "com.bhandari.music.provider",
                         file)
@@ -549,58 +551,62 @@ class MainLibraryAdapter(
         }
     }
 
-    private fun AddToQ(positionToAdd: Int) {
+    private fun addToQ(positionToAdd: Int) {
         //we are using same function for adding to q and playing next
         // toastString is to identify which string to disokay as toast
-        val toastString =
-            (if (positionToAdd == Constants.ADD_TO_Q.AT_LAST) context.getString(R.string.added_to_q) else context.getString(
-                R.string.playing_next))
+        val toastString = when (positionToAdd) {
+                Constants.ADD_TO_Q.AT_LAST -> context.getString(R.string.added_to_q)
+                else -> context.getString(
+                    R.string.playing_next)
+            }
         //when adding to playing next, order of songs should be desc
         //and asc for adding at last
         //this is how the function in player service is writte, deal with it
-        val sortOrder =
-            (if (positionToAdd == Constants.ADD_TO_Q.AT_LAST) Constants.SORT_ORDER.ASC else Constants.SORT_ORDER.DESC)
+        val sortOrder = when (positionToAdd) {
+                Constants.ADD_TO_Q.AT_LAST -> Constants.SORT_ORDER.ASC
+                else -> Constants.SORT_ORDER.DESC
+            }
         when (fl!!.getStatus()) {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
                 playerService!!.addToQ(filteredDataItems[position].id, positionToAdd)
                 //Toast.makeText(context
                 //      ,toastString+filteredDataItems.get(position).title
                 ///    ,Toast.LENGTH_SHORT).show();
-                Snackbar.make(viewParent!!,
+                Snackbar.make(viewParent,
                     toastString + filteredDataItems[position].title,
                     Snackbar.LENGTH_SHORT).show()
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 val album_id: Int = filteredDataItems[position].album_id
-                for (id: Int in MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, sortOrder)!!) {
+                for (id: Int in MusicLibrary.instance.getSongListFromAlbumIdNew(album_id, sortOrder)!!) {
                     playerService!!.addToQ(id, positionToAdd)
                 }
                 //Toast.makeText(context
                 //      ,toastString+filteredDataItems.get(position).title
                 //    ,Toast.LENGTH_SHORT).show();
-                Snackbar.make(viewParent!!,
+                Snackbar.make(viewParent,
                     toastString + filteredDataItems[position].title,
                     Snackbar.LENGTH_SHORT).show()
             }
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 val artist_id: Int = filteredDataItems[position].artist_id
-                for (id: Int in MusicLibrary.instance!!.getSongListFromArtistIdNew(artist_id, sortOrder)!!) {
+                for (id: Int in MusicLibrary.instance.getSongListFromArtistIdNew(artist_id, sortOrder)!!) {
                     playerService!!.addToQ(id, positionToAdd)
                 }
                 /*Toast.makeText(context
                         ,toastString+filteredDataItems.get(position).title
-                        ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent!!,
+                        ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent,
                     toastString + filteredDataItems[position].title,
                     Snackbar.LENGTH_SHORT).show()
             }
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                 val genre_id: Int = filteredDataItems[position].id
-                for (id: Int in MusicLibrary.instance!!.getSongListFromGenreIdNew(genre_id, sortOrder)!!) {
+                for (id: Int in MusicLibrary.instance.getSongListFromGenreIdNew(genre_id, sortOrder)!!) {
                     playerService!!.addToQ(id, positionToAdd)
                 }
                 /*Toast.makeText(context
                         ,toastString+filteredDataItems.get(position).title
-                        ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent!!,
+                        ,Toast.LENGTH_SHORT).show();*/Snackbar.make(viewParent,
                     toastString + filteredDataItems[position].title,
                     Snackbar.LENGTH_SHORT).show()
             }
@@ -610,130 +616,132 @@ class MainLibraryAdapter(
         MyApp.getService()!!.PostNotification()
     }
 
-    private fun DeleteDialog() {
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.are_u_sure))
-//            .positiveText(R.string.yes)
-//            .negativeText(R.string.no)
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val files: ArrayList<File> = ArrayList<File>()
-//                    val ids = ArrayList<Int>()
-//                    val tracklist: ArrayList<Int>
-//                    when (fl.getStatus()) {
-//                        Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
-//
-//
-//                            //delete the file first
-//                            files.add(File(filteredDataItems[position].file_path))
-//                            ids.add(filteredDataItems[position].id)
-//                            if (UtilityFun.Delete(context, files, ids)) {
-//                                deleteSuccess()
-//                            } else {
-//                                Snackbar.make(viewParent,
-//                                    context.getString(R.string.unable_to_del),
-//                                    Snackbar.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                        Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
-//                            tracklist = MusicLibrary.instance!!.getSongListFromAlbumIdNew(
-//                                filteredDataItems[position].album_id, Constants.SORT_ORDER.ASC)
-//                            for (id: Int in tracklist) {
-//                                val item: TrackItem =
-//                                    MusicLibrary.instance!!.getTrackItemFromId(id)
-//                                if (item != null) {
-//                                    files.add(File(item.getFilePath()))
-//                                    ids.add(item.id)
-//                                }
-//                            }
-//                            if (UtilityFun.Delete(context, files, ids)) {
-//                                //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-//                                deleteSuccess()
-//                            } else {
-//                                //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-//                                Snackbar.make(viewParent,
-//                                    context.getString(R.string.unable_to_del),
-//                                    Snackbar.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                        Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
-//                            tracklist = MusicLibrary.instance!!.getSongListFromArtistIdNew(
-//                                filteredDataItems[position].artist_id, Constants.SORT_ORDER.ASC)
-//                            for (id: Int in tracklist) {
-//                                /*if(playerService!!.getCurrentTrack().getTitle().equals(track)){
-//                                        ///Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
-//                                        Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
-//                                        return;
-//                                    }*/
-//                                val item: TrackItem =
-//                                    MusicLibrary.instance!!.getTrackItemFromId(id)
-//                                if (item != null) {
-//                                    files.add(File(item.getFilePath()))
-//                                    ids.add(item.id)
-//                                }
-//                            }
-//                            if (UtilityFun.Delete(context, files, ids)) {
-//                                //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-//                                deleteSuccess()
-//                            } else {
-//                                //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-//                                Snackbar.make(viewParent,
-//                                    context.getString(R.string.unable_to_del),
-//                                    Snackbar.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                        Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
-//                            tracklist = MusicLibrary.instance!!.getSongListFromGenreIdNew(
-//                                filteredDataItems[position].id, Constants.SORT_ORDER.ASC)
-//                            for (id: Int in tracklist) {
-//                                /*if(playerService!!.getCurrentTrack().getTitle().equals(track)){
-//                                        //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
-//                                        Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
-//                                        return;
-//                                    }*/
-//                                val item: TrackItem =
-//                                    MusicLibrary.instance!!.getTrackItemFromId(id)
-//                                if (item != null) {
-//                                    files.add(File(item.getFilePath()))
-//                                    ids.add(item.id)
-//                                }
-//                            }
-//                            if (UtilityFun.Delete(context, files, ids)) {
-//                                //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-//                                deleteSuccess()
-//                            } else {
-//                                //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
-//                                Snackbar.make(viewParent,
-//                                    context.getString(R.string.unable_to_del),
-//                                    Snackbar.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                private fun deleteSuccess() {
-//                    Snackbar.make(viewParent,
-//                        context.getString(R.string.deleted) + filteredDataItems[position].title,
-//                        Snackbar.LENGTH_SHORT).show()
-//                    playerService!!.removeTrack(filteredDataItems[position].id)
-//                    dataItems.remove(dataItems[position])
-//                    filteredDataItems.remove(filteredDataItems[position])
-//                    notifyItemRemoved(position)
-//                    //notifyDataSetChanged();
-//                }
-//            })
-//            .show()
+    private fun deleteDialog() {
+        MaterialDialog(context)
+            .title(text = context.getString(R.string.are_u_sure))
+            .positiveButton(R.string.yes){
+                val files: ArrayList<File> = ArrayList()
+                val ids = ArrayList<Int>()
+                val tracklist: ArrayList<Int>
+                when (fl?.getStatus()) {
+                    Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
+                        //delete the file first
+                        files.add(File(filteredDataItems[position].file_path))
+                        ids.add(filteredDataItems[position].id)
+                        if (UtilityFun.Delete(context, files, ids)) {
+                            deleteSuccess()
+                        } else {
+                            Snackbar.make(viewParent,
+                                context.getString(R.string.unable_to_del),
+                                Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
+                    Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
+                        tracklist = MusicLibrary.instance.getSongListFromAlbumIdNew(
+                            filteredDataItems[position].album_id, Constants.SORT_ORDER.ASC)!!
+                        for (id: Int in tracklist) {
+                            val item = MusicLibrary.instance.getTrackItemFromId(id)
+                            if (item != null) {
+                                files.add(File(item.getFilePath()))
+                                ids.add(item.id)
+                            }
+                        }
+                        when {
+                            UtilityFun.Delete(context, files, ids) -> {
+                                //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                                deleteSuccess()
+                            }
+                            else -> {
+                                //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(viewParent,
+                                    context.getString(R.string.unable_to_del),
+                                    Snackbar.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
+                        tracklist = MusicLibrary.instance.getSongListFromArtistIdNew(
+                            filteredDataItems[position].artist_id, Constants.SORT_ORDER.ASC)!!
+                        for (id: Int in tracklist) {
+                            /*if(playerService!!.getCurrentTrack().getTitle().equals(track)){
+                                    ///Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
+                                    return;
+                                }*/
+                            val item = MusicLibrary.instance.getTrackItemFromId(id)
+                            if (item != null) {
+                                files.add(File(item.getFilePath()))
+                                ids.add(item.id)
+                            }
+                        }
+                        when {
+                            UtilityFun.Delete(context, files, ids) -> {
+                                //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                                deleteSuccess()
+                            }
+                            else -> {
+                                //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(viewParent,
+                                    context.getString(R.string.unable_to_del),
+                                    Snackbar.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
+                        tracklist = MusicLibrary.instance.getSongListFromGenreIdNew(
+                            filteredDataItems[position].id, Constants.SORT_ORDER.ASC)!!
+                        for (id: Int in tracklist) {
+                            /*if(playerService!!.getCurrentTrack().getTitle().equals(track)){
+                                    //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
+                                    return;
+                                }*/
+                            val item = MusicLibrary.instance.getTrackItemFromId(id)
+                            if (item != null) {
+                                files.add(File(item.getFilePath()))
+                                ids.add(item.id)
+                            }
+                        }
+                        when {
+                            UtilityFun.Delete(context, files, ids) -> {
+                                //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                                deleteSuccess()
+                            }
+                            else -> {
+                                //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                                Snackbar.make(viewParent,
+                                    context.getString(R.string.unable_to_del),
+                                    Snackbar.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }
+            .negativeButton(R.string.no)
+            .show()
+    }
+
+    private fun deleteSuccess() {
+        Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems[position].title, Snackbar.LENGTH_SHORT).show()
+        playerService!!.removeTrack(filteredDataItems[position].id)
+        dataItems.remove(dataItems[position])
+        filteredDataItems.remove(filteredDataItems[position])
+        notifyItemRemoved(position)
+        //notifyDataSetChanged();
     }
 
     fun updateItem(position: Int, vararg param: String) {
-        if (param.size == 1) {
-            filteredDataItems[position].title = param[0]
-            notifyItemChanged(position)
-        } else {
-            filteredDataItems[position].title = param[0]
-            filteredDataItems[position].artist_name = param[1]
-            filteredDataItems[position].albumName = param[2]
-            notifyItemChanged(position)
+        when (param.size) {
+            1 -> {
+                filteredDataItems[position].title = param[0]
+                notifyItemChanged(position)
+            }
+            else -> {
+                filteredDataItems[position].title = param[0]
+                filteredDataItems[position].artist_name = param[1]
+                filteredDataItems[position].albumName = param[2]
+                notifyItemChanged(position)
+            }
         }
     }
 
@@ -779,10 +787,10 @@ class MainLibraryAdapter(
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var title: TextView = itemView.findViewById<TextView>(R.id.header)
-        var secondary: TextView = itemView.findViewById<TextView>(R.id.secondaryHeader)
-        var count: TextView = itemView.findViewById<TextView>(R.id.count)
-        var image: ImageView = itemView.findViewById<ImageView>(R.id.imageVIewForStubAlbumArt)
+        var title: TextView = itemView.findViewById(R.id.header)
+        var secondary: TextView = itemView.findViewById(R.id.secondaryHeader)
+        var count: TextView = itemView.findViewById(R.id.count)
+        var image: ImageView = itemView.findViewById(R.id.imageVIewForStubAlbumArt)
         var wrapper: View = itemView.findViewById(R.id.album_art_wrapper)
         override fun onClick(v: View) {
             this@MainLibraryAdapter.onClick(v, this.layoutPosition)

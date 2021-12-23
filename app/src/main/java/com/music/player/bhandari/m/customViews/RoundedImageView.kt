@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
+import kotlin.math.min
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -23,8 +24,11 @@ import androidx.appcompat.widget.AppCompatImageView
  * limitations under the License.
  */
 class RoundedImageView : AppCompatImageView {
+
     constructor(context: Context?) : super((context)!!)
+
     constructor(context: Context?, attrs: AttributeSet?) : super((context)!!, attrs)
+
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
         (context)!!, attrs, defStyle)
 
@@ -43,15 +47,17 @@ class RoundedImageView : AppCompatImageView {
 
     companion object {
         fun getCroppedBitmap(bmp: Bitmap, radius: Int): Bitmap {
-            val sbmp: Bitmap
-            if (bmp.width != radius || bmp.height != radius) {
-                val smallest: Float = Math.min(bmp.width, bmp.height).toFloat()
-                val factor: Float = smallest / radius
-                sbmp = Bitmap.createScaledBitmap(bmp,
-                    (bmp.width / factor).toInt(),
-                    (bmp.height / factor).toInt(), false)
-            } else {
-                sbmp = bmp
+            val sbmp = when {
+                bmp.width != radius || bmp.height != radius -> {
+                    val smallest: Float = min(bmp.width, bmp.height).toFloat()
+                    val factor: Float = smallest / radius
+                    Bitmap.createScaledBitmap(bmp,
+                        (bmp.width / factor).toInt(),
+                        (bmp.height / factor).toInt(), false)
+                }
+                else -> {
+                    bmp
+                }
             }
             val output: Bitmap = Bitmap.createBitmap(radius, radius, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(output)

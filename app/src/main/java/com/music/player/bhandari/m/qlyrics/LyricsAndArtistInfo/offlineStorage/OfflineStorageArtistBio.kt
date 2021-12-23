@@ -175,7 +175,7 @@ object OfflineStorageArtistBio {
         val map: HashMap<String, String> = HashMap()
         try {
             val artistItems: ArrayList<dataItem> =
-                ArrayList(MusicLibrary.instance!!.dataItemsArtist)
+                ArrayList(MusicLibrary.instance.dataItemsArtist)
             for (item: dataItem in artistItems) {
                 val trackItem = TrackItem()
                 trackItem.setArtist(item.artist_name)

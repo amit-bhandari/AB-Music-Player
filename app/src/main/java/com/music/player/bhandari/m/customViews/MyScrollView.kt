@@ -11,9 +11,7 @@ import android.widget.ScrollView
 class MyScrollView : ScrollView {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
-        attrs,
-        defStyleAttr)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun getTopFadingEdgeStrength(): Float {
         return 0F
