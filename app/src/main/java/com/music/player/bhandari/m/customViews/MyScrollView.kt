@@ -9,12 +9,11 @@ import android.widget.ScrollView
  * used in artist info page for fading content under playback controls
  */
 class MyScrollView : ScrollView {
-    constructor(context: Context?) : super(context) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
         attrs,
-        defStyleAttr) {
-    }
+        defStyleAttr)
 
     override fun getTopFadingEdgeStrength(): Float {
         return 0F

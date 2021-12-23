@@ -110,7 +110,7 @@
         </activity>
 
         <activity
-            android:name=".activity.PreviewPlayer.AudioPreviewActivity"
+            android:name=".activity.preview_player.AudioPreviewActivity"
             android:launchMode="singleTask"
             android:excludeFromRecents="true"
             android:taskAffinity=""

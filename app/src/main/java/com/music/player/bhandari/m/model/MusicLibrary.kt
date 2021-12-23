@@ -53,7 +53,7 @@ import kotlin.collections.LinkedHashMap
 
 @SuppressLint("Range")
 class MusicLibrary private constructor() {
-    private val context: Context = MyApp.getContext()!!
+    private val context: Context = MyApp.getContext()
     private val cr: ContentResolver = context.contentResolver
     private val atomicInt = AtomicInteger()
     private var libraryLoadCounter = 0
@@ -78,16 +78,21 @@ class MusicLibrary private constructor() {
     //used for shuffling tracks using track name in now playing
     private val trackMap: SparseArray<String> = SparseArray<String>()
     fun RefreshLibrary() {
-        val excludedFoldersString = MyApp.getPref()!!.getString(context.getString(R.string.pref_excluded_folders), "")
+        val excludedFoldersString = MyApp.getPref()
+            .getString(context.getString(R.string.pref_excluded_folders), "")
         excludedFolders = excludedFoldersString!!.split(",".toRegex()).toTypedArray()
 
         //filter audio based on track duration
-        SHORT_CLIPS_TIME_IN_MS = MyApp.getPref()!!.getInt(context.getString(R.string.pref_hide_short_clips), 10) * 1000
+        SHORT_CLIPS_TIME_IN_MS = MyApp.getPref()
+            .getInt(context.getString(R.string.pref_hide_short_clips), 10) * 1000
 
         //filter audio based on name
-        REMOVE_TRACK_CONTAINING_1 = MyApp.getPref()!!.getString(context.getString(R.string.pref_hide_tracks_starting_with_1), "")
-        REMOVE_TRACK_CONTAINING_2 = MyApp.getPref()!!.getString(context.getString(R.string.pref_hide_tracks_starting_with_2), "")
-        REMOVE_TRACK_CONTAINING_3 = MyApp.getPref()!!.getString(context.getString(R.string.pref_hide_tracks_starting_with_3), "")
+        REMOVE_TRACK_CONTAINING_1 = MyApp.getPref()
+            .getString(context.getString(R.string.pref_hide_tracks_starting_with_1), "")
+        REMOVE_TRACK_CONTAINING_2 = MyApp.getPref()
+            .getString(context.getString(R.string.pref_hide_tracks_starting_with_2), "")
+        REMOVE_TRACK_CONTAINING_3 = MyApp.getPref()
+            .getString(context.getString(R.string.pref_hide_tracks_starting_with_3), "")
         atomicInt.set(0)
         dataItemsForTracks!!.clear()
         dataItemsForGenres.clear()
@@ -111,7 +116,7 @@ class MusicLibrary private constructor() {
             atomicInt.set(0)
             libraryLoadCounter = 0
             Log.v(Constants.TAG, "refreshed")
-            PlaylistManager.getInstance(MyApp.getContext()!!)!!.PopulateUserMusicTable()
+            PlaylistManager.getInstance(MyApp.getContext())!!.PopulateUserMusicTable()
             LocalBroadcastManager.getInstance(context)
                 .sendBroadcast(Intent(Constants.ACTION.REFRESH_LIB))
             Log.v("See the time", (System.currentTimeMillis() - start).toString() + "")
@@ -266,7 +271,8 @@ class MusicLibrary private constructor() {
             if (!BuildConfig.DEBUG) {
                 //if its been more than 2 days since artist info has been cached locally, do it
                 //fetch art info thread
-                val lastTimeDidAt = MyApp.getPref()!!.getLong(context.getString(R.string.pref_artinfo_libload), 0)
+                val lastTimeDidAt = MyApp.getPref()
+                    .getLong(context.getString(R.string.pref_artinfo_libload), 0)
                 if (System.currentTimeMillis() >= lastTimeDidAt +
                     2 * 24 * 60 * 60 * 1000
                 ) {
@@ -639,7 +645,7 @@ class MusicLibrary private constructor() {
     }
 
     fun getAlbumArtUri(album_id: Int): Uri? {
-        return Uri.fromFile(File(MyApp.getInstance()!!.filesDir.absolutePath + "random.png"))
+        return Uri.fromFile(File(MyApp.getInstance().filesDir.absolutePath + "random.png"))
         /*Uri songCover = Uri.parse("content://media/external/audio/albumart");
         return ContentUris.withAppendedId(songCover, album_id);*/
     }
@@ -651,7 +657,7 @@ class MusicLibrary private constructor() {
             trackId.toLong())
         var bm: Bitmap? = null
         try {
-            bm = MyApp.getContext()!!.contentResolver
+            bm = MyApp.getContext().contentResolver
                 .loadThumbnail(trackUri, Size(512, 512), null)
         } catch (e: IOException) {
             e.printStackTrace()

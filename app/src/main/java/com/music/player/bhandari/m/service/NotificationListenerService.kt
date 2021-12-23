@@ -78,7 +78,7 @@ class NotificationListenerService : NotificationListenerService(), RemoteControl
                         if (!isPlaying) {
                             mNotificationManager!!.cancel(Constants.NOTIFICATION_ID.INSTANT_LYRICS)
                         }
-                        broadcastControllerState(controllers!![0], isPlaying)
+                        broadcastControllerState(controllers[0], isPlaying)
                     }
                 }
                 controller.registerCallback(controllerCallback!!)

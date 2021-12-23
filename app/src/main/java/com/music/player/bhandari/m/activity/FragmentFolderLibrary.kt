@@ -61,9 +61,9 @@ class FragmentFolderLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener /
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(MyApp.getContext()!!).registerReceiver(
+        LocalBroadcastManager.getInstance(MyApp.getContext()).registerReceiver(
             mReceiverForBackPressedAction!!, IntentFilter(ActivityMain.NOTIFY_BACK_PRESSED))
-        LocalBroadcastManager.getInstance(MyApp.getContext()!!).registerReceiver(
+        LocalBroadcastManager.getInstance(MyApp.getContext()).registerReceiver(
             mReceiverForLibraryRefresh,
             IntentFilter(Constants.ACTION.REFRESH_LIB))
         Log.d("FragmentFolderLibrary", "onResume: receivers registered")
@@ -71,8 +71,8 @@ class FragmentFolderLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener /
 
     override fun onPause() {
         super.onPause()
-        LocalBroadcastManager.getInstance(MyApp.getContext()!!).unregisterReceiver(mReceiverForBackPressedAction!!)
-        LocalBroadcastManager.getInstance(MyApp.getContext()!!).unregisterReceiver(mReceiverForLibraryRefresh)
+        LocalBroadcastManager.getInstance(MyApp.getContext()).unregisterReceiver(mReceiverForBackPressedAction!!)
+        LocalBroadcastManager.getInstance(MyApp.getContext()).unregisterReceiver(mReceiverForLibraryRefresh)
         Log.d("FragmentFolderLibrary", "onPause: receivers unregistered")
     }
 
@@ -97,7 +97,7 @@ class FragmentFolderLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener /
             BottomOffsetDecoration(offsetPx.toInt())
         mRecyclerView!!.addItemDecoration(bottomOffsetDecoration)
         adapter = FolderLibraryAdapter(requireActivity())
-        mRecyclerView!!.setAdapter(adapter!!)
+        mRecyclerView!!.adapter = adapter!!
         mRecyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0) {
@@ -152,7 +152,7 @@ class FragmentFolderLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener /
                 adapter = FolderLibraryAdapter(requireContext())
                 val mHandler = Handler(requireContext().mainLooper)
                 mHandler.post {
-                    mRecyclerView!!.setAdapter(adapter!!)
+                    mRecyclerView!!.adapter = adapter!!
                     //swipeRefreshLayout.setRefreshing(false);
                 }
             }

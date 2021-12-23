@@ -154,7 +154,7 @@ class Lyrics : Serializable, Parcelable {
         return bos.toByteArray()
     }
 
-    public override fun equals(`object`: Any?): Boolean {
+    override fun equals(`object`: Any?): Boolean {
         val isLyrics: Boolean = `object` is Lyrics
         if (isLyrics && (getURL() != null) && ((`object` as Lyrics?)!!.getURL() != null)) return (getURL() == `object`!!.getURL()) else if (isLyrics) {
             val other: Lyrics? = `object` as Lyrics?
@@ -167,16 +167,16 @@ class Lyrics : Serializable, Parcelable {
         } else return false
     }
 
-    public override fun hashCode(): Int {
+    override fun hashCode(): Int {
         // Potential issue with the Birthday Paradox when we hash over 50k lyrics
         return if (getURL() != null) getURL().hashCode() else ("" + getOriginalArtist() + getOriginalTrack() + getSource()).hashCode()
     }
 
-    public override fun describeContents(): Int {
+    override fun describeContents(): Int {
         return 0
     }
 
-    public override fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(mTitle)
         dest.writeString(mArtist)
         dest.writeString(mOriginalTitle)

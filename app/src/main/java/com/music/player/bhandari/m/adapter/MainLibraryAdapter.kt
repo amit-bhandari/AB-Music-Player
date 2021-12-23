@@ -122,7 +122,7 @@ class MainLibraryAdapter(
         when (fl!!.getStatus()) {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
                 var builder: RequestBuilder<Drawable?>? = null
-                if (!MyApp.getPref()!!.getBoolean(context.getString(R.string.pref_data_saver), false)) builder = Glide
+                if (!MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) builder = Glide
                     .with(context)
                     .load(url)
                     .centerCrop()
@@ -175,7 +175,7 @@ class MainLibraryAdapter(
                 holder.secondary.text = stringBuilder
                 holder.title.setPadding(20, 0, 0, 0)
                 holder.secondary.setPadding(20, 0, 0, 0)
-                if (!MyApp.getPref()!!.getBoolean(context.getString(R.string.pref_data_saver), false)
+                if (!MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)
                 ) {
                     Log.d("MainLibraryAdapter",
                         "onBindViewHolder: " + filteredDataItems[position].artist_name + ":" + url)
@@ -330,7 +330,8 @@ class MainLibraryAdapter(
     }
 
     fun sort(sort_id: Int) {
-        val sort_order: Int = MyApp.getPref()!!.getInt(context.resources.getString(R.string.pref_order_by), Constants.SORT_BY.ASC)
+        val sort_order: Int = MyApp.getPref()
+            .getInt(context.resources.getString(R.string.pref_order_by), Constants.SORT_BY.ASC)
         when (sort_id) {
             Constants.SORT_BY.NAME -> if (sort_order == Constants.SORT_BY.ASC) {
                 filteredDataItems.sortWith { o1, o2 ->
@@ -403,11 +404,11 @@ class MainLibraryAdapter(
         val linear = LinearLayout(context)
         linear.orientation = LinearLayout.VERTICAL
         val text = TextView(context)
-        text.setTypeface(TypeFaceHelper.getTypeFace(context))
+        text.typeface = TypeFaceHelper.getTypeFace(context)
         text.text = UtilityFun.trackInfoBuild(filteredDataItems[position].id).toString()
         text.setPadding(20, 20, 20, 10)
         text.textSize = 15f
-        text.setTypeface(TypeFaceHelper.getTypeFace(context))
+        text.typeface = TypeFaceHelper.getTypeFace(context)
         //text.setGravity(Gravity.CENTER);
         linear.addView(text)
 //        MyDialogBuilder(context)
@@ -421,32 +422,32 @@ class MainLibraryAdapter(
         if (playerService == null) return
         when (fl!!.getStatus()) {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
-                if (playerService!!.getStatus() === playerService.PLAYING) playerService!!.pause()
+                if (playerService.getStatus() === playerService.PLAYING) playerService.pause()
                 id_list.clear()
                 for (d: dataItem in filteredDataItems) {
                     id_list.add(d.id)
                 }
-                playerService!!.setTrackList(id_list)
-                playerService!!.playAtPosition(position)
+                playerService.setTrackList(id_list)
+                playerService.playAtPosition(position)
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 val album_id: Int = filteredDataItems[position].album_id
-                playerService!!.setTrackList(MusicLibrary.instance!!
+                playerService.setTrackList(MusicLibrary.instance!!
                     .getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
             }
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 val artist_id: Int = filteredDataItems[position].artist_id
-                playerService!!.setTrackList(MusicLibrary.instance!!
+                playerService.setTrackList(MusicLibrary.instance!!
                     .getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC))
             }
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                 val genre_id: Int = filteredDataItems[position].id
-                playerService!!.setTrackList(MusicLibrary.instance!!
+                playerService.setTrackList(MusicLibrary.instance!!
                     .getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC))
             }
         }
         if (fl!!.getStatus() !== Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
-            playerService!!.playAtPosition(0)
+            playerService.playAtPosition(0)
         }
     }
 
@@ -799,7 +800,7 @@ class MainLibraryAdapter(
         dataItems = data
         filteredDataItems.addAll(dataItems)
         playerService = MyApp.getService()
-        when (MyApp.getPref()!!.getInt(context.getString(R.string.pref_default_album_art), 0)) {
+        when (MyApp.getPref().getInt(context.getString(R.string.pref_default_album_art), 0)) {
             0 -> batmanDrawable = ContextCompat.getDrawable(context, R.drawable.ic_batman_1)
             1 -> batmanDrawable = UtilityFun.defaultAlbumArtDrawable
         }

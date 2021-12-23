@@ -90,7 +90,7 @@ class FragmentAlbumArt : Fragment() {
             requireActivity().startPostponedEnterTransition()
 
             //place album art view properly in center
-            albumArt!!.getViewTreeObserver().addOnGlobalLayoutListener(
+            albumArt!!.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         albumArt!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -133,7 +133,8 @@ class FragmentAlbumArt : Fragment() {
         if ((activity == null) || !isAdded || (playerService!!.getCurrentTrack() == null)) {
             return
         }
-        val currentNowPlayingBackPref: Int = MyApp.getPref()!!.getInt(getString(R.string.pref_now_playing_back), 1)
+        val currentNowPlayingBackPref: Int = MyApp.getPref()
+            .getInt(getString(R.string.pref_now_playing_back), 1)
         //if album art selected, hide small album art
         if (currentNowPlayingBackPref == 2) {
             albumArt!!.setImageBitmap(null)
@@ -147,7 +148,7 @@ class FragmentAlbumArt : Fragment() {
             } else {
                 TODO("VERSION.SDK_INT < Q")
             }
-            when (MyApp.getPref()!!.getInt(getString(R.string.pref_default_album_art), 0)) {
+            when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
                 0 -> request.listener(object : RequestListener<Drawable?> {
                     override fun onLoadFailed(
                         e: GlideException?,
@@ -156,7 +157,8 @@ class FragmentAlbumArt : Fragment() {
                         isFirstResource: Boolean
                     ): Boolean {
                         //Log.d("AlbumLibraryAdapter", "onException: ");
-                        if (UtilityFun.isConnectedToInternet && !MyApp.getPref()!!.getBoolean(getString(R.string.pref_data_saver), false)) {
+                        if (UtilityFun.isConnectedToInternet && !MyApp.getPref()
+                                .getBoolean(getString(R.string.pref_data_saver), false)) {
                             val url: String? = MusicLibrary.instance!!.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
                             if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))
                                 .into(albumArt!!)
@@ -183,7 +185,7 @@ class FragmentAlbumArt : Fragment() {
                         isFirstResource: Boolean
                     ): Boolean {
                         if (UtilityFun.isConnectedToInternet &&
-                            !MyApp.getPref()!!.getBoolean(getString(R.string.pref_data_saver), false)
+                            !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)
                         ) {
                             val url: String? = MusicLibrary.instance!!.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
                             if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))

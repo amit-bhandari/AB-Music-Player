@@ -10,8 +10,8 @@ import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 
 @Keep
 class MoveUpwardBehavior : CoordinatorLayout.Behavior<View?> {
-    constructor() : super() {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor() : super()
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     override fun layoutDependsOn(
         parent: CoordinatorLayout,
@@ -27,7 +27,7 @@ class MoveUpwardBehavior : CoordinatorLayout.Behavior<View?> {
         dependency: View
     ): Boolean {
         val translationY: Float =
-            Math.min(0f, ViewCompat.getTranslationY(dependency) - dependency.getHeight())
+            Math.min(0f, ViewCompat.getTranslationY(dependency) - dependency.height)
         ViewCompat.setTranslationY(child, translationY)
         return true
     }

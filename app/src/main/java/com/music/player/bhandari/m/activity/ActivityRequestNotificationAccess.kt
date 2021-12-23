@@ -89,7 +89,7 @@ class ActivityRequestNotificationAccess : AppCompatActivity(), View.OnClickListe
             R.id.text_never_ask -> {
                 never_ask!!.visibility = View.GONE
                 progressBar!!.visibility = View.VISIBLE
-                MyApp.getPref()!!.edit()
+                MyApp.getPref().edit()
                     .putBoolean(getString(R.string.pref_never_ask_notitication_permission), true)
                     .apply()
                 launchMainActivity()

@@ -173,7 +173,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
         }
         playerService = MyApp.getService()
         ColorHelper.setStatusBarGradiant(this)
-        when (MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
@@ -339,7 +339,8 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                         if (UtilityFun.isConnectedToInternet && url != null) {
                             setArtistImage(url)
                         } else {
-                            val defaultAlbumArtSetting: Int = MyApp.getPref()!!.getInt(getString(R.string.pref_default_album_art), 0)
+                            val defaultAlbumArtSetting: Int = MyApp.getPref()
+                                .getInt(getString(R.string.pref_default_album_art), 0)
                             when (defaultAlbumArtSetting) {
                                 0 -> Glide.with(this@ActivitySecondaryLibrary)
                                     .load(MusicLibrary.instance!!
@@ -441,7 +442,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                     val url: String? =
                         MusicLibrary.instance!!.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
                     if (url != null) {
-                        when (MyApp.getPref()!!.getInt(getString(R.string.pref_default_album_art), 0)) {
+                        when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
                             0 -> builder = Glide.with(this)
                                 .load(Uri.parse(url))
                                 .placeholder(R.drawable.ic_batman_1)
@@ -554,7 +555,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
             R.id.action_sleep_timer -> setSleepTimerDialog(this)
             R.id.action_equ -> {
                 val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                if ((MyApp.getPref()!!.getBoolean(getString(R.string.pref_prefer_system_equ), true)
+                if ((MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
                             && (intent.resolveActivity(packageManager) != null))
                 ) {
                     try {
@@ -564,7 +565,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                     }
                 } else {
                     //show app equalizer
-                    if (playerService!!.getEqualizerHelper()!!.isEqualizerSupported()) {
+                    if (playerService!!.getEqualizerHelper().isEqualizerSupported()) {
                         startActivity(Intent(this, ActivityEqualizer::class.java))
                     } else {
                         Snackbar.make(rootView!!,

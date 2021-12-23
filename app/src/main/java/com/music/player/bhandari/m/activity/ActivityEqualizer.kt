@@ -258,7 +258,7 @@ class ActivityEqualizer : AppCompatActivity() {
         reverbPresets.add(getString(R.string.preset_plate))
         val dataAdapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, reverbPresets)
         dataAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-        reverbSpinner!!.setAdapter(dataAdapter)
+        reverbSpinner!!.adapter = dataAdapter
 
         //Set the max values for the seekbars.
         virtualizerSeekBar!!.max = 1000

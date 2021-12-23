@@ -17,9 +17,9 @@ import android.view.View
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class DoubleClickListener constructor() : View.OnClickListener {
+abstract class DoubleClickListener : View.OnClickListener {
     private var lastClickTime: Long = 0
-    public override fun onClick(v: View) {
+    override fun onClick(v: View) {
         val clickTime: Long = System.currentTimeMillis()
         if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
             onDoubleClick(v)

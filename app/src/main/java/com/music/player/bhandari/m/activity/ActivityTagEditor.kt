@@ -83,7 +83,7 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
         }
         ColorHelper.setStatusBarGradiant(this)
         super.onCreate(savedInstanceState)
-        when (MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
@@ -143,7 +143,7 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
         original_album = item!!.album
         artist!!.setText(item!!.getArtist())
         original_artist = item!!.getArtist()
-        when (MyApp.getPref()!!.getInt(getString(R.string.pref_default_album_art), 0)) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
             0 -> Glide.with(this)
                 .load(MusicLibrary.instance!!.getAlbumArtUri(item!!.albumId))
                 .signature(ObjectKey(System.currentTimeMillis().toString()))
@@ -293,7 +293,7 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
             contentResolver.insert(sArtworkUri, values)
         }
         val d = MusicLibrary.instance!!.updateTrackNew(song_id, edited_title, edited_artist, edited_album)
-        PlaylistManager.getInstance(MyApp.getContext()!!)!!.addEntryToMusicTable(d!!)
+        PlaylistManager.getInstance(MyApp.getContext())!!.addEntryToMusicTable(d!!)
         //   PlaylistManager.getInstance(MyApp.getContext()).PopulateUserMusicTable();
         val intent: Intent = when (intent.getIntExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB)) {
             Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB -> {
@@ -373,7 +373,7 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
     fun getRealPathFromURI(uri: Uri?): String? {
         val projection: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
         val cursor = managedQuery(uri, projection, null, null, null)
-        if (cursor == null || cursor.getCount() == 0) {
+        if (cursor == null || cursor.count == 0) {
             return null
         }
         val column_index: Int = cursor
@@ -404,7 +404,7 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showInfoDialog() {
-        if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_show_edit_track_info_dialog), true)) {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_show_edit_track_info_dialog), true)) {
             return
         }
 //        MyDialogBuilder(this)

@@ -272,7 +272,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
             }
         }
         if ((item.title == REMOVE)) {
-            PlaylistManager.getInstance(MyApp.getContext()!!)!!.RemoveSongFromPlaylistNew(playlist_name!!, dataItems!!.get(position).id)
+            PlaylistManager.getInstance(MyApp.getContext())!!.RemoveSongFromPlaylistNew(playlist_name!!, dataItems!!.get(position).id)
             dataItems.removeAt(position)
             notifyItemRemoved(position)
         }
@@ -285,7 +285,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         val linear: LinearLayout = LinearLayout(context)
         linear.orientation = LinearLayout.VERTICAL
         val text = TextView(context)
-        text.setTypeface(TypeFaceHelper.getTypeFace(context))
+        text.typeface = TypeFaceHelper.getTypeFace(context)
         text.text = UtilityFun.trackInfoBuild(dataItems!!.get(position).id).toString()
         text.setPadding(20, 20, 20, 10)
         text.textSize = 15f

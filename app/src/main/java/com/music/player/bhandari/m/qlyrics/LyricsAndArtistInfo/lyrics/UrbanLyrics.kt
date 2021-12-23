@@ -55,12 +55,12 @@ object UrbanLyrics {
             .replace("&".toRegex(), "and").replace("[^A-Za-z0-9]".toRegex(), "")
         val htmlSong: String = song.replace("[\\s'\"-]".toRegex(), "")
             .replace("&".toRegex(), "and").replace("[^A-Za-z0-9]".toRegex(), "")
-        if (htmlArtist.toLowerCase(Locale.getDefault()).startsWith("the")) htmlArtist =
+        if (htmlArtist.lowercase(Locale.getDefault()).startsWith("the")) htmlArtist =
             htmlArtist.substring(3)
         val urlString: String = String.format(
             "http://www.urbanlyrics.com/lyrics/%s/%s.html",
-            htmlArtist.toLowerCase(Locale.getDefault()),
-            htmlSong.toLowerCase(Locale.getDefault()))
+            htmlArtist.lowercase(Locale.getDefault()),
+            htmlSong.lowercase(Locale.getDefault()))
         return fromURL(urlString, artist, song)
     }
 

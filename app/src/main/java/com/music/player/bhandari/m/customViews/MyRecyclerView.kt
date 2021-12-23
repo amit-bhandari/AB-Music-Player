@@ -9,11 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
  * used in lyrics fragment for fading content under playback controls
  */
 class MyRecyclerView : RecyclerView {
-    constructor(context: Context?) : super((context)!!) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super((context)!!, attrs) {}
+    constructor(context: Context?) : super((context)!!)
+    constructor(context: Context?, attrs: AttributeSet?) : super((context)!!, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
-        (context)!!, attrs, defStyle) {
-    }
+        (context)!!, attrs, defStyle)
 
     override fun getTopFadingEdgeStrength(): Float {
         return 0F

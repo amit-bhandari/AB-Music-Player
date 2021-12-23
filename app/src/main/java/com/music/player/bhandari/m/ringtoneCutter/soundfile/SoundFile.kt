@@ -184,7 +184,7 @@ private constructor() {
             // read data from file and feed it to the decoder input buffers.
             val inputBufferIndex: Int = codec!!.dequeueInputBuffer(100)
             if (!done_reading && inputBufferIndex >= 0) {
-                sample_size = extractor!!.readSampleData(inputBuffers[inputBufferIndex], 0)
+                sample_size = extractor.readSampleData(inputBuffers[inputBufferIndex], 0)
                 when {
                     firstSampleData && (format.getString(MediaFormat.KEY_MIME) == "audio/mp4a-latm") && (sample_size == 2) -> {
                         // For some reasons on some devices (e.g. the Samsung S3) you should not
@@ -531,7 +531,7 @@ private constructor() {
                         num_samples_left -= frame_size
                         inputBuffers[inputBufferIndex].put(buffer)
                         presentation_time = (((num_frames++) * frame_size * 1e6) / mSampleRate).toLong()
-                        codec!!.queueInputBuffer(inputBufferIndex, 0, buffer.size, presentation_time, 0)
+                        codec.queueInputBuffer(inputBufferIndex, 0, buffer.size, presentation_time, 0)
                     }
                 }
             }

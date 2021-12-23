@@ -25,8 +25,8 @@ object Levenshtein {
     fun distance(a: String, b: String): Int {
         var a: String = a
         var b: String = b
-        a = a.toLowerCase(Locale.US)
-        b = b.toLowerCase(Locale.US)
+        a = a.lowercase(Locale.US)
+        b = b.lowercase(Locale.US)
         // i == 0
         val costs: IntArray = IntArray(b.length + 1)
         for (j in costs.indices) costs[j] = j

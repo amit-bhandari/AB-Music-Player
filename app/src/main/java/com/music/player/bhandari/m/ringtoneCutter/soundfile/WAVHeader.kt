@@ -55,7 +55,7 @@ class WAVHeader constructor(
         var offset = 0
 
         // set the RIFF chunk
-        System.arraycopy(byteArrayOf('R'.toByte(), 'I'.toByte(), 'F'.toByte(), 'F'.toByte()),
+        System.arraycopy(byteArrayOf('R'.code.toByte(), 'I'.code.toByte(), 'F'.code.toByte(), 'F'.code.toByte()),
             0,
             header,
             offset,
@@ -66,7 +66,7 @@ class WAVHeader constructor(
         header[offset++] = ((size shr 8) and 0xFF).toByte()
         header[offset++] = ((size shr 16) and 0xFF).toByte()
         header[offset++] = ((size shr 24) and 0xFF).toByte()
-        System.arraycopy(byteArrayOf('W'.toByte(), 'A'.toByte(), 'V'.toByte(), 'E'.toByte()),
+        System.arraycopy(byteArrayOf('W'.code.toByte(), 'A'.code.toByte(), 'V'.code.toByte(), 'E'.code.toByte()),
             0,
             header,
             offset,
@@ -74,7 +74,7 @@ class WAVHeader constructor(
         offset += 4
 
         // set the fmt chunk
-        System.arraycopy(byteArrayOf('f'.toByte(), 'm'.toByte(), 't'.toByte(), ' '.toByte()),
+        System.arraycopy(byteArrayOf('f'.code.toByte(), 'm'.code.toByte(), 't'.code.toByte(), ' '.code.toByte()),
             0,
             header,
             offset,
@@ -101,7 +101,7 @@ class WAVHeader constructor(
         offset += 2
 
         // set the beginning of the data chunk
-        System.arraycopy(byteArrayOf('d'.toByte(), 'a'.toByte(), 't'.toByte(), 'a'.toByte()),
+        System.arraycopy(byteArrayOf('d'.code.toByte(), 'a'.code.toByte(), 't'.code.toByte(), 'a'.code.toByte()),
             0,
             header,
             offset,

@@ -473,8 +473,8 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
 
     private fun updateLyrics(discardCache: Boolean) {
         if (supportActionBar != null) {
-            supportActionBar!!.setTitle(trackTitle)
-            supportActionBar!!.setSubtitle(artist)
+            supportActionBar!!.title = trackTitle
+            supportActionBar!!.subtitle = artist
         }
         artInfoTextView!!.text = getString(R.string.artist_info_loading)
         val item = TrackItem()
@@ -550,7 +550,9 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
     }
 
     override fun onLyricsDownloaded(lyrics: Lyrics?) {
-        if (!(lyrics!!.getOriginalArtist()!!.lowercase(Locale.getDefault()) == artist!!.lowercase(Locale.getDefault()) && lyrics.getOriginalTrack()!!.toLowerCase().equals(
+        if (!(lyrics!!.getOriginalArtist()!!.lowercase(Locale.getDefault()) == artist!!.lowercase(Locale.getDefault()) && lyrics.getOriginalTrack()!!
+                .lowercase(Locale.getDefault())
+                .equals(
                 trackTitle!!.lowercase(Locale.getDefault())))
         ) {
             return
@@ -565,8 +567,8 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
             recyclerView!!.visibility = View.VISIBLE
             lyricStatus!!.visibility = View.GONE
             if (supportActionBar != null) {
-                supportActionBar!!.setTitle(lyrics.getTrack())
-                supportActionBar!!.setSubtitle(lyrics.getArtist())
+                supportActionBar!!.title = lyrics.getTrack()
+                supportActionBar!!.subtitle = lyrics.getArtist()
             }
 
             //if(!lyrics.getArtist().equals(mLyrics.getArtist())){
@@ -683,7 +685,7 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
             //store file in cache with artist id as name
             //create folder in cache for artist images
             val CACHE_ART_THUMBS: String =
-                MyApp.getContext()!!.cacheDir.toString() + "/art_thumbs/"
+                MyApp.getContext().cacheDir.toString() + "/art_thumbs/"
             val actual_file_path: String = CACHE_ART_THUMBS + p0[0]!!.getOriginalArtist()
             val f: File = File(CACHE_ART_THUMBS)
             if (!f.exists()) {

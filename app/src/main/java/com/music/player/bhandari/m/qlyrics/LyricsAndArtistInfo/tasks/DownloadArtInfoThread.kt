@@ -102,11 +102,11 @@ class DownloadArtInfoThread constructor(
                     var imageUrl: String? = null
                     var access_token = ""
                     try {
-                        val time: Long = MyApp.getPref()!!.getLong("spoty_expiry_time", 0)
+                        val time: Long = MyApp.getPref().getLong("spoty_expiry_time", 0)
                         val diff: Long = System.currentTimeMillis() - time
                         Log.d("ArtInfoThread", "getImageUrl: difference $diff")
                         val i = if (diff / 1000 < 3600) {
-                            access_token = MyApp.getPref()!!.getString("spoty_token", "")!!
+                            access_token = MyApp.getPref().getString("spoty_token", "")!!
                             Log.d("ArtInfoThread",
                                 "getImageUrl: Access token from cache $access_token")
                         } else {
@@ -122,10 +122,10 @@ class DownloadArtInfoThread constructor(
                                 JsonParser().parse(document.text()).asJsonObject
                             if (response != null && response.has("access_token")) {
                                 val token: String = response.get("access_token").asString
-                                MyApp.getPref()!!.edit()
+                                MyApp.getPref().edit()
                                     .putLong("spoty_expiry_time", System.currentTimeMillis())
                                     .commit()
-                                MyApp.getPref()!!.edit().putString("spoty_token", token)
+                                MyApp.getPref().edit().putString("spoty_token", token)
                                     .commit()
                                 access_token = token
                             }

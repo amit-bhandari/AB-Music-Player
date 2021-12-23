@@ -72,10 +72,10 @@ internal class Atom {
 
     private fun getTypeInt(type_str: String): Int {
         var type = 0
-        type = type or ((type_str[0]).toInt() shl 24)
-        type = type or ((type_str[1]).toInt() shl 16)
-        type = type or ((type_str[2]).toInt() shl 8)
-        type = type or (type_str[3]).toByte().toInt()
+        type = type or ((type_str[0]).code shl 24)
+        type = type or ((type_str[1]).code shl 16)
+        type = type or ((type_str[2]).code shl 8)
+        type = type or (type_str[3]).code.toByte().toInt()
         return type
     }
 
@@ -85,10 +85,10 @@ internal class Atom {
 
     fun getTypeStr(): String {
         var type = ""
-        type += (((mType shr 24) and 0xFF).toByte()).toChar()
-        type += (((mType shr 16) and 0xFF).toByte()).toChar()
-        type += (((mType shr 8) and 0xFF).toByte()).toChar()
-        type += ((mType and 0xFF).toByte()).toChar()
+        type += (((mType shr 24) and 0xFF).toByte()).toInt().toChar()
+        type += (((mType shr 16) and 0xFF).toByte()).toInt().toChar()
+        type += (((mType shr 8) and 0xFF).toByte()).toInt().toChar()
+        type += ((mType and 0xFF).toByte()).toInt().toChar()
         return type
     }
 
@@ -177,7 +177,7 @@ internal class Atom {
     }
 
     // Used for debugging purpose only.
-    public override fun toString(): String {
+    override fun toString(): String {
         var str: String = ""
         val atom_bytes: ByteArray = getBytes()
         for (i in atom_bytes.indices) {
@@ -228,7 +228,7 @@ class MP4Header constructor(
         return mHeader
     }
 
-    public override fun toString(): String {
+    override fun toString(): String {
         var str: String = ""
         if (mHeader == null) {
             return str
@@ -292,12 +292,12 @@ class MP4Header constructor(
     private fun getFTYPAtom(): Atom {
         val atom = Atom("ftyp")
         atom.setData(byteArrayOf(
-            'M'.toByte(), '4'.toByte(), 'A'.toByte(), ' '.toByte(),  // Major brand
+            'M'.code.toByte(), '4'.code.toByte(), 'A'.code.toByte(), ' '.code.toByte(),  // Major brand
             0, 0, 0, 0,  // Minor version
-            'M'.toByte(), '4'.toByte(), 'A'.toByte(), ' '.toByte(),  // compatible brands
-            'm'.toByte(), 'p'.toByte(), '4'.toByte(), '2'.toByte(),
-            'i'.toByte(), 's'.toByte(), 'o'.toByte(), 'm'
-                .toByte()))
+            'M'.code.toByte(), '4'.code.toByte(), 'A'.code.toByte(), ' '.code.toByte(),  // compatible brands
+            'm'.code.toByte(), 'p'.code.toByte(), '4'.code.toByte(), '2'.code.toByte(),
+            'i'.code.toByte(), 's'.code.toByte(), 'o'.code.toByte(), 'm'
+                .code.toByte()))
         return atom
     }
 
@@ -547,10 +547,10 @@ class MP4Header constructor(
             0,
             0,
             0,  // pre-defined
-            's'.toByte(),
-            'o'.toByte(),
-            'u'.toByte(),
-            'n'.toByte(),  // handler type
+            's'.code.toByte(),
+            'o'.code.toByte(),
+            'u'.code.toByte(),
+            'n'.code.toByte(),  // handler type
             0,
             0,
             0,
@@ -563,19 +563,19 @@ class MP4Header constructor(
             0,
             0,
             0,  // reserved
-            'S'.toByte(),
-            'o'.toByte(),
-            'u'.toByte(),
-            'n'.toByte(),  // name (used only for debugging and inspection purposes).
-            'd'.toByte(),
-            'H'.toByte(),
-            'a'.toByte(),
-            'n'.toByte(),
-            'd'.toByte(),
-            'l'.toByte(),
-            'e'.toByte(),
+            'S'.code.toByte(),
+            'o'.code.toByte(),
+            'u'.code.toByte(),
+            'n'.code.toByte(),  // name (used only for debugging and inspection purposes).
+            'd'.code.toByte(),
+            'H'.code.toByte(),
+            'a'.code.toByte(),
+            'n'.code.toByte(),
+            'd'.code.toByte(),
+            'l'.code.toByte(),
+            'e'.code.toByte(),
             '\u0000'
-                .toByte()))
+                .code.toByte()))
         return atom
     }
 

@@ -65,6 +65,7 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import jp.wasabeef.blurry.Blurry
 import java.io.*
 import java.net.URL
+import java.util.*
 import java.util.concurrent.Executors
 
 /**
@@ -138,7 +139,7 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
         Log.v("Amit AB", "created")
         currentMusicInfo = getSharedPreferences("current_music", MODE_PRIVATE)
         setStatusBarGradiant(this)
-        val themeSelector = MyApp.getPref()!!
+        val themeSelector = MyApp.getPref()
             .getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
         when (themeSelector) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
@@ -175,7 +176,7 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
                 updateLyrics(false)
             }
         }
-        if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
             showDisclaimerDialog()
         }
 
@@ -296,8 +297,8 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
         track = currentMusicInfo!!.getString("track", "")
         artist = currentMusicInfo!!.getString("artist", "")
         if (mLyrics != null && mLyrics!!.getOriginalArtist()!!
-                .toLowerCase() == artist!!.toLowerCase() && mLyrics!!.getOriginalTrack()!!
-                .toLowerCase() == track!!.toLowerCase()
+                .lowercase(Locale.getDefault()) == artist!!.lowercase(Locale.getDefault()) && mLyrics!!.getOriginalTrack()!!
+                .lowercase(Locale.getDefault()) == track!!.lowercase(Locale.getDefault())
         ) {
             onLyricsDownloaded(mLyrics)
         } else {
@@ -334,8 +335,8 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
             artist = currentMusicInfo!!.getString("artist", "")
         }
         if (supportActionBar != null) {
-            supportActionBar!!.setTitle(track)
-            supportActionBar!!.setSubtitle(artist)
+            supportActionBar!!.title = track
+            supportActionBar!!.subtitle = artist
         }
         artInfoTextView!!.text = getString(R.string.artist_info_loading)
         val item = TrackItem()
@@ -346,7 +347,7 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
         //set artist photo in background
         var artist = item.getArtist()
         artist = loadArtistInfo(artist)
-        if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
             lyricStatus!!.visibility = View.VISIBLE
             recyclerView!!.visibility = View.GONE
             lyricStatus!!.text = getString(R.string.disclaimer_rejected)
@@ -359,8 +360,8 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
             return
         }
         if (mLyrics != null && mLyrics!!.getOriginalArtist()!!
-                .toLowerCase() == artist.toLowerCase() && mLyrics!!.getOriginalTrack()!!
-                .toLowerCase() == track!!.toLowerCase()
+                .lowercase(Locale.getDefault()) == artist.toLowerCase() && mLyrics!!.getOriginalTrack()!!
+                .lowercase(Locale.getDefault()) == track!!.lowercase(Locale.getDefault())
         ) {
             onLyricsDownloaded(mLyrics)
             return
@@ -369,9 +370,9 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
             Log.d("Lyrics", "updateLyrics: null lyrics")
         } else {
             Log.d("Lyrics",
-                "updateLyrics: " + mLyrics!!.getOriginalArtist()!!.toLowerCase() + " : " + artist)
+                "updateLyrics: " + mLyrics!!.getOriginalArtist()!!.lowercase(Locale.getDefault()) + " : " + artist)
             Log.d("Lyrics",
-                "updateLyrics: " + mLyrics!!.getOriginalTrack()!!.toLowerCase() + " : " + track)
+                "updateLyrics: " + mLyrics!!.getOriginalTrack()!!.lowercase(Locale.getDefault()) + " : " + track)
         }
 
         //set loading animation
@@ -468,8 +469,8 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
                 lyricStatus!!.visibility = View.GONE
                 initializeLyricsView()
                 if (supportActionBar != null) {
-                    supportActionBar!!.setTitle(lyrics.getTrack())
-                    supportActionBar!!.setSubtitle(lyrics.getArtist())
+                    supportActionBar!!.title = lyrics.getTrack()
+                    supportActionBar!!.subtitle = lyrics.getArtist()
                 }
                 if (lyrics.getArtist() != lyrics.getOriginalArtist()) {
                     loadArtistInfo(lyrics.getArtist())
@@ -519,7 +520,7 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
         // Attach layout manager to the RecyclerView:
         recyclerView!!.layoutManager = snappyLinearLayoutManager as LayoutManager
         recyclerView!!.setHasFixedSize(true)
-        recyclerView!!.setAdapter(adapter!!)
+        recyclerView!!.adapter = adapter!!
         recyclerView!!.addOnItemTouchListener(this)
         gestureDetector = GestureDetectorCompat(this, RecyclerViewDemoOnGestureListener())
         layoutManager = recyclerView!!.layoutManager as LinearLayoutManager?
@@ -922,7 +923,7 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
 
             //store file in cache with artist id as name
             //create folder in cache for artist images
-            val CACHE_ART_THUMBS = MyApp.getContext()!!.cacheDir.toString() + "/art_thumbs/"
+            val CACHE_ART_THUMBS = MyApp.getContext().cacheDir.toString() + "/art_thumbs/"
             val actual_file_path = CACHE_ART_THUMBS + p0[0]!!.getOriginalArtist()
             val f = File(CACHE_ART_THUMBS)
             if (!f.exists()) {

@@ -68,7 +68,7 @@ class CurrentTracklistAdapter constructor(
         if (playerService == null) return
         dataItems.clear()
         Executors.newSingleThreadExecutor().execute {
-            val temp: ArrayList<Int> = playerService!!.getTrackList()
+            val temp: ArrayList<Int> = playerService.getTrackList()
             //HashMap<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
             try {
                 for (id: Int in temp) {
@@ -105,10 +105,10 @@ class CurrentTracklistAdapter constructor(
             }
             false
         }
-        if (playerService != null && position == playerService!!.getCurrentTrackPosition()) {
+        if (playerService != null && position == playerService.getCurrentTrackPosition()) {
             holder.cv.setBackgroundColor(ColorHelper.getColor(R.color.gray3))
             holder.playAnimation.visibility = View.VISIBLE
-            if (playerService!!.getStatus() === playerService!!.PLAYING) {
+            if (playerService.getStatus() === playerService.PLAYING) {
                 //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
                 holder.playAnimation.smoothToShow()
             } else {
@@ -229,12 +229,12 @@ class CurrentTracklistAdapter constructor(
         val linear: LinearLayout = LinearLayout(context)
         linear.orientation = LinearLayout.VERTICAL
         val text: TextView = TextView(context)
-        text.setTypeface(TypeFaceHelper.getTypeFace(context))
+        text.typeface = TypeFaceHelper.getTypeFace(context)
         text.text = UtilityFun.trackInfoBuild(dataItems[position]!!.id).toString()
         text.setPadding(20, 20, 20, 10)
         text.textSize = 15f
         //text.setGravity(Gravity.CENTER);
-        text.setTypeface(TypeFaceHelper.getTypeFace(context))
+        text.typeface = TypeFaceHelper.getTypeFace(context)
         linear.addView(text)
         //alert.setView(linear);
         //alert.show();
@@ -305,13 +305,13 @@ class CurrentTracklistAdapter constructor(
                 notifyItemChanged(oldPos)
                 notifyItemChanged(position)
                 if (position == playerService!!.getCurrentTrackPosition()) {
-                    playerService!!.play()
+                    playerService.play()
                     val intent: Intent = Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE)
                     intent.putExtra("skip_adapter_update", true)
                     LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
                     //playerService!!.notifyUI();
                 } else {
-                    playerService!!.playAtPositionFromNowPlaying(position)
+                    playerService.playAtPositionFromNowPlaying(position)
                     Log.v(Constants.TAG, "$position  position")
                 }
             }

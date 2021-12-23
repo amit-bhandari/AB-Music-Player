@@ -163,15 +163,15 @@ class ActivitySettings : AppCompatActivity() {
                     val resultUri: Uri = result.uri
                     val fromFile = File(resultUri.path)
                     val savePath: String = when (backgroundSelectionStatus) {
-                        MAIN_LIB -> MyApp.getContext()!!.filesDir
+                        MAIN_LIB -> MyApp.getContext().filesDir
                             .toString() + getString(R.string.main_lib_back_custom_image)
-                        NOW_PLAYING -> MyApp.getContext()!!.filesDir
+                        NOW_PLAYING -> MyApp.getContext().filesDir
                             .toString() + getString(R.string.now_playing_back_custom_image)
-                        DEFAULT_ALBUM_ART -> MyApp.getContext()!!.filesDir
+                        DEFAULT_ALBUM_ART -> MyApp.getContext().filesDir
                             .toString() + getString(R.string.def_album_art_custom_image)
-                        NAVIGATION_DRAWER -> MyApp.getContext()!!.filesDir
+                        NAVIGATION_DRAWER -> MyApp.getContext().filesDir
                             .toString() + getString(R.string.nav_back_custom_image)
-                        else -> MyApp.getContext()!!.filesDir
+                        else -> MyApp.getContext().filesDir
                             .toString() + getString(R.string.nav_back_custom_image)
                     }
                     val toFile = File(savePath)
@@ -180,15 +180,15 @@ class ActivitySettings : AppCompatActivity() {
                         "onActivityResult: saved custom image size : " + toFile.length() / (1024))
                     if (b) {
                         when (backgroundSelectionStatus) {
-                            MAIN_LIB -> MyApp.getPref()!!.edit()
+                            MAIN_LIB -> MyApp.getPref().edit()
                                 .putInt(getString(R.string.pref_main_library_back), 1).apply()
-                            NOW_PLAYING -> MyApp.getPref()!!.edit()
+                            NOW_PLAYING -> MyApp.getPref().edit()
                                 .putInt(getString(R.string.pref_now_playing_back), 3).apply()
-                            DEFAULT_ALBUM_ART -> MyApp.getPref()!!.edit()
+                            DEFAULT_ALBUM_ART -> MyApp.getPref().edit()
                                 .putInt(getString(R.string.pref_default_album_art), 1).apply()
-                            NAVIGATION_DRAWER -> MyApp.getPref()!!.edit()
+                            NAVIGATION_DRAWER -> MyApp.getPref().edit()
                                 .putInt(getString(R.string.pref_nav_library_back), 1).apply()
-                            else -> MyApp.getPref()!!.edit()
+                            else -> MyApp.getPref().edit()
                                 .putInt(getString(R.string.pref_nav_library_back), 1).apply()
                         }
                         Toast.makeText(this, "Background successfully updated!", Toast.LENGTH_SHORT)
@@ -230,12 +230,12 @@ class ActivitySettings : AppCompatActivity() {
 
         private fun setInstantLyricStatus() {
             if (instantLyricStatus != null) {
-                if (NotificationListenerService.isListeningAuthorized(MyApp.getContext()!!)) {
-                    MyApp.getPref()!!.edit()
+                if (NotificationListenerService.isListeningAuthorized(MyApp.getContext())) {
+                    MyApp.getPref().edit()
                         .putBoolean(getString(R.string.pref_instant_lyric), true).apply()
                     instantLyricStatus!!.isChecked = true
                 } else {
-                    MyApp.getPref()!!.edit()
+                    MyApp.getPref().edit()
                         .putBoolean(getString(R.string.pref_instant_lyric), false).apply()
                     instantLyricStatus!!.isChecked = false
                 }
@@ -259,7 +259,7 @@ class ActivitySettings : AppCompatActivity() {
             //now playing back
             val nowPlayingBackPref: Preference =
                 findPreference(getString(R.string.pref_now_playing_back))
-            nowPlayingBackPref!!.onPreferenceClickListener =
+            nowPlayingBackPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     nowPlayingBackDialog()
                     true
@@ -268,7 +268,7 @@ class ActivitySettings : AppCompatActivity() {
             //Main library back
             val mainLibBackPref: Preference =
                 findPreference(getString(R.string.pref_main_library_back))
-            mainLibBackPref!!.onPreferenceClickListener =
+            mainLibBackPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     mainLibBackDialog()
                     true
@@ -277,7 +277,7 @@ class ActivitySettings : AppCompatActivity() {
             //Main library back
             val navLibBackPref: Preference =
                 findPreference(getString(R.string.pref_nav_library_back))
-            navLibBackPref!!.onPreferenceClickListener =
+            navLibBackPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     navBackDialog()
                     true
@@ -286,7 +286,7 @@ class ActivitySettings : AppCompatActivity() {
             //Main library back
             val defAlbumArtPref: Preference =
                 findPreference(getString(R.string.pref_default_album_art))
-            defAlbumArtPref!!.onPreferenceClickListener =
+            defAlbumArtPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     defAlbumArtDialog()
                     true
@@ -294,7 +294,7 @@ class ActivitySettings : AppCompatActivity() {
 
             //text font
             val fontPref: Preference = findPreference(getString(R.string.pref_text_font))
-            when (MyApp.getPref()!!.getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE)) {
+            when (MyApp.getPref().getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE)) {
                 Constants.TYPEFACE.MONOSPACE -> findPreference(getString(R.string.pref_text_font)).summary =
                     MONOSPACE
                 Constants.TYPEFACE.SOFIA -> findPreference(getString(R.string.pref_text_font)).summary =
@@ -308,7 +308,7 @@ class ActivitySettings : AppCompatActivity() {
                 Constants.TYPEFACE.ROBOTO -> findPreference(getString(R.string.pref_text_font)).summary =
                     ROBOTO
             }
-            fontPref!!.onPreferenceClickListener =
+            fontPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     fontPrefSelectionDialog()
@@ -321,12 +321,12 @@ class ActivitySettings : AppCompatActivity() {
             lockScreenArt.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
                     if ((newValue as Boolean)) {
-                        MyApp.getPref()!!.edit()
+                        MyApp.getPref().edit()
                             .putBoolean(getString(R.string.pref_lock_screen_album_Art), true)
                             .apply()
                         MyApp.getService()!!.setMediaSessionMetadata(true)
                     } else {
-                        MyApp.getPref()!!.edit()
+                        MyApp.getPref().edit()
                             .putBoolean(getString(R.string.pref_lock_screen_album_Art), false)
                             .apply()
                         MyApp.getService()!!.setMediaSessionMetadata(false)
@@ -336,7 +336,7 @@ class ActivitySettings : AppCompatActivity() {
 
             //prefer system equalizer
             val albumLibView: Preference = findPreference(getString(R.string.pref_album_lib_view))
-            if (MyApp.getPref()!!.getBoolean(getString(R.string.pref_album_lib_view), true)) {
+            if (MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view), true)) {
                 albumLibView.summary = GRID
             } else {
                 albumLibView.summary = LIST
@@ -353,10 +353,10 @@ class ActivitySettings : AppCompatActivity() {
             prefPrefSystemEqu.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
                     if ((newValue as Boolean)) {
-                        MyApp.getPref()!!.edit()
+                        MyApp.getPref().edit()
                             .putBoolean(getString(R.string.pref_prefer_system_equ), true).apply()
                     } else {
-                        MyApp.getPref()!!.edit()
+                        MyApp.getPref().edit()
                             .putBoolean(getString(R.string.pref_prefer_system_equ), false).apply()
                     }
                     true
@@ -416,11 +416,11 @@ class ActivitySettings : AppCompatActivity() {
             shakeStatus.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
                     if ((newValue as Boolean)) {
-                        MyApp.getPref()!!.edit()
+                        MyApp.getPref().edit()
                             .putBoolean(getString(R.string.pref_shake), true).apply()
                         //playerService!!.setShakeListener(true)
                     } else {
-                        MyApp.getPref()!!.edit()
+                        MyApp.getPref().edit()
                             .putBoolean(getString(R.string.pref_shake), false).apply()
                        // playerService!!.setShakeListener(false)
                     }
@@ -428,7 +428,7 @@ class ActivitySettings : AppCompatActivity() {
                 }
             val continuousPlaybackPref: CheckBoxPreference =
                 findPreference(getString(R.string.pref_continuous_playback)) as CheckBoxPreference
-            continuousPlaybackPref!!.onPreferenceChangeListener =
+            continuousPlaybackPref.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
                     val pos_text: String = if ((newValue as Boolean)) {
                         getString(R.string.turn_on)
@@ -459,7 +459,7 @@ class ActivitySettings : AppCompatActivity() {
                 }
             val dataSaverPref: CheckBoxPreference =
                 findPreference(getString(R.string.pref_data_saver)) as CheckBoxPreference
-            dataSaverPref!!.onPreferenceChangeListener =
+            dataSaverPref.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
                     val pos_text: String = if ((newValue as Boolean)) {
                         getString(R.string.turn_on)
@@ -526,7 +526,7 @@ class ActivitySettings : AppCompatActivity() {
 
             //shake
             val shakeAction: Preference = findPreference(getString(R.string.pref_shake_action))
-            when (MyApp.getPref()!!.getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT)) {
+            when (MyApp.getPref().getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT)) {
                 Constants.SHAKE_ACTIONS.NEXT -> {
                     shakeAction.summary = NEXT
                 }
@@ -548,9 +548,9 @@ class ActivitySettings : AppCompatActivity() {
             //hide short clips preference
             val hideShortClipsPref: Preference =
                 findPreference(getString(R.string.pref_hide_short_clips))
-            val summary = MyApp.getPref()!!.getInt(getString(R.string.pref_hide_short_clips), 10).toString() + " seconds"
-            hideShortClipsPref!!.summary = summary
-            hideShortClipsPref!!.onPreferenceClickListener =
+            val summary = MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips), 10).toString() + " seconds"
+            hideShortClipsPref.summary = summary
+            hideShortClipsPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     shortClipDialog()
@@ -560,18 +560,21 @@ class ActivitySettings : AppCompatActivity() {
             //excluded folders preference
             val excludedFoldersPref: Preference =
                 findPreference(getString(R.string.pref_excluded_folders))
-            excludedFoldersPref!!.onPreferenceClickListener =
+            excludedFoldersPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     displayExcludedFolders()
                     true
                 }
             val hideByStartPref: Preference = findPreference(getString(R.string.pref_hide_tracks_starting_with))
-            val text1 = MyApp.getPref()!!.getString(getString(R.string.pref_hide_tracks_starting_with_1), "")
-            val text2 = MyApp.getPref()!!.getString(getString(R.string.pref_hide_tracks_starting_with_2), "")
-            val text3 = MyApp.getPref()!!.getString(getString(R.string.pref_hide_tracks_starting_with_3), "")
-            hideByStartPref!!.summary = "$text1, $text2, $text3"
-            hideByStartPref!!.onPreferenceClickListener =
+            val text1 = MyApp.getPref()
+                .getString(getString(R.string.pref_hide_tracks_starting_with_1), "")
+            val text2 = MyApp.getPref()
+                .getString(getString(R.string.pref_hide_tracks_starting_with_2), "")
+            val text3 = MyApp.getPref()
+                .getString(getString(R.string.pref_hide_tracks_starting_with_3), "")
+            hideByStartPref.summary = "$text1, $text2, $text3"
+            hideByStartPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     hideByStartDialog()
@@ -581,7 +584,7 @@ class ActivitySettings : AppCompatActivity() {
 
             //opening tab preference
             val openingTabPref: Preference = findPreference(getString(R.string.pref_opening_tab))
-            openingTabPref!!.onPreferenceClickListener =
+            openingTabPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     //open browser or intent here
                     tabSeqDialog()
@@ -636,7 +639,7 @@ class ActivitySettings : AppCompatActivity() {
 
             //reset  preference
             val resetPref: Preference = findPreference(getString(R.string.pref_reset_pref))
-            resetPref!!.onPreferenceClickListener =
+            resetPref.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     resetPrefDialog()
                     true
@@ -669,7 +672,7 @@ class ActivitySettings : AppCompatActivity() {
             ///get current setting
             // 0 - System default   2 - custom
             val currentSelection: Int =
-                MyApp.Companion.getPref()!!.getInt(getString(R.string.pref_nav_library_back), 0)
+                MyApp.Companion.getPref().getInt(getString(R.string.pref_nav_library_back), 0)
 //            val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                .title(R.string.title_nav_back)
 //                .items(R.array.nav_back_pref_array)
@@ -699,7 +702,7 @@ class ActivitySettings : AppCompatActivity() {
             ///get current setting
             // 0 - System default   2 - custom
             val currentSelection: Int =
-                MyApp.Companion.getPref()!!.getInt(getString(R.string.pref_default_album_art), 0)
+                MyApp.Companion.getPref().getInt(getString(R.string.pref_default_album_art), 0)
 //            val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                .title(R.string.nav_default_album_art)
 //                .items(R.array.def_album_art_pref_array)
@@ -729,7 +732,7 @@ class ActivitySettings : AppCompatActivity() {
             ///get current setting
             // 0 - System default   2 - custom
             val currentSelection: Int =
-                MyApp.Companion.getPref()!!.getInt(getString(R.string.pref_main_library_back), 0)
+                MyApp.Companion.getPref().getInt(getString(R.string.pref_main_library_back), 0)
 //            val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                .title(R.string.title_main_library_back)
 //                .items(R.array.main_lib_back_pref_array)
@@ -760,7 +763,7 @@ class ActivitySettings : AppCompatActivity() {
             ///get current setting
             // 0 - System default   1 - artist image  2 - album art 3 - custom  4- custom (if Artist image unavailable)
             val currentSelection: Int =
-                MyApp.Companion.getPref()!!.getInt(getString(R.string.pref_now_playing_back), 1)
+                MyApp.Companion.getPref().getInt(getString(R.string.pref_now_playing_back), 1)
 //            val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                .title(R.string.title_now_playing_back)
 //                .items(R.array.now_playing_back_pref_array)
@@ -788,7 +791,7 @@ class ActivitySettings : AppCompatActivity() {
 
         private fun displayExcludedFolders() {
             val excludedFoldersString =
-                MyApp.Companion.getPref()!!.getString(getString(R.string.pref_excluded_folders), "")
+                MyApp.Companion.getPref().getString(getString(R.string.pref_excluded_folders), "")
             val excludedFolders: Array<String> =
                 excludedFoldersString!!.split(",".toRegex()).toTypedArray()
 //            val dialog: MaterialDialog = MyDialogBuilder(activity)
@@ -1150,12 +1153,12 @@ class ActivitySettings : AppCompatActivity() {
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             //holder.title.setText(data.get(0));
             when (data.get(position)) {
-                Constants.TABS.ALBUMS -> holder.title.text = MyApp.getContext()!!.getString(R.string.tab_album)
-                Constants.TABS.ARTIST -> holder.title.text = MyApp.getContext()!!.getString(R.string.tab_artist)
-                Constants.TABS.FOLDER -> holder.title.text = MyApp.getContext()!!.getString(R.string.tab_folder)
-                Constants.TABS.GENRE -> holder.title.text = MyApp.getContext()!!.getString(R.string.tab_genre)
-                Constants.TABS.PLAYLIST -> holder.title.text = MyApp.getContext()!!.getString(R.string.tab_playlist)
-                Constants.TABS.TRACKS -> holder.title.text = MyApp.getContext()!!.getString(R.string.tab_track)
+                Constants.TABS.ALBUMS -> holder.title.text = MyApp.getContext().getString(R.string.tab_album)
+                Constants.TABS.ARTIST -> holder.title.text = MyApp.getContext().getString(R.string.tab_artist)
+                Constants.TABS.FOLDER -> holder.title.text = MyApp.getContext().getString(R.string.tab_folder)
+                Constants.TABS.GENRE -> holder.title.text = MyApp.getContext().getString(R.string.tab_genre)
+                Constants.TABS.PLAYLIST -> holder.title.text = MyApp.getContext().getString(R.string.tab_playlist)
+                Constants.TABS.TRACKS -> holder.title.text = MyApp.getContext().getString(R.string.tab_track)
             }
             holder.handle.setOnTouchListener { view: View?, motionEvent: MotionEvent? ->
                 if (MotionEventCompat.getActionMasked(motionEvent) ==
@@ -1194,14 +1197,15 @@ class ActivitySettings : AppCompatActivity() {
             var handle: ImageView
 
             init {
-                title.setTypeface(TypeFaceHelper.getTypeFace(MyApp.getContext()!!))
+                title.typeface = TypeFaceHelper.getTypeFace(MyApp.getContext())
                 //title.setTypeface(TypeFaceHelper.getTypeFace());
                 handle = itemView.findViewById<ImageView>(R.id.handle_for_drag)
             }
         }
 
         init {
-            val savedTabSeq = MyApp.getPref()!!.getString(MyApp.getContext()!!.getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ)
+            val savedTabSeq = MyApp.getPref()
+                .getString(MyApp.getContext().getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ)
             val st: StringTokenizer = StringTokenizer(savedTabSeq, ",")
             for (i in 0 until Constants.TABS.NUMBER_OF_TABS) {
                 data[i] = st.nextToken().toInt()

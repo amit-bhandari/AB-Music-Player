@@ -136,17 +136,17 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                 when {
                     currentTrackPosition == trackList.size - 1 -> {
                         when {
-                            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT,
+                            MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT,
                                 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL -> {
                                 playTrack(0)
                                 currentTrackPosition = 0
                             }
-                            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT,
+                            MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT,
                                 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
                                 playTrack(currentTrackPosition)
                             }
                             else -> {
-                                if (MyApp.getPref()!!.getBoolean(getString(R.string.pref_continuous_playback), false)
+                                if (MyApp.getPref().getBoolean(getString(R.string.pref_continuous_playback), false)
                                 ) {
                                     if (trackList.size < 10) {
                                         val dataItems: List<Int> =
@@ -164,7 +164,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                             }
                         }
                     }
-                    MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT,
+                    MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT,
                         0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
                         playTrack(currentTrackPosition)
                     }
@@ -185,10 +185,10 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                 }
                 else -> {
                     Log.d("PlayerService",
-                        "onPrepared: seeking to : " + MyApp.getPref()!!
+                        "onPrepared: seeking to : " + MyApp.getPref()
                             .getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0))
                     try {
-                        seekTrack(MyApp.getPref()!!
+                        seekTrack(MyApp.getPref()
                             .getInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION, 0))
                     } catch (e: Exception) {
                         Log.d("PlayerService", "onPrepared: Unable to seek track")
@@ -360,16 +360,16 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     }
                     Constants.ACTION.SHUFFLE_WIDGET -> {
                         when {
-                            MyApp.getPref()!!.getBoolean(Constants.PREFERENCES.SHUFFLE, false) -> {
+                            MyApp.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE, false) -> {
                                 //shuffle is on, turn it off
                                 //Toast.makeText(this, "shuffle off", Toast.LENGTH_SHORT).show();
-                                MyApp.getPref()!!.edit()
+                                MyApp.getPref().edit()
                                     .putBoolean(Constants.PREFERENCES.SHUFFLE, false).apply()
                                 shuffle(false)
                             }
                             else -> {
                                 //shuffle is off, turn it on
-                                MyApp.Companion.getPref()!!.edit()
+                                MyApp.Companion.getPref().edit()
                                     .putBoolean(Constants.PREFERENCES.SHUFFLE, true).apply()
                                 shuffle(true)
                             }
@@ -377,21 +377,21 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                         updateWidget(false)
                     }
                     Constants.ACTION.REPEAT_WIDGET -> {
-                        val pref: SharedPreferences = MyApp.getPref()!!
+                        val pref: SharedPreferences = MyApp.getPref()
                         when {
-                            pref!!.getInt(Constants.PREFERENCES.REPEAT,
+                            pref.getInt(Constants.PREFERENCES.REPEAT,
                                 0) == Constants.PREFERENCE_VALUES.NO_REPEAT -> {
-                                pref!!.edit().putInt(Constants.PREFERENCES.REPEAT,
+                                pref.edit().putInt(Constants.PREFERENCES.REPEAT,
                                     Constants.PREFERENCE_VALUES.REPEAT_ALL).apply()
                             }
-                            pref!!.getInt(Constants.PREFERENCES.REPEAT,
+                            pref.getInt(Constants.PREFERENCES.REPEAT,
                                 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL -> {
-                                pref!!.edit().putInt(Constants.PREFERENCES.REPEAT,
+                                pref.edit().putInt(Constants.PREFERENCES.REPEAT,
                                     Constants.PREFERENCE_VALUES.REPEAT_ONE).apply()
                             }
-                            pref!!.getInt(Constants.PREFERENCES.REPEAT,
+                            pref.getInt(Constants.PREFERENCES.REPEAT,
                                 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
-                                pref!!.edit().putInt(Constants.PREFERENCES.REPEAT,
+                                pref.edit().putInt(Constants.PREFERENCES.REPEAT,
                                     Constants.PREFERENCE_VALUES.NO_REPEAT).apply()
                             }
                         }
@@ -431,7 +431,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         //Notification intents
         val notificationIntent: Intent
         when {
-            MyApp.getPref()!!.getInt(getString(R.string.pref_click_on_notif),
+            MyApp.getPref().getInt(getString(R.string.pref_click_on_notif),
                 Constants.CLICK_ON_NOTIF.OPEN_LIBRARY_VIEW) == Constants.CLICK_ON_NOTIF.OPEN_LIBRARY_VIEW -> {
                 notificationIntent = Intent(this, ActivityMain::class.java)
                 notificationIntent.action = Constants.ACTION.MAIN_ACTION
@@ -439,7 +439,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                 pendingIntent = PendingIntent.getActivity(this, 0,
                     notificationIntent, 0)
             }
-            MyApp.getPref()!!.getInt(getString(R.string.pref_click_on_notif),
+            MyApp.getPref().getInt(getString(R.string.pref_click_on_notif),
                 Constants.CLICK_ON_NOTIF.OPEN_LIBRARY_VIEW) == Constants.CLICK_ON_NOTIF.OPEN_DISC_VIEW -> {
                 notificationIntent = Intent(this, ActivityNowPlaying::class.java)
                 notificationIntent.action = Constants.ACTION.MAIN_ACTION
@@ -561,7 +561,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         try {
             //Instatiate the equalizer helper object.
             mEqualizerHelper = EqualizerHelper(applicationContext, mediaPlayer!!.audioSessionId,
-                    MyApp.getPref()!!.getBoolean("pref_equ_enabled", true))
+                    MyApp.getPref().getBoolean("pref_equ_enabled", true))
         } catch (e: UnsupportedOperationException) {
             e.printStackTrace()
         } catch (e: Exception) {
@@ -581,30 +581,30 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         val fiveKilohertzBandValue = equalizerSetting?.getFiftyHertz()
         val twelvePointFiveKilohertzBandValue = equalizerSetting?.getFiftyHertz()
         val reverbValue = equalizerSetting?.getReverb()
-        val fiftyHertzBand = mEqualizerHelper!!.getEqualizer()!!.getBand(50000)
-        val oneThirtyHertzBand = mEqualizerHelper!!.getEqualizer()!!.getBand(130000)
-        val threeTwentyHertzBand = mEqualizerHelper!!.getEqualizer()!!.getBand(320000)
-        val eightHundredHertzBand = mEqualizerHelper!!.getEqualizer()!!.getBand(800000)
-        val twoKilohertzBand: Short = mEqualizerHelper!!.getEqualizer()!!.getBand(2000000)
-        val fiveKilohertzBand: Short = mEqualizerHelper!!.getEqualizer()!!.getBand(5000000)
-        val twelvePointFiveKilohertzBand: Short = mEqualizerHelper!!.getEqualizer()!!.getBand(9000000)
+        val fiftyHertzBand = mEqualizerHelper!!.getEqualizer().getBand(50000)
+        val oneThirtyHertzBand = mEqualizerHelper!!.getEqualizer().getBand(130000)
+        val threeTwentyHertzBand = mEqualizerHelper!!.getEqualizer().getBand(320000)
+        val eightHundredHertzBand = mEqualizerHelper!!.getEqualizer().getBand(800000)
+        val twoKilohertzBand: Short = mEqualizerHelper!!.getEqualizer().getBand(2000000)
+        val fiveKilohertzBand: Short = mEqualizerHelper!!.getEqualizer().getBand(5000000)
+        val twelvePointFiveKilohertzBand: Short = mEqualizerHelper!!.getEqualizer().getBand(9000000)
 
 
         //50Hz Band.
         if (fiftyHertzBandValue != null) {
             when {
                 fiftyHertzBandValue == 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, 0.toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(fiftyHertzBand, 0.toShort())
                 }
                 fiftyHertzBandValue < 16 -> {
                     if (fiftyHertzBandValue == 0) {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, (-1500).toShort())
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(fiftyHertzBand, (-1500).toShort())
                     } else {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, (-(16 - fiftyHertzBandValue) * 100).toShort())
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(fiftyHertzBand, (-(16 - fiftyHertzBandValue) * 100).toShort())
                     }
                 }
                 fiftyHertzBandValue > 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, ((fiftyHertzBandValue - 16) * 100).toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(fiftyHertzBand, ((fiftyHertzBandValue - 16) * 100).toShort())
                 }
             }
         }
@@ -613,18 +613,18 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         if (oneThirtyHertzBandValue != null) {
             when {
                 oneThirtyHertzBandValue == 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand, 0.toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(oneThirtyHertzBand, 0.toShort())
                 }
                 oneThirtyHertzBandValue < 16 -> {
                     if (oneThirtyHertzBandValue == 0) {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand, (-1500).toShort())
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(oneThirtyHertzBand, (-1500).toShort())
                     } else {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand,
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(oneThirtyHertzBand,
                             (-(16 - oneThirtyHertzBandValue) * 100).toShort())
                     }
                 }
                 oneThirtyHertzBandValue > 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand, ((oneThirtyHertzBandValue - 16) * 100).toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(oneThirtyHertzBand, ((oneThirtyHertzBandValue - 16) * 100).toShort())
                 }
             }
         }
@@ -633,18 +633,18 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         if (threeTwentyHertzBandValue != null) {
             when {
                 threeTwentyHertzBandValue == 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand, 0.toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(threeTwentyHertzBand, 0.toShort())
                 }
                 threeTwentyHertzBandValue < 16 -> {
                     if (threeTwentyHertzBandValue == 0) {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand, (-1500).toShort())
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(threeTwentyHertzBand, (-1500).toShort())
                     } else {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand,
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(threeTwentyHertzBand,
                             (-(16 - threeTwentyHertzBandValue) * 100).toShort())
                     }
                 }
                 threeTwentyHertzBandValue > 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand,
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(threeTwentyHertzBand,
                         ((threeTwentyHertzBandValue - 16) * 100).toShort())
                 }
             }
@@ -654,18 +654,18 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         if (eightHundredHertzBandValue != null) {
             when {
                 eightHundredHertzBandValue == 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand, 0.toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(eightHundredHertzBand, 0.toShort())
                 }
                 eightHundredHertzBandValue < 16 -> {
                     if (eightHundredHertzBandValue == 0) {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand, (-1500).toShort())
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(eightHundredHertzBand, (-1500).toShort())
                     } else {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand,
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(eightHundredHertzBand,
                             (-(16 - eightHundredHertzBandValue) * 100).toShort())
                     }
                 }
                 eightHundredHertzBandValue > 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand,
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(eightHundredHertzBand,
                         ((eightHundredHertzBandValue - 16) * 100).toShort())
                 }
             }
@@ -675,17 +675,17 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         if (twoKilohertzBandValue != null) {
             when {
                 twoKilohertzBandValue == 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, 0.toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(twoKilohertzBand, 0.toShort())
                 }
                 twoKilohertzBandValue < 16 -> {
                     if (twoKilohertzBandValue == 0) {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, (-1500).toShort())
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(twoKilohertzBand, (-1500).toShort())
                     } else {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, (-(16 - twoKilohertzBandValue) * 100).toShort())
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(twoKilohertzBand, (-(16 - twoKilohertzBandValue) * 100).toShort())
                     }
                 }
                 twoKilohertzBandValue > 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, ((twoKilohertzBandValue - 16) * 100).toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(twoKilohertzBand, ((twoKilohertzBandValue - 16) * 100).toShort())
                 }
             }
         }
@@ -694,18 +694,18 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         if (fiveKilohertzBandValue != null) {
             when {
                 fiveKilohertzBandValue == 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, 0.toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(fiveKilohertzBand, 0.toShort())
                 }
                 fiveKilohertzBandValue < 16 -> {
                     if (fiveKilohertzBandValue == 0) {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, (-1500).toShort())
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(fiveKilohertzBand, (-1500).toShort())
                     } else {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand,
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(fiveKilohertzBand,
                             (-(16 - fiveKilohertzBandValue) * 100).toShort())
                     }
                 }
                 fiveKilohertzBandValue > 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, ((fiveKilohertzBandValue - 16) * 100).toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(fiveKilohertzBand, ((fiveKilohertzBandValue - 16) * 100).toShort())
                 }
             }
         }
@@ -714,18 +714,19 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         if (twelvePointFiveKilohertzBandValue != null) {
             when {
                 twelvePointFiveKilohertzBandValue == 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand, 0.toShort())
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(twelvePointFiveKilohertzBand, 0.toShort())
                 }
                 twelvePointFiveKilohertzBandValue < 16 -> {
                     if (twelvePointFiveKilohertzBandValue == 0) {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand, (-1500).toShort())
+                        mEqualizerHelper!!.getEqualizer()
+                            .setBandLevel(twelvePointFiveKilohertzBand, (-1500).toShort())
                     } else {
-                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand,
+                        mEqualizerHelper!!.getEqualizer().setBandLevel(twelvePointFiveKilohertzBand,
                             (-(16 - twelvePointFiveKilohertzBandValue) * 100).toShort())
                     }
                 }
                 twelvePointFiveKilohertzBandValue > 16 -> {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand,
+                    mEqualizerHelper!!.getEqualizer().setBandLevel(twelvePointFiveKilohertzBand,
                         ((twelvePointFiveKilohertzBandValue - 16) * 100).toShort())
                 }
             }
@@ -740,21 +741,21 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
             0 -> {
                 mEqualizerHelper!!.getPresetReverb().preset = PresetReverb.PRESET_NONE
             }
-            1 -> mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_LARGEHALL
+            1 -> mEqualizerHelper!!.getPresetReverb().preset = PresetReverb.PRESET_LARGEHALL
             2 -> {
-                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_LARGEROOM
+                mEqualizerHelper!!.getPresetReverb().preset = PresetReverb.PRESET_LARGEROOM
             }
             3 -> {
-                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_MEDIUMHALL
+                mEqualizerHelper!!.getPresetReverb().preset = PresetReverb.PRESET_MEDIUMHALL
             }
             4 -> {
-                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_MEDIUMROOM
+                mEqualizerHelper!!.getPresetReverb().preset = PresetReverb.PRESET_MEDIUMROOM
             }
             5 -> {
-                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_SMALLROOM
+                mEqualizerHelper!!.getPresetReverb().preset = PresetReverb.PRESET_SMALLROOM
             }
             6 -> {
-                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_PLATE
+                mEqualizerHelper!!.getPresetReverb().preset = PresetReverb.PRESET_PLATE
             }
         }
     }
@@ -1015,7 +1016,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
             }
         }
         when {
-            MyApp.getPref()!!.getBoolean(Constants.PREFERENCES.SHUFFLE, false) -> {
+            MyApp.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE, false) -> {
                 views.setInt(R.id.widget_shuffle,
                     "setColorFilter",
                     ColorHelper.getColor(R.color.colorwhite))
@@ -1026,13 +1027,13 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         }
         views.setTextColor(R.id.text_in_repeat_widget, ColorHelper.getColor(R.color.colorwhite))
         when {
-            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL -> {
+            MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL -> {
                 views.setTextViewText(R.id.text_in_repeat_widget, "A")
                 views.setInt(R.id.widget_repeat,
                     "setColorFilter",
                     ColorHelper.getColor(R.color.colorwhite))
             }
-            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
+            MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
                 views.setTextViewText(R.id.text_in_repeat_widget, "1")
                 views.setInt(R.id.text_in_repeat_widget,
                     "setTextColor",
@@ -1041,7 +1042,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     "setColorFilter",
                     ColorHelper.getColor(R.color.colorwhite))
             }
-            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.NO_REPEAT -> {
+            MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.NO_REPEAT -> {
                 views.setTextViewText(R.id.text_in_repeat_widget, "")
                 views.setInt(R.id.widget_repeat,
                     "setColorFilter",
@@ -1104,7 +1105,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
             MediaMetadata.METADATA_KEY_DURATION,
             currentTrack!!.durInt.toLong())
             metadataBuilder.putString(MediaMetadata.METADATA_KEY_GENRE, currentTrack!!.genre)
-            if (MyApp.getPref()!!.getBoolean(getString(R.string.pref_lock_screen_album_Art), true)
+            if (MyApp.getPref().getBoolean(getString(R.string.pref_lock_screen_album_Art), true)
             ) {
                 if (enable) {
                     var b: Bitmap? = null
@@ -1202,7 +1203,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
     }
 
     fun playAtPosition(position: Int) {
-        if (MyApp.getPref()!!.getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
+        if (MyApp.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
             shuffleTracklist(position)
             playTrack(position)
         } else {
@@ -1308,7 +1309,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
 
 //        Log.v(Constants.TAG,"Next "+Log.getStackTraceString(new Exception()));
         when {
-            MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
+            MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ONE -> {
                 playTrack(currentTrackPosition)
             }
             currentTrackPosition < trackList.size - 1 -> {
@@ -1316,11 +1317,12 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
             }
             currentTrackPosition == trackList.size - 1 -> {
                 //if repeat all on, play first song
-                if (MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL) {
+                if (MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.REPEAT_ALL) {
                     playTrack(0)
                     currentTrackPosition = 0
                 } else {
-                    if (MyApp.getPref()!!.getBoolean(getString(R.string.pref_continuous_playback), false)
+                    if (MyApp.getPref()
+                            .getBoolean(getString(R.string.pref_continuous_playback), false)
                     ) {
                         if (trackList.size < 10) {
                             val dataItems: List<Int> =
@@ -1357,7 +1359,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
             currentTrackPosition == 0 -> {
                 //if repeat all on, play first song
                 when (Constants.PREFERENCE_VALUES.REPEAT_ALL) {
-                    MyApp.getPref()!!.getInt(Constants.PREFERENCES.REPEAT,
+                    MyApp.getPref().getInt(Constants.PREFERENCES.REPEAT,
                         0)
                     -> {
                         playTrack(trackList.size - 1)
@@ -1457,7 +1459,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
                     Toast.makeText(applicationContext,
                         getString(R.string.timer_over),
                         Toast.LENGTH_LONG).show()
-                    MyApp.getPref()!!.edit().putInt(getString(R.string.pref_sleep_timer), 0)
+                    MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer), 0)
                         .apply()
                     sleepTimerMinutes = 0
                     sleepTimeAlreadyOver = 0
@@ -1475,8 +1477,8 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
     override fun onTaskRemoved(rootIntent: Intent) {
         super.onTaskRemoved(rootIntent)
         if (getStatus() != PLAYING) {
-            if (MyApp.getPref()!!.getInt(getString(R.string.pref_sleep_timer), 0) != 0) {
-                MyApp.getPref()!!.edit().putInt(getString(R.string.pref_sleep_timer), 0)
+            if (MyApp.getPref().getInt(getString(R.string.pref_sleep_timer), 0) != 0) {
+                MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer), 0)
                     .apply()
                 sleepTimerHandler.removeCallbacksAndMessages(null)
             }
@@ -1518,8 +1520,8 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
         //send copy to avoid concurrent modification
         PlaylistManager.getInstance(applicationContext)!!.StoreLastPlayingQueueNew(ArrayList(trackList))
         try {
-            MyApp.getPref()!!.edit().putString(Constants.PREFERENCES.STORED_SONG_ID, currentTrack!!.id.toString() + "").apply()
-            MyApp.getPref()!!.edit().putInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION,
+            MyApp.getPref().edit().putString(Constants.PREFERENCES.STORED_SONG_ID, currentTrack!!.id.toString() + "").apply()
+            MyApp.getPref().edit().putInt(Constants.PREFERENCES.STORED_SONG_POSITION_DURATION,
                     getCurrentTrackProgress()).apply()
             Log.d("PlayerService", "storeTracklist: " + currentTrack!!.id)
         } catch (ignored: Exception) {
@@ -1528,7 +1530,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
 
     private fun restoreTracklist() {
         trackList.addAll(PlaylistManager.getInstance(applicationContext)!!.RestoreLastPlayingQueueNew())
-        val id_string = MyApp.getPref()!!.getString(Constants.PREFERENCES.STORED_SONG_ID, "")
+        val id_string = MyApp.getPref().getString(Constants.PREFERENCES.STORED_SONG_ID, "")
         Log.d("PlayerService", "restoreTracklist: restored song id : $id_string")
         var id: Int = 0
         try {
@@ -1573,7 +1575,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
             }
             Log.d("PlayerService", "restoreTracklist: " + currentTrack!!.title)
         }
-        if (MyApp.getPref()!!.getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
+        if (MyApp.getPref().getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
             shuffle(true)
         }
         val file: FileInputStream
@@ -1626,7 +1628,7 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
     }
 
     override fun hearShake() {
-        when (MyApp.getPref()!!.getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT)) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT)) {
             Constants.SHAKE_ACTIONS.NEXT -> if (status == PLAYING) {
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(
                     Constants.ACTION.NEXT_ACTION))

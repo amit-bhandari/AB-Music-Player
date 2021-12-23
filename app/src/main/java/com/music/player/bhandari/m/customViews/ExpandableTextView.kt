@@ -26,7 +26,7 @@ class ExpandableTextView @JvmOverloads constructor(context: Context, attrs: Attr
         return if (trim) trimmedText else originalText
     }
 
-    public override fun setText(text: CharSequence, type: BufferType) {
+    override fun setText(text: CharSequence, type: BufferType) {
         originalText = text
         trimmedText = getTrimmedText(text)
         bufferType = type

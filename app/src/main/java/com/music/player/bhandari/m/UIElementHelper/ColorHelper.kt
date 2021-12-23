@@ -31,7 +31,7 @@ import com.music.player.bhandari.m.model.Constants
 object ColorHelper {
     fun getPrimaryColor(): Int {
         //return Color.parseColor("#E91E63")
-        return MyApp.getPref()!!.getInt(MyApp.getContext()!!.resources
+        return MyApp.getPref().getInt(MyApp.getContext().resources
             .getString(R.string.pref_theme_color), Constants.PRIMARY_COLOR.BLACK)
     }
 
@@ -46,15 +46,15 @@ object ColorHelper {
     }
 
     fun getBaseThemeDrawable(): Drawable {
-        var d: Drawable = ColorDrawable(MyApp.getContext()!!.resources
+        var d: Drawable = ColorDrawable(MyApp.getContext().resources
             .getColor(R.color.light_gray2))
         val pref: Int =
-            MyApp.getPref()!!.getInt(MyApp.getContext()!!.resources
+            MyApp.getPref().getInt(MyApp.getContext().resources
                 .getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
         when (pref) {
             Constants.PRIMARY_COLOR.LIGHT -> {}
             Constants.PRIMARY_COLOR.DARK -> d = ColorDrawable(
-                MyApp.getContext()!!.resources.getColor(R.color.dark_gray2))
+                MyApp.getContext().resources.getColor(R.color.dark_gray2))
             Constants.PRIMARY_COLOR.GLOSSY -> d = GradientDrawable(
                 GradientDrawable.Orientation.BR_TL, intArrayOf(getDarkPrimaryColor(), -0xececed))
         }
@@ -62,19 +62,19 @@ object ColorHelper {
     }
 
     fun getColor(id: Int): Int {
-        return MyApp.getContext()!!.resources.getColor(id)
+        return MyApp.getContext().resources.getColor(id)
     }
 
     fun getBaseThemeTextColor(): Int {
-        var color: Int = MyApp.getContext()!!.resources.getColor(R.color.light_text)
+        var color: Int = MyApp.getContext().resources.getColor(R.color.light_text)
         val pref: Int =
-            MyApp.getPref()!!.getInt(MyApp.getContext()!!.resources
+            MyApp.getPref().getInt(MyApp.getContext().resources
                 .getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
         when (pref) {
             Constants.PRIMARY_COLOR.LIGHT -> {}
-            Constants.PRIMARY_COLOR.DARK -> color = MyApp.getContext()!!
+            Constants.PRIMARY_COLOR.DARK -> color = MyApp.getContext()
                 .resources.getColor(R.color.dark_text)
-            Constants.PRIMARY_COLOR.GLOSSY -> color = MyApp.getContext()!!
+            Constants.PRIMARY_COLOR.GLOSSY -> color = MyApp.getContext()
                 .resources.getColor(R.color.dark_text)
         }
         return color

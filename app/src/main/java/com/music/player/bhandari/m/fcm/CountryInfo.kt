@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
  * limitations under the License.
  */
 class CountryInfo : Thread(Runnable {
-    var country: String = MyApp.getPref().getString(MyApp.Companion.getContext()!!
+    var country: String = MyApp.getPref().getString(MyApp.Companion.getContext()
         .getString(R.string.pref_user_country), "")!!
     if (country == "") {
         Log.d("CountryInfo", "run: fetching country info ")
@@ -45,7 +45,7 @@ class CountryInfo : Thread(Runnable {
             Log.d("CountryInfo", "run: $country")
         } catch (e: Exception) {
             country =
-                MyApp.Companion.getContext()!!.getResources().getConfiguration().locale.getCountry()
+                MyApp.Companion.getContext().resources.configuration.locale.country
             e.printStackTrace()
         }
         if (country == null || country == "") {
@@ -79,6 +79,6 @@ class CountryInfo : Thread(Runnable {
                      });*/
         } catch (ignored: Exception) {
         }
-        MyApp.getPref().edit().putString(MyApp.Companion.getContext()!!.getString(R.string.pref_user_country), country).apply()
+        MyApp.getPref().edit().putString(MyApp.Companion.getContext().getString(R.string.pref_user_country), country).apply()
     }
 })

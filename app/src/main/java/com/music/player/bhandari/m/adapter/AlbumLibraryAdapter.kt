@@ -62,7 +62,8 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
     private var viewParent: View? = null
     private var batmanDrawable: Drawable? = null
     fun sort(sort_id: Int) {
-        val sort_order: Int = MyApp.getPref()!!.getInt(context.resources.getString(R.string.pref_order_by), Constants.SORT_BY.ASC)
+        val sort_order: Int = MyApp.getPref()
+            .getInt(context.resources.getString(R.string.pref_order_by), Constants.SORT_BY.ASC)
         when (sort_id) {
             Constants.SORT_BY.NAME -> if (sort_order == Constants.SORT_BY.ASC) {
                 filteredDataItems.sortWith { o1, o2 ->
@@ -122,7 +123,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.title.text = filteredDataItems.get(position).albumName
         var builder: RequestBuilder<Bitmap?>? = null
-        if (!MyApp.getPref()!!.getBoolean(context.getString(R.string.pref_data_saver), false)) {
+        if (!MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) {
             val url = MusicLibrary.instance!!.artistUrls.get(filteredDataItems[position].artist_name)
             builder = Glide
                 .with(context)
@@ -254,8 +255,8 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
 
     private fun Play() {
         val album_id: Int = filteredDataItems[position].album_id
-        playerService!!.setTrackList(MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
-        playerService!!.playAtPosition(0)
+        playerService.setTrackList(MusicLibrary.instance!!.getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC))
+        playerService.playAtPosition(0)
     }
 
     private fun AddToQ(positionToAdd: Int) {
@@ -273,7 +274,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
         }
         val album_id: Int = filteredDataItems[position].album_id
         for (id: Int in MusicLibrary.instance?.getSongListFromAlbumIdNew(album_id, sortOrder)!!) {
-            playerService!!.addToQ(id, positionToAdd)
+            playerService.addToQ(id, positionToAdd)
         }
 
         //to update the to be next field in notification
@@ -368,7 +369,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
         dataItems = data
         filteredDataItems.addAll(dataItems)
         setHasStableIds(true)
-        when (MyApp.getPref()!!.getInt(context.getString(R.string.pref_default_album_art), 0)) {
+        when (MyApp.getPref().getInt(context.getString(R.string.pref_default_album_art), 0)) {
             0 -> batmanDrawable = ContextCompat.getDrawable(context, R.drawable.ic_batman_1)
             1 -> batmanDrawable = UtilityFun.defaultAlbumArtDrawable
         }

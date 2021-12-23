@@ -48,8 +48,8 @@ object LyricsMania {
         if (artist.startsWith("The ")) htmlArtist = htmlArtist.substring(4) + "_the"
         val urlString: String = String.format(
             baseURL,
-            htmlSong.toLowerCase(Locale.getDefault()),
-            htmlArtist.toLowerCase(Locale.getDefault()))
+            htmlSong.lowercase(Locale.getDefault()),
+            htmlArtist.lowercase(Locale.getDefault()))
         return fromURL(urlString, artist, song)
     }
 

@@ -23,7 +23,7 @@ class Track {
         this.imageUrl = imageUrl
     }
 
-    constructor() {}
+    constructor()
 
     var title = ""
     var artist = ""

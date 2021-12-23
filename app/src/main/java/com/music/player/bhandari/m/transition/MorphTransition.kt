@@ -45,7 +45,7 @@ class MorphTransition : ChangeBounds {
         setIsShowViewGroup(isShowViewGroup)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     override fun getTransitionProperties(): Array<String> {
         return TRANSITION_PROPERTIES

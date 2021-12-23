@@ -28,7 +28,7 @@ object TypeFaceHelper {
     //private static int typefaceId = R.font.manrope;
     fun getTypeFace(context: Context): Typeface? {
         if (typeface == null) {
-            when (MyApp.getPref()!!.getInt(MyApp.getContext()!!.getString(R.string.pref_text_font),
+            when (MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_text_font),
                     Constants.TYPEFACE.MANROPE)) {
                 Constants.TYPEFACE.SOFIA -> typeface =
                     Typeface.createFromAsset(context.assets, "fonts/sofia.ttf")
@@ -45,7 +45,7 @@ object TypeFaceHelper {
     }
 
     fun getTypeFacePath(): String {
-        when (MyApp.getPref()!!.getInt(MyApp.getContext()!!.getString(R.string.pref_text_font),
+        when (MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_text_font),
                 Constants.TYPEFACE.MANROPE)) {
             Constants.TYPEFACE.SOFIA -> typefacePath = "fonts/sofia.ttf"
             Constants.TYPEFACE.MANROPE -> typefacePath = "fonts/manrope.ttf"

@@ -21,11 +21,11 @@ import android.database.sqlite.SQLiteOpenHelper
  */
 class DbHelperArtistBio constructor(context: Context?) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-    public override fun onCreate(db: SQLiteDatabase) {
+    override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(TABLE_CREATE)
     }
 
-    public override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
         onCreate(db)
     }

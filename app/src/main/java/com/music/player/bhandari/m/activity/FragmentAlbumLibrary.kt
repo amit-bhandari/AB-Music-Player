@@ -102,7 +102,8 @@ class FragmentAlbumLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         mRecyclerView.setThumbColor(ColorHelper.getAccentColor());
         mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/albumLibraryAdapter =
             AlbumLibraryAdapter(requireContext(), MusicLibrary.instance!!.getDataItemsForAlbums())
-        albumLibraryAdapter!!.sort(MyApp.getPref()!!.getInt(getString(R.string.pref_album_sort_by), Constants.SORT_BY.NAME))
+        albumLibraryAdapter!!.sort(MyApp.getPref()
+            .getInt(getString(R.string.pref_album_sort_by), Constants.SORT_BY.NAME))
         mRecyclerView!!.adapter = albumLibraryAdapter
         val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(context, 3)
         mRecyclerView!!.layoutManager = mLayoutManager
@@ -138,6 +139,6 @@ class FragmentAlbumLibrary : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mRecyclerView!!.setAdapter(null)
+        mRecyclerView!!.adapter = null
     }
 }

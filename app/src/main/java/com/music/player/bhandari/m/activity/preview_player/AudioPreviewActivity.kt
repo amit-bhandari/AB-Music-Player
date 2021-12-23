@@ -1,4 +1,4 @@
-package com.music.player.bhandari.m.activity.PreviewPlayer
+package com.music.player.bhandari.m.activity.preview_player
 
 import android.app.Activity
 import android.content.*
@@ -156,12 +156,15 @@ class AudioPreviewActivity : Activity(), MediaPlayer.OnCompletionListener,
         }
         initializeInterface()
         registerNoisyAudioReceiver()
-        if (savedInstanceState == null) {
-            processUri()
-        } else {
-            mPreviewSong.TITLE = savedInstanceState.getString(MediaStore.Audio.Media.TITLE)
-            mPreviewSong.ARTIST = savedInstanceState.getString(MediaStore.Audio.Media.ARTIST)
-            setNames()
+        when (savedInstanceState) {
+            null -> {
+                processUri()
+            }
+            else -> {
+                mPreviewSong.TITLE = savedInstanceState.getString(MediaStore.Audio.Media.TITLE)
+                mPreviewSong.ARTIST = savedInstanceState.getString(MediaStore.Audio.Media.ARTIST)
+                setNames()
+            }
         }
         if (localPlayer != null) {
             sendStateChange(State.PREPARED)

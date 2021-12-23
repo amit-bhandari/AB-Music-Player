@@ -202,7 +202,7 @@ class FragmentArtistInfo : Fragment(), ArtistInfo.Callback {
         if (item?.getArtist() == null) {
             return
         }
-        artBioText!!.setText(getString(R.string.artist_info_loading))
+        artBioText!!.text = getString(R.string.artist_info_loading)
 
         //set loading animation
         lyricLoadAnimation!!.visibility = View.VISIBLE
@@ -357,7 +357,7 @@ class FragmentArtistInfo : Fragment(), ArtistInfo.Callback {
             ///get current setting
             // 0 - System default   1 - artist image  2 - custom
             val currentNowPlayingBackPref: Int =
-                MyApp.getPref()!!.getInt(getString(R.string.pref_now_playing_back), 1)
+                MyApp.getPref().getInt(getString(R.string.pref_now_playing_back), 1)
             if (currentNowPlayingBackPref == 1 && !artistInfo.getCorrectedArtist()
                     .equals("[unknown]")
             ) {
@@ -377,7 +377,7 @@ class FragmentArtistInfo : Fragment(), ArtistInfo.Callback {
             //store file in cache with artist id as name
             //create folder in cache for artist images
             val CACHE_ART_THUMBS: String =
-                MyApp.getContext()!!.cacheDir.toString() + "/art_thumbs/"
+                MyApp.getContext().cacheDir.toString() + "/art_thumbs/"
             val actual_file_path: String = CACHE_ART_THUMBS + params[0]!!.getOriginalArtist()
             val f = File(CACHE_ART_THUMBS)
             if (!f.exists()) {

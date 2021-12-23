@@ -1,4 +1,4 @@
-package com.music.player.bhandari.m.activity.PreviewPlayer
+package com.music.player.bhandari.m.activity.preview_player
 
 import android.text.TextUtils
 import android.util.Log

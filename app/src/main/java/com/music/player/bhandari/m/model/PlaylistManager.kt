@@ -121,7 +121,7 @@ class PlaylistManager private constructor(
      */
     fun GetPlaylistList(userAddable: Boolean): ArrayList<String> {
         if (listOfPlaylists.size == 0) {
-            val db: SQLiteDatabase = dbHelperListOfPlaylist.getReadableDatabase()
+            val db: SQLiteDatabase = dbHelperListOfPlaylist.readableDatabase
             dbHelperListOfPlaylist.onCreate(db)
             val cursor: Cursor = db.query(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST,
                 null,
@@ -154,7 +154,7 @@ class PlaylistManager private constructor(
     val systemPlaylistsList: ArrayList<String>
         get() {
             if (listOfPlaylists.size == 0) {
-                val db: SQLiteDatabase = dbHelperListOfPlaylist.getReadableDatabase()
+                val db: SQLiteDatabase = dbHelperListOfPlaylist.readableDatabase
                 dbHelperListOfPlaylist.onCreate(db)
                 val cursor: Cursor = db.query(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST,
                     null,
@@ -184,7 +184,7 @@ class PlaylistManager private constructor(
     val userCreatedPlaylistList: ArrayList<String>
         get() {
             if (listOfPlaylists.size == 0) {
-                val db: SQLiteDatabase = dbHelperListOfPlaylist.getReadableDatabase()
+                val db: SQLiteDatabase = dbHelperListOfPlaylist.readableDatabase
                 dbHelperListOfPlaylist.onCreate(db)
                 val cursor: Cursor = db.query(Constants.SYSTEM_PLAYLISTS.PLAYLIST_LIST,
                     null,
@@ -227,7 +227,7 @@ class PlaylistManager private constructor(
         }
         //try creating entry in playlist list
         //DbHelperListOfPlaylist dbHelperListOfPlaylist = new DbHelperListOfPlaylist(context);
-        db = dbHelperListOfPlaylist.getWritableDatabase()
+        db = dbHelperListOfPlaylist.writableDatabase
         dbHelperListOfPlaylist.onCreate(db)
         val where: String =
             DbHelperListOfPlaylist.KEY_TITLE.toString() + "= '" + playlist_name.replace("'",
@@ -271,7 +271,7 @@ class PlaylistManager private constructor(
 
         //DbHelperListOfPlaylist dbHelperListOfPlaylist
         //      = new DbHelperListOfPlaylist(context);
-        db = dbHelperListOfPlaylist.getWritableDatabase()
+        db = dbHelperListOfPlaylist.writableDatabase
         dbHelperListOfPlaylist.onCreate(db)
 
         //invalidate playlist cache

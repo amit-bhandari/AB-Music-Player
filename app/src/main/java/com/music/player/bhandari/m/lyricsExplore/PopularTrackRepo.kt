@@ -167,7 +167,7 @@ class PopularTrackRepo {
 
                     private fun storeTrackListOffline(tracks: List<Track>) {
                         val prefs =
-                            MyApp.getContext()!!.getSharedPreferences("explore_track_list", 0)
+                            MyApp.getContext().getSharedPreferences("explore_track_list", 0)
                         val gsonString: String = Gson().toJson(tracks)
                         prefs.edit().putString("track_list", gsonString).apply()
                         prefs.edit().putLong("time", System.currentTimeMillis()).apply()
@@ -176,7 +176,7 @@ class PopularTrackRepo {
                     private val trackListOffline: List<Track>?
                         get() {
                             val prefs =
-                                MyApp.getContext()!!.getSharedPreferences("explore_track_list", 0)
+                                MyApp.getContext().getSharedPreferences("explore_track_list", 0)
                             val gsonString = prefs.getString("track_list", "")
                             val time: Long = prefs.getLong("time", -1)
                             if (gsonString == "" || time == -1L) return null

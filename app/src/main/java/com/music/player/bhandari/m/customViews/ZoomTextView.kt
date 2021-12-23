@@ -45,8 +45,8 @@ class ZoomTextView : androidx.appcompat.widget.AppCompatTextView {
     }
 
     private fun initialize() {
-        defaultSize = getTextSize()
-        mScaleDetector = ScaleGestureDetector(getContext(), ScaleListener())
+        defaultSize = textSize
+        mScaleDetector = ScaleGestureDetector(context, ScaleListener())
     }
 
     /***
@@ -57,11 +57,7 @@ class ZoomTextView : androidx.appcompat.widget.AppCompatTextView {
         this.zoomLimit = zoomLimit
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-    }
-
-    public override fun onTouchEvent(ev: MotionEvent): Boolean {
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
         super.onTouchEvent(ev)
         mScaleDetector!!.onTouchEvent(ev)
         return true
@@ -72,9 +68,9 @@ class ZoomTextView : androidx.appcompat.widget.AppCompatTextView {
     and mScaleFactor is mapped between 1.0 and and zoomLimit
     that is 3.0 by default. You can also change it. 3.0 means text
     can zoom to 3 times the default value.*/
-    private inner class ScaleListener constructor() : SimpleOnScaleGestureListener() {
-        public override fun onScale(detector: ScaleGestureDetector): Boolean {
-            mScaleFactor *= detector.getScaleFactor()
+    private inner class ScaleListener : SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            mScaleFactor *= detector.scaleFactor
             mScaleFactor = Math.max(1.0f, Math.min(mScaleFactor, zoomLimit))
             setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultSize * mScaleFactor)
             Log.e(TAG, mScaleFactor.toString())

@@ -53,7 +53,7 @@ class ActivityAboutUs : AppCompatActivity() {
             UtilityFun.restartApp()
         }
         ColorHelper.setStatusBarGradiant(this)
-        when (MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
@@ -156,7 +156,7 @@ class ActivityAboutUs : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             R.id.home -> finish()
             R.id.action_feedback -> {
                 val myDeviceModel: String = Build.MODEL
@@ -212,10 +212,6 @@ class ActivityAboutUs : AppCompatActivity() {
 //
 //        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 //        dialog.show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     private fun selectDonateDialog() {

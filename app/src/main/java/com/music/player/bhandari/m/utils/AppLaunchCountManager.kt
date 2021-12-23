@@ -90,7 +90,7 @@ object AppLaunchCountManager {
     }
 
     fun nowPlayingLaunched() {
-        val prefs = MyApp.getContext()?.getSharedPreferences("apprater", 0)
+        val prefs = MyApp.getContext().getSharedPreferences("apprater", 0)
         val editor = prefs!!.edit()
 
         // Increment launch counter
@@ -101,13 +101,13 @@ object AppLaunchCountManager {
 
     val nowPlayingLaunchCount: Long
         get() {
-            val prefs: SharedPreferences = MyApp.getContext()!!.getSharedPreferences("apprater", 0)
+            val prefs: SharedPreferences = MyApp.getContext().getSharedPreferences("apprater", 0)
                 ?: return -1
             return prefs.getLong("launch_count_now_playing", -1)
         }
 
     fun instantLyricsLaunched() {
-        val prefs: SharedPreferences = MyApp.getContext()!!.getSharedPreferences("apprater", 0)
+        val prefs: SharedPreferences = MyApp.getContext().getSharedPreferences("apprater", 0)
         val editor = prefs.edit()
 
         // Increment launch counter
@@ -118,25 +118,25 @@ object AppLaunchCountManager {
 
     val instantLyricsCount: Long
         get() {
-            val prefs: SharedPreferences = MyApp.getContext()!!.getSharedPreferences("apprater", 0)
+            val prefs: SharedPreferences = MyApp.getContext().getSharedPreferences("apprater", 0)
                 ?: return -1
             return prefs.getLong("launch_count_instantLyrics", -1)
         }
     val isEligibleForInterstialAd: Boolean
         get() {
-            val prefs: SharedPreferences = MyApp.getContext()!!.getSharedPreferences("apprater", 0)
+            val prefs: SharedPreferences = MyApp.getContext().getSharedPreferences("apprater", 0)
             val date_firstLaunch = prefs.getLong("date_firstlaunch", 0)
             return date_firstLaunch != 0L && System.currentTimeMillis() >= date_firstLaunch + HOURS_UNTIL_INTER_AD * 60 * 60 * 1000
         }
     val isEligibleForRatingAsk: Boolean
         get() {
-            val prefs: SharedPreferences = MyApp.getContext()!!.getSharedPreferences("apprater", 0)
+            val prefs: SharedPreferences = MyApp.getContext().getSharedPreferences("apprater", 0)
             val date_firstLaunch = prefs.getLong("date_firstlaunch", 0)
             return date_firstLaunch != 0L && System.currentTimeMillis() >= date_firstLaunch + DAYS_UNTIL_RATE_ASK * 24 * 60 * 60 * 1000
         }
     val isEligibleForBannerAds: Boolean
         get() {
-            val prefs: SharedPreferences = MyApp.getContext()!!.getSharedPreferences("apprater", 0)
+            val prefs: SharedPreferences = MyApp.getContext().getSharedPreferences("apprater", 0)
             val date_firstLaunch = prefs.getLong("date_firstlaunch", 0)
             return date_firstLaunch != 0L && System.currentTimeMillis() >= date_firstLaunch + HOURS_UNTIL_BANNER_ADS * 60 * 60 * 1000
         }

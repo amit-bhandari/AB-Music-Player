@@ -46,11 +46,11 @@ class DbHelperUserMusicData constructor(context: Context?) :
 
     private fun updateIdField(db: SQLiteDatabase) {
         Executors.newSingleThreadExecutor().execute(object : Runnable {
-            public override fun run() {
+            override fun run() {
                 try {
                     val cursor: Cursor? =
                         db.query(TABLE_NAME, arrayOf(KEY_TITLE), null, null, null, null, null)
-                    if (cursor != null && cursor.getCount() != 0) {
+                    if (cursor != null && cursor.count != 0) {
                         while (cursor.moveToNext()) {
                             val title: String = cursor.getString(0)
                             val item: TrackItem =

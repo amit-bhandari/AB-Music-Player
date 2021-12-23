@@ -80,7 +80,7 @@ class LyricsViewAdapter(private val context: Context, lyrics: Lyrics?) :
             textView.layoutParams = param
             textView.textSize = 20f
             textView.gravity = Gravity.CENTER_HORIZONTAL
-            textView.setTypeface(TypeFaceHelper.getTypeFace(context))
+            textView.typeface = TypeFaceHelper.getTypeFace(context)
             textView.isClickable = true
             textView.setPadding(10, 10, 10, 10)
             textView.id = R.id.lyrics_line

@@ -526,9 +526,9 @@ class ActivityLyricCard : AppCompatActivity(), View.OnTouchListener {
                 override fun onTypefaceRetrieved(typeface: Typeface) {
                     Log.d("ActivityLyricCard", "onTypefaceRetrieved: $typeface")
                     if (!typefaceSet) {
-                        lyricText!!.setTypeface(typeface)
-                        artistText!!.setTypeface(typeface)
-                        trackText!!.setTypeface(typeface)
+                        lyricText!!.typeface = typeface
+                        artistText!!.typeface = typeface
+                        trackText!!.typeface = typeface
                         typefaceSet = true
                     }
                     typefaces.add(typeface)
@@ -553,14 +553,14 @@ class ActivityLyricCard : AppCompatActivity(), View.OnTouchListener {
     private fun changeFont() {
         if (currentFontPosition >= typefaces.size - 1) {
             currentFontPosition = 0
-            lyricText!!.setTypeface(typefaces[currentFontPosition])
-            artistText!!.setTypeface(typefaces[currentFontPosition])
-            trackText!!.setTypeface(typefaces[currentFontPosition])
+            lyricText!!.typeface = typefaces[currentFontPosition]
+            artistText!!.typeface = typefaces[currentFontPosition]
+            trackText!!.typeface = typefaces[currentFontPosition]
         } else {
             val index: Int = ++currentFontPosition
-            lyricText!!.setTypeface(typefaces[index])
-            artistText!!.setTypeface(typefaces[index])
-            trackText!!.setTypeface(typefaces[index])
+            lyricText!!.typeface = typefaces[index]
+            artistText!!.typeface = typefaces[index]
+            trackText!!.typeface = typefaces[index]
         }
     }
 

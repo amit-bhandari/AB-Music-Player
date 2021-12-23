@@ -175,7 +175,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
         fLyricUpdaterThreadCancelled = true
         lyricStatus!!.visibility = View.VISIBLE
         lyricStatus!!.text = getString(R.string.lyrics_loading)
-        if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_disclaimer_accepted), false)
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted), false)
         ) {
             lyricStatus!!.visibility = View.VISIBLE
             lyricStatus!!.text = getString(R.string.disclaimer_rejected)
@@ -635,7 +635,7 @@ class FragmentLyrics : Fragment(), RecyclerView.OnItemTouchListener, Lyrics.Call
                             MediaStore.Audio.Media.TITLE + "=?",
                             arrayOf(item!!.title))
                     val d = MusicLibrary.instance!!.updateTrackNew(item!!.id, edited_title, edited_artist, item!!.album!!)
-                    PlaylistManager.getInstance(MyApp.getContext()!!)!!.addEntryToMusicTable(d!!)
+                    PlaylistManager.getInstance(MyApp.getContext())!!.addEntryToMusicTable(d!!)
                     val intent = Intent(context, ActivityNowPlaying::class.java)
                     intent.putExtra("refresh", true)
                     intent.putExtra("position", playerService!!.getCurrentTrackPosition())

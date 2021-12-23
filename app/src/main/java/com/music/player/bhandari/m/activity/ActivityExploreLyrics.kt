@@ -90,7 +90,8 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ColorHelper.setStatusBarGradiant(this)
-        val themeSelector: Int = MyApp.Companion.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
+        val themeSelector: Int = MyApp.Companion.getPref()
+            .getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
         when (themeSelector) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
@@ -171,7 +172,7 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
 
     private fun loadPopularTracks(lookInCache: Boolean) {
         val country =
-            MyApp.getPref()!!.getString(getString(R.string.pref_user_country), "")!!
+            MyApp.getPref().getString(getString(R.string.pref_user_country), "")!!
         PopularTrackRepo().fetchPopularTracks(country, this, lookInCache)
     }
 
@@ -334,7 +335,7 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
     override fun onRefresh() {
         if (!UtilityFun.isConnectedToInternet) {
             Toast.makeText(this, "No Connection!", Toast.LENGTH_SHORT).show()
-            swipeRefreshLayout!!.setRefreshing(false)
+            swipeRefreshLayout!!.isRefreshing = false
             return
         }
         rvWrapper!!.visibility = View.GONE

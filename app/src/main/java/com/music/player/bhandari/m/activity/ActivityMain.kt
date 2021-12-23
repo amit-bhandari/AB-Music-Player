@@ -865,7 +865,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         } else {
             //show app equalizer
             when {
-                playerService!!.getEqualizerHelper()?.isEqualizerSupported() -> {
+                playerService!!.getEqualizerHelper().isEqualizerSupported() -> {
                     startActivity(Intent(this, ActivityEqualizer::class.java))
                 }
                 else -> {
@@ -1306,7 +1306,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         linear.orientation = LinearLayout.VERTICAL
         val text = TextView(this)
         text.text = getString(R.string.main_act_rate_us)
-        text.setTypeface(TypeFaceHelper.getTypeFace(this))
+        text.typeface = TypeFaceHelper.getTypeFace(this)
         text.setPadding(20, 10, 20, 10)
         text.textSize = 16f
         //text.setGravity(Gravity.CENTER);

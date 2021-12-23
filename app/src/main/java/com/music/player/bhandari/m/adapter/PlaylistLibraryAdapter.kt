@@ -49,7 +49,7 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
     private var viewParent: View? = null
     fun clear() {}
     fun refreshPlaylistList() {
-        headers = PlaylistManager.getInstance(MyApp.getContext()!!)!!.systemPlaylistsList
+        headers = PlaylistManager.getInstance(MyApp.getContext())!!.systemPlaylistsList
         notifyDataSetChanged()
     }
 
@@ -68,7 +68,7 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.title.text = headers.get(position)
         holder.title.setPadding(20, 0, 0, 0)
-        val count: Long = PlaylistManager.getInstance(MyApp.Companion.getContext()!!)!!.getTrackCountFromCache(headers.get(position))
+        val count: Long = PlaylistManager.getInstance(MyApp.Companion.getContext())!!.getTrackCountFromCache(headers.get(position))
         if (count != 0L) {
             holder.count.text = context.getString(R.string.track_count, count.toString())
         } else {
@@ -94,7 +94,7 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
             R.id.action_play_next -> AddToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
             R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
             R.id.action_clear_playlist -> when {
-                PlaylistManager.getInstance(MyApp.getContext()!!)!!.ClearPlaylist(headers[position]) -> {
+                PlaylistManager.getInstance(MyApp.getContext())!!.ClearPlaylist(headers[position]) -> {
                     Snackbar.make(viewParent!!,
                         context.getString(R.string.snack_cleared) + " " + headers[position],
                         Snackbar.LENGTH_SHORT).show()
@@ -110,14 +110,14 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
     }
 
     private fun Play() {
-        val temp: ArrayList<dataItem> = PlaylistManager.getInstance(MyApp.getContext()!!)!!.GetPlaylist(headers.get(position))
+        val temp: ArrayList<dataItem> = PlaylistManager.getInstance(MyApp.getContext())!!.GetPlaylist(headers.get(position))
         val trackList: ArrayList<Int> = ArrayList()
         for (d: dataItem in temp) {
             trackList.add(d.id)
         }
         if (trackList.isNotEmpty()) {
-            playerService!!.setTrackList(trackList)
-            playerService!!.playAtPosition(0)
+            playerService.setTrackList(trackList)
+            playerService.playAtPosition(0)
             /*
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent()
                     .setAction(Constants.ACTION.PLAY_AT_POSITION)
@@ -130,7 +130,7 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
 
     private fun Share() {
         val files: ArrayList<Uri> = ArrayList() //for sending multiple files
-        val temp: ArrayList<dataItem> = PlaylistManager.getInstance(MyApp.getContext()!!)!!.GetPlaylist(headers[position])
+        val temp: ArrayList<dataItem> = PlaylistManager.getInstance(MyApp.getContext())!!.GetPlaylist(headers[position])
         val trackList: ArrayList<Int> = ArrayList()
         for (d: dataItem in temp) {
             trackList.add(d.id)
@@ -184,7 +184,7 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
         }
         if (trackList.isNotEmpty()) {
             for (id: Int in trackList) {
-                playerService!!.addToQ(id, positionToAdd)
+                playerService.addToQ(id, positionToAdd)
             }
             //to update the to be next field in notification
             MyApp.getService()!!.PostNotification()
@@ -292,8 +292,8 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
         //create first page for folder fragment
         val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         inflater = LayoutInflater.from(context)
-        headers = PlaylistManager.getInstance(MyApp.getContext()!!)!!.systemPlaylistsList
-        headers.addAll(PlaylistManager.getInstance(MyApp.getContext()!!)!!.userCreatedPlaylistList)
+        headers = PlaylistManager.getInstance(MyApp.getContext())!!.systemPlaylistsList
+        headers.addAll(PlaylistManager.getInstance(MyApp.getContext())!!.userCreatedPlaylistList)
         playerService = MyApp.getService()!!
         setHasStableIds(true)
     }

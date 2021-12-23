@@ -109,6 +109,7 @@ dependencies {
     //view binding
     //noinspection AnnotationProcessorOnCompilePath
     implementation 'com.jakewharton:butterknife:10.2.3'
+    implementation 'androidx.test:monitor:1.5.0'
     kapt 'com.jakewharton:butterknife-compiler:10.2.3'
 
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
@@ -122,7 +123,4 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
-
-    //Tests
-    testImplementation 'junit:junit:4.13.2'
 }

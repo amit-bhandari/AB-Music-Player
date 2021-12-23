@@ -334,7 +334,7 @@ object UtilityFun {
 
     val isConnectedToInternet: Boolean
         get() {
-            val cm = MyApp.getContext()!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val cm = MyApp.getContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
             return (activeNetwork != null
                     && activeNetwork.isConnectedOrConnecting)
@@ -432,13 +432,14 @@ object UtilityFun {
         val intent = Intent(MyApp.getContext(), ActivityPermissionSeek::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        MyApp.getContext()?.startActivity(intent)
+        MyApp.getContext().startActivity(intent)
     }
 
     //return batman in case user selected image causes out of memory
     val defaultAlbumArtDrawable: Drawable?
         get() = try {
-            Drawable.createFromPath(MyApp.getContext()?.filesDir.toString() + MyApp.getContext()?.getString(R.string.def_album_art_custom_image))
+            Drawable.createFromPath(MyApp.getContext().filesDir.toString() + MyApp.getContext()
+                .getString(R.string.def_album_art_custom_image))
         } catch (e: OutOfMemoryError) {
             //return batman in case user selected image causes out of memory
             MyApp.getContext().getDrawable(R.drawable.ic_batman_1)

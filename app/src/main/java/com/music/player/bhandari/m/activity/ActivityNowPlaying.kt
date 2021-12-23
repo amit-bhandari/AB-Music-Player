@@ -191,7 +191,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                         controlsWrapper!!.measuredHeight.toString() + "")
                 }
             })
-        if (!MyApp.getPref()!!.getBoolean("never_show_button_again", false)) {
+        if (!MyApp.getPref().getBoolean("never_show_button_again", false)) {
             val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
                     .build()
@@ -289,7 +289,8 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 Log.v(Constants.L_TAG + "wow", "selected $position")
                 selectedPageIndex = position
                 //display disclaimer if not accepted already
-                if (position == 2 && !MyApp.getPref()!!.getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
+                if (position == 2 && !MyApp.getPref()
+                        .getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
                     showDisclaimerDialog()
                 }
 
@@ -315,7 +316,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 (findViewById<View>(R.id.save_queue_button) as TextView).text = title
             }
         }
-        if (!MyApp.getPref()!!.getBoolean(getString(R.string.pref_swipe_right_shown), false)
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_swipe_right_shown), false)
         ) {
             showInfoDialog()
         }
@@ -495,7 +496,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 ///get current setting
                 // 0 - System default   1 - artist image 2 - album art 3 - custom
                 val currentNowPlayingBackPref: Int =
-                    MyApp.getPref()!!.getInt(getString(R.string.pref_now_playing_back), 1)
+                    MyApp.getPref().getInt(getString(R.string.pref_now_playing_back), 1)
                 var b: Bitmap? = null // = playerService!!.getAlbumArt();
                 try {
                     when (currentNowPlayingBackPref) {
@@ -561,7 +562,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         if (nowPlayingCustomBackBitmap != null) {
             return nowPlayingCustomBackBitmap
         }
-        val picPath: String = MyApp.Companion.getContext().getFilesDir()
+        val picPath: String = MyApp.Companion.getContext().filesDir
             .toString() + getString(R.string.now_playing_back_custom_image)
         Log.d(Constants.TAG, "UpdateUI: setBlurryBackgroundCustomImage: $picPath")
         /*BitmapFactory.Options options = new BitmapFactory.Options();
@@ -660,8 +661,8 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
 
     override fun onBackPressed() {
         //
-        if (slidingUpPanelLayout!!.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
-            slidingUpPanelLayout!!.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED)
+        if (slidingUpPanelLayout!!.panelState == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            slidingUpPanelLayout!!.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
             return
         }
         if (isInvokedFromFileExplorer) {
@@ -721,7 +722,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             }
             R.id.action_equ -> {
                 val intent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                if ((MyApp.getPref()!!.getBoolean(getString(R.string.pref_prefer_system_equ), true)
+                if ((MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
                             && (intent.resolveActivity(packageManager) != null))
                 ) {
                     try {
@@ -731,7 +732,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                     }
                 } else {
                     //show app equalizer
-                    if (playerService!!.getEqualizerHelper()!!.isEqualizerSupported()) {
+                    if (playerService!!.getEqualizerHelper().isEqualizerSupported()) {
                         startActivity(Intent(this, ActivityEqualizer::class.java))
                     } else {
                         Snackbar.make(rootView!!,
@@ -927,7 +928,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         }
         when (view.id) {
             R.id.save_queue_button -> {
-                if (mAdapter!!.getItemCount() === 0) {
+                if (mAdapter!!.itemCount === 0) {
                     return
                 }
                 val input: EditText = EditText(this)
@@ -1383,9 +1384,9 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
     }
 
     private fun setSeekbarAndTime() {
-        seekBar!!.setProgress(UtilityFun.getProgressPercentage(playerService!!.getCurrentTrackProgress(),
-            playerService!!.getCurrentTrackDuration()))
-        runningTime!!.setText(UtilityFun.msToString(playerService!!.getCurrentTrackProgress().toLong()))
+        seekBar!!.progress = UtilityFun.getProgressPercentage(playerService!!.getCurrentTrackProgress(),
+            playerService!!.getCurrentTrackDuration())
+        runningTime!!.text = UtilityFun.msToString(playerService!!.getCurrentTrackProgress().toLong())
     }
 
     private fun startUpdateTask() {
