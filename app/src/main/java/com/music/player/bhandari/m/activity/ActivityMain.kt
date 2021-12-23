@@ -865,7 +865,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         } else {
             //show app equalizer
             when {
-                playerService!!.getEqualizerHelper().isEqualizerSupported() -> {
+                playerService!!.getEqualizerHelper()?.isEqualizerSupported() -> {
                     startActivity(Intent(this, ActivityEqualizer::class.java))
                 }
                 else -> {

@@ -571,16 +571,16 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
 
     private fun applyMediaPlayerEQ() {
         if (mEqualizerHelper == null || !mEqualizerHelper!!.isEqualizerSupported()) return
-        val equalizerSetting: EqualizerSetting = mEqualizerHelper!!.getLastEquSetting()
+        val equalizerSetting = mEqualizerHelper!!.getLastEquSetting()
         Log.d("PlayerService", "applyMediaPlayerEQ: applying equ setting $equalizerSetting")
-        val fiftyHertzBandValue: Int = equalizerSetting.getFiftyHertz()
-        val oneThirtyHertzBandValue: Int = equalizerSetting.getFiftyHertz()
-        val threeTwentyHertzBandValue: Int = equalizerSetting.getFiftyHertz()
-        val eightHundredHertzBandValue: Int = equalizerSetting.getFiftyHertz()
-        val twoKilohertzBandValue: Int = equalizerSetting.getFiftyHertz()
-        val fiveKilohertzBandValue: Int = equalizerSetting.getFiftyHertz()
-        val twelvePointFiveKilohertzBandValue: Int = equalizerSetting.getFiftyHertz()
-        val reverbValue = equalizerSetting.getReverb()
+        val fiftyHertzBandValue = equalizerSetting?.getFiftyHertz()
+        val oneThirtyHertzBandValue = equalizerSetting?.getFiftyHertz()
+        val threeTwentyHertzBandValue = equalizerSetting?.getFiftyHertz()
+        val eightHundredHertzBandValue = equalizerSetting?.getFiftyHertz()
+        val twoKilohertzBandValue = equalizerSetting?.getFiftyHertz()
+        val fiveKilohertzBandValue = equalizerSetting?.getFiftyHertz()
+        val twelvePointFiveKilohertzBandValue = equalizerSetting?.getFiftyHertz()
+        val reverbValue = equalizerSetting?.getReverb()
         val fiftyHertzBand = mEqualizerHelper!!.getEqualizer()!!.getBand(50000)
         val oneThirtyHertzBand = mEqualizerHelper!!.getEqualizer()!!.getBand(130000)
         val threeTwentyHertzBand = mEqualizerHelper!!.getEqualizer()!!.getBand(320000)
@@ -591,155 +591,169 @@ class PlayerService : Service(), AudioManager.OnAudioFocusChangeListener, ShakeD
 
 
         //50Hz Band.
-        when {
-            fiftyHertzBandValue == 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, 0.toShort())
-            }
-            fiftyHertzBandValue < 16 -> {
-                if (fiftyHertzBandValue == 0) {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, (-1500).toShort())
-                } else {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, (-(16 - fiftyHertzBandValue) * 100).toShort())
+        if (fiftyHertzBandValue != null) {
+            when {
+                fiftyHertzBandValue == 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, 0.toShort())
                 }
-            }
-            fiftyHertzBandValue > 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, ((fiftyHertzBandValue - 16) * 100).toShort())
+                fiftyHertzBandValue < 16 -> {
+                    if (fiftyHertzBandValue == 0) {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, (-1500).toShort())
+                    } else {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, (-(16 - fiftyHertzBandValue) * 100).toShort())
+                    }
+                }
+                fiftyHertzBandValue > 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiftyHertzBand, ((fiftyHertzBandValue - 16) * 100).toShort())
+                }
             }
         }
 
         //130Hz Band.
-        when {
-            oneThirtyHertzBandValue == 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand, 0.toShort())
-            }
-            oneThirtyHertzBandValue < 16 -> {
-                if (oneThirtyHertzBandValue == 0) {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand, (-1500).toShort())
-                } else {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand,
-                        (-(16 - oneThirtyHertzBandValue) * 100).toShort())
+        if (oneThirtyHertzBandValue != null) {
+            when {
+                oneThirtyHertzBandValue == 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand, 0.toShort())
                 }
-            }
-            oneThirtyHertzBandValue > 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand, ((oneThirtyHertzBandValue - 16) * 100).toShort())
+                oneThirtyHertzBandValue < 16 -> {
+                    if (oneThirtyHertzBandValue == 0) {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand, (-1500).toShort())
+                    } else {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand,
+                            (-(16 - oneThirtyHertzBandValue) * 100).toShort())
+                    }
+                }
+                oneThirtyHertzBandValue > 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(oneThirtyHertzBand, ((oneThirtyHertzBandValue - 16) * 100).toShort())
+                }
             }
         }
 
         //320Hz Band.
-        when {
-            threeTwentyHertzBandValue == 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand, 0.toShort())
-            }
-            threeTwentyHertzBandValue < 16 -> {
-                if (threeTwentyHertzBandValue == 0) {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand, (-1500).toShort())
-                } else {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand,
-                        (-(16 - threeTwentyHertzBandValue) * 100).toShort())
+        if (threeTwentyHertzBandValue != null) {
+            when {
+                threeTwentyHertzBandValue == 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand, 0.toShort())
                 }
-            }
-            threeTwentyHertzBandValue > 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand,
-                    ((threeTwentyHertzBandValue - 16) * 100).toShort())
+                threeTwentyHertzBandValue < 16 -> {
+                    if (threeTwentyHertzBandValue == 0) {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand, (-1500).toShort())
+                    } else {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand,
+                            (-(16 - threeTwentyHertzBandValue) * 100).toShort())
+                    }
+                }
+                threeTwentyHertzBandValue > 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(threeTwentyHertzBand,
+                        ((threeTwentyHertzBandValue - 16) * 100).toShort())
+                }
             }
         }
 
         //800Hz Band.
-        when {
-            eightHundredHertzBandValue == 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand, 0.toShort())
-            }
-            eightHundredHertzBandValue < 16 -> {
-                if (eightHundredHertzBandValue == 0) {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand, (-1500).toShort())
-                } else {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand,
-                        (-(16 - eightHundredHertzBandValue) * 100).toShort())
+        if (eightHundredHertzBandValue != null) {
+            when {
+                eightHundredHertzBandValue == 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand, 0.toShort())
                 }
-            }
-            eightHundredHertzBandValue > 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand,
-                    ((eightHundredHertzBandValue - 16) * 100).toShort())
+                eightHundredHertzBandValue < 16 -> {
+                    if (eightHundredHertzBandValue == 0) {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand, (-1500).toShort())
+                    } else {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand,
+                            (-(16 - eightHundredHertzBandValue) * 100).toShort())
+                    }
+                }
+                eightHundredHertzBandValue > 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(eightHundredHertzBand,
+                        ((eightHundredHertzBandValue - 16) * 100).toShort())
+                }
             }
         }
 
         //2kHz Band.
-        when {
-            twoKilohertzBandValue == 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, 0.toShort())
-            }
-            twoKilohertzBandValue < 16 -> {
-                if (twoKilohertzBandValue == 0) {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, (-1500).toShort())
-                } else {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, (-(16 - twoKilohertzBandValue) * 100).toShort())
+        if (twoKilohertzBandValue != null) {
+            when {
+                twoKilohertzBandValue == 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, 0.toShort())
                 }
-            }
-            twoKilohertzBandValue > 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, ((twoKilohertzBandValue - 16) * 100).toShort())
+                twoKilohertzBandValue < 16 -> {
+                    if (twoKilohertzBandValue == 0) {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, (-1500).toShort())
+                    } else {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, (-(16 - twoKilohertzBandValue) * 100).toShort())
+                    }
+                }
+                twoKilohertzBandValue > 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twoKilohertzBand, ((twoKilohertzBandValue - 16) * 100).toShort())
+                }
             }
         }
 
         //5kHz Band.
-        when {
-            fiveKilohertzBandValue == 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, 0.toShort())
-            }
-            fiveKilohertzBandValue < 16 -> {
-                if (fiveKilohertzBandValue == 0) {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, (-1500).toShort())
-                } else {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand,
-                        (-(16 - fiveKilohertzBandValue) * 100).toShort())
+        if (fiveKilohertzBandValue != null) {
+            when {
+                fiveKilohertzBandValue == 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, 0.toShort())
                 }
-            }
-            fiveKilohertzBandValue > 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, ((fiveKilohertzBandValue - 16) * 100).toShort())
+                fiveKilohertzBandValue < 16 -> {
+                    if (fiveKilohertzBandValue == 0) {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, (-1500).toShort())
+                    } else {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand,
+                            (-(16 - fiveKilohertzBandValue) * 100).toShort())
+                    }
+                }
+                fiveKilohertzBandValue > 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(fiveKilohertzBand, ((fiveKilohertzBandValue - 16) * 100).toShort())
+                }
             }
         }
 
         //12.5kHz Band.
-        when {
-            twelvePointFiveKilohertzBandValue == 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand, 0.toShort())
-            }
-            twelvePointFiveKilohertzBandValue < 16 -> {
-                if (twelvePointFiveKilohertzBandValue == 0) {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand, (-1500).toShort())
-                } else {
-                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand,
-                        (-(16 - twelvePointFiveKilohertzBandValue) * 100).toShort())
+        if (twelvePointFiveKilohertzBandValue != null) {
+            when {
+                twelvePointFiveKilohertzBandValue == 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand, 0.toShort())
                 }
-            }
-            twelvePointFiveKilohertzBandValue > 16 -> {
-                mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand,
-                    ((twelvePointFiveKilohertzBandValue - 16) * 100).toShort())
+                twelvePointFiveKilohertzBandValue < 16 -> {
+                    if (twelvePointFiveKilohertzBandValue == 0) {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand, (-1500).toShort())
+                    } else {
+                        mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand,
+                            (-(16 - twelvePointFiveKilohertzBandValue) * 100).toShort())
+                    }
+                }
+                twelvePointFiveKilohertzBandValue > 16 -> {
+                    mEqualizerHelper!!.getEqualizer()!!.setBandLevel(twelvePointFiveKilohertzBand,
+                        ((twelvePointFiveKilohertzBandValue - 16) * 100).toShort())
+                }
             }
         }
 
         //Set the audioFX values.
-        mEqualizerHelper!!.getVirtualizer()!!.setStrength(equalizerSetting.getVirtualizer().toShort())
-        mEqualizerHelper!!.getBassBoost()!!.setStrength(equalizerSetting.getBassBoost().toShort())
-        when {
-            reverbValue.toInt() == 0 -> {
-                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_NONE
+        equalizerSetting?.getVirtualizer()?.toShort()
+            ?.let { mEqualizerHelper!!.getVirtualizer().setStrength(it) }
+        equalizerSetting?.getBassBoost()?.toShort()
+            ?.let { mEqualizerHelper!!.getBassBoost().setStrength(it) }
+        when (reverbValue) {
+            0 -> {
+                mEqualizerHelper!!.getPresetReverb().preset = PresetReverb.PRESET_NONE
             }
-            reverbValue.toInt() == 1 -> {
-                mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_LARGEHALL
-            }
-            reverbValue.toInt() == 2 -> {
+            1 -> mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_LARGEHALL
+            2 -> {
                 mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_LARGEROOM
             }
-            reverbValue.toInt() == 3 -> {
+            3 -> {
                 mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_MEDIUMHALL
             }
-            reverbValue.toInt() == 4 -> {
+            4 -> {
                 mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_MEDIUMROOM
             }
-            reverbValue.toInt() == 5 -> {
+            5 -> {
                 mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_SMALLROOM
             }
-            reverbValue.toInt() == 6 -> {
+            6 -> {
                 mEqualizerHelper!!.getPresetReverb()!!.preset = PresetReverb.PRESET_PLATE
             }
         }

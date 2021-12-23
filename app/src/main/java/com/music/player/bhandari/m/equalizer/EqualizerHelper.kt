@@ -25,50 +25,41 @@ import com.music.player.bhandari.m.R
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class EqualizerHelper constructor(
-    private val mContext: Context,
-    audioSessionId: Int,
-    equalizerEnabled: Boolean
-) {
-    private var equalizer: Equalizer? = null
-    private var virtualizer: Virtualizer? = null
-    private var bassBoost: BassBoost? = null
-    private var presetReverb: PresetReverb? = null
-    private var loudnessEnhancer: LoudnessEnhancer? = null
+class EqualizerHelper constructor(private val mContext: Context, audioSessionId: Int, equalizerEnabled: Boolean) {
+
+    private var equalizer = Equalizer(0, audioSessionId)
+    private var virtualizer = Virtualizer(0, audioSessionId)
+    private var bassBoost = BassBoost(0, audioSessionId)
+    private var presetReverb = PresetReverb(0, audioSessionId)
+    private var loudnessEnhancer = LoudnessEnhancer(audioSessionId)
     private var isEqualizerSupported: Boolean = true
-    private var dbHelperEqualizer: DbHelperEqualizer? = null
+    private var dbHelperEqualizer = DbHelperEqualizer(mContext)
+
     fun releaseEqObjects() {
-        try {
-            equalizer!!.release()
-            virtualizer!!.release()
-            bassBoost!!.release()
-            presetReverb!!.release()
-        } catch (ignored: Exception) {
-        }
-        equalizer = null
-        virtualizer = null
-        bassBoost = null
-        presetReverb = null
+        equalizer.release()
+        virtualizer.release()
+        bassBoost.release()
+        presetReverb.release()
     }
 
     fun getEqualizer(): Equalizer {
-        return equalizer!!
+        return equalizer
     }
 
     fun getVirtualizer(): Virtualizer {
-        return virtualizer!!
+        return virtualizer
     }
 
     fun getBassBoost(): BassBoost {
-        return bassBoost!!
+        return bassBoost
     }
 
     fun getEnhancer(): LoudnessEnhancer {
-        return loudnessEnhancer!!
+        return loudnessEnhancer
     }
 
     fun getPresetReverb(): PresetReverb {
-        return presetReverb!!
+        return presetReverb
     }
 
     //general equ setting is stored in shared preference to reemove db complications and calls
@@ -77,16 +68,14 @@ class EqualizerHelper constructor(
         MyApp.getPref().edit().putString(mContext.getString(R.string.pref_last_equ_setting), jsonSetting).apply()
     }
 
-    fun getLastEquSetting(): EqualizerSetting {
+    fun getLastEquSetting(): EqualizerSetting? {
         val jsonString = MyApp.getPref().getString(mContext.getString(R.string.pref_last_equ_setting), "")
-        return Gson().fromJson(jsonString,
-            EqualizerSetting::class.java)
+        return Gson().fromJson(jsonString, EqualizerSetting::class.java)
     }
 
     @SuppressLint("Range")
     fun getPresetList(): Array<String?> {
-        val cursor: Cursor = dbHelperEqualizer!!.readableDatabase
-            .rawQuery("select * from " + DbHelperEqualizer.TABLE_NAME, null)
+        val cursor: Cursor = dbHelperEqualizer.readableDatabase.rawQuery("select * from " + DbHelperEqualizer.TABLE_NAME, null)
         val size: Int = cursor.count
         val array: Array<String?> = arrayOfNulls(size)
         var index = 0
@@ -98,37 +87,33 @@ class EqualizerHelper constructor(
         return array
     }
 
-    fun insertPreset(
-        preset_name: String?,
-        equalizerSetting: EqualizerSetting?
-    ) {
+    fun insertPreset(preset_name: String?, equalizerSetting: EqualizerSetting?) {
         val values = ContentValues()
         values.put(DbHelperEqualizer.EQU_PRESET_NAME, preset_name)
         values.put(DbHelperEqualizer.EQU_SETTING_STRING, Gson().toJson(equalizerSetting))
-        dbHelperEqualizer!!.writableDatabase.insert(DbHelperEqualizer.TABLE_NAME, null, values)
+        dbHelperEqualizer.writableDatabase.insert(DbHelperEqualizer.TABLE_NAME, null, values)
     }
 
     @SuppressLint("Range")
     fun getPreset(preset_name: String): EqualizerSetting {
-        val condition: String =
-            DbHelperEqualizer.EQU_PRESET_NAME + "=" + "'" + preset_name.replace("'",
-                "''") + "'"
-        val columnsToReturn: Array<String> =
-            arrayOf(DbHelperEqualizer.EQU_PRESET_NAME, DbHelperEqualizer.EQU_SETTING_STRING)
-        val cursor: Cursor? = dbHelperEqualizer!!.readableDatabase
-            .query(DbHelperEqualizer.TABLE_NAME, columnsToReturn, condition, null, null, null, null)
-        if (cursor != null && cursor.count > 0) {
-            cursor.moveToFirst()
-            val jsonString: String =
-                cursor.getString(cursor.getColumnIndex(DbHelperEqualizer.EQU_SETTING_STRING))
-            val equalizerSetting: EqualizerSetting =
-                Gson().fromJson(jsonString,
-                    EqualizerSetting::class.java)
-            cursor.close()
-            return equalizerSetting
-        } else {
-            cursor?.close()
-            return EqualizerSetting()
+        val condition = DbHelperEqualizer.EQU_PRESET_NAME + "=" + "'" + preset_name.replace("'", "''") + "'"
+        val columnsToReturn = arrayOf(DbHelperEqualizer.EQU_PRESET_NAME, DbHelperEqualizer.EQU_SETTING_STRING)
+        val cursor = dbHelperEqualizer.readableDatabase.query(DbHelperEqualizer.TABLE_NAME, columnsToReturn, condition, null, null, null, null)
+        return when {
+            cursor != null && cursor.count > 0 -> {
+                cursor.moveToFirst()
+                val jsonString: String =
+                    cursor.getString(cursor.getColumnIndex(DbHelperEqualizer.EQU_SETTING_STRING))
+                val equalizerSetting: EqualizerSetting =
+                    Gson().fromJson(jsonString,
+                        EqualizerSetting::class.java)
+                cursor.close()
+                equalizerSetting
+            }
+            else -> {
+                cursor?.close()
+                EqualizerSetting()
+            }
         }
     }
 
@@ -141,20 +126,10 @@ class EqualizerHelper constructor(
     }
 
     init {
-        try {
-            dbHelperEqualizer = DbHelperEqualizer(mContext)
-            equalizer = Equalizer(0, audioSessionId)
-            equalizer!!.enabled = equalizerEnabled
-            virtualizer = Virtualizer(0, audioSessionId)
-            virtualizer!!.enabled = equalizerEnabled
-            bassBoost = BassBoost(0, audioSessionId)
-            bassBoost!!.enabled = equalizerEnabled
-            presetReverb = PresetReverb(0, audioSessionId)
-            presetReverb!!.enabled = equalizerEnabled
-            loudnessEnhancer = LoudnessEnhancer(audioSessionId)
-            loudnessEnhancer!!.enabled = equalizerEnabled
-        } catch (e: Exception) {
-            isEqualizerSupported = false
-        }
+        equalizer.enabled = equalizerEnabled
+        virtualizer.enabled = equalizerEnabled
+        bassBoost.enabled = equalizerEnabled
+        presetReverb.enabled = equalizerEnabled
+        loudnessEnhancer.enabled = equalizerEnabled
     }
 }

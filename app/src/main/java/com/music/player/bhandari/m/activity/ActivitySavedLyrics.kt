@@ -48,8 +48,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ColorHelper.setStatusBarGradiant(this)
 
-        val themeSelector = MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
-        when (themeSelector) {
+        when (MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
 
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)

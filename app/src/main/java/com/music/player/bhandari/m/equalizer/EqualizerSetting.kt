@@ -52,9 +52,9 @@ class EqualizerSetting {
         this.reverb = reverb
     }
 
-    constructor() {}
+    constructor()
 
-    public override fun toString(): String {
+    override fun toString(): String {
         return ("" + fiftyHertz + " : "
                 + oneThirtyHertz + " : "
                 + threeTwentyHertz + " : "

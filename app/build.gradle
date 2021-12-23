@@ -103,9 +103,6 @@ dependencies {
     //gson
     implementation 'com.google.code.gson:gson:2.8.9'
 
-    //leak detection
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
-
     //crop images
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 

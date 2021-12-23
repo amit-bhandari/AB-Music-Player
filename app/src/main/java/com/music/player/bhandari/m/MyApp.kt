@@ -29,8 +29,8 @@ import io.github.inflationx.viewpump.ViewPump
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class MyApp constructor() : Application() {
-    public override fun onCreate() {
+class MyApp : Application() {
+    override fun onCreate() {
         super.onCreate()
         instance = this
         pref = PreferenceManager.getDefaultSharedPreferences(this)
@@ -81,8 +81,8 @@ class MyApp constructor() : Application() {
             service = s
         }
 
-        fun getService(): PlayerService {
-            return service!!
+        fun getService(): PlayerService? {
+            return service
         }
 
         fun isLocked(): Boolean {
@@ -98,8 +98,7 @@ class MyApp constructor() : Application() {
         }
 
         fun setSelectedThemeId(selectedThemeId: Int) {
-            pref!!.edit()
-                .putInt(getContext()!!.getString(R.string.pref_theme_id), selectedThemeId).apply()
+            pref!!.edit().putInt(getContext().getString(R.string.pref_theme_id), selectedThemeId).apply()
             Companion.selectedThemeId = selectedThemeId
         }
     }

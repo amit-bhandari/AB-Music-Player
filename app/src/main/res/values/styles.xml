@@ -1,19 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorBlack</item>
-        <item name="colorPrimaryDark">@color/colorBlack</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@color/colorBlack</item>
-        <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
-    </style>
-
     <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">@color/primary_text_color</item>
     </style>
@@ -28,18 +14,6 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-
-    <!-- Base application theme. -->
-    <style name="AppThemeNowPlaying" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorBlack</item>
-        <item name="colorPrimaryDark">@color/colorBlack</item>
-        <item name="colorAccent">@color/nowPlayingAccent</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
     <style name="Theme.AudioPreview" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/colorTransparent</item>
@@ -48,47 +22,10 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
-    <!-- Base application theme. -->
-    <style name="AppThemeTesting" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorBlack</item>
-        <item name="colorPrimaryDark">@color/colorBlack</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionModeOverlay">true</item>
-    </style>
-
-    <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:actionBarStyle">@style/MyTheme.ActionBarStyle</item>
-        <item name="colorAccent">@color/darkThemeAccent</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@color/colorBlack</item>
-        <item name="android:textColorSecondary">@color/primary_text_color</item>
-        <item name="android:itemBackground">@color/popupMenuBackground</item>
-    </style>
-
-    <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:actionBarStyle">@style/MyTheme.ActionBarStyle</item>
-        <item name="colorAccent">@color/lightThemeAccent</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@color/colorBlack</item>
-    </style>
-
     <style name="AppThemeDarkPref" parent="AppThemeDark">
         <item name="android:textColorSecondary">@color/secondary_text_color</item>
         <item name="android:textColor">@color/primary_text_color</item>
         <item name="android:textColorPrimary">@color/primary_text_color</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorTransparent</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@color/colorBlack</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -104,12 +41,6 @@
         <item name="android:textAllCaps">true</item>
         <item name="windowActionModeOverlay">true</item>
 
-    </style>
-
-    <style name="splashScreenTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="android:scaleType">center</item>
     </style>
 
     <style name="MyTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
@@ -223,5 +154,68 @@
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
     </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
 
+    <!-- Base application theme. -->
+    <style name="AppThemeTesting" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorPrimary">@color/colorBlack</item>
+        <item name="colorPrimaryDark">@color/colorBlack</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="colorPrimary">@color/colorBlack</item>
+        <item name="colorPrimaryDark">@color/colorBlack</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppThemeNowPlaying" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="colorPrimary">@color/colorBlack</item>
+        <item name="colorPrimaryDark">@color/colorBlack</item>
+        <item name="colorAccent">@color/nowPlayingAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="splashScreenTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/back</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:itemBackground">@color/popupMenuBackground</item>
+        <item name="colorAccent">@color/darkThemeAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/colorBlack</item>
+    </style>
+
+    <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:actionBarStyle">@style/MyTheme.ActionBarStyle</item>
+        <item name="colorAccent">@color/lightThemeAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/colorBlack</item>
+    </style>
 </resources>

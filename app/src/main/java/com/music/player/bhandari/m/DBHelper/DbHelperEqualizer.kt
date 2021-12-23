@@ -68,16 +68,12 @@ class DbHelperEqualizer constructor(context: Context?) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, i: Int, i1: Int) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME)
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
         onCreate(db)
     }
 
-    fun insertPreset(
-        db: SQLiteDatabase,
-        preset_name: String?,
-        equalizerSetting: EqualizerSetting?
-    ) {
-        val values: ContentValues = ContentValues()
+    private fun insertPreset(db: SQLiteDatabase, preset_name: String?, equalizerSetting: EqualizerSetting?) {
+        val values = ContentValues()
         values.put(EQU_PRESET_NAME, preset_name)
         values.put(EQU_SETTING_STRING, Gson().toJson(equalizerSetting))
         db.insert(TABLE_NAME, null, values)

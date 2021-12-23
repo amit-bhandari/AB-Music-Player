@@ -48,6 +48,7 @@ class ActivityPermissionSeek : AppCompatActivity() {
     private val MY_PERMISSIONS_REQUEST: Int = 0
     private var mBound: Boolean = false
     private var mInAppBillingBound: Boolean = false
+
     private val playerServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(arg0: ComponentName, service: IBinder) {
             val playerBinder = service as PlayerService.PlayerBinder
@@ -71,15 +72,12 @@ class ActivityPermissionSeek : AppCompatActivity() {
             mService = null
         }
 
-        override fun onServiceConnected(
-            name: ComponentName,
-            service: IBinder
-        ) {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
             mService = IInAppBillingService.Stub.asInterface(service)
             mInAppBillingBound = true
             //check if user has already removed ads
             //in case, he removed ads, and reinstalled app
-            var ownedItems: Bundle?
+            val ownedItems: Bundle?
             try {
                 ownedItems = mService!!.getPurchases(3, packageName, "inapp", null)
             } catch (e: RemoteException) {
@@ -88,21 +86,20 @@ class ActivityPermissionSeek : AppCompatActivity() {
             }
             val response: Int = ownedItems.getInt("RESPONSE_CODE")
             if (response == 0) {
-                val ownedSkus: ArrayList<String>? =
-                    ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST")
+                val ownedSkus = ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST")
                 if (ownedSkus != null) {
                     for (i in ownedSkus.indices) {
                         val sku: String = ownedSkus[i]
                         if ((sku == getString(R.string.remove_ads))) {
                             //Toast.makeText(getApplicationContext()
                             // , "You already have removed the ads!",Toast.LENGTH_LONG).show();
-                            MyApp.getPref()!!.edit()
+                            MyApp.getPref().edit()
                                 .putBoolean(getString(R.string.pref_remove_ads_after_payment), true)
                                 .apply()
                             return
                         }
                     }
-                    MyApp.getPref()!!.edit()
+                    MyApp.getPref().edit()
                         .putBoolean(getString(R.string.pref_remove_ads_after_payment), false)
                         .apply()
                 }
@@ -177,10 +174,10 @@ class ActivityPermissionSeek : AppCompatActivity() {
                         FirebaseRemoteConfig.getInstance().getString("developer_message")
 
                     //new developer message, update UI
-                    if (MyApp.getPref()!!.getString("developer_message", "") != message) {
-                        MyApp.getPref()!!.edit().putString("developer_message", message)
+                    if (MyApp.getPref().getString("developer_message", "") != message) {
+                        MyApp.getPref().edit().putString("developer_message", message)
                             .apply()
-                        MyApp.getPref()!!.edit().putBoolean("new_dev_message", true).apply()
+                        MyApp.getPref().edit().putBoolean("new_dev_message", true).apply()
                     }
                 }
             }
@@ -241,14 +238,14 @@ class ActivityPermissionSeek : AppCompatActivity() {
     private fun changeSettingsForVersion() {
 
         //if first install
-        if (MyApp.Companion.getPref()!!.getBoolean(getString(R.string.pref_first_install), true)) {
-            MyApp.Companion.getPref()!!.edit().putBoolean(getString(R.string.pref_first_install), false).apply()
-            MyApp.Companion.getPref()!!.edit().putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY).apply()
-            MyApp.Companion.getPref()!!.edit().putInt(getString(R.string.pref_theme_color), Constants.PRIMARY_COLOR.BLACK).apply()
-            MyApp.Companion.getPref()!!.edit().putBoolean(getString(R.string.pref_prefer_system_equ), false).apply()
-            MyApp.Companion.getPref()!!.edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply()
-            MyApp.Companion.getPref()!!.edit().putInt(getString(R.string.pref_theme_id), Constants.DEFAULT_THEME_ID).apply()
-            MyApp.Companion.getPref()!!.edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply()
+        if (MyApp.getPref().getBoolean(getString(R.string.pref_first_install), true)) {
+            MyApp.getPref().edit().putBoolean(getString(R.string.pref_first_install), false).apply()
+            MyApp.getPref().edit().putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY).apply()
+            MyApp.getPref().edit().putInt(getString(R.string.pref_theme_color), Constants.PRIMARY_COLOR.BLACK).apply()
+            MyApp.getPref().edit().putBoolean(getString(R.string.pref_prefer_system_equ), false).apply()
+            MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply()
+            MyApp.getPref().edit().putInt(getString(R.string.pref_theme_id), Constants.DEFAULT_THEME_ID).apply()
+            MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply()
         }
 
         //disable lock screen album art
@@ -256,13 +253,13 @@ class ActivityPermissionSeek : AppCompatActivity() {
     }
 
     private fun setDeprecatedPreferencesValues() {
-        if (MyApp.getPref()!!.getInt(getString(R.string.pref_click_on_notif), -1) != Constants.CLICK_ON_NOTIF.OPEN_DISC_VIEW) {
-            MyApp.getPref()!!.edit().putInt(getString(R.string.pref_click_on_notif), Constants.CLICK_ON_NOTIF.OPEN_DISC_VIEW).apply()
+        if (MyApp.getPref().getInt(getString(R.string.pref_click_on_notif), -1) != Constants.CLICK_ON_NOTIF.OPEN_DISC_VIEW) {
+            MyApp.getPref().edit().putInt(getString(R.string.pref_click_on_notif), Constants.CLICK_ON_NOTIF.OPEN_DISC_VIEW).apply()
         }
 
         //REMOVED PREFERENCES
-        if (MyApp.getPref()!!.getFloat(getString(R.string.pref_disc_size), -1f) != Constants.DISC_SIZE.MEDIUM) {
-            MyApp.getPref()!!.edit().putFloat(getString(R.string.pref_disc_size), Constants.DISC_SIZE.MEDIUM).apply()
+        if (MyApp.getPref().getFloat(getString(R.string.pref_disc_size), -1f) != Constants.DISC_SIZE.MEDIUM) {
+            MyApp.getPref().edit().putFloat(getString(R.string.pref_disc_size), Constants.DISC_SIZE.MEDIUM).apply()
         }
 
         /*if(!MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view)
@@ -277,7 +274,7 @@ class ActivityPermissionSeek : AppCompatActivity() {
         // MusicLibrary.getInstance();
         startService(Intent(this, PlayerService::class.java))
         try {
-            val playerServiceIntent: Intent = Intent(this, PlayerService::class.java)
+            val playerServiceIntent = Intent(this, PlayerService::class.java)
             bindService(playerServiceIntent, playerServiceConnection, Context.BIND_AUTO_CREATE)
         } catch (ignored: Exception) {
         }
@@ -299,11 +296,11 @@ class ActivityPermissionSeek : AppCompatActivity() {
     }
 
     private fun logFont() {
-        if (MyApp.getPref()!!.getBoolean(getString(R.string.pref_font_already_logged), false)) {
+        if (MyApp.getPref().getBoolean(getString(R.string.pref_font_already_logged), false)) {
             return
         }
         try {
-            val textFontPref: Int = MyApp.getPref()!!.getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONOSPACE)
+            val textFontPref: Int = MyApp.getPref().getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONOSPACE)
             var fontString: String? = ""
             when (textFontPref) {
                 Constants.TYPEFACE.MONOSPACE -> fontString = "MONOSPACE"
@@ -315,7 +312,7 @@ class ActivityPermissionSeek : AppCompatActivity() {
             val bundle = Bundle()
             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, fontString)
             UtilityFun.logEvent(bundle)
-            MyApp.getPref()!!.edit().putBoolean(getString(R.string.pref_font_already_logged), true).apply()
+            MyApp.getPref().edit().putBoolean(getString(R.string.pref_font_already_logged), true).apply()
         } catch (ignored: Exception) {
         }
     }

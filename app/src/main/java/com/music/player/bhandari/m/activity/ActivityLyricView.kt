@@ -115,14 +115,14 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ColorHelper.setStatusBarGradiant(this)
-        when (MyApp.getPref()!!.getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
         }
         setContentView(R.layout.activity_instant_lyrics)
         ButterKnife.bind(this)
-        val toolbar: Toolbar = findViewById<Toolbar>(R.id.toolbar_)
+        val toolbar: Toolbar = findViewById(R.id.toolbar_)
         setSupportActionBar(toolbar)
 
         // add back arrow to toolbar
@@ -132,9 +132,7 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
         }
         val window = window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        getWindow().decorView.systemUiVisibility = (
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+        getWindow().decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         handler = Handler(Looper.getMainLooper())
         initializeListeners()
     }
