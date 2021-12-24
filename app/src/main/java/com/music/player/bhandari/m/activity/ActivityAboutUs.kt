@@ -21,6 +21,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.aemerse.iap.DataWrappers
+import com.aemerse.iap.IapConnector
+import com.aemerse.iap.PurchaseServiceListener
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -48,6 +51,11 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
  */
 class ActivityAboutUs : AppCompatActivity() {
     private val SITE_URL: String = "http://www.thetechguru.in/ab_music"
+
+    private lateinit var iapConnector: IapConnector
+    private val beer = getString(R.string.donate_beer)
+    private val beerBox = getString(R.string.donate_beer_box)
+    private val coffee = getString(R.string.donate_coffee)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //if player service not running, kill the app
@@ -115,6 +123,45 @@ class ActivityAboutUs : AppCompatActivity() {
             UtilityFun.logEvent(bundle)
         } catch (ignored: Exception) {
         }
+
+        val iapConnector = IapConnector(
+            context = this,
+            consumableKeys = listOf(beer, beerBox, coffee)
+        )
+
+        iapConnector.addPurchaseListener(object : PurchaseServiceListener {
+            override fun onPricesUpdated(iapKeyPrices: Map<String, DataWrappers.SkuDetails>) {
+                // list of available products will be received here, so you can update UI with prices if needed
+            }
+
+            override fun onProductPurchased(purchaseInfo: DataWrappers.PurchaseInfo) {
+                // will be triggered whenever purchase succeeded
+                when (purchaseInfo.sku) {
+                    beer -> {
+                        startActivity(Intent(this@ActivityAboutUs,
+                            ActivitySettings::class.java))
+                        finish()
+                        return
+                    }
+                    beerBox -> {
+                        startActivity(Intent(this@ActivityAboutUs,
+                            ActivitySettings::class.java))
+                        finish()
+                        return
+                    }
+                    coffee -> {
+                        startActivity(Intent(this@ActivityAboutUs,
+                            ActivitySettings::class.java))
+                        finish()
+                        return
+                    }
+                }
+            }
+
+            override fun onProductRestored(purchaseInfo: DataWrappers.PurchaseInfo) {
+                // will be triggered fetching owned products using IapConnector
+            }
+        })
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -180,9 +227,10 @@ class ActivityAboutUs : AppCompatActivity() {
                 startActivity(Intent(this, ActivityLicenses::class.java))
             R.id.action_tou -> showDisclaimerDialog()
             R.id.nav_website -> try {
-                val browserIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(WEBSITE))
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(WEBSITE))
                 startActivity(browserIntent)
-            } catch (e: Exception) {
+            }
+            catch (e: Exception) {
                 Toast.makeText(this@ActivityAboutUs,
                     getString(R.string.error_opening_browser),
                     Toast.LENGTH_SHORT).show()
@@ -218,22 +266,13 @@ class ActivityAboutUs : AppCompatActivity() {
             .title(R.string.about_us_support_dev_title)
             .message(R.string.about_us_support_dev_content)
             .positiveButton(R.string.about_us_support_dev_pos){
-                val intent =
-                    Intent(this@ActivityAboutUs, ActivityDonateFunds::class.java)
-                intent.putExtra("donate_type", Constants.DONATE.COFFEE)
-                startActivity(intent)
+                iapConnector.purchase(this, coffee)
             }
             .negativeButton(R.string.about_us_support_dev_neg){
-                val intent: Intent =
-                    Intent(this@ActivityAboutUs, ActivityDonateFunds::class.java)
-                intent.putExtra("donate_type", Constants.DONATE.BEER)
-                startActivity(intent)
+                iapConnector.purchase(this, beer)
             }
             .neutralButton(R.string.about_us_support_dev_neu){
-                val intent: Intent =
-                    Intent(this@ActivityAboutUs, ActivityDonateFunds::class.java)
-                intent.putExtra("donate_type", Constants.DONATE.JD)
-                startActivity(intent)
+                iapConnector.purchase(this, beerBox)
             }
             .show()
     }

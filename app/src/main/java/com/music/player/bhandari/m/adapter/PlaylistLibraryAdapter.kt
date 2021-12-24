@@ -12,6 +12,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
@@ -90,7 +91,7 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
                 Play()
             }
             R.id.action_share -> Share()
-            R.id.action_delete -> Delete()
+            R.id.action_delete -> delete()
             R.id.action_play_next -> AddToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
             R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
             R.id.action_clear_playlist -> when {
@@ -151,17 +152,20 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
                 return
             }
         }
-        if (files.isNotEmpty()) {
-            val intent: Intent = Intent()
-            intent.action = Intent.ACTION_SEND_MULTIPLE
-            intent.type = "*/*"
-            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files)
-            context.startActivity(Intent.createChooser(intent, "multiple audio files"))
-        } else {
-            //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();
-            Snackbar.make(viewParent!!,
-                context.getString(R.string.empty_play_list),
-                Snackbar.LENGTH_SHORT).show()
+        when {
+            files.isNotEmpty() -> {
+                val intent = Intent()
+                intent.action = Intent.ACTION_SEND_MULTIPLE
+                intent.type = "*/*"
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files)
+                context.startActivity(Intent.createChooser(intent, "multiple audio files"))
+            }
+            else -> {
+                //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();
+                Snackbar.make(viewParent!!,
+                    context.getString(R.string.empty_play_list),
+                    Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -202,42 +206,32 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
         }
     }
 
-    private fun Delete() {
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.are_u_sure))
-//            .positiveButton(R.string.yes)
-//            .negativeButton(R.string.no)
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    if (((headers.get(position) == Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED) || (headers.get(
-//                            position) == Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED) || (headers.get(
-//                            position) == Constants.SYSTEM_PLAYLISTS.MOST_PLAYED) || (headers.get(
-//                            position) == Constants.SYSTEM_PLAYLISTS.MY_FAV))
-//                    ) {
-//                        //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
-//                        Snackbar.make(viewParent,
-//                            context.getString(R.string.cannot_del) + headers.get(position),
-//                            Snackbar.LENGTH_SHORT).show()
-//                        return
-//                    }
-//                    if (PlaylistManager.getInstance(MyApp.Companion.getContext())
-//                            .DeletePlaylist(headers.get(position))
-//                    ) {
-//                        //Toast.makeText(context,"Deleted "+headers.get(position),Toast.LENGTH_SHORT).show();
-//                        Snackbar.make(viewParent,
-//                            context.getString(R.string.deleted) + headers.get(position),
-//                            Snackbar.LENGTH_SHORT).show()
-//                        headers.remove(headers.get(position))
-//                        notifyDataSetChanged()
-//                    } else {
-//                        //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
-//                        Snackbar.make(viewParent,
-//                            context.getString(R.string.cannot_del) + headers.get(position),
-//                            Snackbar.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//            .show()
+    private fun delete() {
+        MaterialDialog(context)
+            .title(R.string.are_u_sure)
+            .positiveButton(R.string.yes){
+                if (((headers[position] == Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED) || (headers[position] == Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED) || (headers[position] == Constants.SYSTEM_PLAYLISTS.MOST_PLAYED) || (headers[position] == Constants.SYSTEM_PLAYLISTS.MY_FAV))) {
+                    //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
+                    Snackbar.make(viewParent!!, context.getString(R.string.cannot_del) + headers.get(position), Snackbar.LENGTH_SHORT).show()
+                    return@positiveButton
+                }
+                when {
+                    PlaylistManager.getInstance(MyApp.getContext())?.DeletePlaylist(headers.get(position)) == true -> {
+                        //Toast.makeText(context,"Deleted "+headers.get(position),Toast.LENGTH_SHORT).show();
+                        Snackbar.make(viewParent!!, context.getString(R.string.deleted) + headers[position], Snackbar.LENGTH_SHORT).show()
+                        headers.remove(headers[position])
+                        notifyDataSetChanged()
+                    }
+                    else -> {
+                        //Toast.makeText(context,"Cannot delete "+headers.get(position),Toast.LENGTH_SHORT).show();
+                        Snackbar.make(viewParent!!,
+                            context.getString(R.string.cannot_del) + headers[position],
+                            Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .negativeButton(R.string.no)
+            .show()
     }
 
     override fun getItemCount(): Int {

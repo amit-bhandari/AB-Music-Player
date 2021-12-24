@@ -6,24 +6,30 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.preference.CheckBoxPreference
 import android.preference.Preference
 import android.preference.PreferenceFragment
+import android.text.InputType
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.list.ItemListener
+import com.afollestad.materialdialogs.list.listItems
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
+import com.google.firebase.messaging.FirebaseMessaging
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
@@ -38,6 +44,10 @@ import com.music.player.bhandari.m.service.NotificationListenerService
 import com.music.player.bhandari.m.service.PlayerService
 import com.music.player.bhandari.m.utils.UtilityFun
 import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
+import io.github.inflationx.calligraphy3.CalligraphyConfig
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor
+import io.github.inflationx.viewpump.ViewPump
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import java.io.File
 import java.util.*
@@ -373,40 +383,42 @@ class ActivitySettings : AppCompatActivity() {
                     } else {
                         pos_text = getString(R.string.turn_off)
                     }
-//                    MyDialogBuilder(activity)
-//                        .title(R.string.notifications_title)
-//                        .content(R.string.notification_content)
-//                        .positiveButton(pos_text)
-//                        .negativeButton(getString(R.string.cancel))
-//                        .onPositive({ dialog, which ->
-//                            val country: String = MyApp.getPref()
-//                                .getString(MyApp.getContext()
-//                                    .getString(R.string.pref_user_country), "")
-//                            if (MyApp.getPref()
-//                                    .getBoolean(getString(R.string.pref_notifications), true)
-//                            ) {
-//                                MyApp.getPref().edit()
-//                                    .putBoolean(getString(R.string.pref_notifications), false)
-//                                    .apply()
-//                                try {
-//                                    FirebaseMessaging.getInstance().unsubscribeFromTopic(country)
-//                                    FirebaseMessaging.getInstance().unsubscribeFromTopic("ab_music")
-//                                } catch (ignored: Exception) {
-//                                }
-//                                notifications.isChecked = false
-//                            } else {
-//                                MyApp.getPref().edit()
-//                                    .putBoolean(getString(R.string.pref_notifications), true)
-//                                    .apply()
-//                                notifications.isChecked = true
-//                                try {
-//                                    FirebaseMessaging.getInstance().subscribeToTopic(country)
-//                                    FirebaseMessaging.getInstance().subscribeToTopic("ab_music")
-//                                } catch (ignored: Exception) {
-//                                }
-//                            }
-//                        })
-//                        .show()
+                    MaterialDialog(activity)
+                        .title(R.string.notifications_title)
+                        .message(R.string.notification_content)
+                        .positiveButton(text = pos_text){
+                            val country = MyApp.getPref().getString(MyApp.getContext().getString(R.string.pref_user_country), "")
+                            when {
+                                MyApp.getPref().getBoolean(getString(R.string.pref_notifications), true) -> {
+                                    MyApp.getPref().edit()
+                                        .putBoolean(getString(R.string.pref_notifications), false)
+                                        .apply()
+                                    try {
+                                        if (country != null) {
+                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(country)
+                                        }
+                                        FirebaseMessaging.getInstance().unsubscribeFromTopic("ab_music")
+                                    } catch (ignored: Exception) {
+                                    }
+                                    notifications.isChecked = false
+                                }
+                                else -> {
+                                    MyApp.getPref().edit()
+                                        .putBoolean(getString(R.string.pref_notifications), true)
+                                        .apply()
+                                    notifications.isChecked = true
+                                    try {
+                                        if (country != null) {
+                                            FirebaseMessaging.getInstance().subscribeToTopic(country)
+                                        }
+                                        FirebaseMessaging.getInstance().subscribeToTopic("ab_music")
+                                    } catch (ignored: Exception) {
+                                    }
+                                }
+                            }
+                        }
+                        .negativeButton(R.string.cancel)
+                        .show()
                     false
                 }
 
@@ -435,26 +447,24 @@ class ActivitySettings : AppCompatActivity() {
                     } else {
                         getString(R.string.turn_off)
                     }
-//                    val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                        .title(R.string.title_continous_playback)
-//                        .content(R.string.cont_playback_content)
-//                        .positiveButton(pos_text)
-//                        .negativeButton(getString(R.string.cancel))
-//                        .onPositive({ dialog12, which ->
-//                            if (newValue) {
-//                                MyApp.getPref().edit()
-//                                    .putBoolean(getString(R.string.pref_continuous_playback), true)
-//                                    .apply()
-//                                continuousPlaybackpref!!.isChecked = true
-//                            } else {
-//                                MyApp.getPref().edit()
-//                                    .putBoolean(getString(R.string.pref_continuous_playback), false)
-//                                    .apply()
-//                                continuousPlaybackpref!!.isChecked = false
-//                            }
-//                        })
-//                        .build()
-//                    dialog.show()
+                    val dialog: MaterialDialog = MaterialDialog(activity)
+                        .title(R.string.title_continous_playback)
+                        .message(R.string.cont_playback_content)
+                        .positiveButton(text = pos_text){
+                            if (newValue) {
+                                MyApp.getPref().edit()
+                                    .putBoolean(getString(R.string.pref_continuous_playback), true)
+                                    .apply()
+                                continuousPlaybackPref.isChecked = true
+                            } else {
+                                MyApp.getPref().edit()
+                                    .putBoolean(getString(R.string.pref_continuous_playback), false)
+                                    .apply()
+                                continuousPlaybackPref.isChecked = false
+                            }
+                        }
+                        .negativeButton(R.string.cancel)
+                    dialog.show()
                     false
                 }
             val dataSaverPref: CheckBoxPreference =
@@ -466,24 +476,23 @@ class ActivitySettings : AppCompatActivity() {
                     } else {
                         getString(R.string.turn_off)
                     }
-//                    val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                        .title(R.string.title_data_Saver)
-//                        .content(R.string.data_saver_content)
-//                        .positiveButton(pos_text)
-//                        .negativeButton(getString(R.string.cancel))
-//                        .onPositive({ dialog13, which ->
-//                            if (newValue) {
-//                                MyApp.getPref().edit()
-//                                    .putBoolean(getString(R.string.pref_data_saver), true).apply()
-//                                dataSaverpref!!.isChecked = true
-//                            } else {
-//                                MyApp.getPref().edit()
-//                                    .putBoolean(getString(R.string.pref_data_saver), false).apply()
-//                                dataSaverpref!!.isChecked = false
-//                            }
-//                        })
-//                        .build()
-//                    dialog.show()
+                    val dialog: MaterialDialog = MaterialDialog(activity)
+                        .title(R.string.title_data_Saver)
+                        .message(R.string.data_saver_content)
+                        .positiveButton(text = pos_text){
+                            if (newValue) {
+                                MyApp.getPref().edit()
+                                    .putBoolean(getString(R.string.pref_data_saver), true).apply()
+                                dataSaverPref.isChecked = true
+                            } else {
+                                MyApp.getPref().edit()
+                                    .putBoolean(getString(R.string.pref_data_saver), false).apply()
+                                dataSaverPref.isChecked = false
+                            }
+                        }
+                        .negativeButton(R.string.cancel)
+
+                    dialog.show()
                     false
                 }
             instantLyricStatus =
@@ -491,36 +500,38 @@ class ActivitySettings : AppCompatActivity() {
             //instant lyric
             instantLyricStatus!!.onPreferenceChangeListener =
                 Preference.OnPreferenceChangeListener { preference: Preference?, newValue: Any ->
-                    val pos_text: String
-                    pos_text = if ((newValue as Boolean)) {
-                        getString(R.string.turn_on)
-                    } else {
-                        getString(R.string.turn_off)
+                    val pos_text: String = when {
+                        newValue as Boolean -> {
+                            getString(R.string.turn_on)
+                        }
+                        else -> {
+                            getString(R.string.turn_off)
+                        }
                     }
-        //                    val dialog: MaterialDialog = MyDialogBuilder(activity)
-        //                        .title(R.string.instant_lyrics_title)
-        //                        .content(R.string.instant_lyrics_content)
-        //                        .positiveButton(pos_text)
-        //                        .negativeButton(getString(R.string.cancel))
-        //                        .onPositive({ dialog1, which ->
-        //                            if (newValue) {
-        //                                val intent: Intent =
-        //                                    Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-        //                                startActivity(intent)
-        //                                Toast.makeText(MyApp.getContext(),
-        //                                    "Click on AB Music to enable!",
-        //                                    Toast.LENGTH_LONG).show()
-        //                            } else {
-        //                                val intent: Intent =
-        //                                    Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-        //                                startActivity(intent)
-        //                                Toast.makeText(MyApp.getContext(),
-        //                                    "Click on AB Music to disable!",
-        //                                    Toast.LENGTH_LONG).show()
-        //                            }
-        //                        })
-        //                        .build()
-        //                    dialog.show()
+                    MaterialDialog(activity)
+                        .title(R.string.instant_lyrics_title)
+                        .message(R.string.instant_lyrics_content)
+                        .positiveButton(text = pos_text){
+                            when {
+                                newValue -> {
+                                    val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                                    startActivity(intent)
+                                    Toast.makeText(MyApp.getContext(),
+                                        "Click on AB Music to enable!",
+                                        Toast.LENGTH_LONG).show()
+                                }
+                                else -> {
+                                    val intent: Intent =
+                                        Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                                    startActivity(intent)
+                                    Toast.makeText(MyApp.getContext(),
+                                        "Click on AB Music to disable!",
+                                        Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+                        .negativeButton(R.string.cancel)
+                        .show()
                     false
                 }
 
@@ -647,115 +658,116 @@ class ActivitySettings : AppCompatActivity() {
         }
 
         private fun albumViewDialog() {
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(getString(R.string.title_album_lib_view))
-//                .items(arrayOf(LIST, GRID) as Array<CharSequence>?)
-//                .itemsCallback(MaterialDialog.ListCallback({ dialog1, view, which, text ->
-//                    when (text.toString()) {
-//                        LIST -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putBoolean(getString(R.string.pref_album_lib_view), false).apply()
-//                            findPreference(getString(R.string.pref_album_lib_view)).summary = LIST
-//                        }
-//                        GRID -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putBoolean(getString(R.string.pref_album_lib_view), true).apply()
-//                            findPreference(getString(R.string.pref_album_lib_view)).summary = GRID
-//                        }
-//                    }
-//                }) as MaterialDialog.ListCallback?)
-//                .build()
-//            dialog.show()
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(R.string.title_album_lib_view)
+                .listItems(items = listOf(LIST, GRID), selection = object : ItemListener{
+                    override fun invoke(dialog: MaterialDialog, index: Int, text: CharSequence) {
+                        when (text.toString()) {
+                            LIST -> {
+                                MyApp.getPref().edit()
+                                    .putBoolean(getString(R.string.pref_album_lib_view), false).apply()
+                                findPreference(getString(R.string.pref_album_lib_view)).summary = LIST
+                            }
+                            GRID -> {
+                                MyApp.getPref().edit()
+                                    .putBoolean(getString(R.string.pref_album_lib_view), true).apply()
+                                findPreference(getString(R.string.pref_album_lib_view)).summary = GRID
+                            }
+                        }
+                    }
+                })
+
+            dialog.show()
         }
 
         private fun navBackDialog() {
             ///get current setting
             // 0 - System default   2 - custom
-            val currentSelection: Int =
-                MyApp.Companion.getPref().getInt(getString(R.string.pref_nav_library_back), 0)
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(R.string.title_nav_back)
-//                .items(R.array.nav_back_pref_array)
-//                .itemsCallbackSingleChoice(currentSelection, { dialog1, view, which, text ->
-//                    when (which) {
-//                        0 -> MyApp.Companion.getPref().edit()
-//                            .putInt(getString(R.string.pref_nav_library_back), which).apply()
-//                        1 -> {
-//                            backgroundSelectionStatus = NAVIGATION_DRAWER
-//                            CropImage.activity()
-//                                .setGuidelines(CropImageView.Guidelines.ON)
-//                                .setAspectRatio(11, 16)
-//                                .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-//                                .setOutputCompressQuality(80)
-//                                .start(activity)
-//                            dialog1.dismiss()
-//                        }
-//                    }
-//                    true
-//                })
-//                .positiveButton(R.string.okay)
-//                .build()
-//            dialog.show()
+            val currentSelection: Int = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back), 0)
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(R.string.title_nav_back)
+                .listItems(R.array.nav_back_pref_array, selection = object : ItemListener{
+                    override fun invoke(dialog: MaterialDialog, index: Int, text: CharSequence) {
+                        when (index) {
+                            0 -> MyApp.getPref().edit()
+                                .putInt(getString(R.string.pref_nav_library_back), index).apply()
+                            1 -> {
+                                backgroundSelectionStatus = NAVIGATION_DRAWER
+                                CropImage.activity()
+                                    .setGuidelines(CropImageView.Guidelines.ON)
+                                    .setAspectRatio(11, 16)
+                                    .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                                    .setOutputCompressQuality(80)
+                                    .start(activity)
+                            }
+                        }
+                        true
+                    }
+                })
+                .positiveButton(R.string.okay)
+
+            dialog.show()
         }
 
         private fun defAlbumArtDialog() {
             ///get current setting
             // 0 - System default   2 - custom
             val currentSelection: Int =
-                MyApp.Companion.getPref().getInt(getString(R.string.pref_default_album_art), 0)
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(R.string.nav_default_album_art)
-//                .items(R.array.def_album_art_pref_array)
-//                .itemsCallbackSingleChoice(currentSelection, { dialog1, view, which, text ->
-//                    when (which) {
-//                        0 -> MyApp.Companion.getPref().edit()
-//                            .putInt(getString(R.string.pref_default_album_art), which).apply()
-//                        1 -> {
-//                            backgroundSelectionStatus = DEFAULT_ALBUM_ART
-//                            CropImage.activity()
-//                                .setGuidelines(CropImageView.Guidelines.ON)
-//                                .setAspectRatio(1, 1)
-//                                .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-//                                .setOutputCompressQuality(80)
-//                                .start(activity)
-//                            dialog1.dismiss()
-//                        }
-//                    }
-//                    true
-//                })
-//                .positiveButton(R.string.okay)
-//                .build()
-//            dialog.show()
+                MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(R.string.nav_default_album_art)
+                .listItems(R.array.def_album_art_pref_array, selection = object : ItemListener{
+                    override fun invoke(dialog: MaterialDialog, index: Int, text: CharSequence) {
+                        when (index) {
+                            0 -> MyApp.getPref().edit()
+                                .putInt(getString(R.string.pref_default_album_art), index).apply()
+                            1 -> {
+                                backgroundSelectionStatus = DEFAULT_ALBUM_ART
+                                CropImage.activity()
+                                    .setGuidelines(CropImageView.Guidelines.ON)
+                                    .setAspectRatio(1, 1)
+                                    .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                                    .setOutputCompressQuality(80)
+                                    .start(activity)
+                            }
+                        }
+                        true
+                    }
+                })
+                .positiveButton(R.string.okay)
+
+            dialog.show()
         }
 
         private fun mainLibBackDialog() {
             ///get current setting
             // 0 - System default   2 - custom
             val currentSelection: Int =
-                MyApp.Companion.getPref().getInt(getString(R.string.pref_main_library_back), 0)
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(R.string.title_main_library_back)
-//                .items(R.array.main_lib_back_pref_array)
-//                .itemsCallbackSingleChoice(currentSelection, { dialog1, view, which, text ->
-//                    when (which) {
-//                        0 -> MyApp.Companion.getPref().edit()
-//                            .putInt(getString(R.string.pref_main_library_back), which).apply()
-//                        1 -> {
-//                            backgroundSelectionStatus = MAIN_LIB
-//                            CropImage.activity()
-//                                .setGuidelines(CropImageView.Guidelines.ON)
-//                                .setAspectRatio(11, 16)
-//                                .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-//                                .setOutputCompressQuality(50)
-//                                .start(activity)
-//                            dialog1.dismiss()
-//                        }
-//                    }
-//                    true
-//                })
-//                .positiveButton(R.string.okay)
-//                .build()
-//            dialog.show()
+                MyApp.getPref().getInt(getString(R.string.pref_main_library_back), 0)
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(R.string.title_main_library_back)
+                .listItems(R.array.main_lib_back_pref_array, selection = object : ItemListener {
+                    override fun invoke(dialog: MaterialDialog, index: Int, text: CharSequence) {
+
+                        when (index) {
+                        0 -> MyApp.getPref().edit()
+                        .putInt(getString(R.string.pref_main_library_back), index).apply()
+                        1 -> {
+                        backgroundSelectionStatus = MAIN_LIB
+                        CropImage.activity()
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .setAspectRatio(11, 16)
+                            .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                            .setOutputCompressQuality(50)
+                            .start(activity)
+                    }
+                    }
+                    true
+                }
+                })
+                .positiveButton(R.string.okay)
+
+            dialog.show()
         }
 
         private fun nowPlayingBackDialog() {
@@ -763,110 +775,101 @@ class ActivitySettings : AppCompatActivity() {
             ///get current setting
             // 0 - System default   1 - artist image  2 - album art 3 - custom  4- custom (if Artist image unavailable)
             val currentSelection: Int =
-                MyApp.Companion.getPref().getInt(getString(R.string.pref_now_playing_back), 1)
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(R.string.title_now_playing_back)
-//                .items(R.array.now_playing_back_pref_array)
-//                .itemsCallbackSingleChoice(currentSelection, { dialog1, view, which, text ->
-//                    when (which) {
-//                        0, 1, 2 -> MyApp.Companion.getPref().edit()
-//                            .putInt(getString(R.string.pref_now_playing_back), which).apply()
-//                        3 -> {
-//                            backgroundSelectionStatus = NOW_PLAYING
-//                            CropImage.activity()
-//                                .setGuidelines(CropImageView.Guidelines.ON)
-//                                .setAspectRatio(9, 16)
-//                                .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-//                                .setOutputCompressQuality(50)
-//                                .start(activity)
-//                            dialog1.dismiss()
-//                        }
-//                    }
-//                    true
-//                })
-//                .positiveButton(R.string.okay)
-//                .build()
-//            dialog.show()
+                MyApp.getPref().getInt(getString(R.string.pref_now_playing_back), 1)
+            val dialog = MaterialDialog(activity)
+                .title(R.string.title_now_playing_back)
+                .listItems(R.array.now_playing_back_pref_array, selection = object : ItemListener{
+                    override fun invoke(dialog: MaterialDialog, index: Int, text: CharSequence) {
+                        when (index) {
+                            0, 1, 2 -> MyApp.getPref().edit()
+                                .putInt(getString(R.string.pref_now_playing_back), index).apply()
+                            3 -> {
+                                backgroundSelectionStatus = NOW_PLAYING
+                                CropImage.activity()
+                                    .setGuidelines(CropImageView.Guidelines.ON)
+                                    .setAspectRatio(9, 16)
+                                    .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                                    .setOutputCompressQuality(50)
+                                    .start(activity)
+                            }
+                        }
+                        true
+                    }
+                })
+                .positiveButton(R.string.okay)
+            dialog.show()
         }
 
         private fun displayExcludedFolders() {
-            val excludedFoldersString =
-                MyApp.Companion.getPref().getString(getString(R.string.pref_excluded_folders), "")
-            val excludedFolders: Array<String> =
-                excludedFoldersString!!.split(",".toRegex()).toTypedArray()
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(R.string.title_excluded_folders)
-//                .items(excludedFolders)
-//                .positiveButton(getString(R.string.add))
-//                .onPositive({ dialog12, which ->
-//                    dialog12.dismiss()
-//                    MyDialogBuilder(activity)
-//                        .title(getString(R.string.title_how_to_add))
-//                        .content(getString(R.string.content_how_to_add))
-//                        .positiveButton(getString(R.string.pos_how_to_add))
-//                        .show()
-//                })
-//                .negativeButton(getString(R.string.reset))
-//                .onNegative({ dialog1, which ->
-//                    MyApp.Companion.getPref().edit()
-//                        .putString(getString(R.string.pref_excluded_folders), "").apply()
-//                    MusicLibrary.getInstance().RefreshLibrary()
-//                    Toast.makeText(activity,
-//                        "Excluded folders reset, refreshing Music Library..",
-//                        Toast.LENGTH_SHORT).show()
-//                })
-//                .build()
-//            dialog.show()
+            val excludedFoldersString = MyApp.getPref().getString(getString(R.string.pref_excluded_folders), "")
+            val excludedFolders = excludedFoldersString!!.split(",".toRegex()).toTypedArray().toList()
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(R.string.title_excluded_folders)
+                .listItems(items = excludedFolders)
+                .positiveButton(R.string.add){
+                    MaterialDialog(activity)
+                        .title(R.string.title_how_to_add)
+                        .message(R.string.content_how_to_add)
+                        .positiveButton(R.string.pos_how_to_add)
+                        .show()
+                }
+                .negativeButton(R.string.reset){
+                    MyApp.getPref().edit().putString(getString(R.string.pref_excluded_folders), "").apply()
+                    MusicLibrary.instance.RefreshLibrary()
+                    Toast.makeText(activity, "Excluded folders reset, refreshing Music Library..", Toast.LENGTH_SHORT).show()
+                }
+
+            dialog.show()
         }
 
         private fun tabSeqDialog() {
-//            val inflater: LayoutInflater = activity.layoutInflater
-//            val dialogView: View = inflater.inflate(R.layout.tab_sequence_preference, null)
-//            val rv: RecyclerView = dialogView.findViewById(R.id.rv_for_tab_sequence)
-//            val tsa: TabSequenceAdapter = TabSequenceAdapter(this)
-//            rv.setAdapter(tsa)
-//            rv.setLayoutManager(WrapContentLinearLayoutManager(MyApp.Companion.getContext()!!))
-//            val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(tsa)
-//            mItemTouchHelper = ItemTouchHelper(callback)
-//            mItemTouchHelper.attachToRecyclerView(rv)
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(getString(R.string.setting_tab_seqe_title))
-//                .customView(dialogView, false)
-//                .dismissListener({ dialog1 ->
-//                    val temp: IntArray = tsa.getData()
-//                    val str: StringBuilder = StringBuilder()
-//                    for (aTemp: Int in temp) {
-//                        str.append(aTemp).append(",")
-//                    }
-//                    MyApp.Companion.getPref().edit()
-//                        .putString(getString(R.string.pref_tab_seq), str.toString()).apply()
-//                })
-//                .build()
-//            dialog.show()
+            val inflater: LayoutInflater = activity.layoutInflater
+            val dialogView: View = inflater.inflate(R.layout.tab_sequence_preference, null)
+            val rv: RecyclerView = dialogView.findViewById(R.id.rv_for_tab_sequence)
+            val tsa = TabSequenceAdapter(this)
+            rv.adapter = tsa
+            rv.layoutManager = WrapContentLinearLayoutManager(MyApp.getContext())
+            val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(tsa)
+            mItemTouchHelper = ItemTouchHelper(callback)
+            mItemTouchHelper!!.attachToRecyclerView(rv)
+            val dialog = MaterialDialog(activity)
+                .title(R.string.setting_tab_seqe_title)
+                .customView(view = dialogView, scrollable =  false)
+
+            dialog.setOnDismissListener {
+                    val temp: IntArray = tsa.getData()
+                    val str: StringBuilder = StringBuilder()
+                    for (aTemp: Int in temp) {
+                        str.append(aTemp).append(",")
+                    }
+                    MyApp.getPref().edit()
+                        .putString(getString(R.string.pref_tab_seq), str.toString()).apply()
+                }
+            dialog.show()
         }
 
         private fun themeSelectionDialog() {
-//            val inflater: LayoutInflater = activity.layoutInflater
-//            val dialogView: View = inflater.inflate(R.layout.theme_selector_dialog, null)
-//            val rv: RecyclerView = dialogView.findViewById(R.id.rv_for_theme_selector)
-//            val tsa: ThemeSelectorAdapter = ThemeSelectorAdapter()
-//            rv.setAdapter(tsa)
-//            val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(activity)
-//            layoutManager.setFlexDirection(FlexDirection.ROW)
-//            layoutManager.setJustifyContent(JustifyContent.SPACE_EVENLY)
-//            rv.setLayoutManager(layoutManager)
-//            //rv.setLayoutManager(new GridLayoutManager(getActivity(), 4));
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title("Select theme")
-//                .customView(dialogView, false)
-//                .dismissListener({ dialog12 -> })
-//                .positiveButton("Apply")
-//                .onPositive({ dialog1, which -> restartSettingsActivity() })
-//                .build()
-//            dialog.show()
+            val inflater: LayoutInflater = activity.layoutInflater
+            val dialogView: View = inflater.inflate(R.layout.theme_selector_dialog, null)
+            val rv: RecyclerView = dialogView.findViewById(R.id.rv_for_theme_selector)
+            val tsa = ThemeSelectorAdapter()
+            rv.adapter = tsa
+            val layoutManager = FlexboxLayoutManager(activity)
+            layoutManager.flexDirection = FlexDirection.ROW
+            layoutManager.justifyContent = JustifyContent.SPACE_EVENLY
+            rv.layoutManager = layoutManager
+            //rv.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(text = "Select theme")
+                .customView(view = dialogView, scrollable = false)
+                .positiveButton(text = "Apply"){
+                    restartSettingsActivity()
+                }
+
+            dialog.show()
         }
 
-        private fun RescanLibrary() {
+        private fun rescanLibrary() {
             MusicLibrary.instance.RefreshLibrary()
             val dialog: ProgressDialog = ProgressDialog.show(activity, "",
                 getString(R.string.library_rescan), true)
@@ -886,243 +889,233 @@ class ActivitySettings : AppCompatActivity() {
         }
 
         private fun shortClipDialog() {
-//            val linear: LinearLayout = LinearLayout(activity)
-//            linear.setOrientation(LinearLayout.VERTICAL)
-//            val text: TextView = TextView(activity)
-//            val summary: String =
-//                MyApp.Companion.getPref().getInt(getString(R.string.pref_hide_short_clips), 10)
-//                    .toString() + " seconds"
-//            text.setText(summary)
-//            text.setTypeface(TypeFaceHelper.getTypeFace(MyApp.Companion.getContext()))
-//            text.setPadding(0, 10, 0, 0)
-//            text.setGravity(Gravity.CENTER)
-//            val seek: SeekBar = SeekBar(activity)
-//            seek.setPadding(40, 10, 40, 10)
-//            seek.setMax(100)
-//            seek.setProgress(MyApp.Companion.getPref()
-//                .getInt(getString(R.string.pref_hide_short_clips), 10))
-//            seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-//                override fun onProgressChanged(
-//                    seekBar: SeekBar,
-//                    progress: Int,
-//                    fromUser: Boolean
-//                ) {
-//                    text.setText(progress.toString() + " seconds")
-//                }
-//
-//                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-//                override fun onStopTrackingTouch(seekBar: SeekBar) {
-//                    val progress: Int = seekBar.getProgress()
-//                    MyApp.Companion.getPref().edit()
-//                        .putInt(getString(R.string.pref_hide_short_clips), progress).apply()
-//                    findPreference(getString(R.string.pref_hide_short_clips)).summary = progress.toString() + " seconds"
-//                }
-//            })
-//            linear.addView(seek)
-//            linear.addView(text)
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(getString(R.string.title_hide_short_clips))
-//                .positiveButton(getString(R.string.okay))
-//                .negativeButton(getString(R.string.cancel))
-//                .onPositive({ dialog1, which -> RescanLibrary() })
-//                .customView(linear, false)
-//                .build()
-//            dialog.show()
+            val linear = LinearLayout(activity)
+            linear.orientation = LinearLayout.VERTICAL
+            val text = TextView(activity)
+            val summary = MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips), 10).toString() + " seconds"
+            text.text = summary
+            text.setTypeface(TypeFaceHelper.getTypeFace(MyApp.getContext()))
+            text.setPadding(0, 10, 0, 0)
+            text.gravity = Gravity.CENTER
+            val seek = SeekBar(activity)
+            seek.setPadding(40, 10, 40, 10)
+            seek.max = 100
+            seek.progress = MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips), 10)
+            seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    text.text = "$progress seconds"
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                    val progress: Int = seekBar.progress
+                    MyApp.getPref().edit().putInt(getString(R.string.pref_hide_short_clips), progress).apply()
+                    findPreference(getString(R.string.pref_hide_short_clips)).summary = progress.toString() + " seconds"
+                }
+            })
+            linear.addView(seek)
+            linear.addView(text)
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(R.string.title_hide_short_clips)
+                .positiveButton(R.string.okay){
+                    rescanLibrary()
+                }
+                .negativeButton(R.string.cancel)
+                .customView(view = linear, scrollable = false)
+
+            dialog.show()
         }
 
         private fun hideByStartDialog() {
-//            val text1: String = MyApp.Companion.getPref()
-//                .getString(getString(R.string.pref_hide_tracks_starting_with_1), "")
-//            val text2: String = MyApp.Companion.getPref()
-//                .getString(getString(R.string.pref_hide_tracks_starting_with_2), "")
-//            val text3: String = MyApp.Companion.getPref()
-//                .getString(getString(R.string.pref_hide_tracks_starting_with_3), "")
-//            findPreference(getString(R.string.pref_hide_tracks_starting_with)).summary = text1 + ", " + text2 + ", " + text3
-//            val linear: LinearLayout = LinearLayout(activity)
-//            linear.setPadding(10, 10, 10, 0)
-//            val myEditText1: EditText = EditText(activity) // Pass it an Activity or Context
-//            myEditText1.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.WRAP_CONTENT)) // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-//            myEditText1.setText(text1)
-//            //myEditText1.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-//            myEditText1.setInputType(InputType.TYPE_CLASS_TEXT)
-//            myEditText1.setMaxLines(1)
-//            linear.addView(myEditText1)
-//            val myEditText2: EditText = EditText(activity) // Pass it an Activity or Context
-//            myEditText2.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.WRAP_CONTENT)) // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-//            myEditText2.setText(text2)
-//            // myEditText2.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-//            myEditText2.setMaxLines(1)
-//            myEditText2.setInputType(InputType.TYPE_CLASS_TEXT)
-//            linear.addView(myEditText2)
-//            val myEditText3: EditText = EditText(activity) // Pass it an Activity or Context
-//            myEditText3.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.WRAP_CONTENT)) // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
-//            myEditText3.setText(text3)
-//            //myEditText3.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-//            myEditText3.setInputType(InputType.TYPE_CLASS_TEXT)
-//            myEditText3.setMaxLines(1)
-//            linear.addView(myEditText3)
-//            val tv: TextView = TextView(activity)
-//            tv.setText(getString(R.string.case_sensitive_text))
-//            tv.setTypeface(TypeFaceHelper.getTypeFace(MyApp.Companion.getContext()))
-//            tv.setPadding(0, 10, 0, 0)
-//            linear.addView(tv)
-//            linear.setOrientation(LinearLayout.VERTICAL)
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(getString(R.string.title_hide_tracks_starting_with))
-//                .positiveButton(getString(R.string.okay))
-//                .negativeButton(getString(R.string.cancel))
-//                .onPositive({ dialog1, which ->
-//                    val text11: String = myEditText1.getText().toString().trim({ it <= ' ' })
-//                    MyApp.Companion.getPref().edit()
-//                        .putString(getString(R.string.pref_hide_tracks_starting_with_1), text11)
-//                        .apply()
-//                    val text21: String = myEditText2.getText().toString().trim({ it <= ' ' })
-//                    MyApp.Companion.getPref().edit()
-//                        .putString(getString(R.string.pref_hide_tracks_starting_with_2), text21)
-//                        .apply()
-//                    val text31: String = myEditText3.getText().toString().trim({ it <= ' ' })
-//                    MyApp.Companion.getPref().edit()
-//                        .putString(getString(R.string.pref_hide_tracks_starting_with_3), text31)
-//                        .apply()
-//                    findPreference(getString(R.string.pref_hide_tracks_starting_with)).summary =
-//                        text11 + ", " + text21 + ", " + text31
-//                    RescanLibrary()
-//                })
-//                .customView(linear, true)
-//                .build()
-//            dialog.show()
+            val text1 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_1), "")
+            val text2 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_2), "")
+            val text3 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_3), "")
+            findPreference(getString(R.string.pref_hide_tracks_starting_with)).summary = text1 + ", " + text2 + ", " + text3
+            val linear: LinearLayout = LinearLayout(activity)
+            linear.setPadding(10, 10, 10, 0)
+            val myEditText1 = EditText(activity) // Pass it an Activity or Context
+            myEditText1.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT) // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+            myEditText1.setText(text1)
+            //myEditText1.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            myEditText1.inputType = InputType.TYPE_CLASS_TEXT
+            myEditText1.maxLines = 1
+            linear.addView(myEditText1)
+            val myEditText2 = EditText(activity) // Pass it an Activity or Context
+            myEditText2.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT) // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+            myEditText2.setText(text2)
+            // myEditText2.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            myEditText2.maxLines = 1
+            myEditText2.inputType = InputType.TYPE_CLASS_TEXT
+            linear.addView(myEditText2)
+            val myEditText3 = EditText(activity) // Pass it an Activity or Context
+            myEditText3.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT) // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+            myEditText3.setText(text3)
+            //myEditText3.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            myEditText3.inputType = InputType.TYPE_CLASS_TEXT
+            myEditText3.maxLines = 1
+            linear.addView(myEditText3)
+            val tv: TextView = TextView(activity)
+            tv.text = getString(R.string.case_sensitive_text)
+            tv.setTypeface(TypeFaceHelper.getTypeFace(MyApp.Companion.getContext()))
+            tv.setPadding(0, 10, 0, 0)
+            linear.addView(tv)
+            linear.orientation = LinearLayout.VERTICAL
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(R.string.title_hide_tracks_starting_with)
+                .positiveButton(R.string.okay){
+                    val text11: String = myEditText1.text.toString().trim { it <= ' ' }
+                    MyApp.getPref().edit()
+                        .putString(getString(R.string.pref_hide_tracks_starting_with_1), text11)
+                        .apply()
+                    val text21: String = myEditText2.text.toString().trim { it <= ' ' }
+                    MyApp.getPref().edit()
+                        .putString(getString(R.string.pref_hide_tracks_starting_with_2), text21)
+                        .apply()
+                    val text31: String = myEditText3.text.toString().trim { it <= ' ' }
+                    MyApp.getPref().edit()
+                        .putString(getString(R.string.pref_hide_tracks_starting_with_3), text31)
+                        .apply()
+                    findPreference(getString(R.string.pref_hide_tracks_starting_with)).summary = "$text11, $text21, $text31"
+                    rescanLibrary()
+                }
+                .negativeButton(R.string.cancel)
+                .customView(view = linear, scrollable = true)
+
+            dialog.show()
         }
 
         private fun ShakeActionDialog() {
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(getString(R.string.title_shake_action))
-//                .items(arrayOf(NEXT, PLAY_PAUSE, PREVIOUS) as Array<CharSequence>?)
-//                .itemsCallback(MaterialDialog.ListCallback({ dialog1, view, which, text ->
-//                    when (text.toString()) {
-//                        NEXT -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putInt(getString(R.string.pref_shake_action),
-//                                    Constants.SHAKE_ACTIONS.NEXT).apply()
-//                            findPreference(getString(R.string.pref_shake_action)).summary = NEXT
-//                        }
-//                        PLAY_PAUSE -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putInt(getString(R.string.pref_shake_action),
-//                                    Constants.SHAKE_ACTIONS.PLAY_PAUSE).apply()
-//                            findPreference(getString(R.string.pref_shake_action)).summary =
-//                                PLAY_PAUSE
-//                        }
-//                        PREVIOUS -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putInt(getString(R.string.pref_shake_action),
-//                                    Constants.SHAKE_ACTIONS.PREVIOUS).apply()
-//                            findPreference(getString(R.string.pref_shake_action)).summary = PREVIOUS
-//                        }
-//                    }
-//                }) as MaterialDialog.ListCallback?)
-//                .build()
-//            dialog.show()
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(R.string.title_shake_action)
+                .listItems(items = listOf(NEXT, PLAY_PAUSE, PREVIOUS), selection = object : ItemListener{
+                    override fun invoke(dialog: MaterialDialog, index: Int, text: CharSequence) {
+                        when (text.toString()) {
+                            NEXT -> {
+                                MyApp.getPref().edit()
+                                    .putInt(getString(R.string.pref_shake_action),
+                                        Constants.SHAKE_ACTIONS.NEXT).apply()
+                                findPreference(getString(R.string.pref_shake_action)).summary = NEXT
+                            }
+                            PLAY_PAUSE -> {
+                                MyApp.getPref().edit()
+                                    .putInt(getString(R.string.pref_shake_action),
+                                        Constants.SHAKE_ACTIONS.PLAY_PAUSE).apply()
+                                findPreference(getString(R.string.pref_shake_action)).summary =
+                                    PLAY_PAUSE
+                            }
+                            PREVIOUS -> {
+                                MyApp.getPref().edit()
+                                    .putInt(getString(R.string.pref_shake_action),
+                                        Constants.SHAKE_ACTIONS.PREVIOUS).apply()
+                                findPreference(getString(R.string.pref_shake_action)).summary = PREVIOUS
+                            }
+                        }
+                    }
+
+                })
+
+            dialog.show()
         }
 
         private fun resetPrefDialog() {
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(getString(R.string.title_reset_pref) + " ?") // .content(getString(R.string.lyric_art_info_content))
-//                .positiveButton(getString(R.string.yes))
-//                .negativeButton(getString(R.string.cancel))
-//                .onPositive { dialog1, which ->
-//                    val editor: SharedPreferences.Editor = MyApp.getPref()!!.edit()
-//                    editor.putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY)
-//                    editor.putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOFIA)
-//                    editor.remove(getString(R.string.pref_tab_seq))
-//                    editor.putBoolean(getString(R.string.pref_lock_screen_album_Art), true)
-//                    editor.putBoolean(getString(R.string.pref_shake), false)
-//                    editor.putInt(getString(R.string.pref_hide_short_clips), 10)
-//                    editor.putString(getString(R.string.pref_hide_tracks_starting_with_1), "")
-//                    editor.putString(getString(R.string.pref_hide_tracks_starting_with_2), "")
-//                    editor.putString(getString(R.string.pref_hide_tracks_starting_with_3), "")
-//                    editor.putString(getString(R.string.pref_excluded_folders), "")
-//                    editor.putBoolean(getString(R.string.pref_prefer_system_equ), true)
-//                    editor.putInt(getString(R.string.pref_main_library_back), 0)
-//                    editor.putInt(getString(R.string.pref_now_playing_back), 0)
-//                    editor.putBoolean(getString(R.string.pref_hide_lock_button), false)
-//                    editor.putBoolean(getString(R.string.pref_notifications), true)
-//                    editor.putBoolean(getString(R.string.pref_continuous_playback), false)
-//                    editor.putBoolean(getString(R.string.pref_data_saver), false)
-//                    editor.apply()
-//                    restartSettingsActivity()
-//                }
-//                .build()
-//            dialog.show()
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(text = getString(R.string.title_reset_pref) + " ?") // .content(getString(R.string.lyric_art_info_content))
+                .positiveButton(R.string.yes){
+                    val editor: SharedPreferences.Editor = MyApp.getPref().edit()
+                    editor.putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY)
+                    editor.putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOFIA)
+                    editor.remove(getString(R.string.pref_tab_seq))
+                    editor.putBoolean(getString(R.string.pref_lock_screen_album_Art), true)
+                    editor.putBoolean(getString(R.string.pref_shake), false)
+                    editor.putInt(getString(R.string.pref_hide_short_clips), 10)
+                    editor.putString(getString(R.string.pref_hide_tracks_starting_with_1), "")
+                    editor.putString(getString(R.string.pref_hide_tracks_starting_with_2), "")
+                    editor.putString(getString(R.string.pref_hide_tracks_starting_with_3), "")
+                    editor.putString(getString(R.string.pref_excluded_folders), "")
+                    editor.putBoolean(getString(R.string.pref_prefer_system_equ), true)
+                    editor.putInt(getString(R.string.pref_main_library_back), 0)
+                    editor.putInt(getString(R.string.pref_now_playing_back), 0)
+                    editor.putBoolean(getString(R.string.pref_hide_lock_button), false)
+                    editor.putBoolean(getString(R.string.pref_notifications), true)
+                    editor.putBoolean(getString(R.string.pref_continuous_playback), false)
+                    editor.putBoolean(getString(R.string.pref_data_saver), false)
+                    editor.apply()
+                    restartSettingsActivity()
+                }
+                .negativeButton(R.string.cancel)
+
+            dialog.show()
         }
 
         private fun fontPrefSelectionDialog() {
-//            val dialog: MaterialDialog = MyDialogBuilder(activity)
-//                .title(getString(R.string.title_text_font))
-//                .items(arrayOf(MANROPE,
-//                    ROBOTO,
-//                    ASAP,
-//                    SOFIA,
-//                    MONOSPACE,
-//                    SYSTEM_DEFAULT) as Array<CharSequence>?)
-//                .itemsCallback(MaterialDialog.ListCallback { dialog1, view, which, text ->
-//                    when (text.toString()) {
-//                        MANROPE -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putInt(getString(R.string.pref_text_font),
-//                                    Constants.TYPEFACE.MANROPE).apply()
-//                            findPreference(getString(R.string.pref_text_font)).summary = MANROPE
-//                        }
-//                        ROBOTO -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putInt(getString(R.string.pref_text_font),
-//                                    Constants.TYPEFACE.ROBOTO).apply()
-//                            findPreference(getString(R.string.pref_text_font)).summary = ROBOTO
-//                        }
-//                        MONOSPACE -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putInt(getString(R.string.pref_text_font),
-//                                    Constants.TYPEFACE.MONOSPACE).apply()
-//                            findPreference(getString(R.string.pref_text_font)).summary = MONOSPACE
-//                        }
-//                        ASAP -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP)
-//                                .apply()
-//                            findPreference(getString(R.string.pref_text_font)).summary = ASAP
-//                        }
-//                        SOFIA -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putInt(getString(R.string.pref_text_font),
-//                                    Constants.TYPEFACE.SOFIA).apply()
-//                            findPreference(getString(R.string.pref_text_font)).summary = SOFIA
-//                        }
-//                        SYSTEM_DEFAULT -> {
-//                            MyApp.Companion.getPref().edit()
-//                                .putInt(getString(R.string.pref_text_font),
-//                                    Constants.TYPEFACE.SYSTEM_DEFAULT).apply()
-//                            findPreference(getString(R.string.pref_text_font)).summary =
-//                                SYSTEM_DEFAULT
-//                        }
-//                    }
-//                    MyApp.Companion.getPref().edit()
-//                        .putBoolean(getString(R.string.pref_font_already_logged), false).apply()
-//                    val path: String? = TypeFaceHelper.getTypeFacePath()
-//                    if (path != null) {
-//                        ViewPump.init(ViewPump.builder()
-//                            .addInterceptor(CalligraphyInterceptor(
-//                                CalligraphyConfig.Builder()
-//                                    .setDefaultFontPath(path)
-//                                    .setFontAttrId(R.attr.fontPath)
-//                                    .build()))
-//                            .build())
-//                    }
-//                    restartSettingsActivity()
-//                } as MaterialDialog.ListCallback?)
-//                .build()
-//            dialog.show()
+            val dialog: MaterialDialog = MaterialDialog(activity)
+                .title(R.string.title_text_font)
+                .listItems(items = listOf(MANROPE,
+                    ROBOTO,
+                    ASAP,
+                    SOFIA,
+                    MONOSPACE,
+                    SYSTEM_DEFAULT)
+                , selection = object : ItemListener{
+                        override fun invoke(dialog: MaterialDialog, index: Int, text: CharSequence, ) {
+                            when (text.toString()) {
+                                MANROPE -> {
+                                    MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font),
+                                            Constants.TYPEFACE.MANROPE).apply()
+                                    findPreference(getString(R.string.pref_text_font)).summary = MANROPE
+                                }
+                                ROBOTO -> {
+                                    MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font),
+                                            Constants.TYPEFACE.ROBOTO).apply()
+                                    findPreference(getString(R.string.pref_text_font)).summary = ROBOTO
+                                }
+                                MONOSPACE -> {
+                                    MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font),
+                                            Constants.TYPEFACE.MONOSPACE).apply()
+                                    findPreference(getString(R.string.pref_text_font)).summary = MONOSPACE
+                                }
+                                ASAP -> {
+                                    MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP)
+                                        .apply()
+                                    findPreference(getString(R.string.pref_text_font)).summary = ASAP
+                                }
+                                SOFIA -> {
+                                    MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font),
+                                            Constants.TYPEFACE.SOFIA).apply()
+                                    findPreference(getString(R.string.pref_text_font)).summary = SOFIA
+                                }
+                                SYSTEM_DEFAULT -> {
+                                    MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font),
+                                            Constants.TYPEFACE.SYSTEM_DEFAULT).apply()
+                                    findPreference(getString(R.string.pref_text_font)).summary =
+                                        SYSTEM_DEFAULT
+                                }
+                            }
+                            MyApp.getPref().edit()
+                                .putBoolean(getString(R.string.pref_font_already_logged), false).apply()
+                            val path = TypeFaceHelper.getTypeFacePath()
+                            ViewPump.init(ViewPump.builder()
+                                .addInterceptor(CalligraphyInterceptor(
+                                    CalligraphyConfig.Builder()
+                                        .setDefaultFontPath(path)
+                                        .setFontAttrId(R.attr.fontPath)
+                                        .build()))
+                                .build())
+                            restartSettingsActivity()
+                        }
+                    }
+                )
+
+            dialog.show()
         }
 
         private fun restartSettingsActivity() {
@@ -1152,7 +1145,7 @@ class ActivitySettings : AppCompatActivity() {
         @SuppressLint("ClickableViewAccessibility")
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             //holder.title.setText(data.get(0));
-            when (data.get(position)) {
+            when (data[position]) {
                 Constants.TABS.ALBUMS -> holder.title.text = MyApp.getContext().getString(R.string.tab_album)
                 Constants.TABS.ARTIST -> holder.title.text = MyApp.getContext().getString(R.string.tab_artist)
                 Constants.TABS.FOLDER -> holder.title.text = MyApp.getContext().getString(R.string.tab_folder)
@@ -1161,9 +1154,7 @@ class ActivitySettings : AppCompatActivity() {
                 Constants.TABS.TRACKS -> holder.title.text = MyApp.getContext().getString(R.string.tab_track)
             }
             holder.handle.setOnTouchListener { view: View?, motionEvent: MotionEvent? ->
-                if (MotionEventCompat.getActionMasked(motionEvent) ==
-                    MotionEvent.ACTION_DOWN
-                ) {
+                if (MotionEventCompat.getActionMasked(motionEvent) == MotionEvent.ACTION_DOWN) {
                     mDragStartListener.onStartDrag(holder)
                 }
                 false

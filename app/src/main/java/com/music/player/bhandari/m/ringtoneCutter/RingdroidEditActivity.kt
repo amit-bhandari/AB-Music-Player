@@ -206,11 +206,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
     }
 
     /** Called with an Activity we started with an Intent returns.  */
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        dataIntent: Intent?
-    ) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, dataIntent: Intent?) {
         super.onActivityResult(requestCode, resultCode, dataIntent)
         Log.v("Ringdroid", "EditActivity onActivityResult")
         if (requestCode == REQUEST_CODE_CHOOSE_CONTACT) {
@@ -565,7 +561,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
                 }
             });
         mProgressDialog.show();*/
-//        mProgressDialog = MyDialogBuilder(this)
+//        mProgressDialog = MyNDialogBuilder(this)
 //            .title(R.string.progress_dialog_loading)
 //            .progress(false, 100, true)
 //            .dismissListener(object : DialogInterface.OnDismissListener {
@@ -1020,12 +1016,12 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
                 })
             .setCancelable(false)
             .show();*/
-//        MyDialogBuilder(this)
-//            .title(title)
-//            .content(message)
-//            .positiveButton(R.string.okay)
-//            .cancelable(false)
-//            .show()
+        MaterialDialog(this)
+            .title(text = title.toString())
+            .message(text = message)
+            .positiveButton(R.string.okay)
+            .cancelable(false)
+            .show()
     }
 
     private fun showFinalAlert(e: Exception, messageResourceId: Int) {
@@ -1033,12 +1029,11 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
     }
 
     private fun makeRingtoneFilename(title: CharSequence, extension: String): String? {
-        val subdir: String
         var externalRootDir: String = Environment.getExternalStorageDirectory().path
         if (!externalRootDir.endsWith("/")) {
             externalRootDir += "/"
         }
-        subdir = when (mNewFileKind) {
+        val subdir: String = when (mNewFileKind) {
             FileSaveDialog.FILE_KIND_MUSIC ->             // TODO(nfaralli): can directly use Environment.getExternalStoragePublicDirectory(
                 // Environment.DIRECTORY_MUSIC).getPath() instead
                 "media/audio/music/"
@@ -1070,9 +1065,10 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
         // Try to make the filename unique
         var path: String? = null
         for (i in 0..99) {
-            var testPath: String?
-            if (i > 0) testPath = parentdir + filename + i + extension else testPath =
-                parentdir + filename + extension
+            val testPath = when {
+                i > 0 -> parentdir + filename + i + extension
+                else -> parentdir + filename + extension
+            }
             try {
                 val f = RandomAccessFile(File(testPath), "r")
                 f.close()
@@ -1099,7 +1095,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();*/
-//        mProgressDialog = MyDialogBuilder(this)
+//        mProgressDialog = MaterialDialog(this)
 //            .title(R.string.progress_dialog_saving)
 //            .progress(true, 0)
 //            .cancelable(false)

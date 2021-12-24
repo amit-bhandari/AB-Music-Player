@@ -18,6 +18,7 @@ import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.core.provider.FontRequest
@@ -26,6 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -695,33 +699,27 @@ class ActivityLyricCard : AppCompatActivity(), View.OnTouchListener {
         }
     }
 
-    fun showTextEditDialog() {
-//        val builder: MaterialDialog.Builder = MyDialogBuilder(this)
-//            .title("Edit text")
-//            .positiveButton(getString(R.string.okay))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val view: View? = dialog.getCustomView()
-//                    if (view == null) return
-//                    val lyric: AppCompatEditText = view.findViewById(R.id.text_lyric)
-//                    val artist: AppCompatEditText = view.findViewById(R.id.text_artist)
-//                    val track: AppCompatEditText = view.findViewById(R.id.text_track)
-//                    lyricText.setText(lyric.getText())
-//                    artistText.setText(artist.getText())
-//                    trackText.setText(track.getText())
-//                }
-//            })
-//            .customView(R.layout.dialog_edit_lyric_card_texts, true)
-       // val dialog: MaterialDialog = builder.build()
-        //val view: View? = dialog.getCustomView()
-       // if (view == null) return
-//        val lyric: AppCompatEditText = view.findViewById(R.id.text_lyric)
-//        val artist: AppCompatEditText = view.findViewById(R.id.text_artist)
-//        val track: AppCompatEditText = view.findViewById(R.id.text_track)
-//        lyric.setText(lyricText.getText())
-//        artist.setText(artistText.getText())
-//        track.setText(trackText.getText())
-      //  dialog.show()
+    private fun showTextEditDialog() {
+        val builder = MaterialDialog(this)
+            .title(text = "Edit text")
+            .positiveButton(R.string.okay){
+                val view: View = it.getCustomView()
+                val lyric: AppCompatEditText = view.findViewById(R.id.text_lyric)
+                val artist: AppCompatEditText = view.findViewById(R.id.text_artist)
+                val track: AppCompatEditText = view.findViewById(R.id.text_track)
+                lyricText!!.text = lyric.text
+                artistText!!.text = artist.text
+                trackText!!.text = track.text
+            }
+            .customView(R.layout.dialog_edit_lyric_card_texts, scrollable = true)
+        val view: View = builder.getCustomView()
+        val lyric: AppCompatEditText = view.findViewById(R.id.text_lyric)
+        val artist: AppCompatEditText = view.findViewById(R.id.text_artist)
+        val track: AppCompatEditText = view.findViewById(R.id.text_track)
+        lyric.setText(lyricText!!.text)
+        artist.setText(artistText!!.text)
+        track.setText(trackText!!.text)
+        builder.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -769,12 +767,9 @@ class ActivityLyricCard : AppCompatActivity(), View.OnTouchListener {
 
     internal inner class ImagesAdapter :
         RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
-        var urls: MutableMap<String, String> =  mutableMapOf<String, String>()
+        var urls: MutableMap<String, String> =  mutableMapOf()
 
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
-        ): RecyclerView.ViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             val v: View
             when (viewType) {
                 0 -> {

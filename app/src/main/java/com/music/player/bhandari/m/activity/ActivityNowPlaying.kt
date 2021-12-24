@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
 import android.text.InputType
+import android.text.method.ScrollingMovementMethod
 import android.transition.ArcMotion
 import android.util.DisplayMetrics
 import android.util.Log
@@ -19,6 +20,7 @@ import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -35,6 +37,11 @@ import androidx.viewpager.widget.ViewPager
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.input.InputCallback
+import com.afollestad.materialdialogs.input.getInputField
+import com.afollestad.materialdialogs.input.input
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -45,6 +52,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback
 import com.music.player.bhandari.m.adapter.CurrentTracklistAdapter
@@ -53,6 +61,8 @@ import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary
 import com.music.player.bhandari.m.model.PlaylistManager
 import com.music.player.bhandari.m.model.TrackItem
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics.Companion.POSITIVE_RESULT
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics
 import com.music.player.bhandari.m.service.PlayerService
 import com.music.player.bhandari.m.trackInfo.TrackInfoActivity
@@ -215,7 +225,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             toolbar!!.subtitle = playerService!!.getCurrentTrack()!!.getArtist()
         }
         setSupportActionBar(toolbar)
-        InitializeCurrentTracklistAdapter()
+        initializeCurrentTracklistAdapter()
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         screenWidth = displayMetrics.widthPixels
@@ -274,7 +284,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         mUIUpdateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 Log.v(Constants.TAG, "update UI__ please Jarvis")
-                UpdateUI(intent)
+                updateUI(intent)
             }
         }
         viewPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -371,55 +381,43 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
     }
 
     private fun showDisclaimerDialog() {
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(getString(R.string.lyrics_disclaimer_title))
-//            .content(getString(R.string.lyrics_disclaimer_content))
-//            .positiveButton(getString(R.string.lyrics_disclaimer_title_pos))
-//            .negativeButton(getString(R.string.lyrics_disclaimer_title_neg))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    MyApp.Companion.getPref().edit()
-//                        .putBoolean(getString(R.string.pref_disclaimer_accepted), true).apply()
-//                    (viewPagerAdapter!!.getItem(2) as FragmentLyrics).disclaimerAccepted()
-//                }
-//            })
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+        MaterialDialog(this)
+            .title(R.string.lyrics_disclaimer_title)
+            .message(R.string.lyrics_disclaimer_content)
+            .positiveButton(R.string.lyrics_disclaimer_title_pos){
+                MyApp.getPref().edit()
+                    .putBoolean(getString(R.string.pref_disclaimer_accepted), true).apply()
+                (viewPagerAdapter!!.getItem(2) as FragmentLyrics).disclaimerAccepted()
+
+            }
+            .negativeButton(R.string.lyrics_disclaimer_title_neg)
+            .show()
     }
 
     private fun showInfoDialog() {
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(getString(R.string.lyric_art_info_title))
-//            .content(getString(R.string.lyric_art_info_content))
-//            .positiveButton(getString(R.string.lyric_art_info_title_button_neg))
-//            .negativeButton(getString(R.string.lyric_art_info_button_p))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    MyApp.Companion.getPref().edit()
-//                        .putBoolean(getString(R.string.pref_swipe_right_shown), true).apply()
-//                }
-//            })
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+        MaterialDialog(this)
+            .title(R.string.lyric_art_info_title)
+            .message(R.string.lyric_art_info_content)
+            .positiveButton(R.string.lyric_art_info_title_button_neg) {
+                MyApp.getPref().edit().putBoolean(getString(R.string.pref_swipe_right_shown), true).apply()
+            }
+            .negativeButton(R.string.lyric_art_info_button_p)
+            .show()
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
         viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
-        val artistInfo: FragmentArtistInfo = FragmentArtistInfo()
+        val artistInfo = FragmentArtistInfo()
         viewPagerAdapter!!.addFragment(artistInfo, "Artist Bio")
-        val fragmentAlbumArt: FragmentAlbumArt = FragmentAlbumArt()
+        val fragmentAlbumArt = FragmentAlbumArt()
         viewPagerAdapter!!.addFragment(fragmentAlbumArt, "Disc")
-        val fragmentLyric: FragmentLyrics = FragmentLyrics()
+        val fragmentLyric = FragmentLyrics()
         viewPagerAdapter!!.addFragment(fragmentLyric, "Lyrics")
         viewPager.adapter = viewPagerAdapter!!
     }
 
-    fun InitializeCurrentTracklistAdapter() {
-        mRecyclerView = findViewById<RecyclerView>(R.id.recyclerViewForCurrentTracklist)
+    private fun initializeCurrentTracklistAdapter() {
+        mRecyclerView = findViewById(R.id.recyclerViewForCurrentTracklist)
         mAdapter = CurrentTracklistAdapter(this, this)
         mRecyclerView!!.adapter = mAdapter!!
         mRecyclerView!!.layoutManager = mLayoutManager
@@ -430,7 +428,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         mRecyclerView!!.addItemDecoration(itemDecor)
     }
 
-    fun UpdateCurrentTracklistAdapter() {
+    private fun updateCurrentTracklistAdapter() {
         if (mRecyclerView == null || mAdapter == null) {
             return
         }
@@ -466,7 +464,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         }*/super.onDestroy()
     }
 
-    private fun UpdateUI(receivedIntent: Intent?) {  //intent carries information if only particular item needs to be updated in adapter
+    private fun updateUI(receivedIntent: Intent?) {  //intent carries information if only particular item needs to be updated in adapter
         Log.d("ActivityNowPlaying", "UpdateUI: " + Log.getStackTraceString(Exception()))
         if (playerService != null) {
             val item: TrackItem? = playerService!!.getCurrentTrack()
@@ -503,10 +501,8 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                         0 -> {}
                         1 -> {
                             //look in cache for artist image
-                            val CACHE_ART_THUMBS: String =
-                                this.cacheDir.toString() + "/art_thumbs/"
-                            val actual_file_path: String =
-                                CACHE_ART_THUMBS + playerService!!.getCurrentTrack()!!.getArtist()
+                            val CACHE_ART_THUMBS = this.cacheDir.toString() + "/art_thumbs/"
+                            val actual_file_path = CACHE_ART_THUMBS + playerService!!.getCurrentTrack()!!.getArtist()
                             b = BitmapFactory.decodeFile(actual_file_path)
                             isArtistLoadedInBackground = b != null
                             Log.d(Constants.TAG, "UpdateUI: settingArtistImageBackground")
@@ -624,7 +620,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         } else {
             playerService = MyApp.Companion.getService()
         }
-        UpdateUI(null)
+        updateUI(null)
         LocalBroadcastManager.getInstance(applicationContext)
             .registerReceiver(mUIUpdateReceiver!!, IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE))
         AppLaunchCountManager.nowPlayingLaunched()
@@ -873,44 +869,40 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
     private fun showAddLyricDialog() {
         val item: TrackItem = playerService!!.getCurrentTrack()!!
         val hintText: String = getString(R.string.dialog_add_lyric_hint, item.title)
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(R.string.action_add_lyrics)
-//            .input(hintText, "", false, object : InputCallback() {
-//                fun onInput(dialog: MaterialDialog, input: CharSequence) {
-//                    Log.d("ActivityNowPlaying", "onInput: " + input)
-//                }
-//            })
-//            .positiveButton(R.string.add)
-//            .negativeButton(R.string.cancel)
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val lyrics: String = dialog.getInputEditText().getText().toString()
-//                    val result: Lyrics = Lyrics(POSITIVE_RESULT)
-//                    result.setTitle(item.title)
-//                    result.setArtist(item.getArtist())
-//                    result.setOriginalArtist(item.getArtist())
-//                    result.setOriginalTitle(item.title)
-//                    result.setSource("manual")
-//                    result.setText(lyrics.replace("\n", "<br />"))
-//                    OfflineStorageLyrics.clearLyricsFromDB(item)
-//                    OfflineStorageLyrics.putLyricsInDB(result, item)
-//                    (viewPagerAdapter!!.getItem(2) as FragmentLyrics).onLyricsDownloaded(result)
-//                    Snackbar.make(rootView, "Lyrics added", Snackbar.LENGTH_SHORT).show()
-//                }
-//            })
-//            .build()
-//        val texInput: EditText? = dialog.getInputEditText()
-//        assert(texInput != null)
-//        texInput.setSingleLine(false)
-//        texInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION)
-//        texInput.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE)
-//        texInput.setLines(5)
-//        texInput.setMaxLines(10)
-//        texInput.setVerticalScrollBarEnabled(true)
-//        texInput.setMovementMethod(ScrollingMovementMethod.getInstance())
-//        texInput.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET)
-//        texInput.setGravity(Gravity.TOP or Gravity.START)
-//        dialog.show()
+        val dialog: MaterialDialog = MaterialDialog(this)
+            .title(R.string.action_add_lyrics)
+            .input(hintText, prefill = "", allowEmpty =  false, callback =  object : InputCallback {
+                override fun invoke(p1: MaterialDialog, p2: CharSequence) {
+                    Log.d("ActivityNowPlaying", "onInput: $p2")
+                }
+            })
+            .positiveButton(R.string.add){
+                val lyrics: String = it.getInputField().text.toString()
+                val result = Lyrics(POSITIVE_RESULT)
+                result.setTitle(item.title)
+                result.setArtist(item.getArtist())
+                result.setOriginalArtist(item.getArtist())
+                result.setOriginalTitle(item.title)
+                result.setSource("manual")
+                result.setText(lyrics.replace("\n", "<br />"))
+                OfflineStorageLyrics.clearLyricsFromDB(item)
+                OfflineStorageLyrics.putLyricsInDB(result, item)
+                (viewPagerAdapter!!.getItem(2) as FragmentLyrics).onLyricsDownloaded(result)
+                Snackbar.make(rootView!!, "Lyrics added", Snackbar.LENGTH_SHORT).show()
+            }
+            .negativeButton(R.string.cancel)
+
+        val texInput = dialog.getInputField()
+        texInput.isSingleLine = false
+        texInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+        texInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        texInput.setLines(5)
+        texInput.maxLines = 10
+        texInput.isVerticalScrollBarEnabled = true
+        texInput.movementMethod = ScrollingMovementMethod.getInstance()
+        texInput.scrollBarStyle = View.SCROLLBARS_INSIDE_INSET
+        texInput.gravity = Gravity.TOP or Gravity.START
+        dialog.show()
     }
 
     private fun AddToPlaylist() {
@@ -931,46 +923,42 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 if (mAdapter!!.itemCount === 0) {
                     return
                 }
-                val input: EditText = EditText(this)
+                val input = EditText(this)
                 input.inputType = InputType.TYPE_CLASS_TEXT
-//                val dialog: MaterialDialog = MyDialogBuilder(this)
-//                    .title(getString(R.string.main_act_create_play_list_title))
-//                    .positiveButton(getString(R.string.okay))
-//                    .negativeButton(getString(R.string.cancel))
-//                    .onPositive(object : SingleButtonCallback() {
-//                        fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                            val playlist_name: String =
-//                                input.getText().toString().trim({ it <= ' ' })
-//                            if (ValidatePlaylistName(playlist_name)) {
-//                                if (PlaylistManager.getInstance(MyApp.Companion.getContext())
-//                                        .CreatePlaylist(playlist_name)
-//                                ) {
-//                                    val ids: IntArray = IntArray(mAdapter.getSongList().size())
-//                                    var i: Int = 0
-//                                    while (i < ids.size) {
-//                                        ids.get(i) = mAdapter.getSongList().get(i)
-//                                        i++
-//                                    }
-//                                    PlaylistManager.getInstance(MyApp.Companion.getContext())
-//                                        .AddSongToPlaylist(playlist_name, ids)
-//                                    // Toast.makeText(ActivityNowPlaying.this, "Playlist saved!", Toast.LENGTH_SHORT).show();
-//                                    Snackbar.make(rootView,
-//                                        getString(R.string.playlist_saved),
-//                                        Snackbar.LENGTH_SHORT).show()
-//                                } else {
-//                                    //Toast.makeText(ActivityNowPlaying.this, "Playlist already exists", Toast.LENGTH_SHORT).show();
-//                                    Snackbar.make(rootView,
-//                                        getString(R.string.play_list_already_exists),
-//                                        Snackbar.LENGTH_SHORT).show()
-//                                }
-//                            }
-//                        }
-//                    })
-//                    .customView(input, true)
-//                    .build()
-//
-//                //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//                dialog.show()
+                val dialog: MaterialDialog = MaterialDialog(this)
+                    .title(R.string.main_act_create_play_list_title)
+                    .positiveButton(R.string.okay){
+                        val playlist_name = input.text.toString().trim { it <= ' ' }
+                        if (validatePlaylistName(playlist_name)) {
+                            when {
+                                PlaylistManager.getInstance(MyApp.getContext())?.CreatePlaylist(playlist_name) == true -> {
+                                    val ids = mAdapter?.getSongList()?.size?.let { it1 -> IntArray(it1) }
+                                    var i = 0
+                                    if (ids != null) {
+                                        while (i < ids.size) {
+                                            mAdapter?.getSongList()?.get(i)
+                                                ?.let { it1 -> ids[i] = it1 }
+                                            i++
+                                        }
+                                    }
+                                    if (ids != null) {
+                                        PlaylistManager.getInstance(MyApp.getContext())?.AddSongToPlaylist(playlist_name, ids)
+                                    }
+                                    // Toast.makeText(ActivityNowPlaying.this, "Playlist saved!", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(rootView!!, getString(R.string.playlist_saved), Snackbar.LENGTH_SHORT).show()
+                                }
+                                else -> {
+                                    //Toast.makeText(ActivityNowPlaying.this, "Playlist already exists", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(rootView!!, getString(R.string.play_list_already_exists), Snackbar.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
+                    .negativeButton(R.string.cancel)
+                    .customView(view = input, scrollable = true)
+
+                //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+                dialog.show()
             }
         }
     }
@@ -989,15 +977,15 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             }
             KeyEvent.KEYCODE_MEDIA_NEXT -> {
                 playerService!!.nextTrack()
-                UpdateUI(null)
+                updateUI(null)
             }
             KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
                 playerService!!.prevTrack()
-                UpdateUI(null)
+                updateUI(null)
             }
             KeyEvent.KEYCODE_MEDIA_STOP -> {
                 playerService!!.stop()
-                UpdateUI(null)
+                updateUI(null)
             }
             KeyEvent.KEYCODE_BACK -> onBackPressed()
             KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE -> {
@@ -1025,107 +1013,95 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
     }
 
     fun setSleepTimerDialog(context: Context) {
-//        val builder: MyDialogBuilder = MyDialogBuilder(context)
-//        val linear: LinearLayout = LinearLayout(context)
-//        linear.orientation = LinearLayout.VERTICAL
-//        val text: TextView = TextView(context)
-//        val timer: Int =
-//            MyApp.Companion.getPref().getInt(context.getString(R.string.pref_sleep_timer), 0)
-//        if (timer == 0) {
-//            text.text = "0" + getString(R.string.main_act_sleep_timer_status_minutes)
-//        } else {
-//            val stringTemp: String =
-//                (context.getString(R.string.main_act_sleep_timer_status_part1) +
-//                        timer +
-//                        context.getString(R.string.main_act_sleep_timer_status_part2))
-//            text.text = stringTemp
-//            builder.positiveButton(getString(R.string.main_act_sleep_timer_neu))
-//                .onNeutral(object : SingleButtonCallback() {
-//                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                        MyApp.Companion.getPref().edit()
-//                            .putInt(context.getString(R.string.pref_sleep_timer), 0).apply()
-//                        playerService!!.setSleepTimer(0, false)
-//                        // Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-//                        Snackbar.make(rootView,
-//                            getString(R.string.sleep_timer_discarded),
-//                            Snackbar.LENGTH_SHORT).show()
-//                    }
-//                })
-//        }
-//        text.setPadding(0, 10, 0, 0)
-//        text.gravity = Gravity.CENTER
-//        text.setTypeface(TypeFaceHelper.getTypeFace(this))
-//        val seek: SeekBar = SeekBar(context)
-//        seek.setPadding(40, 10, 40, 10)
-//        seek.max = 100
-//        seek.progress = 0
-//        seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-//            override fun onProgressChanged(
-//                seekBar: SeekBar,
-//                progress: Int,
-//                fromUser: Boolean
-//            ) {
-//                val tempString: String =
-//                    progress.toString() + context.getString(R.string.main_act_sleep_timer_status_minutes)
-//                text.text = tempString
-//            }
-//
-//            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-//            override fun onStopTrackingTouch(seekBar: SeekBar) {
-//                val progress: Int = seekBar.progress
-//            }
-//        })
-//        linear.addView(seek)
-//        linear.addView(text)
-//        val dialog: MaterialDialog = builder
-//            .title(context.getString(R.string.main_act_sleep_timer_title))
-//            .positiveButton(getString(R.string.okay))
-//            .negativeButton(getString(R.string.cancel))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    if (seek.progress != 0) {
-//                        MyApp.Companion.getPref().edit()
-//                            .putInt(context.getString(R.string.pref_sleep_timer),
-//                                seek.progress).apply()
-//                        playerService!!.setSleepTimer(seek.progress, true)
-//                        playerService!!.setSleepTimer(seek.progress, true)
-//                        val temp: String = (getString(R.string.sleep_timer_successfully_set)
-//                                + seek.progress
-//                                + getString(R.string.main_act_sleep_timer_status_minutes))
-//                        Snackbar.make(rootView, temp, Snackbar.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//            .customView(linear, true)
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-        //dialog.show()
+        val builder = MaterialDialog(context)
+        val linear = LinearLayout(context)
+        linear.orientation = LinearLayout.VERTICAL
+        val text = TextView(context)
+        val timer = MyApp.getPref().getInt(context.getString(R.string.pref_sleep_timer), 0)
+        if (timer == 0) {
+            text.text = "0" + getString(R.string.main_act_sleep_timer_status_minutes)
+        }
+        else {
+            val stringTemp: String =
+                (context.getString(R.string.main_act_sleep_timer_status_part1) +
+                        timer +
+                        context.getString(R.string.main_act_sleep_timer_status_part2))
+            text.text = stringTemp
+            builder.neutralButton(R.string.main_act_sleep_timer_neu){
+                MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), 0).apply()
+                playerService!!.setSleepTimer(0, false)
+                // Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
+                Snackbar.make(rootView!!,
+                    getString(R.string.sleep_timer_discarded),
+                    Snackbar.LENGTH_SHORT).show()
+            }
+        }
+        text.setPadding(0, 10, 0, 0)
+        text.gravity = Gravity.CENTER
+        text.setTypeface(TypeFaceHelper.getTypeFace(this))
+        val seek: SeekBar = SeekBar(context)
+        seek.setPadding(40, 10, 40, 10)
+        seek.max = 100
+        seek.progress = 0
+        seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                val tempString = progress.toString() + context.getString(R.string.main_act_sleep_timer_status_minutes)
+                text.text = tempString
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                seekBar.progress
+            }
+        })
+        linear.addView(seek)
+        linear.addView(text)
+        val dialog: MaterialDialog = builder
+            .title(R.string.main_act_sleep_timer_title)
+            .positiveButton(R.string.okay){
+                if (seek.progress != 0) {
+                    MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), seek.progress).apply()
+                    playerService!!.setSleepTimer(seek.progress, true)
+                    playerService!!.setSleepTimer(seek.progress, true)
+                    val temp = (getString(R.string.sleep_timer_successfully_set) + seek.progress + getString(R.string.main_act_sleep_timer_status_minutes))
+                    Snackbar.make(rootView!!, temp, Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            .negativeButton(R.string.cancel)
+            .customView(view = linear, scrollable = true)
+
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        dialog.show()
     }
 
-    private fun ValidatePlaylistName(playlist_name: String): Boolean {
-        val pattern: String = "^[a-zA-Z0-9 ]*$"
-        if (playlist_name.matches(pattern.toRegex())) {
-            if (playlist_name.length > 2) {
-                //if playlist starts with digit, not allowed
-                if (Character.isDigit(playlist_name[0])) {
-                    Snackbar.make(rootView!!,
-                        getString(R.string.playlist_error_1),
-                        Snackbar.LENGTH_SHORT).show()
-                    return false
+    private fun validatePlaylistName(playlist_name: String): Boolean {
+        val pattern = "^[a-zA-Z0-9 ]*$"
+        when {
+            playlist_name.matches(pattern.toRegex()) -> {
+                when {
+                    playlist_name.length > 2 -> {
+                        //if playlist starts with digit, not allowed
+                        if (Character.isDigit(playlist_name[0])) {
+                            Snackbar.make(rootView!!,
+                                getString(R.string.playlist_error_1),
+                                Snackbar.LENGTH_SHORT).show()
+                            return false
+                        }
+                        return true
+                    }
+                    else -> {
+                        //Toast.makeText(this,"Enter at least 3 characters",Toast.LENGTH_SHORT).show();
+                        Snackbar.make(rootView!!, getString(R.string.playlist_error_2), Snackbar.LENGTH_SHORT)
+                            .show()
+                        return false
+                    }
                 }
-                return true
-            } else {
-                //Toast.makeText(this,"Enter at least 3 characters",Toast.LENGTH_SHORT).show();
-                Snackbar.make(rootView!!, getString(R.string.playlist_error_2), Snackbar.LENGTH_SHORT)
+            }
+            else -> {
+                //Toast.makeText(this,"Only alphanumeric characters allowed",Toast.LENGTH_SHORT).show();
+                Snackbar.make(rootView!!, getString(R.string.playlist_error_3), Snackbar.LENGTH_SHORT)
                     .show()
                 return false
             }
-        } else {
-            //Toast.makeText(this,"Only alphanumeric characters allowed",Toast.LENGTH_SHORT).show();
-            Snackbar.make(rootView!!, getString(R.string.playlist_error_3), Snackbar.LENGTH_SHORT)
-                .show()
-            return false
         }
     }
 
@@ -1291,7 +1267,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
             playerService!!.shuffle(true)
             shuffle!!.setColorFilter(ColorHelper.getColor(R.color.colorwhite))
         }
-        UpdateCurrentTracklistAdapter()
+        updateCurrentTracklistAdapter()
     }
 
     @OnClick(R.id.pw_ivRepeat)

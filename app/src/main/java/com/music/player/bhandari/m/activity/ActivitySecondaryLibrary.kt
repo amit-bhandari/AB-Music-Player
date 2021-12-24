@@ -12,14 +12,8 @@ import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.*
 import android.util.Log
-import android.view.KeyEvent
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.view.*
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -29,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -41,6 +37,7 @@ import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
 import com.music.player.bhandari.m.adapter.AlbumLibraryAdapter
 import com.music.player.bhandari.m.adapter.SecondaryLibraryAdapter
 import com.music.player.bhandari.m.customViews.ExpandableTextView
@@ -53,7 +50,6 @@ import com.music.player.bhandari.m.utils.UtilityFun
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import java.util.*
 import java.util.concurrent.Executors
-import kotlin.Comparator
 import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
 
@@ -343,7 +339,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
                                 .getInt(getString(R.string.pref_default_album_art), 0)
                             when (defaultAlbumArtSetting) {
                                 0 -> Glide.with(this@ActivitySecondaryLibrary)
-                                    .load(MusicLibrary.instance!!
+                                    .load(MusicLibrary.instance
                                         .getAlbumArtUri(item.albumId))
                                     .centerCrop()
                                     .placeholder(R.drawable.ic_batman_1)
@@ -578,80 +574,66 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
         return super.onOptionsItemSelected(item)
     }
 
-    fun setSleepTimerDialog(context: Context) {
-//        val builder: MyDialogBuilder = MyDialogBuilder(context)
-//        val linear: LinearLayout = LinearLayout(context)
-//        linear.orientation = LinearLayout.VERTICAL
-//        val text: TextView = TextView(context)
-//        val timer: Int =
-//            MyApp.Companion.getPref().getInt(context.getString(R.string.pref_sleep_timer), 0)
-//        if (timer == 0) {
-//            val tempString: String =
-//                "0 " + context.getString(R.string.main_act_sleep_timer_status_minutes)
-//            text.text = tempString
-//        } else {
-//            val stringTemp: String =
-//                (context.getString(R.string.main_act_sleep_timer_status_part1) +
-//                        timer +
-//                        context.getString(R.string.main_act_sleep_timer_status_part2))
-//            text.text = stringTemp
-//            builder.positiveButton(context.getString(R.string.main_act_sleep_timer_neu))
-//                .onNeutral(object : SingleButtonCallback() {
-//                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                        MyApp.Companion.getPref().edit()
-//                            .putInt(context.getString(R.string.pref_sleep_timer), 0).apply()
-//                        playerService!!.setSleepTimer(0, false)
-//                        //Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-//                        Snackbar.make(rootView,
-//                            context.getString(R.string.sleep_timer_discarded),
-//                            Snackbar.LENGTH_SHORT).show()
-//                    }
-//                })
-//        }
-//        text.setPadding(0, 10, 0, 0)
-//        text.gravity = Gravity.CENTER
-//        text.setTypeface(TypeFaceHelper.getTypeFace(this))
-//        val seek: SeekBar = SeekBar(context)
-//        seek.setPadding(40, 10, 40, 10)
-//        seek.setMax(100)
-//        seek.setProgress(0)
-//        seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-//            override fun onProgressChanged(
-//                seekBar: SeekBar,
-//                progress: Int,
-//                fromUser: Boolean
-//            ) {
-//                val tempString: String =
-//                    progress.toString() + context.getString(R.string.main_act_sleep_timer_status_minutes)
-//                text.text = tempString
-//            }
-//
-//            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-//            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-//        })
-//        linear.addView(seek)
-//        linear.addView(text)
-//        builder
-//            .title(context.getString(R.string.main_act_sleep_timer_title))
-//            .positiveButton(context.getString(R.string.okay))
-//            .negativeButton(context.getString(R.string.cancel))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    if (seek.getProgress() != 0) {
-//                        MyApp.Companion.getPref().edit()
-//                            .putInt(context.getString(R.string.pref_sleep_timer),
-//                                seek.getProgress()).apply()
-//                        playerService!!.setSleepTimer(seek.getProgress(), true)
-//                        val temp: String = (context.getString(R.string.sleep_timer_successfully_set)
-//                                + seek.getProgress()
-//                                + context.getString(R.string.main_act_sleep_timer_status_minutes))
-//                        //Toast.makeText(context, temp, Toast.LENGTH_LONG).show();
-//                        Snackbar.make(rootView, temp, Snackbar.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//            .customView(linear, true)
-//            .show()
+    private fun setSleepTimerDialog(context: Context) {
+        val builder = MaterialDialog(context)
+        val linear = LinearLayout(context)
+        linear.orientation = LinearLayout.VERTICAL
+        val text = TextView(context)
+        val timer = MyApp.getPref().getInt(context.getString(R.string.pref_sleep_timer), 0)
+        if (timer == 0) {
+            val tempString: String =
+                "0 " + context.getString(R.string.main_act_sleep_timer_status_minutes)
+            text.text = tempString
+        }
+        else {
+            val stringTemp: String =
+                (context.getString(R.string.main_act_sleep_timer_status_part1) +
+                        timer +
+                        context.getString(R.string.main_act_sleep_timer_status_part2))
+            text.text = stringTemp
+            builder.neutralButton(R.string.main_act_sleep_timer_neu){
+                MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), 0).apply()
+                playerService!!.setSleepTimer(0, false)
+                //Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
+                Snackbar.make(rootView!!, context.getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_SHORT).show()
+            }
+        }
+        text.setPadding(0, 10, 0, 0)
+        text.gravity = Gravity.CENTER
+        text.typeface = TypeFaceHelper.getTypeFace(this)
+        val seek = SeekBar(context)
+        seek.setPadding(40, 10, 40, 10)
+        seek.max = 100
+        seek.progress = 0
+        seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                val tempString = progress.toString() + context.getString(R.string.main_act_sleep_timer_status_minutes)
+                text.text = tempString
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+        linear.addView(seek)
+        linear.addView(text)
+        builder
+            .title(R.string.main_act_sleep_timer_title)
+            .positiveButton(R.string.okay){
+                if (seek.progress != 0) {
+                    MyApp.getPref().edit()
+                        .putInt(context.getString(R.string.pref_sleep_timer),
+                            seek.progress).apply()
+                    playerService!!.setSleepTimer(seek.progress, true)
+                    val temp: String = (context.getString(R.string.sleep_timer_successfully_set)
+                            + seek.progress
+                            + context.getString(R.string.main_act_sleep_timer_status_minutes))
+                    //Toast.makeText(context, temp, Toast.LENGTH_LONG).show();
+                    Snackbar.make(rootView!!, temp, Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            .negativeButton(R.string.cancel)
+            .customView(view = linear, scrollable = true)
+            .show()
     }
 
     public override fun onDestroy() {

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.ObjectKey
@@ -236,30 +237,24 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun unsavedDataAlert() {
-//        MyDialogBuilder(this)
-//            .title(getString(R.string.te_unsaved_data_title))
-//            .content(getString(R.string.changes_discard_alert_te))
-//            .positiveButton(getString(R.string.te_unsaved_data_pos))
-//            .negativeButton(getString(R.string.te_unsaved_data_new))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    try {
-//                        save()
-//                    } catch (e: Exception) {
-//                        e.printStackTrace()
-//                        Toast.makeText(this@ActivityTagEditor,
-//                            "Error while saving tags!",
-//                            Toast.LENGTH_LONG).show()
-//                    }
-//                    finish()
-//                }
-//            })
-//            .onNegative(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    finish()
-//                }
-//            })
-//            .show()
+        MaterialDialog(this)
+            .title(R.string.te_unsaved_data_title)
+            .message(R.string.changes_discard_alert_te)
+            .positiveButton(R.string.te_unsaved_data_pos){
+                try {
+                    save()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(this@ActivityTagEditor,
+                        "Error while saving tags!",
+                        Toast.LENGTH_LONG).show()
+                }
+                finish()
+            }
+            .negativeButton(R.string.te_unsaved_data_new){
+                finish()
+            }
+            .show()
     }
 
     private fun save() {
@@ -272,7 +267,7 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
 
         //change content in android
         val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        var values: ContentValues = ContentValues()
+        var values = ContentValues()
         values.put(MediaStore.Audio.Media.TITLE, edited_title)
         values.put(MediaStore.Audio.Media.ARTIST, edited_artist)
         values.put(MediaStore.Audio.Media.ALBUM, edited_album)
@@ -407,19 +402,16 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
         if (!MyApp.getPref().getBoolean(getString(R.string.pref_show_edit_track_info_dialog), true)) {
             return
         }
-//        MyDialogBuilder(this)
-//            .title(getString(R.string.te_show_info_title))
-//            .content(getString(R.string.te_show_info_content))
-//            .positiveButton(getString(R.string.te_show_info_pos))
-//            .negativeButton(getString(R.string.te_show_info_neg))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    MyApp.Companion.getPref().edit()
-//                        .putBoolean(getString(R.string.pref_show_edit_track_info_dialog), false)
-//                        .apply()
-//                }
-//            })
-//            .show()
+        MaterialDialog(this)
+            .title(R.string.te_show_info_title)
+            .message(R.string.te_show_info_content)
+            .positiveButton(R.string.te_show_info_pos){
+                MyApp.getPref().edit()
+                    .putBoolean(getString(R.string.pref_show_edit_track_info_dialog), false)
+                    .apply()
+            }
+            .negativeButton(R.string.te_show_info_neg)
+            .show()
     }
 
     companion object {

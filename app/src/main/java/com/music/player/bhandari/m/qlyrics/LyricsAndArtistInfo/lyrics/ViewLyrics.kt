@@ -106,7 +106,7 @@ object ViewLyrics {
             @Override
             public void run() {
 
-                new MyDialogBuilder(MyApp.getContext())
+                new MyNDialogBuilder(MyApp.getContext())
                         .title("title").show();
             }
         });*/

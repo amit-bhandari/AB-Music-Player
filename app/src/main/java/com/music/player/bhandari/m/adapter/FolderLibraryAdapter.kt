@@ -13,6 +13,7 @@ import android.widget.*
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
@@ -345,11 +346,11 @@ class FolderLibraryAdapter constructor(private val context: Context) :
         //alert.setView(linear);
         //alert.setPositiveButton(context.getString(R.string.okay) , null);
         //alert.show();
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.track_info_title))
-//            .customView(linear, true)
-//            .positiveButton(R.string.okay)
-//            .show()
+        MaterialDialog(context)
+            .title(R.string.track_info_title)
+            .customView(view = linear, scrollable = true)
+            .positiveButton(R.string.okay)
+            .show()
     }
 
     private fun Play() {
@@ -358,25 +359,23 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                 val fileList: Array<File> = clickedFile!!.parentFile.listFiles()
                 val songTitles: ArrayList<Int> = ArrayList()
                 var i = 0
-                var original_file_index = 0
+                var originalFileIndex = 0
                 for (f: File in fileList) {
                     if (isFileExtensionValid(f)) {
                         val id: Int = MusicLibrary.instance.getIdFromFilePath(f.absolutePath)
                         songTitles.add(id)
                         if ((f == clickedFile)) {
-                            original_file_index = i
+                            originalFileIndex = i
                         }
                         i++
                     }
                 }
                 if (songTitles.isEmpty()) {
-                    Snackbar.make(viewParent,
-                        context.getString(R.string.nothing_to_play),
-                        Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(viewParent, context.getString(R.string.nothing_to_play), Snackbar.LENGTH_SHORT).show()
                     return
                 }
                 playerService.setTrackList(songTitles)
-                playerService.playAtPosition(original_file_index)
+                playerService.playAtPosition(originalFileIndex)
             }
             else -> {
                 val fileList: Array<File>? = clickedFile!!.listFiles()
@@ -384,8 +383,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                 if (fileList != null) {
                     for (f: File in fileList) {
                         if (isFileExtensionValid(f)) {
-                            val id: Int =
-                                MusicLibrary.instance.getIdFromFilePath(f.absolutePath)
+                            val id = MusicLibrary.instance.getIdFromFilePath(f.absolutePath)
                             songTitles.add(id)
                         }
                     }
@@ -411,7 +409,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                     MusicLibrary.instance.getIdFromFilePath(clickedFile!!.absolutePath)
                 ids = IntArray(temp.size)
                 for (i in ids.indices) {
-                    ids[i] = temp.get(i)
+                    ids[i] = temp[i]
                 }
                 UtilityFun.addToPlaylist(context, ids)
             }

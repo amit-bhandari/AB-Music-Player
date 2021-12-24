@@ -11,12 +11,11 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.os.RemoteException
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.android.vending.billing.IInAppBillingService
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.tasks.Task
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -47,7 +46,6 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
 class ActivityPermissionSeek : AppCompatActivity() {
     private val MY_PERMISSIONS_REQUEST: Int = 0
     private var mBound: Boolean = false
-    private var mInAppBillingBound: Boolean = false
 
     private val playerServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(arg0: ComponentName, service: IBinder) {
@@ -62,48 +60,6 @@ class ActivityPermissionSeek : AppCompatActivity() {
 
         override fun onServiceDisconnected(arg0: ComponentName) {
             mBound = false
-        }
-    }
-    private var mService: IInAppBillingService? = null
-    private val inAppBillingConnection: ServiceConnection = object : ServiceConnection {
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            mInAppBillingBound = false
-            mService = null
-        }
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            mService = IInAppBillingService.Stub.asInterface(service)
-            mInAppBillingBound = true
-            //check if user has already removed ads
-            //in case, he removed ads, and reinstalled app
-            val ownedItems: Bundle?
-            try {
-                ownedItems = mService!!.getPurchases(3, packageName, "inapp", null)
-            } catch (e: RemoteException) {
-                e.printStackTrace()
-                return
-            }
-            val response: Int = ownedItems.getInt("RESPONSE_CODE")
-            if (response == 0) {
-                val ownedSkus = ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST")
-                if (ownedSkus != null) {
-                    for (i in ownedSkus.indices) {
-                        val sku: String = ownedSkus[i]
-                        if ((sku == getString(R.string.remove_ads))) {
-                            //Toast.makeText(getApplicationContext()
-                            // , "You already have removed the ads!",Toast.LENGTH_LONG).show();
-                            MyApp.getPref().edit()
-                                .putBoolean(getString(R.string.pref_remove_ads_after_payment), true)
-                                .apply()
-                            return
-                        }
-                    }
-                    MyApp.getPref().edit()
-                        .putBoolean(getString(R.string.pref_remove_ads_after_payment), false)
-                        .apply()
-                }
-            }
         }
     }
 
@@ -125,7 +81,7 @@ class ActivityPermissionSeek : AppCompatActivity() {
             try {
                 permissionDetailsDialog()
             } catch (e: Exception) {
-                RequestPermission()
+                requestPermission()
             }
         } else {
             bindService()
@@ -184,23 +140,17 @@ class ActivityPermissionSeek : AppCompatActivity() {
     }
 
     private fun permissionDetailsDialog() {
-//        MyDialogBuilder(this)
-//            .title(R.string.permission_details_title)
-//            .content(R.string.permission_details_content)
-//            .positiveButton(R.string.permission_details_pos)
-//            .negativeButton(getString(R.string.cancel))
-//            .cancelable(false)
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    RequestPermission()
-//                }
-//            })
-//            .onNegative(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    finish()
-//                }
-//            })
-//            .show()
+        MaterialDialog(this)
+            .title(R.string.permission_details_title)
+            .message(R.string.permission_details_content)
+            .positiveButton(R.string.permission_details_pos){
+                requestPermission()
+            }
+            .negativeButton(R.string.cancel){
+                finish()
+            }
+            .cancelable(false)
+            .show()
     }
 
     private fun setNotificationChannelForOreoPlus() {
@@ -228,7 +178,7 @@ class ActivityPermissionSeek : AppCompatActivity() {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
-    private fun RequestPermission() {
+    private fun requestPermission() {
         // Here, thisActivity is the current activity
         ActivityCompat.requestPermissions(this,
             PERMISSIONS,
@@ -286,10 +236,6 @@ class ActivityPermissionSeek : AppCompatActivity() {
             if (mBound) {
                 unbindService(playerServiceConnection)
                 mBound = false
-            }
-            if (mInAppBillingBound) {
-                unbindService(inAppBillingConnection)
-                mInAppBillingBound = false
             }
         } catch (ignored: Exception) {
         }

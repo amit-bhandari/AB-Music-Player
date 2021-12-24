@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
@@ -237,7 +239,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
                     }
                 }
             }
-            R.id.action_delete -> DeleteDialog()
+            R.id.action_delete -> deleteDialog()
             R.id.action_play_next -> AddToQ(Constants.ADD_TO_Q.IMMEDIATE_NEXT)
             R.id.action_add_to_q -> AddToQ(Constants.ADD_TO_Q.AT_LAST)
             R.id.action_track_info -> setTrackInfoDialog()
@@ -293,11 +295,11 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         linear.addView(text)
         //alert.setView(linear);
         //alert.show()
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.track_info_title))
-//            .customView(linear, true)
-//            .positiveButton(R.string.okay)
-//            .show()
+        MaterialDialog(context)
+            .title(R.string.track_info_title)
+            .customView(view = linear, scrollable = true)
+            .positiveButton(R.string.okay)
+            .show()
     }
 
     private fun Play() {
@@ -325,50 +327,40 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
         //Snackbar.make(viewParent, toastString+clikedON, Snackbar.LENGTH_SHORT).show();
     }
 
-    private fun DeleteDialog() {
-//        MyDialogBuilder(context)
-//            .title(context.getString(R.string.are_u_sure))
-//            .positiveButton(R.string.yes)
-//            .negativeButton(R.string.no)
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    if (playerService!!.getCurrentTrack().getTitle()
-//                            .equals(dataItems!!.get(position).title)
-//                    ) {
-//                        Toast.makeText(context,
-//                            context.getString(R.string.song_is_playing),
-//                            Toast.LENGTH_SHORT).show()
-//                        // Snackbar.make(viewParent, "Cannot delete currently playing song", Snackbar.LENGTH_SHORT).show();
-//                        return
-//                    }
-//                    val file: File
-//                    try {
-//                        file = File(MusicLibrary.getInstance()
-//                            .getTrackItemFromId(dataItems.get(position).id)
-//                            .getFilePath())
-//                    } catch (e: Exception) {
-//                        return
-//                    }
-//                    //delete the file first
-//                    val files: ArrayList<File> = ArrayList<File>()
-//                    files.add(file)
-//                    val ids: ArrayList<Int> = ArrayList()
-//                    ids.add(dataItems.get(position).id)
-//                    if (UtilityFun.Delete(context, files, ids)) {
-//                        Toast.makeText(context,
-//                            context.getString(R.string.deleted) + dataItems.get(position).title,
-//                            Toast.LENGTH_SHORT).show()
-//                        dataItems.remove(dataItems.get(position))
-//                        notifyItemRemoved(position)
-//                        notifyDataSetChanged()
-//                    } else {
-//                        Toast.makeText(context,
-//                            context.getString(R.string.unable_to_del),
-//                            Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//            .show()
+    private fun deleteDialog() {
+        MaterialDialog(context)
+            .title(R.string.are_u_sure)
+            .positiveButton(R.string.yes){
+                if (playerService!!.getCurrentTrack()?.title.equals(dataItems!![position].title)) {
+                    Toast.makeText(context, context.getString(R.string.song_is_playing), Toast.LENGTH_SHORT).show()
+                    // Snackbar.make(viewParent, "Cannot delete currently playing song", Snackbar.LENGTH_SHORT).show();
+                    return@positiveButton
+                }
+                val file: File
+                try {
+                    file = File(dataItems?.get(position)?.let { it1 -> MusicLibrary.instance.getTrackItemFromId(it1.id)?.getFilePath() })
+                } catch (e: Exception) {
+                    return@positiveButton
+                }
+                //delete the file first
+                val files: ArrayList<File> = ArrayList()
+                files.add(file)
+                val ids: ArrayList<Int> = ArrayList()
+                dataItems?.get(position)?.id?.let { it1 -> ids.add(it1) }
+                when {
+                    UtilityFun.Delete(context, files, ids) -> {
+                        Toast.makeText(context, context.getString(R.string.deleted) + dataItems?.get(position)?.title, Toast.LENGTH_SHORT).show()
+                        dataItems?.remove(dataItems[position])
+                        notifyItemRemoved(position)
+                        notifyDataSetChanged()
+                    }
+                    else -> {
+                        Toast.makeText(context, context.getString(R.string.unable_to_del), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .negativeButton(R.string.no)
+            .show()
     }
 
     inner class MyViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView),

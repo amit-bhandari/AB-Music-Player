@@ -648,12 +648,10 @@ class MusicLibrary private constructor() {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     fun getAlbumArtFromTrack(trackId: Int): Bitmap? {
         //This will get you the uri of the track, if you already have the track id
-        val trackUri: Uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-            trackId.toLong())
+        val trackUri: Uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, trackId.toLong())
         var bm: Bitmap? = null
         try {
-            bm = MyApp.getContext().contentResolver
-                .loadThumbnail(trackUri, Size(512, 512), null)
+            bm = MyApp.getContext().contentResolver.loadThumbnail(trackUri, Size(512, 512), null)
         } catch (e: IOException) {
             e.printStackTrace()
         }

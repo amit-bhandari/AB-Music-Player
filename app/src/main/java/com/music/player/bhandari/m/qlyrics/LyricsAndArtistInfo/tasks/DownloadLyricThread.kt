@@ -24,8 +24,6 @@ import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.TrackItem
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.*
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics
-import java.util.*
-import kotlin.collections.ArrayList
 
 /*
  * *
@@ -51,14 +49,16 @@ class DownloadLyricThread constructor(
     item: TrackItem?,
     vararg params: String
 ) : Thread() {
+
     private var callback: Lyrics.Callback?
     private val item: TrackItem?
     private val params: Array<String>
+
     fun setCallback(callback: Lyrics.Callback?) {
         this.callback = callback
     }
 
-    fun download(url: String?, artist: String?, title: String?): Lyrics {
+    private fun download(url: String?, artist: String?, title: String?): Lyrics {
         var lyrics = Lyrics(Lyrics.NO_RESULT)
         for (provider: String? in providers) {
             when (provider) {
@@ -80,9 +80,9 @@ class DownloadLyricThread constructor(
         return Lyrics(Lyrics.NO_RESULT)
     }
 
-    fun download(artist: String, title: String?): Lyrics {
+    private fun download(artist: String, title: String?): Lyrics {
         Log.v("DOWNLOAD $artist", Log.getStackTraceString(Exception()))
-        var lyrics: Lyrics = Lyrics(Lyrics.NO_RESULT)
+        var lyrics = Lyrics(Lyrics.NO_RESULT)
         for (provider: String? in providers) {
             when (provider) {
                 "AZLyrics" -> lyrics = AZLyrics.fromMetaData(artist, (title)!!)
@@ -119,7 +119,7 @@ class DownloadLyricThread constructor(
                 OfflineStorageLyrics.putLyricsInDB(lyrics, item)
             }
             val msgObj: Message = handler.obtainMessage()
-            val b: Bundle = Bundle()
+            val b = Bundle()
             b.putSerializable("lyrics", lyrics)
             msgObj.data = b
             handler.sendMessage(msgObj)
@@ -144,9 +144,9 @@ class DownloadLyricThread constructor(
         var url: String? = null
         when (params.size) {
             3 -> {
-                artist = params.get(1)
-                title = params.get(2)
-                url = params.get(0)
+                artist = params[1]
+                title = params[2]
+                url = params[0]
                 lyrics = download(url, artist, title)
             }
             1 -> {
@@ -154,26 +154,29 @@ class DownloadLyricThread constructor(
                 lyrics = download(url, artist, title)
             }
             else -> {
-                artist = params.get(0)
-                title = params.get(1)
-                lyrics = download(params.get(0), params.get(1))
+                artist = params[0]
+                title = params[1]
+                lyrics = download(params[0], params[1])
             }
         }
         if (lyrics.getFlag() !== Lyrics.POSITIVE_RESULT) {
             val correction: Array<String> = correctTags(artist, title)
-            if (!((correction.get(0) == artist) && (correction.get(1) == title)) || url != null) {
-                lyrics = download(correction.get(0), correction.get(1))
+            if (!((correction[0] == artist) && (correction[1] == title)) || url != null) {
+                lyrics = download(correction[0], correction[1])
                 lyrics.setOriginalArtist(artist)
                 lyrics.setOriginalTitle(title)
             }
         }
         if (lyrics.getArtist() == null) {
-            if (artist != null) {
-                lyrics.setArtist(artist)
-                lyrics.setTitle(title)
-            } else {
-                lyrics.setArtist("")
-                lyrics.setTitle("")
+            when {
+                artist != null -> {
+                    lyrics.setArtist(artist)
+                    lyrics.setTitle(title)
+                }
+                else -> {
+                    lyrics.setArtist("")
+                    lyrics.setTitle("")
+                }
             }
         }
         if (item != null) {
@@ -191,19 +194,16 @@ class DownloadLyricThread constructor(
             "AZLyrics",
             "Bollywood"
         )
-        private val providers: ArrayList<String> =
-            ArrayList<String>(Arrays.asList<String>(*mainProviders))
+        private val providers: ArrayList<String> = ArrayList(listOf(*mainProviders))
 
         private fun correctTags(artist: String?, title: String?): Array<String> {
             if (artist == null || title == null) return arrayOf("", "")
-            var correctedArtist: String = artist.replace("\\(.*\\)".toRegex(), "")
-                .replace(" \\- .*".toRegex(), "").trim { it <= ' ' }
+            var correctedArtist: String = artist.replace("\\(.*\\)".toRegex(), "").replace(" \\- .*".toRegex(), "").trim { it <= ' ' }
             val correctedTrack: String = title.replace("\\(.*\\)".toRegex(), "")
                 .replace("\\[.*\\]".toRegex(), "").replace(" \\- .*".toRegex(), "")
-                .trim({ it <= ' ' })
-            val separatedArtists: Array<String> =
-                correctedArtist.split(", ".toRegex()).toTypedArray()
-            correctedArtist = separatedArtists.get(separatedArtists.size - 1)
+                .trim { it <= ' ' }
+            val separatedArtists: Array<String> = correctedArtist.split(", ".toRegex()).toTypedArray()
+            correctedArtist = separatedArtists[separatedArtists.size - 1]
             return arrayOf(correctedArtist, correctedTrack)
         }
     }

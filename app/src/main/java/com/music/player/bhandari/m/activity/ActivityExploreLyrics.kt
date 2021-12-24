@@ -13,6 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -24,13 +25,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
 import com.music.player.bhandari.m.adapter.TopTracksAdapter
-import com.music.player.bhandari.m.databinding.ActivityLyricsExploreBinding
 import com.music.player.bhandari.m.databinding.ActivityTrackInfoBinding
 import com.music.player.bhandari.m.lyricsExplore.OnPopularTracksReady
 import com.music.player.bhandari.m.lyricsExplore.PopularTrackRepo
@@ -82,6 +85,9 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
     private var handler: Handler? = null
 
     private lateinit var binding: ActivityTrackInfoBinding
+
+    private lateinit var artist: EditText
+    private lateinit var trackTitle: EditText
 
     override fun onBackPressed() {
         super.onBackPressed()
@@ -266,19 +272,41 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
     }
 
     private fun searchLyricDialog() {
-//        val builder: MaterialDialog.Builder = MyDialogBuilder(this)
-//            .title(R.string.title_search_lyrics)
-//            .customView(R.layout.lyric_search_dialog, true)
-//            .positiveButton(R.string.pos_search_lyric)
-//            .negativeButton(R.string.cancel)
-//            .autoDismiss(false)
-//        val layout: View? = builder.build().getCustomView()
-//        if (layout == null) {
-//            return
-//        }
-//        val trackTitle: EditText = layout.findViewById<EditText>(R.id.track_title_edit)
-//        val artist: EditText = layout.findViewById<EditText>(R.id.artist_edit)
-//        val progressBar: ProgressBar = layout.findViewById<ProgressBar>(R.id.progressBar)
+        val builder = MaterialDialog(this)
+            .title(R.string.title_search_lyrics)
+            .customView(R.layout.lyric_search_dialog, scrollable = true)
+            .positiveButton(R.string.pos_search_lyric){
+                if ((trackTitle.text.toString() == "")) {
+                    trackTitle.error = getString(R.string.error_empty_title_lyric_search)
+                    return@positiveButton
+                }
+                var artistName: String = artist.text.toString()
+                if ((artistName == "")) {
+                    artistName = getString(R.string.unknown_artist)
+                }
+                progressBar!!.visibility = View.VISIBLE
+                val finalArtistName: String = artistName
+                handler!!.postDelayed({
+                    val intent: Intent =
+                        Intent(this@ActivityExploreLyrics, ActivityLyricView::class.java)
+                    intent.putExtra("track_title", trackTitle.text.toString())
+                    intent.putExtra("artist", finalArtistName)
+                    startActivity(intent)
+                    try {
+                        val bundle = Bundle()
+                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE,
+                            "search_lyric_manually")
+                        UtilityFun.logEvent(bundle)
+                    } catch (ignored: Exception) {
+                    }
+                }, 1000)
+            }
+            .negativeButton(R.string.cancel)
+
+        val layout: View = builder.getCustomView()
+        trackTitle = layout.findViewById(R.id.track_title_edit)
+        artist = layout.findViewById(R.id.artist_edit)
+        progressBar = layout.findViewById(R.id.progressBar)
         handler!!.postDelayed({
             binding.trackTitle.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(),
@@ -293,46 +321,7 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
                 0f,
                 0))
         }, 200)
-//        builder.onPositive(object : SingleButtonCallback() {
-//            fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                if ((trackTitle.getText().toString() == "")) {
-//                    trackTitle.setError(getString(R.string.error_empty_title_lyric_search))
-//                    return
-//                }
-//                var artistName: String = artist.getText().toString()
-//                if ((artistName == "")) {
-//                    artistName = getString(R.string.unknown_artist)
-//                }
-//                progressBar.visibility = View.VISIBLE
-//                val finalArtistName: String = artistName
-//                handler!!.postDelayed(object : Runnable {
-//                    override fun run() {
-//                        val intent: Intent =
-//                            Intent(this@ActivityExploreLyrics, ActivityLyricView::class.java)
-//                        intent.putExtra("track_title", trackTitle.getText().toString())
-//                        intent.putExtra("artist", finalArtistName)
-//                        startActivity(intent)
-//                        dialog.dismiss()
-//                        try {
-//                            val bundle: Bundle = Bundle()
-//                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE,
-//                                "search_lyric_manually")
-//                            UtilityFun.logEvent(bundle)
-//                        } catch (ignored: Exception) {
-//                        }
-//                    }
-//                }, 1000)
-//            }
-//        })
-//        builder.onNegative(object : SingleButtonCallback() {
-//            fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                dialog.dismiss()
-//            }
-//        })
-//        val dialog: MaterialDialog = builder.build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+        builder.show()
     }
 
     override fun onRefresh() {

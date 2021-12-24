@@ -105,6 +105,9 @@ dependencies {
     //crop images
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
+    //In App Purchases
+    implementation 'com.github.akshaaatt:Google-IAP:1.2.2'
+
     //view binding
     //noinspection AnnotationProcessorOnCompilePath
     implementation 'com.jakewharton:butterknife:10.2.3'

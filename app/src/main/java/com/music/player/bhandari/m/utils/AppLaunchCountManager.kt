@@ -1,8 +1,13 @@
 package com.music.player.bhandari.m.utils
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
+import com.afollestad.materialdialogs.MaterialDialog
 import com.music.player.bhandari.m.MyApp
+import com.music.player.bhandari.m.R
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -29,20 +34,20 @@ object AppLaunchCountManager {
         val editor = prefs.edit()
 
         // Increment launch counter
-        val launch_count = prefs.getLong("launch_count", 0) + 1
-        editor.putLong("launch_count", launch_count)
+        val launchCount = prefs.getLong("launch_count", 0) + 1
+        editor.putLong("launch_count", launchCount)
 
         // Get date of first launch
-        var date_firstLaunch = prefs.getLong("date_firstlaunch", 0)
-        if (date_firstLaunch == 0L) {
-            date_firstLaunch = System.currentTimeMillis()
-            editor.putLong("date_firstlaunch", date_firstLaunch)
+        var dateFirstlaunch = prefs.getLong("date_firstlaunch", 0)
+        if (dateFirstlaunch == 0L) {
+            dateFirstlaunch = System.currentTimeMillis()
+            editor.putLong("date_firstlaunch", dateFirstlaunch)
         }
 
         // Wait at least n days before opening
         if (!prefs.getBoolean("dontshowagain", false)) {
-            if (launch_count % 5 == 0L) {
-                if (System.currentTimeMillis() >= date_firstLaunch +
+            if (launchCount % 5 == 0L) {
+                if (System.currentTimeMillis() >= dateFirstlaunch +
                     DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000
                 ) {
                     showRateDialog(mContext, editor)
@@ -53,40 +58,33 @@ object AppLaunchCountManager {
     }
 
     private fun showRateDialog(mContext: Context, editor: SharedPreferences.Editor?) {
-//        val dialog: MaterialDialog = MyDialogBuilder(mContext)
-//            .title("Hello there!")
-//            .content("This is AB (developer of AB Music) and I hope you" +
-//                    " are enjoying AB Music as much as I enjoyed developing it. Please consider rating and leaving review for "
-//                    + mContext.getString(R.string.app_name)
-//                    + " on store, you will bring smile on my face. Thank you in advance!")
-//            .positiveButton("Rate now!")
-//            .positiveButton("Never")
-//            .negativeButton("Later maybe")
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val appPackageName =
-//                        mContext.packageName // getPackageName() from Context or Activity object
-//                    try {
-//                        mContext.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(
-//                            "market://details?id=$appPackageName")))
-//                    } catch (anfe: ActivityNotFoundException) {
-//                        mContext.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(
-//                            "https://play.google.com/store/apps/details?id=$appPackageName")))
-//                    }
-//                }
-//            })
-//            .onNeutral(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    if (editor != null) {
-//                        editor.putBoolean("dontshowagain", true)
-//                        editor.commit()
-//                    }
-//                }
-//            })
-//            .build()
+        val dialog = MaterialDialog(mContext)
+            .title(text = "Hello there!")
+            .message(text = "This is AB (developer of AB Music) and I hope you" +
+                    " are enjoying AB Music as much as I enjoyed developing it. Please consider rating and leaving review for "
+                    + mContext.getString(R.string.app_name)
+                    + " on store, you will bring smile on my face. Thank you in advance!")
+            .positiveButton(text = "Rate now!"){
+                val appPackageName =
+                    mContext.packageName // getPackageName() from Context or Activity object
+                try {
+                    mContext.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "market://details?id=$appPackageName")))
+                } catch (anfe: ActivityNotFoundException) {
+                    mContext.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "https://play.google.com/store/apps/details?id=$appPackageName")))
+                }
+            }
+            .neutralButton(text = "Never"){
+                if (editor != null) {
+                    editor.putBoolean("dontshowagain", true)
+                    editor.commit()
+                }
+            }
+            .negativeButton(text = "Later maybe")
 
-        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-       // dialog.show()
+        dialog.window?.attributes?.windowAnimations = R.style.MyAnimation_Window
+        dialog.show()
     }
 
     fun nowPlayingLaunched() {
@@ -94,8 +92,8 @@ object AppLaunchCountManager {
         val editor = prefs!!.edit()
 
         // Increment launch counter
-        val launch_count = prefs.getLong("launch_count_now_playing", 0) + 1
-        editor!!.putLong("launch_count_now_playing", launch_count)
+        val launchCount = prefs.getLong("launch_count_now_playing", 0) + 1
+        editor!!.putLong("launch_count_now_playing", launchCount)
         editor.apply()
     }
 
@@ -111,8 +109,8 @@ object AppLaunchCountManager {
         val editor = prefs.edit()
 
         // Increment launch counter
-        val launch_count = prefs.getLong("launch_count_instantLyrics", 0) + 1
-        editor.putLong("launch_count_instantLyrics", launch_count)
+        val launchCount = prefs.getLong("launch_count_instantLyrics", 0) + 1
+        editor.putLong("launch_count_instantLyrics", launchCount)
         editor.apply()
     }
 
@@ -125,19 +123,19 @@ object AppLaunchCountManager {
     val isEligibleForInterstialAd: Boolean
         get() {
             val prefs: SharedPreferences = MyApp.getContext().getSharedPreferences("apprater", 0)
-            val date_firstLaunch = prefs.getLong("date_firstlaunch", 0)
-            return date_firstLaunch != 0L && System.currentTimeMillis() >= date_firstLaunch + HOURS_UNTIL_INTER_AD * 60 * 60 * 1000
+            val dateFirstlaunch = prefs.getLong("date_firstlaunch", 0)
+            return dateFirstlaunch != 0L && System.currentTimeMillis() >= dateFirstlaunch + HOURS_UNTIL_INTER_AD * 60 * 60 * 1000
         }
     val isEligibleForRatingAsk: Boolean
         get() {
             val prefs: SharedPreferences = MyApp.getContext().getSharedPreferences("apprater", 0)
-            val date_firstLaunch = prefs.getLong("date_firstlaunch", 0)
-            return date_firstLaunch != 0L && System.currentTimeMillis() >= date_firstLaunch + DAYS_UNTIL_RATE_ASK * 24 * 60 * 60 * 1000
+            val dateFirstlaunch = prefs.getLong("date_firstlaunch", 0)
+            return dateFirstlaunch != 0L && System.currentTimeMillis() >= dateFirstlaunch + DAYS_UNTIL_RATE_ASK * 24 * 60 * 60 * 1000
         }
     val isEligibleForBannerAds: Boolean
         get() {
             val prefs: SharedPreferences = MyApp.getContext().getSharedPreferences("apprater", 0)
-            val date_firstLaunch = prefs.getLong("date_firstlaunch", 0)
-            return date_firstLaunch != 0L && System.currentTimeMillis() >= date_firstLaunch + HOURS_UNTIL_BANNER_ADS * 60 * 60 * 1000
+            val dateFirstlaunch = prefs.getLong("date_firstlaunch", 0)
+            return dateFirstlaunch != 0L && System.currentTimeMillis() >= dateFirstlaunch + HOURS_UNTIL_BANNER_ADS * 60 * 60 * 1000
         }
 }
