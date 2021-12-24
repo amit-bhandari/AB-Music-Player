@@ -595,7 +595,7 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
 //                        timer +
 //                        context.getString(R.string.main_act_sleep_timer_status_part2))
 //            text.text = stringTemp
-//            builder.neutralText(context.getString(R.string.main_act_sleep_timer_neu))
+//            builder.positiveButton(context.getString(R.string.main_act_sleep_timer_neu))
 //                .onNeutral(object : SingleButtonCallback() {
 //                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                        MyApp.Companion.getPref().edit()
@@ -633,8 +633,8 @@ class ActivitySecondaryLibrary : AppCompatActivity(), View.OnClickListener,
 //        linear.addView(text)
 //        builder
 //            .title(context.getString(R.string.main_act_sleep_timer_title))
-//            .positiveText(context.getString(R.string.okay))
-//            .negativeText(context.getString(R.string.cancel))
+//            .positiveButton(context.getString(R.string.okay))
+//            .negativeButton(context.getString(R.string.cancel))
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    if (seek.getProgress() != 0) {

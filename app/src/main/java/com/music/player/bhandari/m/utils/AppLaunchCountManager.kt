@@ -59,9 +59,9 @@ object AppLaunchCountManager {
 //                    " are enjoying AB Music as much as I enjoyed developing it. Please consider rating and leaving review for "
 //                    + mContext.getString(R.string.app_name)
 //                    + " on store, you will bring smile on my face. Thank you in advance!")
-//            .positiveText("Rate now!")
-//            .neutralText("Never")
-//            .negativeText("Later maybe")
+//            .positiveButton("Rate now!")
+//            .positiveButton("Never")
+//            .negativeButton("Later maybe")
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    val appPackageName =

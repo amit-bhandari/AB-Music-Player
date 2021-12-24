@@ -239,8 +239,8 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
 //        MyDialogBuilder(this)
 //            .title(getString(R.string.te_unsaved_data_title))
 //            .content(getString(R.string.changes_discard_alert_te))
-//            .positiveText(getString(R.string.te_unsaved_data_pos))
-//            .negativeText(getString(R.string.te_unsaved_data_new))
+//            .positiveButton(getString(R.string.te_unsaved_data_pos))
+//            .negativeButton(getString(R.string.te_unsaved_data_new))
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    try {
@@ -410,8 +410,8 @@ class ActivityTagEditor : AppCompatActivity(), View.OnClickListener {
 //        MyDialogBuilder(this)
 //            .title(getString(R.string.te_show_info_title))
 //            .content(getString(R.string.te_show_info_content))
-//            .positiveText(getString(R.string.te_show_info_pos))
-//            .negativeText(getString(R.string.te_show_info_neg))
+//            .positiveButton(getString(R.string.te_show_info_pos))
+//            .negativeButton(getString(R.string.te_show_info_neg))
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    MyApp.Companion.getPref().edit()

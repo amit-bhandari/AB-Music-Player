@@ -187,8 +187,8 @@ class ActivityPermissionSeek : AppCompatActivity() {
 //        MyDialogBuilder(this)
 //            .title(R.string.permission_details_title)
 //            .content(R.string.permission_details_content)
-//            .positiveText(R.string.permission_details_pos)
-//            .negativeText(getString(R.string.cancel))
+//            .positiveButton(R.string.permission_details_pos)
+//            .negativeButton(getString(R.string.cancel))
 //            .cancelable(false)
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {

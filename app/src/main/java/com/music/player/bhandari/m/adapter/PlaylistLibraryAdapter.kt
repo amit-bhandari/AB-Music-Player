@@ -205,8 +205,8 @@ class PlaylistLibraryAdapter constructor(private val context: Context) :
     private fun Delete() {
 //        MyDialogBuilder(context)
 //            .title(context.getString(R.string.are_u_sure))
-//            .positiveText(R.string.yes)
-//            .negativeText(R.string.no)
+//            .positiveButton(R.string.yes)
+//            .negativeButton(R.string.no)
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    if (((headers.get(position) == Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED) || (headers.get(

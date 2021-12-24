@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.media.RingtoneManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
@@ -20,13 +21,19 @@ import android.text.format.Formatter
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.ItemListener
+import com.afollestad.materialdialogs.list.listItems
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.activity.ActivityPermissionSeek
 import com.music.player.bhandari.m.model.MusicLibrary
+import com.music.player.bhandari.m.model.PlaylistManager
+import com.music.player.bhandari.m.ringtoneCutter.RingdroidEditActivity
 import java.io.*
 import java.util.*
+import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
 /**
@@ -90,25 +97,17 @@ object UtilityFun {
         return stringBuffer.toString()
     }
 
-    fun AddToPlaylist(context: Context, song_titles: IntArray?) {
-//        val dialog: MaterialDialog = MyDialogBuilder(context)
-//            .title(context.getString(R.string.select_playlist_title))
-//            .items(PlaylistManager.getInstance(MyApp.getContext()).GetPlaylistList(true))
-//            .itemsCallback(object : ListCallback() {
-//                fun onSelection(
-//                    dialog: MaterialDialog?,
-//                    view: View?,
-//                    which: Int,
-//                    text: CharSequence
-//                ) {
-//                    PlaylistManager.getInstance(MyApp.getContext())
-//                        .AddSongToPlaylist(text.toString(), song_titles)
-//                }
-//            })
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+    fun addToPlaylist(context: Context, song_titles: IntArray?) {
+        MaterialDialog(context)
+            .title(R.string.select_playlist_title)
+            .listItems(items = PlaylistManager.getInstance(MyApp.getContext())?.GetPlaylistList(true)
+            , selection = object : ItemListener {
+                    override fun invoke(dialog: MaterialDialog, index: Int, text: CharSequence) {
+                        PlaylistManager.getInstance(MyApp.getContext())?.AddSongToPlaylist(text.toString(), song_titles!!)
+                    }
+
+                })
+            .show()
     }
 
     fun Share(context: Context, uris: ArrayList<Uri>, title: String?) {
@@ -198,105 +197,87 @@ object UtilityFun {
 
     fun SetRingtone(context: Context, filePath: String?, id: Int) {
         if (!checkSystemWritePermission(context)) {
-//            val dialog: MaterialDialog = MyDialogBuilder(context)
-//                .title(context.getString(R.string.write_setting_perm_title))
-//                .content(context.getString(R.string.write_setting_perm_content))
-//                .positiveText(context.getString(R.string.okay))
-//                .negativeText(context.getString(R.string.cancel))
-//                .onPositive(object : SingleButtonCallback() {
-//                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                        openAndroidPermissionsMenu(context)
-//                    }
-//                })
-//                .build()
-//
-//            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//            dialog.show()
+            MaterialDialog(context)
+                .title(R.string.write_setting_perm_title)
+                .message(R.string.write_setting_perm_content)
+                .positiveButton(R.string.okay){
+                    openAndroidPermissionsMenu(context)
+                }
+                .negativeButton(R.string.cancel)
+                .show()
         } else {
-//            val dialog: MaterialDialog = MyDialogBuilder(context)
-//                .title(context.getString(R.string.action_set_as_ringtone))
-//                .content("Would you like to use Ringtone Cutter first?")
-//                .positiveText("Ringtone Cutter")
-//                .negativeText("Set Directly")
-//                .onPositive(object : SingleButtonCallback() {
-//                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                        //launch ringtone cutter
-//                        val intent =
-//                            Intent(context.applicationContext, RingdroidEditActivity::class.java)
-//                        intent.putExtra("file_path", filePath)
-//                        intent.putExtra("was_get_content_intent", false)
-//                        context.startActivity(intent)
-//                    }
-//                })
-//                .onNegative(object : SingleButtonCallback() {
-//                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                        val item: TrackItem =
-//                            MusicLibrary.getInstance().getTrackItemFromId(id) ?: return
-//                        Executors.newSingleThreadExecutor().execute(Runnable {
-//                            val k = File(filePath)
-//                            val newFile = File(Environment.getExternalStoragePublicDirectory(
-//                                Environment.DIRECTORY_RINGTONES)
-//                                .absolutePath
-//                                    + "/" + item.getTitle() + "_tone")
-//                            try {
-//                                newFile.createNewFile()
-//                                copy(k, newFile)
-//                            } catch (e: IOException) {
-//                                e.printStackTrace()
-//                            }
-//                            if (!k.canRead()) {
-//                                Handler(Looper.getMainLooper()).post {
-//                                    Toast.makeText(context,
-//                                        "Unable to set ringtone: " + item.getTitle(),
-//                                        Toast.LENGTH_SHORT).show()
-//                                }
-//                                return@Runnable
-//                            }
-//                            val values = ContentValues()
-//                            values.put(MediaStore.MediaColumns.DATA, newFile.absolutePath)
-//                            values.put(MediaStore.MediaColumns.TITLE,
-//                                item.getTitle().toString() + " Tone")
-//                            values.put(MediaStore.MediaColumns.SIZE, k.length())
-//                            values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
-//                            values.put(MediaStore.Audio.Media.DURATION, 230)
-//                            values.put(MediaStore.Audio.Media.IS_RINGTONE, true)
-//                            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true)
-//                            values.put(MediaStore.Audio.Media.IS_ALARM, true)
-//                            values.put(MediaStore.Audio.Media.IS_MUSIC, false)
-//
-//                            //Insert it into the database
-//                            val uri1 =
-//                                MediaStore.Audio.Media.getContentUriForPath(newFile.absolutePath)
-//                            context.contentResolver.delete(uri1!!,
-//                                MediaStore.MediaColumns.DATA + "=\"" + newFile.absolutePath + "\"",
-//                                null)
-//                            val newUri = context.contentResolver.insert(uri1, values)
-//                            try {
-//                                RingtoneManager.setActualDefaultRingtoneUri(
-//                                    context,
-//                                    RingtoneManager.TYPE_RINGTONE,
-//                                    newUri
-//                                )
-//                            } catch (e: SecurityException) {
-//                                Handler(Looper.getMainLooper()).post {
-//                                    Toast.makeText(context,
-//                                        "Error setting ringtone.",
-//                                        Toast.LENGTH_SHORT).show()
-//                                }
-//                                return@Runnable
-//                            }
-//                            Handler(Looper.getMainLooper()).post {
-//                                Toast.makeText(context,
-//                                    "Ringtone set: " + item.getTitle(),
-//                                    Toast.LENGTH_SHORT).show()
-//                            }
-//                        })
-//                    }
-//                })
-//                .build()
-//
-//            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//            dialog.show()
+            MaterialDialog(context)
+                .title(R.string.action_set_as_ringtone)
+                .message(text = "Would you like to use Ringtone Cutter first?")
+                .positiveButton(text = "Ringtone Cutter"){
+                    val intent = Intent(context.applicationContext, RingdroidEditActivity::class.java)
+                    intent.putExtra("file_path", filePath)
+                    intent.putExtra("was_get_content_intent", false)
+                    context.startActivity(intent)
+                }
+                .negativeButton(text = "Set Directly"){
+                    val item = MusicLibrary.instance.getTrackItemFromId(id) ?: return@negativeButton
+                    Executors.newSingleThreadExecutor().execute(Runnable {
+                        val k = File(filePath)
+                        val newFile = File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_RINGTONES)
+                            .absolutePath
+                                + "/" + item.title + "_tone")
+                        try {
+                            newFile.createNewFile()
+                            copy(k, newFile)
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+                        if (!k.canRead()) {
+                            Handler(Looper.getMainLooper()).post {
+                                Toast.makeText(context,
+                                    "Unable to set ringtone: " + item.title,
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                            return@Runnable
+                        }
+                        val values = ContentValues()
+                        values.put(MediaStore.MediaColumns.DATA, newFile.absolutePath)
+                        values.put(MediaStore.MediaColumns.TITLE,
+                            item.title.toString() + " Tone")
+                        values.put(MediaStore.MediaColumns.SIZE, k.length())
+                        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
+                        values.put(MediaStore.Audio.Media.DURATION, 230)
+                        values.put(MediaStore.Audio.Media.IS_RINGTONE, true)
+                        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true)
+                        values.put(MediaStore.Audio.Media.IS_ALARM, true)
+                        values.put(MediaStore.Audio.Media.IS_MUSIC, false)
+
+                        //Insert it into the database
+                        val uri1 =
+                            MediaStore.Audio.Media.getContentUriForPath(newFile.absolutePath)
+                        context.contentResolver.delete(uri1!!,
+                            MediaStore.MediaColumns.DATA + "=\"" + newFile.absolutePath + "\"",
+                            null)
+                        val newUri = context.contentResolver.insert(uri1, values)
+                        try {
+                            RingtoneManager.setActualDefaultRingtoneUri(
+                                context,
+                                RingtoneManager.TYPE_RINGTONE,
+                                newUri
+                            )
+                        } catch (e: SecurityException) {
+                            Handler(Looper.getMainLooper()).post {
+                                Toast.makeText(context,
+                                    "Error setting ringtone.",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                            return@Runnable
+                        }
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(context,
+                                "Ringtone set: " + item.title,
+                                Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                }
+                .show()
         }
     }
 

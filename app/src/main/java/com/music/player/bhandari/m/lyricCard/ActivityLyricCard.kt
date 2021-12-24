@@ -698,7 +698,7 @@ class ActivityLyricCard : AppCompatActivity(), View.OnTouchListener {
     fun showTextEditDialog() {
 //        val builder: MaterialDialog.Builder = MyDialogBuilder(this)
 //            .title("Edit text")
-//            .positiveText(getString(R.string.okay))
+//            .positiveButton(getString(R.string.okay))
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    val view: View? = dialog.getCustomView()

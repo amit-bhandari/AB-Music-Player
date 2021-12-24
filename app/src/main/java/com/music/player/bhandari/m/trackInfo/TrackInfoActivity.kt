@@ -1,19 +1,11 @@
 package com.music.player.bhandari.m.trackInfo
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -21,34 +13,38 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
 import com.music.player.bhandari.m.activity.ActivityLyricView
+import com.music.player.bhandari.m.databinding.ActivityTrackInfoBinding
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.TrackItem
 import com.music.player.bhandari.m.trackInfo.models.FetchTrackInfo
 import com.music.player.bhandari.m.trackInfo.models.RESULT
 import com.music.player.bhandari.m.trackInfo.models.TrackInfo
 import com.music.player.bhandari.m.utils.UtilityFun
-import com.nshmura.snappysmoothscroller.SnapType
-import com.nshmura.snappysmoothscroller.SnappyLinearLayoutManager
-import kotlinx.android.synthetic.main.activity_track_info.*
-import java.lang.NullPointerException
 import java.util.*
 
 class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
 
     private lateinit var  trackItem: TrackItem
     private var activityInBackground = true
+    private lateinit var binding: ActivityTrackInfoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        binding = ActivityTrackInfoBinding.inflate(layoutInflater)
         ColorHelper.setStatusBarGradiant(this)
 
         when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
@@ -62,7 +58,7 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_track_info)
 
-        progressBar.indeterminateDrawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite),
+        binding.progressBar.indeterminateDrawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite),
                 android.graphics.PorterDuff.Mode.MULTIPLY)
         if(intent.extras?.getSerializable("trackItem")==null) throw NullPointerException("TrackItem can't be null")
 
@@ -101,87 +97,87 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
             Log.d("TrackInfoActivity", "onTrackInfoReady : activity invisible, don't do shit")
             return
         }
-        progressBar.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
         if(trackInfo.result == RESULT.POSITIVE){
             Glide.with(this)
                 .load(trackInfo.track?.album?.image?.last()?.text ?: "")
                 .transition(withCrossFade())
-                .into(backgroundImage)
+                .into(binding.backgroundImage)
 
-            trackSection.visibility = View.VISIBLE
-            albumSection.visibility = View.VISIBLE
-            similarTrackSection.visibility = View.VISIBLE
+            binding.trackSection.visibility = View.VISIBLE
+            binding.albumSection.visibility = View.VISIBLE
+            binding.similarTrackSection.visibility = View.VISIBLE
 
             //positive result means its guaranteed track is found. Not sure about album and similar tracks, need to put null check
-            trackTitle.text = "Title : ${trackInfo.track?.name ?: ""}"
-            trackArtist.text = "Artist : ${trackInfo.track?.artist?.name ?: ""}"
-            trackDuration.text = "Duration : ${UtilityFun.msToString(trackInfo.track?.duration?.toLong() ?: 0)}"
-            trackPublishDate.text = "Published At : ${trackInfo.track?.wiki?.published ?: ""}"
-            trackPlaycount.text = "Play count : ${UtilityFun.coolFormat(trackInfo.track?.playcount?.toDouble() ?: 0.0, 0)}"
+            binding.trackTitle.text = "Title : ${trackInfo.track?.name ?: ""}"
+            binding.trackArtist.text = "Artist : ${trackInfo.track?.artist?.name ?: ""}"
+            binding.trackDuration.text = "Duration : ${UtilityFun.msToString(trackInfo.track?.duration?.toLong() ?: 0)}"
+            binding.trackPublishDate.text = "Published At : ${trackInfo.track?.wiki?.published ?: ""}"
+            binding.trackPlaycount.text = "Play count : ${UtilityFun.coolFormat(trackInfo.track?.playcount?.toDouble() ?: 0.0, 0)}"
 
             if(trackInfo.track?.wiki?.content != null){
-                trackWiki.visibility = View.VISIBLE
-                trackWiki.text = trackInfo.track?.wiki?.content
+                binding.trackWiki.visibility = View.VISIBLE
+                binding.trackWiki.text = trackInfo.track?.wiki?.content
             }
 
-            albumTitle.text = "Title : ${trackInfo.album?.name ?: ""}"
-            albumPlaycount.text = "Playcount : ${UtilityFun.coolFormat(trackInfo.album?.playcount?.toDouble() ?: 0.0, 0)}"
+            binding.albumTitle.text = "Title : ${trackInfo.album?.name ?: ""}"
+            binding.albumPlaycount.text = "Playcount : ${UtilityFun.coolFormat(trackInfo.album?.playcount?.toDouble() ?: 0.0, 0)}"
 
             val snappyLayoutManagerTrackTags = FlexboxLayoutManager(this)
             snappyLayoutManagerTrackTags.flexDirection = FlexDirection.ROW
             snappyLayoutManagerTrackTags.justifyContent = JustifyContent.FLEX_START
 
-            recyclerTrackTags.adapter = TagsAdapter(trackInfo.track?.toptags?.tag?.map { it.name } ?: listOf())
-            recyclerTrackTags.layoutManager = snappyLayoutManagerTrackTags
+            binding.recyclerTrackTags.adapter = TagsAdapter(trackInfo.track?.toptags?.tag?.map { it.name } ?: listOf())
+            binding.recyclerTrackTags.layoutManager = snappyLayoutManagerTrackTags
 
-            if(trackInfo.album!=null){
-                val snappyLayoutManagerAlbumTags = FlexboxLayoutManager(this)
-                snappyLayoutManagerAlbumTags.flexDirection = FlexDirection.ROW
-                snappyLayoutManagerAlbumTags.justifyContent = JustifyContent.FLEX_START
+            when {
+                trackInfo.album!=null -> {
+                    val snappyLayoutManagerAlbumTags = FlexboxLayoutManager(this)
+                    snappyLayoutManagerAlbumTags.flexDirection = FlexDirection.ROW
+                    snappyLayoutManagerAlbumTags.justifyContent = JustifyContent.FLEX_START
 
-                recyclerAlbumTags.adapter = TagsAdapter(trackInfo.album?.tags?.tag?.map { it.name } ?: listOf())
-                recyclerAlbumTags.layoutManager = snappyLayoutManagerAlbumTags
+                    binding.recyclerAlbumTags.adapter = TagsAdapter(trackInfo.album?.tags?.tag?.map { it.name } ?: listOf())
+                    binding.recyclerAlbumTags.layoutManager = snappyLayoutManagerAlbumTags
 
-                if(trackInfo.album?.wiki?.content != null){
-                    albumWiki.visibility = View.VISIBLE
-                    albumWiki.text = trackInfo.album?.wiki?.content
-                }
+                    if(trackInfo.album?.wiki?.content != null){
+                        binding.albumWiki.visibility = View.VISIBLE
+                        binding.albumWiki.text = trackInfo.album?.wiki?.content
+                    }
 
-                recyclerAlbumTracks.adapter = TracksAdapter(this,
+                    binding.recyclerAlbumTracks.adapter = TracksAdapter(this,
                         trackInfo.album
-                                ?.tracks?.track
-                                ?.map { TracksAdapter.TrackItem(it.name
-                                        , "Duration ${UtilityFun.msToString(it.duration.toLong()*1000)}"
-                                        , trackInfo.track?.album?.image?.last()?.text ?: ""
-                                        , it.url)}
-                                ?: listOf())
-                recyclerAlbumTracks.layoutManager = LinearLayoutManager(this)
-                recyclerAlbumTracks.isNestedScrollingEnabled = false
-            }else{
-                albumSection.visibility = View.GONE
+                            ?.tracks?.track
+                            ?.map { TracksAdapter.TrackItem(it.name, "Duration ${UtilityFun.msToString(it.duration.toLong()*1000)}", trackInfo.track?.album?.image?.last()?.text ?: "", it.url)}
+                            ?: listOf())
+                    binding.recyclerAlbumTracks.layoutManager = LinearLayoutManager(this)
+                    binding.recyclerAlbumTracks.isNestedScrollingEnabled = false
+                }
+                else -> {
+                    binding.albumSection.visibility = View.GONE
+                }
             }
 
-            if(trackInfo.similarTracks!=null){
-                recyclerSimilarTracks.adapter = TracksAdapter(this,
+            when {
+                trackInfo.similarTracks!=null -> {
+                    binding.recyclerSimilarTracks.adapter = TracksAdapter(this,
                         trackInfo.similarTracks
-                                ?.track
-                                ?.map { TracksAdapter.TrackItem(it.name
-                                        , "${it.artist.name} | Match ${String.format("%.2f", it.match*100)}%"
-                                        , it.image.last().text
-                                        , it.url) } ?: listOf())
-                recyclerSimilarTracks.layoutManager = LinearLayoutManager(this)
-                recyclerSimilarTracks.isNestedScrollingEnabled = false
-            }else{
-                similarTrackSection.visibility = View.GONE
+                            ?.track
+                            ?.map { TracksAdapter.TrackItem(it.name, "${it.artist.name} | Match ${String.format("%.2f", it.match*100)}%", it.image.last().text, it.url) } ?: listOf())
+                    binding.recyclerSimilarTracks.layoutManager = LinearLayoutManager(this)
+                    binding.recyclerSimilarTracks.isNestedScrollingEnabled = false
+                }
+                else -> {
+                    binding.similarTrackSection.visibility = View.GONE
+                }
             }
 
         }else{
-            outOfLuck.visibility = View.VISIBLE
-            trackSection.visibility = View.INVISIBLE
-            albumSection.visibility = View.INVISIBLE
-            similarTrackSection.visibility = View.INVISIBLE
+            binding.outOfLuck.visibility = View.VISIBLE
+            binding.trackSection.visibility = View.INVISIBLE
+            binding.albumSection.visibility = View.INVISIBLE
+            binding.similarTrackSection.visibility = View.INVISIBLE
 
-            Snackbar.make(rootTrackInfo, "Track information could not be found on last fm", Snackbar.LENGTH_INDEFINITE).show()
+            Snackbar.make(binding.rootTrackInfo, "Track information could not be found on last fm", Snackbar.LENGTH_INDEFINITE).show()
         }
 
     }
@@ -189,12 +185,15 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
     fun launchLyricsView(trackTitle: String, trackArtist: String){
         val intent = Intent(this, ActivityLyricView::class.java)
         intent.putExtra("track_title", trackTitle)
-        if(trackArtist.isEmpty()){
-            //clicked on album traklist item
-            intent.putExtra("artist", trackItem.artist)
-        }else{
-            //clicked on one of track from similar tracklist
-            intent.putExtra("artist", trackArtist)
+        when {
+            trackArtist.isEmpty() -> {
+                //clicked on album traklist item
+                intent.putExtra("artist", trackItem.artist)
+            }
+            else -> {
+                //clicked on one of track from similar tracklist
+                intent.putExtra("artist", trackArtist)
+            }
         }
         startActivity(intent)
        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -287,7 +286,6 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
         override fun getItemCount(): Int {
             return tracks.count()
         }
-
     }
 
     private fun openUrl(parse: Uri) {
@@ -295,7 +293,7 @@ class TrackInfoActivity: AppCompatActivity() , TrackInfo.Callback{
             val browserIntent = Intent(Intent.ACTION_VIEW, parse)
             startActivity(browserIntent)
         } catch (e: Exception) {
-            Snackbar.make(rootTrackInfo, getString(R.string.error_opening_browser), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(binding.rootTrackInfo, getString(R.string.error_opening_browser), Snackbar.LENGTH_SHORT).show()
         }
     }
 

@@ -30,13 +30,14 @@ import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
 import com.music.player.bhandari.m.adapter.TopTracksAdapter
+import com.music.player.bhandari.m.databinding.ActivityLyricsExploreBinding
+import com.music.player.bhandari.m.databinding.ActivityTrackInfoBinding
 import com.music.player.bhandari.m.lyricsExplore.OnPopularTracksReady
 import com.music.player.bhandari.m.lyricsExplore.PopularTrackRepo
 import com.music.player.bhandari.m.lyricsExplore.Track
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.utils.UtilityFun
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_track_info.*
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -80,6 +81,8 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
     var trendingNow: TextView? = null
     private var handler: Handler? = null
 
+    private lateinit var binding: ActivityTrackInfoBinding
+
     override fun onBackPressed() {
         super.onBackPressed()
         startActivity(Intent(this, ActivityMain::class.java))
@@ -89,10 +92,10 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityTrackInfoBinding.inflate(layoutInflater)
+
         ColorHelper.setStatusBarGradiant(this)
-        val themeSelector: Int = MyApp.Companion.getPref()
-            .getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
-        when (themeSelector) {
+        when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.GLOSSY -> setTheme(R.style.AppThemeDark)
             Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight)
@@ -266,8 +269,8 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
 //        val builder: MaterialDialog.Builder = MyDialogBuilder(this)
 //            .title(R.string.title_search_lyrics)
 //            .customView(R.layout.lyric_search_dialog, true)
-//            .positiveText(R.string.pos_search_lyric)
-//            .negativeText(R.string.cancel)
+//            .positiveButton(R.string.pos_search_lyric)
+//            .negativeButton(R.string.cancel)
 //            .autoDismiss(false)
 //        val layout: View? = builder.build().getCustomView()
 //        if (layout == null) {
@@ -277,13 +280,13 @@ class ActivityExploreLyrics : AppCompatActivity(), OnPopularTracksReady,
 //        val artist: EditText = layout.findViewById<EditText>(R.id.artist_edit)
 //        val progressBar: ProgressBar = layout.findViewById<ProgressBar>(R.id.progressBar)
         handler!!.postDelayed({
-            trackTitle.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
+            binding.trackTitle.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(),
                 MotionEvent.ACTION_DOWN,
                 0f,
                 0f,
                 0))
-            trackTitle.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
+            binding.trackTitle.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(),
                 MotionEvent.ACTION_UP,
                 0f,

@@ -665,7 +665,7 @@ class AudioPreviewActivity : Activity(), MediaPlayer.OnCompletionListener,
         /* package */
         @Throws(IllegalArgumentException::class, IOException::class)
         fun setDataSourceAndPrepare(uri: Uri?) {
-            if (uri == null || uri.toString().length < 1) {
+            if (uri == null || uri.toString().isEmpty()) {
                 throw IllegalArgumentException("'uri' cannot be null or empty!")
             }
             val activity: AudioPreviewActivity? = mActivityReference!!.get()

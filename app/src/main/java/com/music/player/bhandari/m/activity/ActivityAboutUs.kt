@@ -21,6 +21,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.music.player.bhandari.m.MyApp
@@ -47,6 +48,7 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
  */
 class ActivityAboutUs : AppCompatActivity() {
     private val SITE_URL: String = "http://www.thetechguru.in/ab_music"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         //if player service not running, kill the app
         if (MyApp.getService() == null) {
@@ -60,10 +62,10 @@ class ActivityAboutUs : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_us)
-        val fab: FloatingActionButton = findViewById<FloatingActionButton>(R.id.fb_fab)
+        val fab: FloatingActionButton = findViewById(R.id.fb_fab)
         fab.setOnClickListener { open_url(FB_URL) }
-        val site_link: TextView = findViewById<TextView>(R.id.website_link)
-        val spanWebsite: SpannableString = SpannableString(site_link.text)
+        val site_link: TextView = findViewById(R.id.website_link)
+        val spanWebsite = SpannableString(site_link.text)
         val clickableSpanWebsite: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
                 open_url(SITE_URL)
@@ -105,7 +107,8 @@ class ActivityAboutUs : AppCompatActivity() {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }*/title = getString(R.string.title_about_us)
+        }*/
+        title = getString(R.string.title_about_us)
         try {
             val bundle = Bundle()
             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "about_us_launched")
@@ -141,12 +144,12 @@ class ActivityAboutUs : AppCompatActivity() {
     }
 
     override fun onResume() {
-        MyApp.Companion.isAppVisible = true
+        MyApp.isAppVisible = true
         super.onResume()
     }
 
     override fun onPause() {
-        MyApp.Companion.isAppVisible = false
+        MyApp.isAppVisible = false
         super.onPause()
     }
 
@@ -169,10 +172,12 @@ class ActivityAboutUs : AppCompatActivity() {
                 startActivity(Intent.createChooser(emailIntent, "Send Feedback"))
             }
             R.id.action_support_dev -> selectDonateDialog()
-            R.id.action_licenses ->                 /*new LibsBuilder()
+            R.id.action_licenses ->
+                /*new LibsBuilder()
                         .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
                         .withActivityTitle("Libraries")
-                        .start(this);*/startActivity(Intent(this, ActivityLicenses::class.java))
+                        .start(this);*/
+                startActivity(Intent(this, ActivityLicenses::class.java))
             R.id.action_tou -> showDisclaimerDialog()
             R.id.nav_website -> try {
                 val browserIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(WEBSITE))
@@ -188,89 +193,64 @@ class ActivityAboutUs : AppCompatActivity() {
     }
 
     private fun callForHelpDialog() {
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title("AB Music needs your help!")
-//            .content(("As AB Music grows bigger and reach more audience, its language support also needs to be widened. \n\n As Catelyn of House Stark once said, " +
-//                    "In the name of King Robert and good lords you serve, I call upon you to seize the opportunity to contribute and help me translate " +
-//                    "AB Music to your language!"))
-//            .positiveText("Sure")
-//            .negativeText("Nah, I don't want to")
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    try {
-//                        val browserIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(
-//                            TRANSLATION_HELP_WEBSITE))
-//                        startActivity(browserIntent)
-//                    } catch (e: Exception) {
-//                        Toast.makeText(this@ActivityAboutUs,
-//                            getString(R.string.error_opening_browser),
-//                            Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+        MaterialDialog(this)
+            .title(text = "AB Music needs your help!")
+            .message(text = ("As AB Music grows bigger and reach more audience, its language support also needs to be widened. \n\n As Catelyn of House Stark once said, " +
+                    "In the name of King Robert and good lords you serve, I call upon you to seize the opportunity to contribute and help me translate " +
+                    "AB Music to your language!"))
+            .positiveButton(text = "Sure"){
+                try {
+                    val browserIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                        TRANSLATION_HELP_WEBSITE))
+                    startActivity(browserIntent)
+                } catch (e: Exception) {
+                    Toast.makeText(this@ActivityAboutUs,
+                        getString(R.string.error_opening_browser),
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+            .negativeButton(text = "Nah, I don't want to")
+            .show()
     }
 
     private fun selectDonateDialog() {
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(getString(R.string.about_us_support_dev_title))
-//            .content(getString(R.string.about_us_support_dev_content))
-//            .positiveText(getString(R.string.about_us_support_dev_pos))
-//            .negativeText(getString(R.string.about_us_support_dev_neg))
-//            .neutralText(getString(R.string.about_us_support_dev_neu))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val intent: Intent =
-//                        Intent(this@ActivityAboutUs, ActivityDonateFunds::class.java)
-//                    intent.putExtra("donate_type", Constants.DONATE.COFFEE)
-//                    startActivity(intent)
-//                }
-//            }).onNeutral(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val intent: Intent =
-//                        Intent(this@ActivityAboutUs, ActivityDonateFunds::class.java)
-//                    intent.putExtra("donate_type", Constants.DONATE.JD)
-//                    startActivity(intent)
-//                }
-//            })
-//            .onNegative(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val intent: Intent =
-//                        Intent(this@ActivityAboutUs, ActivityDonateFunds::class.java)
-//                    intent.putExtra("donate_type", Constants.DONATE.BEER)
-//                    startActivity(intent)
-//                }
-//            })
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+       MaterialDialog(this)
+            .title(R.string.about_us_support_dev_title)
+            .message(R.string.about_us_support_dev_content)
+            .positiveButton(R.string.about_us_support_dev_pos){
+                val intent =
+                    Intent(this@ActivityAboutUs, ActivityDonateFunds::class.java)
+                intent.putExtra("donate_type", Constants.DONATE.COFFEE)
+                startActivity(intent)
+            }
+            .negativeButton(R.string.about_us_support_dev_neg){
+                val intent: Intent =
+                    Intent(this@ActivityAboutUs, ActivityDonateFunds::class.java)
+                intent.putExtra("donate_type", Constants.DONATE.BEER)
+                startActivity(intent)
+            }
+            .neutralButton(R.string.about_us_support_dev_neu){
+                val intent: Intent =
+                    Intent(this@ActivityAboutUs, ActivityDonateFunds::class.java)
+                intent.putExtra("donate_type", Constants.DONATE.JD)
+                startActivity(intent)
+            }
+            .show()
     }
 
     private fun showDisclaimerDialog() {
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(getString(R.string.lyrics_disclaimer_title))
-//            .content(getString(R.string.lyrics_disclaimer_content))
-//            .positiveText(getString(R.string.lyrics_disclaimer_title_pos))
-//            .negativeText(getString(R.string.lyrics_disclaimer_title_neg))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    MyApp.Companion.getPref().edit()
-//                        .putBoolean(getString(R.string.pref_disclaimer_accepted), true).apply()
-//                }
-//            }).onNegative(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    MyApp.Companion.getPref().edit()
-//                        .putBoolean(getString(R.string.pref_disclaimer_accepted), false).apply()
-//                }
-//            })
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+       MaterialDialog(this)
+            .title(text = getString(R.string.lyrics_disclaimer_title))
+            .message(text = getString(R.string.lyrics_disclaimer_content))
+            .positiveButton(text = getString(R.string.lyrics_disclaimer_title_pos)){
+                MyApp.getPref().edit()
+                    .putBoolean(getString(R.string.pref_disclaimer_accepted), true).apply()
+            }
+            .negativeButton(text = getString(R.string.lyrics_disclaimer_title_neg)){
+                MyApp.getPref().edit()
+                    .putBoolean(getString(R.string.pref_disclaimer_accepted), false).apply()
+            }
+           .show()
     }
 
     companion object {

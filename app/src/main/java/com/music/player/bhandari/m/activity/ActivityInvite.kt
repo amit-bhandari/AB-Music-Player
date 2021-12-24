@@ -103,7 +103,7 @@ class ActivityInvite : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ColorHelper.GetStatusBarColor());
         }*/
-        val items = GetInvitedItems()
+        val items = getInvitedItems()
         if (items != null && items.size != 0) {
             invitedPeopleLayout!!.visibility = View.VISIBLE
             inviteButtonLayout!!.visibility = View.INVISIBLE
@@ -115,7 +115,7 @@ class ActivityInvite : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener
         title = getString(R.string.invite_friends_title)
     }
 
-    private fun GetInvitedItems(): MutableList<InvitationItem>? {
+    private fun getInvitedItems(): MutableList<InvitationItem>? {
         val json = MyApp.getPref().getString(getString(R.string.pref_sent_invittions), "")
         var items = Gson().fromJson<MutableList<InvitationItem>>(json, object : TypeToken<List<InvitationItem?>?>() {}.type)
         if (items == null) {
@@ -152,26 +152,29 @@ class ActivityInvite : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_INVITE) {
-            if (resultCode == Activity.RESULT_OK) {
-                // Get the invitation IDs of all sent messages
-                val ids: Array<String> = AppInviteInvitation.getInvitationIds(resultCode, data!!)
-                val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-                val myRef: DatabaseReference = database.getReference("invites")
-                val items: MutableList<InvitationItem>? = GetInvitedItems()
-                for (id: String in ids) {
-                    Log.d("ActivityMain", "onActivityResult: sent invitation $id")
-                    items!!.add(InvitationItem(id, false))
-                    myRef.child(id).setValue(false)
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    // Get the invitation IDs of all sent messages
+                    val ids: Array<String> = AppInviteInvitation.getInvitationIds(resultCode, data!!)
+                    val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+                    val myRef: DatabaseReference = database.getReference("invites")
+                    val items: MutableList<InvitationItem>? = getInvitedItems()
+                    for (id: String in ids) {
+                        Log.d("ActivityMain", "onActivityResult: sent invitation $id")
+                        items!!.add(InvitationItem(id, false))
+                        myRef.child(id).setValue(false)
+                    }
+                    putInvitationItems(items)
+                    adapter!!.refreshInvitationStatus()
+                    setUpRecyclerView()
+                    inviteButtonLayout!!.visibility = View.INVISIBLE
+                    invitedPeopleLayout!!.visibility = View.VISIBLE
                 }
-                putInvitationItems(items)
-                adapter!!.refreshInvitationStatus()
-                setUpRecyclerView()
-                inviteButtonLayout!!.visibility = View.INVISIBLE
-                invitedPeopleLayout!!.visibility = View.VISIBLE
-            } else {
-                // Sending failed or it was canceled, show failure message to the user
-                // ...
-                Toast.makeText(this, R.string.error_invitation_not_sent, Toast.LENGTH_SHORT).show()
+                else -> {
+                    // Sending failed or it was canceled, show failure message to the user
+                    // ...
+                    Toast.makeText(this, R.string.error_invitation_not_sent, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -197,7 +200,7 @@ class ActivityInvite : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener
         RecyclerView.Adapter<SentInvitationAdapter.MyViewHolder?>() {
         private var invitationItems: List<InvitationItem>? = null
         fun refreshInvitationStatus() {
-            invitationItems = GetInvitedItems()
+            invitationItems = getInvitedItems()
             val database: FirebaseDatabase = FirebaseDatabase.getInstance()
             val myRef: DatabaseReference = database.getReference("invites")
             for ((position, invitationItem: InvitationItem) in invitationItems!!.withIndex()) {
@@ -268,10 +271,13 @@ class ActivityInvite : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             holder.invitationId!!.text = invitation + (position + 1)
-            if (invitationItems!![position].invitationAccepted) {
-                holder.status!!.setImageDrawable(resources.getDrawable(R.drawable.ic_cloud_done_black_24dp))
-            } else {
-                holder.status!!.setImageDrawable(resources.getDrawable(R.drawable.ic_access_time_black_24dp))
+            when {
+                invitationItems!![position].invitationAccepted -> {
+                    holder.status!!.setImageDrawable(resources.getDrawable(R.drawable.ic_cloud_done_black_24dp))
+                }
+                else -> {
+                    holder.status!!.setImageDrawable(resources.getDrawable(R.drawable.ic_access_time_black_24dp))
+                }
             }
         }
 

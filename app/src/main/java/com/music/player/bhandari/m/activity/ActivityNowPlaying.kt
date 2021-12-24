@@ -374,8 +374,8 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
 //        val dialog: MaterialDialog = MyDialogBuilder(this)
 //            .title(getString(R.string.lyrics_disclaimer_title))
 //            .content(getString(R.string.lyrics_disclaimer_content))
-//            .positiveText(getString(R.string.lyrics_disclaimer_title_pos))
-//            .negativeText(getString(R.string.lyrics_disclaimer_title_neg))
+//            .positiveButton(getString(R.string.lyrics_disclaimer_title_pos))
+//            .negativeButton(getString(R.string.lyrics_disclaimer_title_neg))
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    MyApp.Companion.getPref().edit()
@@ -393,8 +393,8 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
 //        val dialog: MaterialDialog = MyDialogBuilder(this)
 //            .title(getString(R.string.lyric_art_info_title))
 //            .content(getString(R.string.lyric_art_info_content))
-//            .positiveText(getString(R.string.lyric_art_info_title_button_neg))
-//            .negativeText(getString(R.string.lyric_art_info_button_p))
+//            .positiveButton(getString(R.string.lyric_art_info_title_button_neg))
+//            .negativeButton(getString(R.string.lyric_art_info_button_p))
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    MyApp.Companion.getPref().edit()
@@ -880,8 +880,8 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
 //                    Log.d("ActivityNowPlaying", "onInput: " + input)
 //                }
 //            })
-//            .positiveText(R.string.add)
-//            .negativeText(R.string.cancel)
+//            .positiveButton(R.string.add)
+//            .negativeButton(R.string.cancel)
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    val lyrics: String = dialog.getInputEditText().getText().toString()
@@ -917,7 +917,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
         val ids: IntArray
         val trackItem: TrackItem = playerService!!.getCurrentTrack()!!
         ids = intArrayOf(trackItem.id)
-        UtilityFun.AddToPlaylist(this, ids)
+        UtilityFun.addToPlaylist(this, ids)
         invalidateOptionsMenu()
     }
 
@@ -935,8 +935,8 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
                 input.inputType = InputType.TYPE_CLASS_TEXT
 //                val dialog: MaterialDialog = MyDialogBuilder(this)
 //                    .title(getString(R.string.main_act_create_play_list_title))
-//                    .positiveText(getString(R.string.okay))
-//                    .negativeText(getString(R.string.cancel))
+//                    .positiveButton(getString(R.string.okay))
+//                    .negativeButton(getString(R.string.cancel))
 //                    .onPositive(object : SingleButtonCallback() {
 //                        fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                            val playlist_name: String =
@@ -1039,7 +1039,7 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
 //                        timer +
 //                        context.getString(R.string.main_act_sleep_timer_status_part2))
 //            text.text = stringTemp
-//            builder.neutralText(getString(R.string.main_act_sleep_timer_neu))
+//            builder.positiveButton(getString(R.string.main_act_sleep_timer_neu))
 //                .onNeutral(object : SingleButtonCallback() {
 //                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                        MyApp.Companion.getPref().edit()
@@ -1079,8 +1079,8 @@ class ActivityNowPlaying : AppCompatActivity(), View.OnClickListener, OnStartDra
 //        linear.addView(text)
 //        val dialog: MaterialDialog = builder
 //            .title(context.getString(R.string.main_act_sleep_timer_title))
-//            .positiveText(getString(R.string.okay))
-//            .negativeText(getString(R.string.cancel))
+//            .positiveButton(getString(R.string.okay))
+//            .negativeButton(getString(R.string.cancel))
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    if (seek.progress != 0) {

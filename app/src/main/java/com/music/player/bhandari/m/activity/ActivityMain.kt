@@ -2,10 +2,7 @@ package com.music.player.bhandari.m.activity
 
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -40,9 +37,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetView
@@ -66,6 +67,7 @@ import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
 import com.music.player.bhandari.m.customViews.RoundedImageView
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary
+import com.music.player.bhandari.m.model.PlaylistManager
 import com.music.player.bhandari.m.service.PlayerService
 import com.music.player.bhandari.m.utils.AppLaunchCountManager
 import com.music.player.bhandari.m.utils.SignUp
@@ -481,25 +483,16 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         //if updating or first install
         if (verCode != 0 && MyApp.getPref().getInt(getString(R.string.pref_version_code), -1) < verCode) {
             MyApp.getPref().edit().putString(getString(R.string.pref_card_image_links), "").apply()
-//            val dialog: MaterialDialog = MyDialogBuilder(this)
-//                .title(getString(R.string.main_act_whats_new_title))
-//                .content(getString(R.string.whats_new))
-//                .positiveText(getString(R.string.okay))
-//                .negativeText(getString(R.string.main_act_whats_new_neg))
-//                .onNegative(object : SingleButtonCallback() {
-//                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                        shareApp()
-//                    }
-//                })
-//                .dismissListener(object : DialogInterface.OnDismissListener {
-//                    override fun onDismiss(dialogInterface: DialogInterface) {
-//                        //Toast.makeText(getApplicationContext(), "Artist Information local sync started in background.", Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//                .build()
-//
-//            //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//            dialog.show()
+
+            MaterialDialog(this)
+                .title(R.string.main_act_whats_new_title)
+                .message(R.string.whats_new)
+                .positiveButton(R.string.okay)
+                .negativeButton(R.string.main_act_whats_new_neg){
+                    shareApp()
+                }
+                .show()
+
             val baseThemePref = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
             if (baseThemePref == Constants.PRIMARY_COLOR.LIGHT) {
                 MyApp.getPref().edit().putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY).apply()
@@ -806,7 +799,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         menuInflater.inflate(R.menu.main, menu)
         if (viewPager != null) {
             if ((savedTabSeqInt.get(viewPager!!.currentItem) == Constants.TABS.FOLDER
-                        || savedTabSeqInt.get(viewPager!!.currentItem) == Constants.TABS.PLAYLIST)
+                        || savedTabSeqInt[viewPager!!.currentItem] == Constants.TABS.PLAYLIST)
             ) {
                 for (i in 0 until menu.size()) {
                     if (R.id.action_sort == menu.getItem(i).itemId) {
@@ -820,10 +813,13 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         mSearchAction = menu.findItem(R.id.action_search)
-        if (isSearchOpened) {
-            mSearchAction!!.icon = ContextCompat.getDrawable(this, R.drawable.ic_close_white_24dp)
-        } else {
-            mSearchAction!!.icon = ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp)
+        when {
+            isSearchOpened -> {
+                mSearchAction!!.icon = ContextCompat.getDrawable(this, R.drawable.ic_close_white_24dp)
+            }
+            else -> {
+                mSearchAction!!.icon = ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp)
+            }
         }
         return super.onPrepareOptionsMenu(menu)
     }
@@ -920,70 +916,73 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         popupMenu.show()
     }
 
-    fun handleSearch() {
-        if (isSearchOpened) { //test if the search is open
-            if (supportActionBar != null) {
-                supportActionBar!!.setDisplayShowCustomEnabled(false)
-                supportActionBar!!.setDisplayShowTitleEnabled(true)
-            }
-
-            //hides the keyboard
-            var view: View? = currentFocus
-            if (view == null) {
-                view = View(this)
-            }
-            imm!!.hideSoftInputFromWindow(view.windowToken, 0)
-
-            //add the search icon in the action bar
-            mSearchAction!!.icon = ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp)
-            clearSearch()
-            searchQuery = ""
-            findViewById<View>(R.id.mini_player).visibility = View.VISIBLE
-            isSearchOpened = false
-        } else { //open the search entry
-            findViewById<View>(R.id.mini_player).visibility = View.GONE
-            if (supportActionBar != null) {
-                supportActionBar!!.setDisplayShowCustomEnabled(true) //enable it to display a custom view
-                supportActionBar!!.setCustomView(R.layout.search_bar_layout) //add the custom view
-                supportActionBar!!.setDisplayShowTitleEnabled(false) //hide the title
-            }
-            editSearch = supportActionBar!!.customView.findViewById(R.id.edtSearch) //the text editor
-            editSearch!!.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {
-                    // TODO Auto-generated method stub
+    private fun handleSearch() {
+        when {
+            isSearchOpened -> { //test if the search is open
+                if (supportActionBar != null) {
+                    supportActionBar!!.setDisplayShowCustomEnabled(false)
+                    supportActionBar!!.setDisplayShowTitleEnabled(true)
                 }
 
-                override fun beforeTextChanged(
-                    s: CharSequence,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    // TODO Auto-generated method stub
+                //hides the keyboard
+                var view: View? = currentFocus
+                if (view == null) {
+                    view = View(this)
                 }
+                imm!!.hideSoftInputFromWindow(view.windowToken, 0)
 
-                override fun onTextChanged(
-                    s: CharSequence,
-                    start: Int,
-                    before: Int,
-                    count: Int
-                ) {
-                    searchQuery = s.toString().lowercase(Locale.getDefault())
-                    searchAdapters(searchQuery)
-                }
-            })
-            editSearch!!.setOnClickListener {
-                imm!!.showSoftInput(editSearch,
-                    InputMethodManager.SHOW_IMPLICIT)
+                //add the search icon in the action bar
+                mSearchAction!!.icon = ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp)
+                clearSearch()
+                searchQuery = ""
+                findViewById<View>(R.id.mini_player).visibility = View.VISIBLE
+                isSearchOpened = false
             }
-            editSearch!!.requestFocus()
+            else -> { //open the search entry
+                findViewById<View>(R.id.mini_player).visibility = View.GONE
+                if (supportActionBar != null) {
+                    supportActionBar!!.setDisplayShowCustomEnabled(true) //enable it to display a custom view
+                    supportActionBar!!.setCustomView(R.layout.search_bar_layout) //add the custom view
+                    supportActionBar!!.setDisplayShowTitleEnabled(false) //hide the title
+                }
+                editSearch = supportActionBar!!.customView.findViewById(R.id.edtSearch) //the text editor
+                editSearch!!.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable) {
+                        // TODO Auto-generated method stub
+                    }
 
-            //open the keyboard focused in the edtSearch
-            imm!!.showSoftInput(editSearch, InputMethodManager.SHOW_IMPLICIT)
-            mSearchAction!!.icon = ContextCompat.getDrawable(this, R.drawable.ic_close_white_24dp)
-            //add the close icon
-            //mSearchAction.setIcon(getResources().getDrawable(R.drawable.cancel));
-            isSearchOpened = true
+                    override fun beforeTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                        searchQuery = s.toString().lowercase(Locale.getDefault())
+                        searchAdapters(searchQuery)
+                    }
+                })
+                editSearch!!.setOnClickListener {
+                    imm!!.showSoftInput(editSearch,
+                        InputMethodManager.SHOW_IMPLICIT)
+                }
+                editSearch!!.requestFocus()
+
+                //open the keyboard focused in the edtSearch
+                imm!!.showSoftInput(editSearch, InputMethodManager.SHOW_IMPLICIT)
+                mSearchAction!!.icon = ContextCompat.getDrawable(this, R.drawable.ic_close_white_24dp)
+                //add the close icon
+                //mSearchAction.setIcon(getResources().getDrawable(R.drawable.cancel));
+                isSearchOpened = true
+            }
         }
     }
 
@@ -1084,11 +1083,11 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
     }
 
     private fun showRingtoneCutterDialog() {
-//        MyDialogBuilder(this)
-//            .title(getString(R.string.action_ringtone_cutter))
-//            .content(getString(R.string.dialog_ringtone_cutter))
-//            .positiveText(getString(R.string.dialog_rington_cutter_button))
-//            .show()
+        MaterialDialog(this)
+            .title(R.string.action_ringtone_cutter)
+            .message(R.string.dialog_ringtone_cutter)
+            .positiveButton(R.string.dialog_rington_cutter_button)
+            .show()
     }
 
     /**
@@ -1196,45 +1195,44 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
 */
     private fun lyricCardDialog() {
         val link = FirebaseRemoteConfig.getInstance().getString("sample_lyric_card")
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(getString(R.string.nav_lyric_cards))
-//            .customView(R.layout.lyric_card_dialog,
-//                false) //.content(R.string.dialog_lyric_card_content)
-//            .positiveText(R.string.dialog_lyric_card_pos)
-//            .negativeText(getString(R.string.cancel))
-//            .neutralText("Know more")
-//            .onNeutral({ dialog1, which -> openUrl(Uri.parse(LYRIC_CARD_GIF)) })
-//            .onPositive({ dialog12, which ->
-//                val searchLyricIntent: Intent =
-//                    Intent(MyApp.Companion.getContext(), ActivityExploreLyrics::class.java)
-//                searchLyricIntent.action = Constants.ACTION.MAIN_ACTION
-//                searchLyricIntent.putExtra("search_on_launch", true)
-//                searchLyricIntent.putExtra("from_notif", false)
-//                startActivity(searchLyricIntent)
-//            })
-//            .onNegative({ dialog13, which -> dialog13.dismiss() }).build()
-//        if (dialog.getCustomView() != null) {
-//            val iv: ImageView = dialog.getCustomView().findViewById(R.id.sample_album_card)
-//            iv.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-//                override fun onGlobalLayout() {
-//                    Log.d("Tag", "lyricCardDialog: width " + iv.measuredWidth)
-//                    val params: ViewGroup.LayoutParams = iv.layoutParams
-//                    params.width = iv.measuredWidth
-//                    params.height = iv.measuredWidth
-//                    // existing height is ok as is, no need to edit it
-//                    iv.layoutParams = params
-//                    iv.viewTreeObserver.removeGlobalOnLayoutListener(this)
-//                }
-//            })
-//            Glide.with(this)
-//                .load(link)
-//                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                .transition(DrawableTransitionOptions.withCrossFade())
-//                .into(iv)
-//        }
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+        val dialog: MaterialDialog = MaterialDialog(this)
+            .title(R.string.nav_lyric_cards)
+            .customView(R.layout.lyric_card_dialog,
+                scrollable = false) //.content(R.string.dialog_lyric_card_content)
+            .positiveButton(R.string.dialog_lyric_card_pos){
+                val searchLyricIntent =
+                    Intent(MyApp.getContext(), ActivityExploreLyrics::class.java)
+                searchLyricIntent.action = Constants.ACTION.MAIN_ACTION
+                searchLyricIntent.putExtra("search_on_launch", true)
+                searchLyricIntent.putExtra("from_notif", false)
+                startActivity(searchLyricIntent)
+            }
+            .negativeButton(R.string.cancel)
+            .neutralButton(text = "Know more"){
+                openUrl(Uri.parse(LYRIC_CARD_GIF))
+            }
+
+        val iv: ImageView = dialog.getCustomView().findViewById(R.id.sample_album_card)
+        iv.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                Log.d("Tag", "lyricCardDialog: width " + iv.measuredWidth)
+                val params: ViewGroup.LayoutParams = iv.layoutParams
+                params.width = iv.measuredWidth
+                params.height = iv.measuredWidth
+                // existing height is ok as is, no need to edit it
+                iv.layoutParams = params
+                iv.viewTreeObserver.removeGlobalOnLayoutListener(this)
+            }
+        })
+        Glide.with(this)
+            .load(link)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(iv)
+
+        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        dialog.show()
     }
 
     private fun openUrl(parse: Uri) {
@@ -1268,37 +1266,31 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         var message: String = FirebaseRemoteConfig.getInstance().getString("developer_message")
         message = message.replace("$$", "\n\n")
         val link: String = FirebaseRemoteConfig.getInstance().getString("link")
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(getString(R.string.nav_developers_message))
-//            .content(message) //.neutralText(R.string.write_me)
-//            .negativeText(getString(R.string.main_act_rate_dialog_pos))
-//            .positiveText(getString(R.string.title_click_me)) /*.onNeutral(new MaterialDialog.SingleButtonCallback() {
-//                    @Override
-//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//                        feedbackEmail();
-//                    }
-//                })*/
-//            .onNegative(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val appPackageName: String =
-//                        packageName // getPackageName() from Context or Activity object
-//                    try {
-//                        startActivity(Intent(Intent.ACTION_VIEW,
-//                            Uri.parse("market://details?id=" + appPackageName)))
-//                    } catch (anfe: ActivityNotFoundException) {
-//                        startActivity(Intent(Intent.ACTION_VIEW,
-//                            Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)))
-//                    }
-//                }
-//            })
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    openUrl(Uri.parse(link))
-//                }
-//            }).build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+        MaterialDialog(this)
+            .title(R.string.nav_developers_message)
+            .message(text = message) //.positiveButton(R.string.write_me)
+            .negativeButton(R.string.main_act_rate_dialog_pos){
+                val appPackageName: String =
+                    packageName // getPackageName() from Context or Activity object
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=$appPackageName")))
+                } catch (anfe: ActivityNotFoundException) {
+                    startActivity(Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
+                }
+            }
+            .positiveButton(R.string.title_click_me){
+                openUrl(Uri.parse(link))
+            }
+            /*.onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        feedbackEmail();
+                    }
+                })*/
+
+            .show()
     }
 
     private fun setRateDialog() {
@@ -1322,106 +1314,92 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         ratingWrap.addView(ratingBar)
         linear.addView(text)
         linear.addView(ratingWrap)
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(getString(R.string.main_act_rate_dialog_title)) // .content(getString(R.string.lyric_art_info_content))
-//            .positiveText(getString(R.string.main_act_rate_dialog_pos))
-//            .negativeText(getString(R.string.cancel))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val appPackageName: String =
-//                        packageName // getPackageName() from Context or Activity object
-//                    try {
-//                        startActivity(Intent(Intent.ACTION_VIEW,
-//                            Uri.parse("market://details?id=" + appPackageName)))
-//                    } catch (anfe: ActivityNotFoundException) {
-//                        startActivity(Intent(Intent.ACTION_VIEW,
-//                            Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)))
-//                    }
-//                }
-//            })
-//            .customView(linear, true)
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+        MaterialDialog(this)
+            .title(R.string.main_act_rate_dialog_title) // .content(getString(R.string.lyric_art_info_content))
+            .positiveButton(R.string.main_act_rate_dialog_pos){
+                val appPackageName: String =
+                    packageName // getPackageName() from Context or Activity object
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=$appPackageName")))
+                } catch (anfe: ActivityNotFoundException) {
+                    startActivity(Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
+                }
+            }
+            .negativeButton(R.string.cancel)
+            .customView(view = linear, scrollable =  true)
+            .show()
     }
 
-    fun setSleepTimerDialog() {
-//        val builder: MyDialogBuilder = MyDialogBuilder(this)
-//        val linear: LinearLayout = LinearLayout(this)
-//        linear.orientation = LinearLayout.VERTICAL
-//        val text: TextView = TextView(this)
-//        val timer: Int =
-//            MyApp.Companion.getPref().getInt(this.getString(R.string.pref_sleep_timer), 0)
-//        if (timer == 0) {
-//            val tempString: String =
-//                "0 " + this.getString(R.string.main_act_sleep_timer_status_minutes)
-//            text.text = tempString
-//        } else {
-//            val stringTemp: String = (this.getString(R.string.main_act_sleep_timer_status_part1) +
-//                    timer +
-//                    this.getString(R.string.main_act_sleep_timer_status_part2))
-//            text.text = stringTemp
-//            builder.neutralText(this.getString(R.string.main_act_sleep_timer_neu))
-//                .onNeutral(object : SingleButtonCallback() {
-//                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                        MyApp.Companion.getPref().edit()
-//                            .putInt(getString(R.string.pref_sleep_timer), 0).apply()
-//                        playerService!!.setSleepTimer(0, false)
-//                        //Toast.makeText(this, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-//                        Snackbar.make(rootView,
-//                            getString(R.string.sleep_timer_discarded),
-//                            Snackbar.LENGTH_SHORT).show()
-//                    }
-//                })
-//        }
-//        text.setPadding(0, 10, 0, 0)
-//        text.gravity = Gravity.CENTER
-//        text.setTypeface(TypeFaceHelper.getTypeFace(this))
-//        val seek: SeekBar = SeekBar(this)
-//        seek.setPadding(40, 10, 40, 10)
-//        seek.max = 100
-//        seek.progress = 0
-//        seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-//            override fun onProgressChanged(
-//                seekBar: SeekBar,
-//                progress: Int,
-//                fromUser: Boolean
-//            ) {
-//                val tempString: String =
-//                    progress.toString() + getString(R.string.main_act_sleep_timer_status_minutes)
-//                text.text = tempString
-//            }
-//
-//            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-//            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-//        })
-//        linear.addView(seek)
-//        linear.addView(text)
-//        val dialog: MaterialDialog = builder
-//            .title(this.getString(R.string.main_act_sleep_timer_title))
-//            .positiveText(this.getString(R.string.okay))
-//            .negativeText(this.getString(R.string.cancel))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    if (seek.progress != 0) {
-//                        MyApp.Companion.getPref().edit()
-//                            .putInt(getString(R.string.pref_sleep_timer), seek.progress)
-//                            .apply()
-//                        playerService!!.setSleepTimer(seek.progress, true)
-//                        val temp: String = (getString(R.string.sleep_timer_successfully_set)
-//                                + seek.progress
-//                                + getString(R.string.main_act_sleep_timer_status_minutes))
-//                        //Toast.makeText(this, temp, Toast.LENGTH_LONG).show();
-//                        Snackbar.make(rootView, temp, Snackbar.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//            .customView(linear, true)
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+    private fun setSleepTimerDialog() {
+        val builder = MaterialDialog(this)
+        val linear = LinearLayout(this)
+        linear.orientation = LinearLayout.VERTICAL
+        val text = TextView(this)
+        val timer: Int =
+            MyApp.getPref().getInt(this.getString(R.string.pref_sleep_timer), 0)
+        when (timer) {
+            0 -> {
+                val tempString: String = "0 " + this.getString(R.string.main_act_sleep_timer_status_minutes)
+                text.text = tempString
+            }
+            else -> {
+                val stringTemp: String = (this.getString(R.string.main_act_sleep_timer_status_part1) +
+                        timer +
+                        this.getString(R.string.main_act_sleep_timer_status_part2))
+                text.text = stringTemp
+                builder.positiveButton(R.string.main_act_sleep_timer_neu){
+                    MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer), 0).apply()
+                    playerService!!.setSleepTimer(0, false)
+                    //Toast.makeText(this, "Sleep timer discarded", Toast.LENGTH_LONG).show();
+                    Snackbar.make(rootView!!,
+                        getString(R.string.sleep_timer_discarded),
+                        Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        }
+        text.setPadding(0, 10, 0, 0)
+        text.gravity = Gravity.CENTER
+        text.setTypeface(TypeFaceHelper.getTypeFace(this))
+        val seek: SeekBar = SeekBar(this)
+        seek.setPadding(40, 10, 40, 10)
+        seek.max = 100
+        seek.progress = 0
+        seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar: SeekBar,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                val tempString: String =
+                    progress.toString() + getString(R.string.main_act_sleep_timer_status_minutes)
+                text.text = tempString
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+        linear.addView(seek)
+        linear.addView(text)
+         builder
+            .title(R.string.main_act_sleep_timer_title)
+            .positiveButton(R.string.okay){
+                if (seek.progress != 0) {
+                    MyApp.getPref().edit()
+                        .putInt(getString(R.string.pref_sleep_timer), seek.progress)
+                        .apply()
+                    playerService!!.setSleepTimer(seek.progress, true)
+                    val temp: String = (getString(R.string.sleep_timer_successfully_set)
+                            + seek.progress
+                            + getString(R.string.main_act_sleep_timer_status_minutes))
+                    //Toast.makeText(this, temp, Toast.LENGTH_LONG).show();
+                    Snackbar.make(rootView!!, temp, Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            .negativeButton(R.string.cancel)
+            .customView(view = linear, scrollable =  true)
+            .show()
     }
 
     override fun onStart() {
@@ -1539,7 +1517,7 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
             }
             R.id.fab_right_side -> when (Constants.TABS.PLAYLIST) {
                 savedTabSeqInt[viewPager!!.currentItem] -> {
-                    CreatePlaylistDialog()
+                    createPlaylistDialog()
                 }
                 else -> {
                     if (MyApp.isLocked()) {
@@ -1693,34 +1671,24 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
         if (!MyApp.getPref().getBoolean(getString(R.string.pref_show_lock_info_dialog), true)) {
             return
         }
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(getString(R.string.main_act_lock_info_title))
-//            .content(getString(R.string.main_act_lock_info_content))
-//            .positiveText(getString(R.string.main_act_lock_info_pos))
-//            .negativeText(getString(R.string.main_act_lock_info_neg))
-//            .neutralText(getString(R.string.main_act_lock_info_neu))
-//            .onNegative(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    MyApp.Companion.getPref().edit()
-//                        .putBoolean(getString(R.string.pref_hide_lock_button), true).apply()
-//                    fab_lock.hide()
-//                    MyApp.Companion.setLocked(false)
-//                    findViewById<View>(R.id.border_view).visibility = View.GONE
-//                }
-//            })
-//            .onNeutral(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    MyApp.Companion.getPref().edit()
-//                        .putBoolean(getString(R.string.pref_show_lock_info_dialog), false).apply()
-//                }
-//            })
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+      MaterialDialog(this)
+            .title(R.string.main_act_lock_info_title)
+            .message(R.string.main_act_lock_info_content)
+            .positiveButton(R.string.main_act_lock_info_pos)
+            .negativeButton(R.string.main_act_lock_info_neg){
+                MyApp.getPref().edit()
+                    .putBoolean(getString(R.string.pref_hide_lock_button), true).apply()
+                fab_lock!!.hide()
+                MyApp.setLocked(false)
+                findViewById<View>(R.id.border_view).visibility = View.GONE
+            }
+            .positiveButton(R.string.main_act_lock_info_neu){
+                MyApp.getPref().edit().putBoolean(getString(R.string.pref_show_lock_info_dialog), false).apply()
+            }
+            .show()
     }
 
-    private fun CreatePlaylistDialog() {
+    private fun createPlaylistDialog() {
         val input = EditText(this@ActivityMain)
         input.inputType = InputType.TYPE_CLASS_TEXT
         mHandler.postDelayed({
@@ -1737,50 +1705,45 @@ class ActivityMain : AppCompatActivity(), ActionMode.Callback,
                 0f,
                 0))
         }, 200)
-//        val dialog: MaterialDialog = MyDialogBuilder(this)
-//            .title(getString(R.string.main_act_create_play_list_title))
-//            .positiveText(getString(R.string.okay))
-//            .negativeText(getString(R.string.cancel))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    val playlist_name: String = input.text.toString().trim({ it <= ' ' })
-//                    if (ValidatePlaylistName(playlist_name)) {
-//                        if (PlaylistManager.getInstance(MyApp.Companion.getContext())
-//                                .CreatePlaylist(playlist_name)
-//                        ) {
-//                            var tabCount: Int = 0
-//                            for (tab: Int in savedTabSeqInt) {
-//                                if (tab == Constants.TABS.PLAYLIST) {
-//                                    if ((viewPagerAdapter
-//                                            .getItem(tabCount)) is FragmentPlaylistLibrary
-//                                    ) {
-//                                        (viewPagerAdapter
-//                                            .getItem(tabCount) as FragmentPlaylistLibrary)
-//                                            .refreshPlaylistList()
-//                                    }
-//                                    break
-//                                }
-//                                tabCount++
-//                            }
-//
-//                            //Toast.makeText(ActivityMain.this, "Playlist created", Toast.LENGTH_SHORT).show();
-//                            Snackbar.make(rootView,
-//                                getString(R.string.play_list_created),
-//                                Snackbar.LENGTH_SHORT).show()
-//                        } else {
-//                            //Toast.makeText(ActivityMain.this, "Playlist already exists", Toast.LENGTH_SHORT).show();
-//                            Snackbar.make(rootView,
-//                                getString(R.string.play_list_already_exists),
-//                                Snackbar.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//            })
-//            .customView(input, true)
-//            .build()
-//
-//        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-//        dialog.show()
+        MaterialDialog(this)
+            .title(R.string.main_act_create_play_list_title)
+            .positiveButton(R.string.okay){
+                val playlist_name: String = input.text.toString().trim { it <= ' ' }
+                when {
+                    ValidatePlaylistName(playlist_name) -> {
+                        when {
+                            PlaylistManager.getInstance(MyApp.getContext())?.CreatePlaylist(playlist_name) == true -> {
+                                var tabCount = 0
+                                for (tab: Int in savedTabSeqInt) {
+                                    if (tab == Constants.TABS.PLAYLIST) {
+                                        if ((viewPagerAdapter!!.getItem(tabCount)) is FragmentPlaylistLibrary
+                                        ) {
+                                            (viewPagerAdapter!!.getItem(tabCount) as FragmentPlaylistLibrary)
+                                                .refreshPlaylistList()
+                                        }
+                                        break
+                                    }
+                                    tabCount++
+                                }
+
+                                //Toast.makeText(ActivityMain.this, "Playlist created", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(rootView!!,
+                                    getString(R.string.play_list_created),
+                                    Snackbar.LENGTH_SHORT).show()
+                            }
+                            else -> {
+                                //Toast.makeText(ActivityMain.this, "Playlist already exists", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(rootView!!,
+                                    getString(R.string.play_list_already_exists),
+                                    Snackbar.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }
+            .negativeButton(R.string.cancel)
+            .customView(view = input, scrollable =  true)
+            .show()
     }
 
     private fun signIn() {

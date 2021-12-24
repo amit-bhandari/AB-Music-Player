@@ -348,7 +348,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
 //        MyDialogBuilder(context)
 //            .title(context.getString(R.string.track_info_title))
 //            .customView(linear, true)
-//            .positiveText(R.string.okay)
+//            .positiveButton(R.string.okay)
 //            .show()
     }
 
@@ -413,7 +413,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                 for (i in ids.indices) {
                     ids[i] = temp.get(i)
                 }
-                UtilityFun.AddToPlaylist(context, ids)
+                UtilityFun.addToPlaylist(context, ids)
             }
             else -> {
                 val fileList: Array<File> = clickedFile!!.listFiles()
@@ -432,7 +432,7 @@ class FolderLibraryAdapter constructor(private val context: Context) :
                 for (i in ids.indices) {
                     ids[i] = temp[i]
                 }
-                UtilityFun.AddToPlaylist(context, ids)
+                UtilityFun.addToPlaylist(context, ids)
             }
         }
     }

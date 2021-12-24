@@ -216,7 +216,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
             }
             R.id.action_add_to_playlist -> {
                 val ids: IntArray = intArrayOf(dataItems!![position].id)
-                UtilityFun.AddToPlaylist(context, ids)
+                UtilityFun.addToPlaylist(context, ids)
             }
             R.id.action_share -> {
                 val files: ArrayList<Uri> = ArrayList()
@@ -296,7 +296,7 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
 //        MyDialogBuilder(context)
 //            .title(context.getString(R.string.track_info_title))
 //            .customView(linear, true)
-//            .positiveText(R.string.okay)
+//            .positiveButton(R.string.okay)
 //            .show()
     }
 
@@ -328,8 +328,8 @@ class SecondaryLibraryAdapter : RecyclerView.Adapter<SecondaryLibraryAdapter.MyV
     private fun DeleteDialog() {
 //        MyDialogBuilder(context)
 //            .title(context.getString(R.string.are_u_sure))
-//            .positiveText(R.string.yes)
-//            .negativeText(R.string.no)
+//            .positiveButton(R.string.yes)
+//            .negativeButton(R.string.no)
 //            .onPositive(object : SingleButtonCallback() {
 //                fun onClick(dialog: MaterialDialog, which: DialogAction) {
 //                    if (playerService!!.getCurrentTrack().getTitle()

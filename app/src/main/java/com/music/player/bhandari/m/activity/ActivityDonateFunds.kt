@@ -61,31 +61,35 @@ class ActivityDonateFunds : AppCompatActivity() {
                     ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST")
                 if (ownedSkus != null) {
                     for (i in ownedSkus.indices) {
-                        val sku: String = ownedSkus.get(i)
-                        if ((sku == getString(R.string.donate_beer))) {
-                            startActivity(Intent(this@ActivityDonateFunds,
-                                ActivitySettings::class.java))
-                            Toast.makeText(applicationContext,
-                                "You already have bought me beer!",
-                                Toast.LENGTH_LONG).show()
-                            finish()
-                            return
-                        } else if ((sku == getString(R.string.donate_beer_box))) {
-                            startActivity(Intent(this@ActivityDonateFunds,
-                                ActivitySettings::class.java))
-                            Toast.makeText(applicationContext,
-                                "You already have bought me beer box!",
-                                Toast.LENGTH_LONG).show()
-                            finish()
-                            return
-                        } else if ((sku == getString(R.string.donate_beer))) {
-                            startActivity(Intent(this@ActivityDonateFunds,
-                                ActivitySettings::class.java))
-                            Toast.makeText(applicationContext,
-                                "You already have bought me coffee!",
-                                Toast.LENGTH_LONG).show()
-                            finish()
-                            return
+                        val sku: String = ownedSkus[i]
+                        when (sku) {
+                            getString(R.string.donate_beer) -> {
+                                startActivity(Intent(this@ActivityDonateFunds,
+                                    ActivitySettings::class.java))
+                                Toast.makeText(applicationContext,
+                                    "You already have bought me beer!",
+                                    Toast.LENGTH_LONG).show()
+                                finish()
+                                return
+                            }
+                            getString(R.string.donate_beer_box) -> {
+                                startActivity(Intent(this@ActivityDonateFunds,
+                                    ActivitySettings::class.java))
+                                Toast.makeText(applicationContext,
+                                    "You already have bought me beer box!",
+                                    Toast.LENGTH_LONG).show()
+                                finish()
+                                return
+                            }
+                            getString(R.string.donate_beer) -> {
+                                startActivity(Intent(this@ActivityDonateFunds,
+                                    ActivitySettings::class.java))
+                                Toast.makeText(applicationContext,
+                                    "You already have bought me coffee!",
+                                    Toast.LENGTH_LONG).show()
+                                finish()
+                                return
+                            }
                         }
                     }
                 }
@@ -94,11 +98,11 @@ class ActivityDonateFunds : AppCompatActivity() {
             }
 
             //start buy procedure
-            var product_id: String? = ""
+            var productId: String? = ""
             when (intent.getIntExtra("donate_type", -1)) {
-                Constants.DONATE.BEER -> product_id = getString(R.string.donate_beer)
-                Constants.DONATE.JD -> product_id = getString(R.string.donate_beer_box)
-                Constants.DONATE.COFFEE -> product_id = getString(R.string.donate_coffee)
+                Constants.DONATE.BEER -> productId = getString(R.string.donate_beer)
+                Constants.DONATE.JD -> productId = getString(R.string.donate_beer_box)
+                Constants.DONATE.COFFEE -> productId = getString(R.string.donate_coffee)
                 else -> {
                     startActivity(Intent(this@ActivityDonateFunds, ActivitySettings::class.java))
                     finish()
@@ -108,7 +112,7 @@ class ActivityDonateFunds : AppCompatActivity() {
             var buyIntentBundle: Bundle? = null
             try {
                 buyIntentBundle = mService!!.getBuyIntent(3, packageName,
-                    product_id, "inapp", "")
+                    productId, "inapp", "")
             } catch (ignored: Exception) {
             }
             if (buyIntentBundle != null && buyIntentBundle.getInt("RESPONSE_CODE", 1) == 0) {
@@ -132,7 +136,7 @@ class ActivityDonateFunds : AppCompatActivity() {
             val purchaseData: String? = data!!.getStringExtra("INAPP_PURCHASE_DATA")
             if (resultCode == RESULT_OK) {
                 try {
-                    val jo: JSONObject = JSONObject(purchaseData)
+                    val jo = JSONObject(purchaseData)
                     val sku: String = jo.getString("productId")
                     Toast.makeText(applicationContext,
                         "Thank you for you contribution towards the app Development!",
@@ -155,10 +159,10 @@ class ActivityDonateFunds : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         //if player service not running, kill the app
-        if (MyApp.Companion.getService() == null) {
+        if (MyApp.getService() == null) {
             restartApp()
         }
-        val serviceIntent: Intent = Intent("com.android.vending.billing.InAppBillingService.BIND")
+        val serviceIntent = Intent("com.android.vending.billing.InAppBillingService.BIND")
         serviceIntent.setPackage("com.android.vending")
         bindService(serviceIntent, mServiceConn, BIND_AUTO_CREATE)
     }

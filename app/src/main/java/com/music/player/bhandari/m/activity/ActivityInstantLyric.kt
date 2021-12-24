@@ -15,6 +15,7 @@ import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.ScaleAnimation
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -26,6 +27,9 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -134,6 +138,11 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
     private var gestureDetector: GestureDetectorCompat? = null
     private var handler: Handler? = null
     private var lyricThread: DownloadLyricThread? = null
+
+    private lateinit var progressBar: ProgressBar
+    private lateinit var trackTitleEditText: EditText
+    private lateinit var artistEditText: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.v("Amit AB", "created")
@@ -156,15 +165,9 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val window = window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-        }
+        val window = window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
         handler = Handler(Looper.getMainLooper())
         initializeListeners()
         mReceiver = object : BroadcastReceiver() {
@@ -183,12 +186,13 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
         /*final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (pm != null) {
             this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        }*/try {
+        }*/
+        try {
             val bundle = Bundle()
             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "instant_lyric_launched")
             logEvent(bundle)
-        } catch (ignored: Exception) {
         }
+        catch (ignored: Exception) { }
     }
 
     private fun growShrinkAnimate() {
@@ -547,11 +551,11 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
     }
 
     private fun syncProblemDialog() {
-//        MyDialogBuilder(this)
-//            .title(getString(R.string.lyric_sync_error_title))
-//            .content(getString(R.string.lyric_sync_error_content))
-//            .positiveText(getString(R.string.okay))
-//            .show()
+        MaterialDialog(this)
+            .title(R.string.lyric_sync_error_title)
+            .message(R.string.lyric_sync_error_content)
+            .positiveButton(R.string.okay)
+            .show()
     }
 
     private fun shareLyrics() {
@@ -632,16 +636,14 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
     }
 
     private val selectedLyricString: StringBuilder
-        private get() {
+        get() {
             val shareString = StringBuilder()
             val selectedItemPositions = adapter!!.getSelectedItems()
             var currPos: Int
-            for (i in 0..selectedItemPositions.size - 1) {
-                currPos = selectedItemPositions[i]
+            for (element in selectedItemPositions) {
+                currPos = element
                 val lyricLine = adapter!!.getLineAtPosition(currPos)
-                if (lyricLine != null) {
-                    shareString.append(lyricLine).append("\n")
-                }
+                shareString.append(lyricLine).append("\n")
             }
             return shareString
         }
@@ -698,32 +700,41 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
     }
 
     private fun saveOrDeleteLyrics() {
-        if (isLyricsSaved) {
-            if (clearLyricsFromDB(track!!)) {
-                updateSaveDeleteFabDrawable()
-                Snackbar.make(rootView!!, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT)
-                    .show()
-            }
-        } else {
-            if (mLyrics != null && mLyrics!!.getOriginalTrack() == track && mLyrics!!.getOriginalArtist() == artist) {
-                val item = TrackItem()
-                item.setArtist(artist)
-                item.title = track
-                item.id = -1
-                if (putInstantLyricsInDB(mLyrics, item)) {
+        when {
+            isLyricsSaved -> {
+                if (clearLyricsFromDB(track!!)) {
                     updateSaveDeleteFabDrawable()
-                    Snackbar.make(rootView!!,
-                        getString(R.string.lyrics_saved),
-                        Snackbar.LENGTH_SHORT).show()
-                } else {
-                    Snackbar.make(rootView!!,
-                        getString(R.string.error_saving_instant_lyrics),
-                        Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(rootView!!, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT)
+                        .show()
                 }
-            } else {
-                Snackbar.make(rootView!!,
-                    getString(R.string.error_saving_instant_lyrics),
-                    Snackbar.LENGTH_SHORT).show()
+            }
+            else -> {
+                when {
+                    mLyrics != null && mLyrics!!.getOriginalTrack() == track && mLyrics!!.getOriginalArtist() == artist -> {
+                        val item = TrackItem()
+                        item.setArtist(artist)
+                        item.title = track
+                        item.id = -1
+                        when {
+                            putInstantLyricsInDB(mLyrics, item) -> {
+                                updateSaveDeleteFabDrawable()
+                                Snackbar.make(rootView!!,
+                                    getString(R.string.lyrics_saved),
+                                    Snackbar.LENGTH_SHORT).show()
+                            }
+                            else -> {
+                                Snackbar.make(rootView!!,
+                                    getString(R.string.error_saving_instant_lyrics),
+                                    Snackbar.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    else -> {
+                        Snackbar.make(rootView!!,
+                            getString(R.string.error_saving_instant_lyrics),
+                            Snackbar.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
@@ -781,65 +792,56 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
     }
 
     private fun searchLyricDialog() {
-//        val builder: MaterialDialog.Builder = MyDialogBuilder(this)
-//            .title(R.string.title_search_lyrics)
-//            .customView(R.layout.lyric_search_dialog, true)
-//            .positiveText(R.string.pos_search_lyric)
-//            .negativeText(R.string.cancel)
-//            .autoDismiss(false)
-//        val layout: View = builder.build().getCustomView()
-//        val trackTitleEditText = layout.findViewById<EditText>(R.id.track_title_edit)
-//        val artistEditText = layout.findViewById<EditText>(R.id.artist_edit)
-//        trackTitleEditText.setText(track)
-//        artistEditText.setText(artist)
-//        val progressBar = layout.findViewById<ProgressBar>(R.id.progressBar)
-//        handler!!.postDelayed({
-//            trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
-//                SystemClock.uptimeMillis(),
-//                MotionEvent.ACTION_DOWN,
-//                0f,
-//                0f,
-//                0))
-//            trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
-//                SystemClock.uptimeMillis(),
-//                MotionEvent.ACTION_UP,
-//                0f,
-//                0f,
-//                0))
-//        }, 200)
-//        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-//        imm?.showSoftInput(trackTitleEditText, InputMethodManager.SHOW_IMPLICIT)
-//        builder.onPositive(object : SingleButtonCallback() {
-//            fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                if (trackTitleEditText.text.toString() == track && artistEditText.text.toString() == artist) {
-//                    dialog.dismiss()
-//                    return
-//                }
-//                if (trackTitleEditText.text.toString() == "") {
-//                    trackTitleEditText.error = getString(R.string.error_empty_title_lyric_search)
-//                    return
-//                }
-//                var artistName = artistEditText.text.toString()
-//                if (artistName == "") {
-//                    artistName = getString(R.string.unknown_artist)
-//                }
-//                progressBar.visibility = View.VISIBLE
-//                val finalArtistName = artistName
-//                handler!!.postDelayed({
-//                    dialog.dismiss()
-//                    updateLyrics(false, trackTitleEditText.text.toString(), finalArtistName)
-//                }, 1000)
-//            }
-//        })
-//        builder.onNegative(object : SingleButtonCallback() {
-//            fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                dialog.dismiss()
-//            }
-//        })
-//        builder.build().show()
+        val builder = MaterialDialog(this)
+            .title(R.string.title_search_lyrics)
+            .customView(R.layout.lyric_search_dialog, scrollable = true)
+            .positiveButton(R.string.pos_search_lyric){
+                if (trackTitleEditText.text.toString() == track && artistEditText.text.toString() == artist) {
+                    return@positiveButton
+                }
+                if (trackTitleEditText.text.toString() == "") {
+                    trackTitleEditText.error = getString(R.string.error_empty_title_lyric_search)
+                    return@positiveButton
+                }
+                var artistName = artistEditText.text.toString()
+                if (artistName == "") {
+                    artistName = getString(R.string.unknown_artist)
+                }
+                progressBar.visibility = View.VISIBLE
+                val finalArtistName = artistName
+                handler!!.postDelayed({
+                    updateLyrics(false, trackTitleEditText.text.toString(), finalArtistName)
+                }, 1000)
+            }
+            .negativeButton(R.string.cancel)
+
+        val layout: View = builder.getCustomView()
+        trackTitleEditText = layout.findViewById<EditText>(R.id.track_title_edit)
+        artistEditText = layout.findViewById<EditText>(R.id.artist_edit)
+        trackTitleEditText.setText(track)
+        artistEditText.setText(artist)
+        progressBar = layout.findViewById<ProgressBar>(R.id.progressBar)
+
+        handler!!.postDelayed({
+            trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                MotionEvent.ACTION_DOWN,
+                0f,
+                0f,
+                0))
+            trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                MotionEvent.ACTION_UP,
+                0f,
+                0f,
+                0))
+        }, 200)
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(trackTitleEditText, InputMethodManager.SHOW_IMPLICIT)
+        builder.show()
     }
 
-    fun wrongLyrics() {
+    private fun wrongLyrics() {
         if (mLyrics == null || mLyrics!!.getFlag() != Lyrics.POSITIVE_RESULT) {
             Toast.makeText(this, getString(R.string.error_no_lyrics), Toast.LENGTH_SHORT).show()
             return
@@ -872,20 +874,17 @@ class ActivityInstantLyric : AppCompatActivity(), OnItemTouchListener, Lyrics.Ca
     }
 
     private fun showDisclaimerDialog() {
-//        MyDialogBuilder(this)
-//            .title(getString(R.string.lyrics_disclaimer_title))
-//            .content(getString(R.string.lyrics_disclaimer_content))
-//            .positiveText(getString(R.string.lyrics_disclaimer_title_pos))
-//            .negativeText(getString(R.string.lyrics_disclaimer_title_neg))
-//            .onPositive(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    MyApp.getPref()!!
-//                        .edit().putBoolean(getString(R.string.pref_disclaimer_accepted), true)
-//                        .apply()
-//                    updateLyrics(false)
-//                }
-//            })
-//            .show()
+        MaterialDialog(this)
+            .title(R.string.lyrics_disclaimer_title)
+            .message(R.string.lyrics_disclaimer_content)
+            .positiveButton(R.string.lyrics_disclaimer_title_pos){
+                MyApp.getPref()
+                    .edit().putBoolean(getString(R.string.pref_disclaimer_accepted), true)
+                    .apply()
+                updateLyrics(false)
+            }
+            .negativeButton(R.string.lyrics_disclaimer_title_neg)
+            .show()
     }
 
     override fun attachBaseContext(newBase: Context) {

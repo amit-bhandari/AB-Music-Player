@@ -6,6 +6,7 @@ import android.media.audiofx.PresetReverb
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -16,6 +17,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.InputCallback
+import com.afollestad.materialdialogs.input.input
+import com.afollestad.materialdialogs.list.ItemListener
+import com.afollestad.materialdialogs.list.listItems
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
@@ -315,11 +321,11 @@ class ActivityEqualizer : AppCompatActivity() {
 
     var listener: View.OnTouchListener = View.OnTouchListener { v, event ->
         Log.d("ActivityEqualizer", "onTouch: $event")
-        when {
-            event.action == MotionEvent.ACTION_DOWN -> {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
                 mScrollView!!.requestDisallowInterceptTouchEvent(true)
             }
-            event.action == MotionEvent.ACTION_UP -> {
+            MotionEvent.ACTION_UP -> {
                 mScrollView!!.requestDisallowInterceptTouchEvent(false)
             }
         }
@@ -378,15 +384,14 @@ class ActivityEqualizer : AppCompatActivity() {
                                 ?.setBandLevel(sixtyHertzBand, 0.toShort())
                         }
                         seekBarLevel < 16 -> {
-                            if (seekBarLevel == 0) {
-                                text50HzGainTextView!!.text = "-" + "15 dB"
-                                if (sixtyHertzBand != null) {
+                            when (seekBarLevel) {
+                                0 -> {
+                                    text50HzGainTextView!!.text = "-" + "15 dB"
                                     MyApp.getService()?.getEqualizerHelper()?.getEqualizer()
                                         ?.setBandLevel(sixtyHertzBand, (-1500).toShort())
                                 }
-                            } else {
-                                text50HzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
-                                if (sixtyHertzBand != null) {
+                                else -> {
+                                    text50HzGainTextView!!.text = "-" + (16 - seekBarLevel) + " dB"
                                     MyApp.getService()?.getEqualizerHelper()?.getEqualizer()
                                         ?.setBandLevel(sixtyHertzBand,
                                             (-((16 - seekBarLevel) * 100)).toShort())
@@ -395,11 +400,9 @@ class ActivityEqualizer : AppCompatActivity() {
                         }
                         seekBarLevel > 16 -> {
                             text50HzGainTextView!!.text = "+" + (seekBarLevel - 16) + " dB"
-                            if (sixtyHertzBand != null) {
-                                MyApp.getService()?.getEqualizerHelper()?.getEqualizer()
-                                    ?.setBandLevel(sixtyHertzBand,
-                                        ((seekBarLevel - 16) * 100).toShort())
-                            }
+                            MyApp.getService()?.getEqualizerHelper()?.getEqualizer()
+                                ?.setBandLevel(sixtyHertzBand,
+                                    ((seekBarLevel - 16) * 100).toShort())
                         }
                     }
                 }
@@ -851,34 +854,26 @@ class ActivityEqualizer : AppCompatActivity() {
      * @return A fully built AlertDialog reference.
      */
     private fun showSavePresetDialog() {
-//        MyDialogBuilder(this)
-//            .title(R.string.title_save_preset)
-//            .inputType(InputType.TYPE_CLASS_TEXT)
-//            .input(getString(R.string.hint_save_preset), "", object : InputCallback() {
-//                fun onInput(dialog: MaterialDialog, input: CharSequence) {
-//                    // Do something
-//                    //Get the preset name from the text field.
-//                    if (input == "") {
-//                        Toast.makeText(applicationContext,
-//                            R.string.error_valid_preset_name_toast,
-//                            Toast.LENGTH_SHORT).show()
-//                        return
-//                    }
-//                    MyApp.getService()?.getEqualizerHelper()
-//                        .insertPreset(input.toString(), currentEquSetting)
-//                    Toast.makeText(applicationContext,
-//                        R.string.preset_saved_toast,
-//                        Toast.LENGTH_SHORT).show()
-//                    dialog.dismiss()
-//                }
-//            })
-//            .negativeText(R.string.cancel)
-//            .onNegative(object : SingleButtonCallback() {
-//                fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                    dialog.dismiss()
-//                }
-//            })
-//            .show()
+        MaterialDialog(this)
+            .title(R.string.title_save_preset)
+            .input(hintRes = R.string.hint_save_preset, inputType = InputType.TYPE_CLASS_TEXT,
+                callback =  object : InputCallback {
+                override fun invoke(p1: MaterialDialog, input: CharSequence) {
+                    if (input == "") {
+                        Toast.makeText(applicationContext,
+                            R.string.error_valid_preset_name_toast,
+                            Toast.LENGTH_SHORT).show()
+                        return
+                    }
+                    MyApp.getService()?.getEqualizerHelper()?.insertPreset(input.toString(), currentEquSetting)
+                    Toast.makeText(applicationContext,
+                        R.string.preset_saved_toast,
+                        Toast.LENGTH_SHORT).show()
+
+                }
+            })
+            .negativeButton(R.string.cancel){}
+            .show()
     }
 
     /**
@@ -896,58 +891,59 @@ class ActivityEqualizer : AppCompatActivity() {
                 Log.d("ActivityEqualizer", "showLoadPresetDialog: array $s")
             }
         }
-//        MyDialogBuilder(this)
-//            .title(R.string.title_load_preset)
-//            .items(array)
-//            .itemsCallback(object : ListCallback() {
-//                fun onSelection(
-//                    dialog: MaterialDialog?,
-//                    view: View?,
-//                    which: Int,
-//                    text: CharSequence
-//                ) {
-//                    AsyncInitSlidersTask().execute(MyApp.getService()?.getEqualizerHelper()
-//                        .getPreset(text.toString()))
-//                }
-//            })
-//            .show()
+        MaterialDialog(this)
+            .title(R.string.title_load_preset)
+            .listItems(items = array as List<CharSequence>?
+            , selection = object: ItemListener{
+                    override fun invoke(dialog: MaterialDialog, index: Int, text: CharSequence) {
+                        AsyncInitSlidersTask().execute(MyApp.getService()?.getEqualizerHelper()?.getPreset(text.toString()))
+                    }
+
+                })
+            .show()
     }
 
     /**
      * Applies the current EQ settings to the service.
      */
-    fun applyCurrentEQSettings() {
-        if (MyApp.getService() != null) return
-        equalizer50HzListener.onProgressChanged(equalizer50HzSeekBar,
-            equalizer50HzSeekBar!!.progress,
-            true)
-        equalizer130HzListener.onProgressChanged(equalizer130HzSeekBar,
-            equalizer130HzSeekBar!!.progress,
-            true)
-        equalizer320HzListener.onProgressChanged(equalizer320HzSeekBar!!,
-            equalizer320HzSeekBar!!.progress,
-            true)
-        equalizer800HzListener.onProgressChanged(equalizer800HzSeekBar!!,
-            equalizer800HzSeekBar!!.progress,
-            true)
-        equalizer2kHzListener.onProgressChanged(equalizer2kHzSeekBar!!,
-            equalizer2kHzSeekBar!!.progress,
-            true)
-        equalizer5kHzListener.onProgressChanged(equalizer5kHzSeekBar!!,
-            equalizer5kHzSeekBar!!.progress,
-            true)
-        equalizer12_5kHzListener.onProgressChanged(equalizer12_5kHzSeekBar!!,
-            equalizer12_5kHzSeekBar!!.progress,
-            true)
-        virtualizerListener.onProgressChanged(virtualizerSeekBar!!,
-            virtualizerSeekBar!!.progress,
-            true)
-        bassBoostListener.onProgressChanged(bassBoostSeekBar!!, bassBoostSeekBar!!.progress, true)
-        enhanceListener.onProgressChanged(enhanceSeekBar!!, enhanceSeekBar!!.progress, true)
-        reverbListener.onItemSelected(reverbSpinner,
-            null,
-            reverbSpinner!!.selectedItemPosition,
-            0L)
+    private fun applyCurrentEQSettings() {
+        when {
+            MyApp.getService() != null -> return
+            else -> {
+                equalizer50HzListener.onProgressChanged(equalizer50HzSeekBar,
+                    equalizer50HzSeekBar!!.progress,
+                    true)
+                equalizer130HzListener.onProgressChanged(equalizer130HzSeekBar,
+                    equalizer130HzSeekBar!!.progress,
+                    true)
+                equalizer320HzListener.onProgressChanged(equalizer320HzSeekBar!!,
+                    equalizer320HzSeekBar!!.progress,
+                    true)
+                equalizer800HzListener.onProgressChanged(equalizer800HzSeekBar!!,
+                    equalizer800HzSeekBar!!.progress,
+                    true)
+                equalizer2kHzListener.onProgressChanged(equalizer2kHzSeekBar!!,
+                    equalizer2kHzSeekBar!!.progress,
+                    true)
+                equalizer5kHzListener.onProgressChanged(equalizer5kHzSeekBar!!,
+                    equalizer5kHzSeekBar!!.progress,
+                    true)
+                equalizer12_5kHzListener.onProgressChanged(equalizer12_5kHzSeekBar!!,
+                    equalizer12_5kHzSeekBar!!.progress,
+                    true)
+                virtualizerListener.onProgressChanged(virtualizerSeekBar!!,
+                    virtualizerSeekBar!!.progress,
+                    true)
+                bassBoostListener.onProgressChanged(bassBoostSeekBar!!,
+                    bassBoostSeekBar!!.progress,
+                    true)
+                enhanceListener.onProgressChanged(enhanceSeekBar!!, enhanceSeekBar!!.progress, true)
+                reverbListener.onItemSelected(reverbSpinner,
+                    null,
+                    reverbSpinner!!.selectedItemPosition,
+                    0L)
+            }
+        }
     }
 
     @SuppressLint("StaticFieldLeak")

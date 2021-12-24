@@ -376,8 +376,8 @@ class ActivitySettings : AppCompatActivity() {
 //                    MyDialogBuilder(activity)
 //                        .title(R.string.notifications_title)
 //                        .content(R.string.notification_content)
-//                        .positiveText(pos_text)
-//                        .negativeText(getString(R.string.cancel))
+//                        .positiveButton(pos_text)
+//                        .negativeButton(getString(R.string.cancel))
 //                        .onPositive({ dialog, which ->
 //                            val country: String = MyApp.getPref()
 //                                .getString(MyApp.getContext()
@@ -438,8 +438,8 @@ class ActivitySettings : AppCompatActivity() {
 //                    val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                        .title(R.string.title_continous_playback)
 //                        .content(R.string.cont_playback_content)
-//                        .positiveText(pos_text)
-//                        .negativeText(getString(R.string.cancel))
+//                        .positiveButton(pos_text)
+//                        .negativeButton(getString(R.string.cancel))
 //                        .onPositive({ dialog12, which ->
 //                            if (newValue) {
 //                                MyApp.getPref().edit()
@@ -469,8 +469,8 @@ class ActivitySettings : AppCompatActivity() {
 //                    val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                        .title(R.string.title_data_Saver)
 //                        .content(R.string.data_saver_content)
-//                        .positiveText(pos_text)
-//                        .negativeText(getString(R.string.cancel))
+//                        .positiveButton(pos_text)
+//                        .negativeButton(getString(R.string.cancel))
 //                        .onPositive({ dialog13, which ->
 //                            if (newValue) {
 //                                MyApp.getPref().edit()
@@ -500,8 +500,8 @@ class ActivitySettings : AppCompatActivity() {
         //                    val dialog: MaterialDialog = MyDialogBuilder(activity)
         //                        .title(R.string.instant_lyrics_title)
         //                        .content(R.string.instant_lyrics_content)
-        //                        .positiveText(pos_text)
-        //                        .negativeText(getString(R.string.cancel))
+        //                        .positiveButton(pos_text)
+        //                        .negativeButton(getString(R.string.cancel))
         //                        .onPositive({ dialog1, which ->
         //                            if (newValue) {
         //                                val intent: Intent =
@@ -693,7 +693,7 @@ class ActivitySettings : AppCompatActivity() {
 //                    }
 //                    true
 //                })
-//                .positiveText(R.string.okay)
+//                .positiveButton(R.string.okay)
 //                .build()
 //            dialog.show()
         }
@@ -723,7 +723,7 @@ class ActivitySettings : AppCompatActivity() {
 //                    }
 //                    true
 //                })
-//                .positiveText(R.string.okay)
+//                .positiveButton(R.string.okay)
 //                .build()
 //            dialog.show()
         }
@@ -753,7 +753,7 @@ class ActivitySettings : AppCompatActivity() {
 //                    }
 //                    true
 //                })
-//                .positiveText(R.string.okay)
+//                .positiveButton(R.string.okay)
 //                .build()
 //            dialog.show()
         }
@@ -784,7 +784,7 @@ class ActivitySettings : AppCompatActivity() {
 //                    }
 //                    true
 //                })
-//                .positiveText(R.string.okay)
+//                .positiveButton(R.string.okay)
 //                .build()
 //            dialog.show()
         }
@@ -797,16 +797,16 @@ class ActivitySettings : AppCompatActivity() {
 //            val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                .title(R.string.title_excluded_folders)
 //                .items(excludedFolders)
-//                .positiveText(getString(R.string.add))
+//                .positiveButton(getString(R.string.add))
 //                .onPositive({ dialog12, which ->
 //                    dialog12.dismiss()
 //                    MyDialogBuilder(activity)
 //                        .title(getString(R.string.title_how_to_add))
 //                        .content(getString(R.string.content_how_to_add))
-//                        .positiveText(getString(R.string.pos_how_to_add))
+//                        .positiveButton(getString(R.string.pos_how_to_add))
 //                        .show()
 //                })
-//                .negativeText(getString(R.string.reset))
+//                .negativeButton(getString(R.string.reset))
 //                .onNegative({ dialog1, which ->
 //                    MyApp.Companion.getPref().edit()
 //                        .putString(getString(R.string.pref_excluded_folders), "").apply()
@@ -860,7 +860,7 @@ class ActivitySettings : AppCompatActivity() {
 //                .title("Select theme")
 //                .customView(dialogView, false)
 //                .dismissListener({ dialog12 -> })
-//                .positiveText("Apply")
+//                .positiveButton("Apply")
 //                .onPositive({ dialog1, which -> restartSettingsActivity() })
 //                .build()
 //            dialog.show()
@@ -922,8 +922,8 @@ class ActivitySettings : AppCompatActivity() {
 //            linear.addView(text)
 //            val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                .title(getString(R.string.title_hide_short_clips))
-//                .positiveText(getString(R.string.okay))
-//                .negativeText(getString(R.string.cancel))
+//                .positiveButton(getString(R.string.okay))
+//                .negativeButton(getString(R.string.cancel))
 //                .onPositive({ dialog1, which -> RescanLibrary() })
 //                .customView(linear, false)
 //                .build()
@@ -972,8 +972,8 @@ class ActivitySettings : AppCompatActivity() {
 //            linear.setOrientation(LinearLayout.VERTICAL)
 //            val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                .title(getString(R.string.title_hide_tracks_starting_with))
-//                .positiveText(getString(R.string.okay))
-//                .negativeText(getString(R.string.cancel))
+//                .positiveButton(getString(R.string.okay))
+//                .negativeButton(getString(R.string.cancel))
 //                .onPositive({ dialog1, which ->
 //                    val text11: String = myEditText1.getText().toString().trim({ it <= ' ' })
 //                    MyApp.Companion.getPref().edit()
@@ -1030,8 +1030,8 @@ class ActivitySettings : AppCompatActivity() {
         private fun resetPrefDialog() {
 //            val dialog: MaterialDialog = MyDialogBuilder(activity)
 //                .title(getString(R.string.title_reset_pref) + " ?") // .content(getString(R.string.lyric_art_info_content))
-//                .positiveText(getString(R.string.yes))
-//                .negativeText(getString(R.string.cancel))
+//                .positiveButton(getString(R.string.yes))
+//                .negativeButton(getString(R.string.cancel))
 //                .onPositive { dialog1, which ->
 //                    val editor: SharedPreferences.Editor = MyApp.getPref()!!.edit()
 //                    editor.putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY)

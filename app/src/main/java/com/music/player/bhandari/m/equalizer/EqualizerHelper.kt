@@ -6,9 +6,9 @@ import android.content.Context
 import android.database.Cursor
 import android.media.audiofx.*
 import com.google.gson.Gson
-import com.music.player.bhandari.m.dbHelper.DbHelperEqualizer
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
+import com.music.player.bhandari.m.dbHelper.DbHelperEqualizer
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -74,7 +74,7 @@ class EqualizerHelper constructor(private val mContext: Context, audioSessionId:
     }
 
     @SuppressLint("Range")
-    fun getPresetList(): Array<String?> {
+    fun getPresetList(): List<CharSequence?> {
         val cursor: Cursor = dbHelperEqualizer.readableDatabase.rawQuery("select * from " + DbHelperEqualizer.TABLE_NAME, null)
         val size: Int = cursor.count
         val array: Array<String?> = arrayOfNulls(size)
@@ -84,7 +84,7 @@ class EqualizerHelper constructor(private val mContext: Context, audioSessionId:
             index++
         }
         cursor.close()
-        return array
+        return array.toList()
     }
 
     fun insertPreset(preset_name: String?, equalizerSetting: EqualizerSetting?) {

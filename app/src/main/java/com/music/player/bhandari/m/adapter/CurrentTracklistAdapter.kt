@@ -175,7 +175,7 @@ class CurrentTracklistAdapter constructor(
             }
             R.id.action_add_to_playlist -> {
                 val ids: IntArray = intArrayOf(dataItems[position]!!.id)
-                UtilityFun.AddToPlaylist(context, ids)
+                UtilityFun.addToPlaylist(context, ids)
             }
             R.id.action_share -> try {
                 val uris: ArrayList<Uri> = ArrayList() //for sending multiple files

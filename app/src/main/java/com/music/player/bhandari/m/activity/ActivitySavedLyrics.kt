@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -23,13 +25,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.databinding.ActivitySavedLyricsBinding
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_saved_lyrics.*
-import kotlinx.android.synthetic.main.item_saved_lyric.view.*
 import java.io.Serializable
 import java.util.*
 import java.util.concurrent.Executors
@@ -44,8 +45,10 @@ class ActivitySavedLyrics: AppCompatActivity() {
     val adapter = SavedLyricsAdapter()
     var artistImageUrls: HashMap<String, String> = hashMapOf()
     val handler = Handler(Looper.getMainLooper())
+    private lateinit var binding: ActivitySavedLyricsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        binding = ActivitySavedLyricsBinding.inflate(layoutInflater)
         ColorHelper.setStatusBarGradiant(this)
 
         when (MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)) {
@@ -69,8 +72,8 @@ class ActivitySavedLyrics: AppCompatActivity() {
             supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
 
-        recyclerViewSavedLyrics.adapter = adapter
-        recyclerViewSavedLyrics.layoutManager = LinearLayoutManager(this)
+        binding.recyclerViewSavedLyrics.adapter = adapter
+        binding.recyclerViewSavedLyrics.layoutManager = LinearLayoutManager(this)
 
         title = getString(R.string.nav_saved_lyrics)
 
@@ -81,11 +84,11 @@ class ActivitySavedLyrics: AppCompatActivity() {
             artistImageUrls = OfflineStorageArtistBio.getArtistImageUrls()
             adapter.setLyrics(OfflineStorageLyrics.getAllSavedLyrics())
             handler.post {
-                progressBarSavedLyrics.visibility =View.GONE
+                binding.progressBarSavedLyrics.visibility =View.GONE
                 if(adapter.isEmpty()){
-                    emptyLyrics.visibility = View.VISIBLE
+                    binding.emptyLyrics.visibility = View.VISIBLE
                 }else{
-                    recyclerViewSavedLyrics.visibility = View.VISIBLE
+                    binding.recyclerViewSavedLyrics.visibility = View.VISIBLE
                 }
                 adapter.notifyDataSetChanged()
             }
@@ -186,15 +189,15 @@ class ActivitySavedLyrics: AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            holder.itemView.trackInfo?.text = lyrics[position].getTrack()
-            holder.itemView.playCount?.text = lyrics[position].getArtist()
-            holder.itemView.delete?.isEnabled = true
+            holder.trackInfo.text = lyrics[position].getTrack()
+            holder.playCount.text = lyrics[position].getArtist()
+            holder.delete.isEnabled = true
             Glide.with(this@ActivitySavedLyrics)
                 .load(artistImageUrls[lyrics[position].getOriginalArtist()])
                 .thumbnail(0.5f)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .transition(withCrossFade())
-                .into(holder.itemView.imageView)
+                .into(holder.imageView)
         }
 
         private var lyrics: MutableList<Lyrics> = mutableListOf()
@@ -229,19 +232,15 @@ class ActivitySavedLyrics: AppCompatActivity() {
             notifyDataSetChanged()
         }
 
-        /*override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return position
-        }*/
-
         inner class MyViewHolder(v: View): RecyclerView.ViewHolder(v), View.OnClickListener {
+            val trackInfo: TextView = findViewById(R.id.trackInfo)
+            val playCount: TextView = findViewById(R.id.playCount)
+            val imageView: ImageView = findViewById(R.id.imageView)
+            val delete: ImageView = findViewById(R.id.delete)
 
             init {
                 v.setOnClickListener(this)
-                v.delete.setOnClickListener(this)
+                delete.setOnClickListener(this)
             }
 
             override fun onClick(v: View?) {
@@ -257,13 +256,16 @@ class ActivitySavedLyrics: AppCompatActivity() {
                     }
                     R.id.delete ->{
                         v.isEnabled = false  //to prevent double clicks
-                        if (OfflineStorageLyrics.clearLyricsFromDB(lyrics[position].getOriginalTrack()!!, lyrics[position].getTrackId())) {
-                            Snackbar.make(v, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT).show()
-                            lyrics.removeAt(position)
-                            notifyItemRemoved(position)
-                        }else{
-                            v.isEnabled = true //enable click again
-                            Snackbar.make(v, getString(R.string.error_removing), Snackbar.LENGTH_SHORT).show()
+                        when {
+                            OfflineStorageLyrics.clearLyricsFromDB(lyrics[position].getOriginalTrack()!!, lyrics[position].getTrackId()) -> {
+                                Snackbar.make(v, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT).show()
+                                lyrics.removeAt(position)
+                                notifyItemRemoved(position)
+                            }
+                            else -> {
+                                v.isEnabled = true //enable click again
+                                Snackbar.make(v, getString(R.string.error_removing), Snackbar.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }

@@ -221,7 +221,7 @@ class AlbumLibraryAdapter constructor(private val context: Context, data: ArrayL
                     ids[i] = temp[i]
                     i++
                 }
-                UtilityFun.AddToPlaylist(context, ids)
+                UtilityFun.addToPlaylist(context, ids)
             }
             R.id.action_share -> {
                 val files: ArrayList<Uri> = ArrayList() //for sending multiple files

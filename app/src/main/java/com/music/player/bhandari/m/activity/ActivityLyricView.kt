@@ -14,15 +14,17 @@ import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.ScaleAnimation
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -112,6 +114,11 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
     private var isLyricsShown: Boolean = true
     var adapter: LyricsViewAdapter? = null
     private var lyricThread: DownloadLyricThread? = null
+    
+    private lateinit var progressBar: ProgressBar
+    private lateinit var artistTextView: EditText
+    private lateinit var trackTitleEditText: EditText
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ColorHelper.setStatusBarGradiant(this)
@@ -353,73 +360,59 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun searchLyricDialog() {
-//        val builder: MaterialDialog.Builder = MyDialogBuilder(this)
-//            .title(R.string.title_search_lyrics)
-//            .customView(R.layout.lyric_search_dialog, true)
-//            .positiveText(R.string.pos_search_lyric)
-//            .negativeText(R.string.cancel)
-//            .autoDismiss(false)
-//        val layout: View = builder.build().getCustomView()
-//        val trackTitleEditText: EditText = layout.findViewById<EditText>(R.id.track_title_edit)
-//        val artistTextView: EditText = layout.findViewById<EditText>(R.id.artist_edit)
-//        trackTitleEditText.setText(trackTitle)
-//        artistTextView.setText(artist)
-//        val progressBar: ProgressBar = layout.findViewById<ProgressBar>(R.id.progressBar)
-//        handler!!.postDelayed(object : Runnable {
-//            override fun run() {
-//                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
-//                    SystemClock.uptimeMillis(),
-//                    MotionEvent.ACTION_DOWN,
-//                    0f,
-//                    0f,
-//                    0))
-//                trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
-//                    SystemClock.uptimeMillis(),
-//                    MotionEvent.ACTION_UP,
-//                    0f,
-//                    0f,
-//                    0))
-//            }
-//        }, 200)
-//        val imm: InputMethodManager? =
-//            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-//        if (imm != null) {
-//            imm.showSoftInput(trackTitleEditText, InputMethodManager.SHOW_IMPLICIT)
-//        }
-//        builder.onPositive(object : SingleButtonCallback() {
-//            fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                if ((trackTitleEditText.getText().toString() == "")) {
-//                    trackTitleEditText.setError(getString(R.string.error_empty_title_lyric_search))
-//                    return
-//                }
-//                var artistName: String = artistTextView.getText().toString()
-//                if ((artistName == "")) {
-//                    artistName = getString(R.string.unknown_artist)
-//                }
-//                progressBar.setVisibility(View.VISIBLE)
-//                val finalArtistName: String = artistName
-//                handler!!.postDelayed(object : Runnable {
-//                    override fun run() {
-//                        dialog.dismiss()
-//                        finish()
-//                        val intent: Intent =
-//                            Intent(this@ActivityLyricView, ActivityLyricView::class.java)
-//                        intent.putExtra("track_title", trackTitleEditText.getText().toString())
-//                        intent.putExtra("artist", finalArtistName)
-//                        startActivity(intent)
-//                    }
-//                }, 1000)
-//            }
-//        })
-//        builder.onNegative(object : SingleButtonCallback() {
-//            fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                dialog.dismiss()
-//            }
-//        })
-//        builder.build().show()
+        val builder = MaterialDialog(this)
+            .title(R.string.title_search_lyrics)
+            .customView(R.layout.lyric_search_dialog, scrollable = true)
+            .positiveButton(R.string.pos_search_lyric){
+                if ((trackTitleEditText.text.toString() == "")) {
+                    trackTitleEditText.error = getString(R.string.error_empty_title_lyric_search)
+                    return@positiveButton
+                }
+                var artistName: String = artistTextView.text.toString()
+                if ((artistName == "")) {
+                    artistName = getString(R.string.unknown_artist)
+                }
+                progressBar.visibility = View.VISIBLE
+                val finalArtistName: String = artistName
+                handler!!.postDelayed({
+                    finish()
+                    val intent: Intent =
+                        Intent(this@ActivityLyricView, ActivityLyricView::class.java)
+                    intent.putExtra("track_title", trackTitleEditText.text.toString())
+                    intent.putExtra("artist", finalArtistName)
+                    startActivity(intent)
+                }, 1000)
+            }
+            .negativeButton(R.string.cancel)
+
+        val layout: View = builder.getCustomView()
+        trackTitleEditText = layout.findViewById(R.id.track_title_edit)
+        artistTextView = layout.findViewById(R.id.artist_edit)
+        trackTitleEditText.setText(trackTitle)
+        artistTextView.setText(artist)
+        progressBar = layout.findViewById(R.id.progressBar)
+
+        handler!!.postDelayed({
+            trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                MotionEvent.ACTION_DOWN,
+                0f,
+                0f,
+                0))
+            trackTitleEditText.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                MotionEvent.ACTION_UP,
+                0f,
+                0f,
+                0))
+        }, 200)
+        (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?)?.showSoftInput(
+            trackTitleEditText,
+            InputMethodManager.SHOW_IMPLICIT)
+        builder.show()
     }
 
-    fun wrongLyrics() {
+    private fun wrongLyrics() {
         if (mLyrics == null || mLyrics!!.getFlag() !== Lyrics.POSITIVE_RESULT) {
             Toast.makeText(this, getString(R.string.error_no_lyrics), Toast.LENGTH_SHORT).show()
             return
@@ -454,17 +447,20 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
         }
         var shareBody: String = getString(R.string.lyrics_share_text)
         shareBody += "\n\nTrack : " + mLyrics!!.getTrack()
-            .toString() + "\n".toString() + "Artist : " + mLyrics!!.getArtist().toString() + "\n\n"
-        if (mLyrics!!.isLRC()) {
-            shareBody += Html.fromHtml(adapter!!.getStaticLyrics()).toString()
-        } else {
-            shareBody += Html.fromHtml(mLyrics!!.getText())
+            .toString() + "\n" + "Artist : " + mLyrics!!.getArtist().toString() + "\n\n"
+        when {
+            mLyrics!!.isLRC() -> {
+                shareBody += Html.fromHtml(adapter!!.getStaticLyrics()).toString()
+            }
+            else -> {
+                shareBody += Html.fromHtml(mLyrics!!.getText())
+            }
         }
         shareTextIntent(shareBody)
     }
 
     private fun shareTextIntent(shareBody: String) {
-        val sharingIntent: Intent = Intent(Intent.ACTION_SEND)
+        val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Lyrics")
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
@@ -481,46 +477,53 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
         item.setArtist(artist)
         item.title = trackTitle
         item.id = -1
-        if (((mLyrics != null
-                    ) && mLyrics!!.getOriginalArtist()!!.lowercase(Locale.getDefault()) == artist!!.lowercase(Locale.getDefault())
-                    && mLyrics!!.getOriginalTrack()!!.lowercase(Locale.getDefault()) == trackTitle!!.lowercase(Locale.getDefault()))
-        ) {
-            onLyricsDownloaded(mLyrics)
-            return
-        }
-
-        //set loading animation
-        lyricLoadAnimation!!.visibility = View.VISIBLE
-        lyricLoadAnimation!!.show()
-
-        //lyricCopyRightText.setVisibility(View.GONE);
-        recyclerView!!.visibility = View.GONE
-        lyricStatus!!.visibility = View.VISIBLE
-        lyricStatus!!.text = getString(R.string.lyrics_loading)
-
-        //check in offline storage
-        //for saved lyrics
-        mLyrics = OfflineStorageLyrics.getInstantLyricsFromDB(item)
-        if (mLyrics != null) {
-            onLyricsDownloaded(mLyrics)
-            return
-        }
-        if (!discardCache) {
-            mLyrics = OfflineStorageLyrics.getLyricsFromCache(item)
-            if (mLyrics != null) {
+        when {
+            (mLyrics != null) && mLyrics!!.getOriginalArtist()!!.lowercase(Locale.getDefault()) == artist!!.lowercase(Locale.getDefault()) && mLyrics!!.getOriginalTrack()!!.lowercase(Locale.getDefault()) == trackTitle!!.lowercase(Locale.getDefault()) -> {
                 onLyricsDownloaded(mLyrics)
                 return
             }
-        }
-        when {
-            UtilityFun.isConnectedToInternet -> {
-                fetchLyrics((item.getArtist())!!, (item.title)!!, null)
-            }
+
+            //set loading animation
+
+            //lyricCopyRightText.setVisibility(View.GONE);
+
+            //check in offline storage
+            //for saved lyrics
             else -> {
-                lyricStatus!!.text = getString(R.string.no_connection)
-                lyricLoadAnimation!!.hide()
+                lyricLoadAnimation!!.visibility = View.VISIBLE
+                lyricLoadAnimation!!.show()
+
+                //lyricCopyRightText.setVisibility(View.GONE);
+                recyclerView!!.visibility = View.GONE
+                lyricStatus!!.visibility = View.VISIBLE
+                lyricStatus!!.text = getString(R.string.lyrics_loading)
+
+                //check in offline storage
+                //for saved lyrics
+                mLyrics = OfflineStorageLyrics.getInstantLyricsFromDB(item)
+                if (mLyrics != null) {
+                    onLyricsDownloaded(mLyrics)
+                    return
+                }
+                if (!discardCache) {
+                    mLyrics = OfflineStorageLyrics.getLyricsFromCache(item)
+                    if (mLyrics != null) {
+                        onLyricsDownloaded(mLyrics)
+                        return
+                    }
+                }
+                when {
+                    UtilityFun.isConnectedToInternet -> {
+                        fetchLyrics((item.getArtist())!!, (item.title)!!, null)
+                    }
+                    else -> {
+                        lyricStatus!!.text = getString(R.string.no_connection)
+                        lyricLoadAnimation!!.hide()
+                    }
+                }
             }
         }
+
     }
 
     private fun fetchArtistImage(artist: String) {
@@ -562,23 +565,26 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
         OfflineStorageLyrics.putLyricsToCache(lyrics)
         lyricLoadAnimation!!.hide()
         mLyrics = lyrics
-        if (lyrics.getFlag() === Lyrics.POSITIVE_RESULT) {
-            lyricStatus!!.visibility = View.GONE
-            recyclerView!!.visibility = View.VISIBLE
-            lyricStatus!!.visibility = View.GONE
-            if (supportActionBar != null) {
-                supportActionBar!!.title = lyrics.getTrack()
-                supportActionBar!!.subtitle = lyrics.getArtist()
-            }
+        when {
+            lyrics.getFlag() === Lyrics.POSITIVE_RESULT -> {
+                lyricStatus!!.visibility = View.GONE
+                recyclerView!!.visibility = View.VISIBLE
+                lyricStatus!!.visibility = View.GONE
+                if (supportActionBar != null) {
+                    supportActionBar!!.title = lyrics.getTrack()
+                    supportActionBar!!.subtitle = lyrics.getArtist()
+                }
 
-            //if(!lyrics.getArtist().equals(mLyrics.getArtist())){
-            fetchArtistImage(lyrics.getArtist()!!)
-            //}
-            initializeLyricsView()
-        } else {
-            lyricStatus!!.text = getString(R.string.tap_to_refresh_lyrics)
-            lyricStatus!!.visibility = View.VISIBLE
-            recyclerView!!.visibility = View.GONE
+                //if(!lyrics.getArtist().equals(mLyrics.getArtist())){
+                fetchArtistImage(lyrics.getArtist()!!)
+                //}
+                initializeLyricsView()
+            }
+            else -> {
+                lyricStatus!!.text = getString(R.string.tap_to_refresh_lyrics)
+                lyricStatus!!.visibility = View.VISIBLE
+                recyclerView!!.visibility = View.GONE
+            }
         }
         Executors.newSingleThreadExecutor().execute { updateSaveDeleteFabDrawable() }
     }
@@ -607,14 +613,16 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
 
     private fun updateSaveDeleteFabDrawable() {
         val drawable: Drawable
-        if (OfflineStorageLyrics.isLyricsPresentInDB(trackTitle!!,
-                if ((mLyrics == null)) -1 else mLyrics!!.getTrackId())
-        ) {
-            isLyricsSaved = true
-            drawable = resources.getDrawable(R.drawable.ic_delete_black_24dp)
-        } else {
-            isLyricsSaved = false
-            drawable = resources.getDrawable(R.drawable.ic_save_black_24dp)
+        when {
+            OfflineStorageLyrics.isLyricsPresentInDB(trackTitle!!,
+                if ((mLyrics == null)) -1 else mLyrics!!.getTrackId()) -> {
+                isLyricsSaved = true
+                drawable = resources.getDrawable(R.drawable.ic_delete_black_24dp)
+            }
+            else -> {
+                isLyricsSaved = false
+                drawable = resources.getDrawable(R.drawable.ic_save_black_24dp)
+            }
         }
         handler!!.post { saveLyrics!!.setImageDrawable(drawable) }
     }
@@ -687,7 +695,7 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
             val CACHE_ART_THUMBS: String =
                 MyApp.getContext().cacheDir.toString() + "/art_thumbs/"
             val actual_file_path: String = CACHE_ART_THUMBS + p0[0]!!.getOriginalArtist()
-            val f: File = File(CACHE_ART_THUMBS)
+            val f = File(CACHE_ART_THUMBS)
             if (!f.exists()) {
                 f.mkdir()
             }
@@ -696,10 +704,10 @@ class ActivityLyricView : AppCompatActivity(), View.OnClickListener,
                 val fos: FileOutputStream?
                 try {
                     fos = FileOutputStream(File(actual_file_path))
-                    val url: URL = URL(p0[0]!!.getImageUrl())
+                    val url = URL(p0[0]!!.getImageUrl())
                     val inputStream: InputStream = url.openConnection().getInputStream()
-                    val buffer: ByteArray = ByteArray(1024)
-                    var bufferLength: Int = 0
+                    val buffer = ByteArray(1024)
+                    var bufferLength: Int
                     while ((inputStream.read(buffer).also { bufferLength = it }) > 0) {
                         fos.write(buffer, 0, bufferLength)
                     }

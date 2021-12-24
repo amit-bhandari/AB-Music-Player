@@ -459,7 +459,7 @@ class MainLibraryAdapter(
         when (fl!!.getStatus()) {
             Constants.FRAGMENT_STATUS.TITLE_FRAGMENT -> {
                 ids = intArrayOf(filteredDataItems[position].id)
-                UtilityFun.AddToPlaylist(context, ids)
+                UtilityFun.addToPlaylist(context, ids)
             }
             Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
                 val album_id: Int = filteredDataItems[position].album_id
@@ -470,7 +470,7 @@ class MainLibraryAdapter(
                     ids[i] = temp[i]
                     i++
                 }
-                UtilityFun.AddToPlaylist(context, ids)
+                UtilityFun.addToPlaylist(context, ids)
             }
             Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
                 val artist_id: Int = filteredDataItems[position].artist_id
@@ -481,7 +481,7 @@ class MainLibraryAdapter(
                     ids[i] = temp[i]
                     i++
                 }
-                UtilityFun.AddToPlaylist(context, ids)
+                UtilityFun.addToPlaylist(context, ids)
             }
             Constants.FRAGMENT_STATUS.GENRE_FRAGMENT -> {
                 val genre_id: Int = filteredDataItems[position].id
@@ -492,7 +492,7 @@ class MainLibraryAdapter(
                     ids[i] = temp[i]
                     i++
                 }
-                UtilityFun.AddToPlaylist(context, ids)
+                UtilityFun.addToPlaylist(context, ids)
             }
         }
         //

@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
@@ -123,6 +122,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
     implementation 'com.afollestad.material-dialogs:bottomsheets:3.3.0'
     implementation 'com.afollestad.material-dialogs:lifecycle:3.3.0'
+    implementation 'com.afollestad.material-dialogs:input:3.3.0'
 
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

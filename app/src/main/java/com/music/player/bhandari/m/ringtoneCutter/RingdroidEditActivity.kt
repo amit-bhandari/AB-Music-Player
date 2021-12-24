@@ -43,6 +43,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.afollestad.materialdialogs.MaterialDialog
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
@@ -1022,7 +1023,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
 //        MyDialogBuilder(this)
 //            .title(title)
 //            .content(message)
-//            .positiveText(R.string.okay)
+//            .positiveButton(R.string.okay)
 //            .cancelable(false)
 //            .show()
     }
@@ -1157,8 +1158,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
                                 mInfo.setText(mInfoContent);
                             }
                         });*/
-                        val errorMessage: CharSequence
-                        errorMessage = when {
+                        val errorMessage: CharSequence = when {
                             e.message != null
                                     && (e.message == "No space left on device") -> {
                                 resources.getText(R.string.no_space_error)
@@ -1214,11 +1214,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
         mSaveSoundFileThread!!.start()
     }
 
-    private fun afterSavingRingtone(
-        title: CharSequence,
-        outPath: String,
-        duration: Int
-    ) {
+    private fun afterSavingRingtone(title: CharSequence, outPath: String, duration: Int) {
         val outFile = File(outPath)
         val fileSize: Long = outFile.length()
         if (fileSize <= 512) {
@@ -1229,18 +1225,17 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
                 .setPositiveButton(R.string.alert_ok_button, null)
                 .setCancelable(false)
                 .show();*/
-//            MyDialogBuilder(this)
-//                .title(R.string.alert_title_failure)
-//                .content(R.string.too_small_error)
-//                .positiveText(R.string.okay)
-//                .cancelable(false)
-//                .show()
+            MaterialDialog(this)
+                .title(R.string.alert_title_failure)
+                .message(R.string.too_small_error)
+                .positiveButton(R.string.okay)
+                .cancelable(false)
+                .show()
             return
         }
 
         // Create the database record, pointing to the existing file path
-        val mimeType: String
-        mimeType = when {
+        val mimeType: String = when {
             outPath.endsWith(".m4a") -> {
                 "audio/mp4a-latm"
             }
@@ -1253,7 +1248,7 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
             }
         }
         val artist: String = "" + resources.getText(R.string.artist_name)
-        val values: ContentValues = ContentValues()
+        val values = ContentValues()
         values.put(MediaStore.MediaColumns.DATA, outPath)
         values.put(MediaStore.MediaColumns.TITLE, title.toString())
         values.put(MediaStore.MediaColumns.SIZE, fileSize)
@@ -1315,22 +1310,19 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
                     })
                 .setCancelable(false)
                 .show();*/
-//            MyDialogBuilder(this)
-//                .title(R.string.alert_title_success)
-//                .content(R.string.set_default_notification)
-//                .positiveText(R.string.alert_yes_button)
-//                .onPositive(object : SingleButtonCallback() {
-//                    fun onClick(dialog: MaterialDialog, which: DialogAction) {
-//                        RingtoneManager.setActualDefaultRingtoneUri(
-//                            this@RingdroidEditActivity,
-//                            RingtoneManager.TYPE_NOTIFICATION,
-//                            newUri)
-//                        finish()
-//                    }
-//                })
-//                .negativeText(R.string.alert_no_button)
-//                .cancelable(false)
-//                .show()
+            MaterialDialog(this)
+                .title(R.string.alert_title_success)
+                .message(R.string.set_default_notification)
+                .positiveButton(R.string.alert_yes_button){
+                    RingtoneManager.setActualDefaultRingtoneUri(
+                        this@RingdroidEditActivity,
+                        RingtoneManager.TYPE_NOTIFICATION,
+                        newUri)
+                    finish()
+                }
+                .negativeButton(R.string.alert_no_button)
+                .cancelable(false)
+                .show()
             return
         }
 
@@ -1498,12 +1490,12 @@ class RingdroidEditActivity : AppCompatActivity(), MarkerView.MarkerListener,
             .setPositiveButton(R.string.alert_ok_button, null)
             .setCancelable(false)
             .show();*/
-//            MyDialogBuilder(activity)
-//                .title(activity.getString(R.string.about_title))
-//                .content(activity.getString(R.string.about_text, versionName))
-//                .positiveText(R.string.okay)
-//                .cancelable(false)
-//                .show()
+            MaterialDialog(activity)
+                .title(R.string.about_title)
+                .message(R.string.about_text, versionName)
+                .positiveButton(R.string.okay)
+                .cancelable(false)
+                .show()
         }
     }
 }
