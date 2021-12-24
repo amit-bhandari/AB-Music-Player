@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration
-import com.music.player.bhandari.m.UIElementHelper.FastScroller
+import com.music.player.bhandari.m.uiElementHelper.BottomOffsetDecoration
+import com.music.player.bhandari.m.uiElementHelper.FastScroller
 import com.music.player.bhandari.m.adapter.FolderLibraryAdapter
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary

@@ -11,13 +11,12 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.widget.RemoteViews
-import com.music.player.bhandari.m.activity.ActivityPermissionSeek
-import com.music.player.bhandari.m.model.Constants
-import com.music.player.bhandari.m.service.PlayerService
-import com.music.player.bhandari.m.model.MusicLibrary
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import java.lang.Exception
+import com.music.player.bhandari.m.activity.ActivityPermissionSeek
+import com.music.player.bhandari.m.model.Constants
+import com.music.player.bhandari.m.model.MusicLibrary
+import com.music.player.bhandari.m.service.PlayerService
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -38,6 +37,7 @@ class WidgetReceiver : AppWidgetProvider() {
     var TAG = "Widget"
     var action: String? = null
     var context: Context? = null
+
     private val playerServiceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(arg0: ComponentName, service: IBinder) {
             val playerBinder = service as PlayerService.PlayerBinder
@@ -58,72 +58,80 @@ class WidgetReceiver : AppWidgetProvider() {
         Log.v(TAG, "Intent " + intent.action)
         this.context = context
         action = intent.action
-        if (intent.action == null) {
-            //launch player
-            if (MyApp.getService() == null) {
-                MusicLibrary.instance
+        when (intent.action) {
+            null -> {
+                //launch player
                 when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                        context.startForegroundService(Intent(context,
-                            PlayerService::class.java).setAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET))
+                    MyApp.getService() == null -> {
+                        MusicLibrary.instance
+                        when {
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                                context.startForegroundService(Intent(context,
+                                    PlayerService::class.java).setAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET))
+                            }
+                            else -> {
+                                context.startService(Intent(context, PlayerService::class.java)
+                                    .setAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET))
+                            }
+                        }
+                    }
+                    else -> {
+                        //permission seek activity is used here to show splash screen
+                        context.startActivity(Intent(context, ActivityPermissionSeek::class.java).addFlags(
+                            Intent.FLAG_ACTIVITY_NEW_TASK))
+                    }
+                }
+            }
+            else -> {
+                when {
+                    MyApp.getService() == null -> {
+                        Log.v(TAG, "Widget " + "Service is null")
+                        when {
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                                context.startForegroundService(Intent(context,
+                                    PlayerService::class.java).setAction(intent.action))
+                            }
+                            else -> {
+                                context.startService(Intent(context, PlayerService::class.java))
+                            }
+                        }
+
+                        /*try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }*/
+
+                        /*new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        IBinder service = peekService(context, new Intent(context, playerService!!.class));
+
+                                        if (service != null){
+                                            playerService!!.PlayerBinder playerBinder = (playerService!!.PlayerBinder) service;
+                                            PlayerService playerService = playerBinder.getTrackInfoService();
+                                            MyApp.setService(playerService);
+                                            context.startService(new Intent(context, playerService!!.class)
+                                                    .setAction(action));
+                                            Log.v(TAG,"Widget "+ action);
+                                            Log.v(TAG,"Widget "+ "Service started");
+                                        }else {
+                                            Log.v(TAG,"Widget "+ "Service null");
+                                        }
+                                    }
+                                }, 500);*/
                     }
                     else -> {
                         context.startService(Intent(context, PlayerService::class.java)
-                            .setAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET))
+                            .setAction(intent.action))
                     }
                 }
-            } else {
-                //permission seek activity is used here to show splash screen
-                context.startActivity(Intent(context, ActivityPermissionSeek::class.java).addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK))
-            }
-        } else {
-            if (MyApp.getService() == null) {
-                Log.v(TAG, "Widget " + "Service is null")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(Intent(context,
-                        PlayerService::class.java).setAction(intent.action))
-                } else {
-                    context.startService(Intent(context, PlayerService::class.java))
-                }
-
-                /*try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
-
-                /*new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        IBinder service = peekService(context, new Intent(context, playerService!!.class));
-
-                        if (service != null){
-                            playerService!!.PlayerBinder playerBinder = (playerService!!.PlayerBinder) service;
-                            PlayerService playerService = playerBinder.getTrackInfoService();
-                            MyApp.setService(playerService);
-                            context.startService(new Intent(context, playerService!!.class)
-                                    .setAction(action));
-                            Log.v(TAG,"Widget "+ action);
-                            Log.v(TAG,"Widget "+ "Service started");
-                        }else {
-                            Log.v(TAG,"Widget "+ "Service null");
-                        }
-                    }
-                }, 500);*/
-            } else {
-                context.startService(Intent(context, PlayerService::class.java)
-                    .setAction(intent.action))
             }
         }
         super.onReceive(context, intent)
     }
 
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
-    ) {
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         Log.d("WidgetReceiver", "onUpdate: called")
 
         //if player service is null, start the service

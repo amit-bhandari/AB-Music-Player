@@ -16,7 +16,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
 import com.music.player.bhandari.m.activity.ActivitySecondaryLibrary
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary

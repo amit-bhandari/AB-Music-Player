@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
+import com.music.player.bhandari.m.uiElementHelper.TypeFaceHelper
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.service.PlayerService
 import io.github.inflationx.calligraphy3.CalligraphyConfig
@@ -65,6 +65,7 @@ class MyApp : Application() {
 
         //current selected theme id
         private var selectedThemeId: Int = 0
+
         fun getInstance(): MyApp {
             return instance!!
         }

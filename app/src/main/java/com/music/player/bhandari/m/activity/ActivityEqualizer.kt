@@ -25,7 +25,7 @@ import com.afollestad.materialdialogs.list.listItems
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
 import com.music.player.bhandari.m.customViews.VerticalSeekBar
 import com.music.player.bhandari.m.equalizer.EqualizerSetting
 import com.music.player.bhandari.m.model.Constants

@@ -57,11 +57,7 @@ class FragmentAlbumArt : Fragment() {
     @BindView(R.id.album_art_now_playing)
     var albumArt: ImageView? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val layout: View = inflater.inflate(R.layout.fragment_album_art, container, false)
 
         /*Configuration configuration = getActivity().getResources().getConfiguration();
@@ -136,77 +132,80 @@ class FragmentAlbumArt : Fragment() {
         val currentNowPlayingBackPref: Int = MyApp.getPref()
             .getInt(getString(R.string.pref_now_playing_back), 1)
         //if album art selected, hide small album art
-        if (currentNowPlayingBackPref == 2) {
-            albumArt!!.setImageBitmap(null)
-        } else {
-            val request: RequestBuilder<Drawable> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Glide.with(this)
-                    .load(MusicLibrary.instance.getAlbumArtFromTrack(playerService!!.getCurrentTrack()!!.id))
-                    .centerCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-            } else {
-                TODO("VERSION.SDK_INT < Q")
+        when (currentNowPlayingBackPref) {
+            2 -> {
+                albumArt!!.setImageBitmap(null)
             }
-            when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
-                0 -> request.listener(object : RequestListener<Drawable?> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable?>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        //Log.d("AlbumLibraryAdapter", "onException: ");
-                        if (UtilityFun.isConnectedToInternet && !MyApp.getPref()
-                                .getBoolean(getString(R.string.pref_data_saver), false)) {
-                            val url: String? = MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
-                            if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))
-                                .into(albumArt!!)
-                            return true
+            else -> {
+                val request: RequestBuilder<Drawable> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    Glide.with(this)
+                        .load(MusicLibrary.instance.getAlbumArtFromTrack(playerService!!.getCurrentTrack()!!.id))
+                        .centerCrop()
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                } else {
+                    TODO("VERSION.SDK_INT < Q")
+                }
+                when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
+                    0 -> request.listener(object : RequestListener<Drawable?> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable?>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            //Log.d("AlbumLibraryAdapter", "onException: ");
+                            if (UtilityFun.isConnectedToInternet && !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) { val url: String? = MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
+                                if (url != null && url.isNotEmpty()) albumArt?.let {
+                                    request.load(Uri.parse(url))
+                                        .into(it)
+                                }
+                                return true
+                            }
+                            return false
                         }
-                        return false
-                    }
 
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable?>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-                }).placeholder(R.drawable.ic_batman_1)
-                1 -> request.listener(object : RequestListener<Drawable?> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable?>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        if (UtilityFun.isConnectedToInternet &&
-                            !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)
-                        ) {
-                            val url: String? = MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
-                            if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))
-                                .into(albumArt!!)
-                            return true
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable?>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            return false
                         }
-                        return false
-                    }
+                    }).placeholder(R.drawable.ic_batman_1)
+                    1 -> request.listener(object : RequestListener<Drawable?> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable?>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            if (UtilityFun.isConnectedToInternet &&
+                                !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)
+                            ) {
+                                val url: String? = MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
+                                if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))
+                                    .into(albumArt!!)
+                                return true
+                            }
+                            return false
+                        }
 
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable?>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-                }).placeholder(UtilityFun.defaultAlbumArtDrawable)
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable?>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            return false
+                        }
+                    }).placeholder(UtilityFun.defaultAlbumArtDrawable)
+                }
+                albumArt?.let { request.into(it) }
             }
-            request.into(albumArt!!)
         }
     }
 }

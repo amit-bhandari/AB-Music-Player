@@ -15,8 +15,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.TypeFaceHelper
 import com.music.player.bhandari.m.activity.ActivityTagEditor
 import com.music.player.bhandari.m.model.*
 import com.music.player.bhandari.m.service.PlayerService

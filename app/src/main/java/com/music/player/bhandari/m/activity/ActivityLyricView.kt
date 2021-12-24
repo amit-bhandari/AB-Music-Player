@@ -30,8 +30,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.BottomOffsetDecoration
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter
 import com.music.player.bhandari.m.lyricCard.ActivityLyricCard
 import com.music.player.bhandari.m.model.Constants

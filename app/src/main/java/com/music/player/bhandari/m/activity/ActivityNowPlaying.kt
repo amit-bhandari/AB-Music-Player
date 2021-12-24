@@ -51,10 +51,10 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
-import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener
-import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.TypeFaceHelper
+import com.music.player.bhandari.m.uiElementHelper.recyclerviewHelper.OnStartDragListener
+import com.music.player.bhandari.m.uiElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback
 import com.music.player.bhandari.m.adapter.CurrentTracklistAdapter
 import com.music.player.bhandari.m.customViews.CustomViewPager
 import com.music.player.bhandari.m.model.Constants

@@ -12,7 +12,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.service.NotificationListenerService
 import io.github.inflationx.viewpump.ViewPumpContextWrapper

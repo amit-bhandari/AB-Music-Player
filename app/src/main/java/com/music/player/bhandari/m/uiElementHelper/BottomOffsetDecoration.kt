@@ -1,4 +1,4 @@
-package com.music.player.bhandari.m.UIElementHelper
+package com.music.player.bhandari.m.uiElementHelper
 
 import android.graphics.Rect
 import android.view.View

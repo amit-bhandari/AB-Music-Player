@@ -26,7 +26,7 @@ import com.google.android.flexbox.JustifyContent
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
 import com.music.player.bhandari.m.activity.ActivityLyricView
 import com.music.player.bhandari.m.databinding.ActivityTrackInfoBinding
 import com.music.player.bhandari.m.model.Constants

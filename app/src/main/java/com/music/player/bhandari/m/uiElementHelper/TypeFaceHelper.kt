@@ -1,4 +1,4 @@
-package com.music.player.bhandari.m.UIElementHelper
+package com.music.player.bhandari.m.uiElementHelper
 
 import android.content.Context
 import android.graphics.Typeface

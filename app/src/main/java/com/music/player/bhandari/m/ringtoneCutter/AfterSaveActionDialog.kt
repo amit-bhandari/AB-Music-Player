@@ -21,7 +21,7 @@ import android.os.Message
 import android.view.View
 import android.widget.Button
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
 
 class AfterSaveActionDialog constructor(context: Context?, response: Message) : Dialog(context!!) {
     private val mResponse: Message

@@ -44,7 +44,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.app.NotificationCompat
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
 import com.music.player.bhandari.m.activity.ActivityMain
 import com.music.player.bhandari.m.activity.ActivityNowPlaying
 import com.music.player.bhandari.m.activity.ActivityPermissionSeek

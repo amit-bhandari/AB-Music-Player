@@ -35,9 +35,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
+import com.music.player.bhandari.m.uiElementHelper.BottomOffsetDecoration
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.TypeFaceHelper
 import com.music.player.bhandari.m.adapter.AlbumLibraryAdapter
 import com.music.player.bhandari.m.adapter.SecondaryLibraryAdapter
 import com.music.player.bhandari.m.customViews.ExpandableTextView

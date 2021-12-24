@@ -35,9 +35,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper.getBaseThemeDrawable
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper.setStatusBarGradiant
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper.getBaseThemeDrawable
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper.setStatusBarGradiant
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter
 import com.music.player.bhandari.m.lyricCard.ActivityLyricCard
 import com.music.player.bhandari.m.model.Constants

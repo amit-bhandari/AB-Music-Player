@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper
+package com.music.player.bhandari.m.uiElementHelper.recyclerviewHelper
 
 import androidx.recyclerview.widget.ItemTouchHelper
 

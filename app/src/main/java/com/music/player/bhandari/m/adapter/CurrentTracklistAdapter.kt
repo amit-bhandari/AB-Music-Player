@@ -18,10 +18,10 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
-import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.ItemTouchHelperAdapter
-import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.TypeFaceHelper
+import com.music.player.bhandari.m.uiElementHelper.recyclerviewHelper.ItemTouchHelperAdapter
+import com.music.player.bhandari.m.uiElementHelper.recyclerviewHelper.OnStartDragListener
 import com.music.player.bhandari.m.activity.ActivityTagEditor
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary

@@ -35,7 +35,7 @@
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-                <com.music.player.bhandari.m.UIElementHelper.FastScroller
+                <com.music.player.bhandari.m.uiElementHelper.FastScroller
                     android:id="@+id/fastscroller"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"

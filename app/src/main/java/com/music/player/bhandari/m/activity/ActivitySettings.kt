@@ -32,11 +32,11 @@ import com.google.android.flexbox.JustifyContent
 import com.google.firebase.messaging.FirebaseMessaging
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
-import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper
-import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.ItemTouchHelperAdapter
-import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDragListener
-import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.TypeFaceHelper
+import com.music.player.bhandari.m.uiElementHelper.recyclerviewHelper.ItemTouchHelperAdapter
+import com.music.player.bhandari.m.uiElementHelper.recyclerviewHelper.OnStartDragListener
+import com.music.player.bhandari.m.uiElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.model.MusicLibrary
 import com.music.player.bhandari.m.service.BatchDownloaderService

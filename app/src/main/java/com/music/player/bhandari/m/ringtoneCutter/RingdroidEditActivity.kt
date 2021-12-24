@@ -46,7 +46,7 @@ import androidx.appcompat.widget.Toolbar
 import com.afollestad.materialdialogs.MaterialDialog
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.uiElementHelper.ColorHelper
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.ringtoneCutter.soundfile.SoundFile
 import io.github.inflationx.viewpump.ViewPumpContextWrapper

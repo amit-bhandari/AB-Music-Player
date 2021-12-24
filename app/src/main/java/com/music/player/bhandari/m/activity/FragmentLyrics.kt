@@ -19,7 +19,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration
+import com.music.player.bhandari.m.uiElementHelper.BottomOffsetDecoration
 import com.music.player.bhandari.m.adapter.LyricsViewAdapter
 import com.music.player.bhandari.m.lyricCard.ActivityLyricCard
 import com.music.player.bhandari.m.model.Constants

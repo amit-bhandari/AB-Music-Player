@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.music.player.bhandari.m.R
-import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration
+import com.music.player.bhandari.m.uiElementHelper.BottomOffsetDecoration
 import com.music.player.bhandari.m.adapter.PlaylistLibraryAdapter
 
 /**
