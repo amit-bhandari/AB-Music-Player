@@ -1,6 +1,5 @@
 package com.music.player.bhandari.m.activity
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -73,7 +72,7 @@ class FragmentAlbumArt : Fragment() {
         mUIUpdate = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 Log.v(Constants.TAG, "update disc please Jarvis")
-                UpdateUI()
+                updateUI()
             }
         }
         return layout
@@ -120,12 +119,11 @@ class FragmentAlbumArt : Fragment() {
             LocalBroadcastManager.getInstance(requireContext())
                 .registerReceiver(mUIUpdate!!, IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE))
         }
-        UpdateUI()
+        updateUI()
         super.onResume()
     }
 
-    @SuppressLint("CheckResult")
-    private fun UpdateUI() {
+    private fun updateUI() {
         if ((activity == null) || !isAdded || (playerService!!.getCurrentTrack() == null)) {
             return
         }
@@ -148,43 +146,26 @@ class FragmentAlbumArt : Fragment() {
                 }
                 when (MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0)) {
                     0 -> request.listener(object : RequestListener<Drawable?> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable?>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
                             //Log.d("AlbumLibraryAdapter", "onException: ");
-                            if (UtilityFun.isConnectedToInternet && !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) { val url: String? = MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
-                                if (url != null && url.isNotEmpty()) albumArt?.let {
-                                    request.load(Uri.parse(url))
-                                        .into(it)
-                                }
+                            if (UtilityFun.isConnectedToInternet && !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
+                                val url = MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
+//                                if (url != null && url.isNotEmpty()) albumArt?.let {
+//                                    request.load(Uri.parse(url))
+//                                        .into(it)
+//                                }
                                 return true
                             }
                             return false
                         }
 
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable?>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             return false
                         }
                     }).placeholder(R.drawable.ic_batman_1)
                     1 -> request.listener(object : RequestListener<Drawable?> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable?>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            if (UtilityFun.isConnectedToInternet &&
-                                !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)
-                            ) {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
+                            if (UtilityFun.isConnectedToInternet && !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                 val url: String? = MusicLibrary.instance.artistUrls[playerService!!.getCurrentTrack()!!.getArtist()]
                                 if (url != null && url.isNotEmpty()) request.load(Uri.parse(url))
                                     .into(albumArt!!)
@@ -193,13 +174,7 @@ class FragmentAlbumArt : Fragment() {
                             return false
                         }
 
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable?>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             return false
                         }
                     }).placeholder(UtilityFun.defaultAlbumArtDrawable)

@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
  *
  * @author Paul Burke (ipaulpro)
  */
-open interface ItemTouchHelperAdapter {
+interface ItemTouchHelperAdapter {
     /**
      * Called when an item has been dragged far enough to trigger a move. This is called every time
      * an item is shifted, and **not** at the end of a "drop" event.<br></br>

@@ -272,15 +272,14 @@ class ActivityPermissionSeek : AppCompatActivity() {
                 }
                 // If request is cancelled, the result arrays are empty.
                 when {
-                    (grantResults.isNotEmpty()
-                            ) && (grantResults[0] == PackageManager.PERMISSION_GRANTED
-                            ) && (grantResults[1] == PackageManager.PERMISSION_GRANTED) //&& grantResults[2] == PackageManager.PERMISSION_GRANTED
+                    (grantResults.isNotEmpty()) && (grantResults[0] == PackageManager.PERMISSION_GRANTED) && (grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                        //&& grantResults[2] == PackageManager.PERMISSION_GRANTED
                     -> {
                         bindService()
                     }
                     else -> {
                         when (PackageManager.PERMISSION_DENIED) {
-                            grantResults.get(0) -> {
+                            grantResults[0] -> {
                                 //READ PHONE STATE DENIED
                                 val intent = Intent(Intent.ACTION_MAIN)
                                 intent.addCategory(Intent.CATEGORY_HOME)

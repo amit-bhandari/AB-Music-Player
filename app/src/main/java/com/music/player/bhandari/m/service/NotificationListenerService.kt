@@ -63,10 +63,12 @@ class NotificationListenerService : NotificationListenerService(), RemoteControl
             notificationIntent, 0)
         listener = object : MediaSessionManager.OnActiveSessionsChangedListener {
             override fun onActiveSessionsChanged(controllers: List<MediaController>?) {
-                val controller: MediaController = controllers!![0]
-                Log.v(TAG, controller.packageName)
-                if ((("com.google.android.youtube" == controller.packageName) || ("com.bhandari.music" == controller.packageName) || ("com.android.chrome" == controller.packageName) || ("org.videolan.vlc" == controller.packageName))) return
-                if (controllerCallback != null) controller.unregisterCallback(
+                val controller = controllers?.get(0)
+                controller?.packageName?.let { Log.v(TAG, it) }
+                if (controller != null) {
+                    if ((("com.google.android.youtube" == controller.packageName) || ("com.bhandari.music" == controller.packageName) || ("com.android.chrome" == controller.packageName) || ("org.videolan.vlc" == controller.packageName))) return
+                }
+                if (controllerCallback != null) controller?.unregisterCallback(
                     controllerCallback!!)
                 controllerCallback = object : MediaController.Callback() {
 
@@ -78,11 +80,13 @@ class NotificationListenerService : NotificationListenerService(), RemoteControl
                         if (!isPlaying) {
                             mNotificationManager!!.cancel(Constants.NOTIFICATION_ID.INSTANT_LYRICS)
                         }
-                        broadcastControllerState(controllers[0], isPlaying)
+                        controllers?.get(0)?.let { broadcastControllerState(it, isPlaying) }
                     }
                 }
-                controller.registerCallback(controllerCallback!!)
-                broadcastControllerState(controller, null)
+                controller?.registerCallback(controllerCallback!!)
+                if (controller != null) {
+                    broadcastControllerState(controller, null)
+                }
             }
         }
         (getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager)
