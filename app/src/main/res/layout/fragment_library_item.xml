@@ -14,14 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-       <!-- <com.music.player.bhandari.m.customViews.RoundedImageView
-            android:id="@+id/imageVIewForStubAlbumArt"
-            android:layout_margin="5dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:scaleType="centerCrop">
-        </com.music.player.bhandari.m.customViews.RoundedImageView> -->
-
         <androidx.cardview.widget.CardView
             app:cardBackgroundColor="@color/colorTransparent"
             android:layout_margin="5dp"

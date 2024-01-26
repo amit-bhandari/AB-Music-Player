@@ -188,7 +188,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
     public void onBindViewHolder(final MyViewHolder holder, int position) {
 
         final String url = MusicLibrary.getInstance().getArtistUrls().get(filteredDataItems.get(position).artist_name);
-        // mItemHeight = holder.itemView.getMeasuredHeight();
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
                 Glide
@@ -251,7 +250,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                //holder.wrapper.setVisibility(View.GONE);
                 holder.title.setText(filteredDataItems.get(position).artist_name);
                 int tracksCount = filteredDataItems.get(position).numberOfTracks;
                 int albumCount = filteredDataItems.get(position).numberOfAlbums;
@@ -328,7 +326,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                                     new Handler(context.getMainLooper()).post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
                                             Snackbar.make(viewParent, context.getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
                                         }
                                     });
@@ -386,7 +383,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         switch (item.getItemId()) {
             case R.id.action_play:
                 if (MyApp.isLocked()) {
-                    //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
                     Snackbar.make(viewParent, context.getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
@@ -401,7 +397,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 try {
                     Share();
                 } catch (Exception e) {
-                    //Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
                     Snackbar.make(viewParent, context.getString(R.string.error_unable_to_share), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
@@ -570,7 +565,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         text.setPadding(20, 20, 20, 10);
         text.setTextSize(15);
         text.setTypeface(TypeFaceHelper.getTypeFace(context));
-        //text.setGravity(Gravity.CENTER);
 
         linear.addView(text);
 
@@ -659,7 +653,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 UtilityFun.AddToPlaylist(context, ids);
                 break;
         }
-        //
     }
 
     private void Share() {
@@ -724,9 +717,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
                 playerService.addToQ(filteredDataItems.get(position).id, positionToAdd);
-                //Toast.makeText(context
-                //      ,toastString+filteredDataItems.get(position).title
-                ///    ,Toast.LENGTH_SHORT).show();
                 Snackbar.make(viewParent, toastString + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
                 break;
 
@@ -735,9 +725,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 for (long id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }
-                //Toast.makeText(context
-                //      ,toastString+filteredDataItems.get(position).title
-                //    ,Toast.LENGTH_SHORT).show();
                 Snackbar.make(viewParent, toastString + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
 
                 break;
@@ -747,9 +734,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 for (long id : MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }
-                /*Toast.makeText(context
-                        ,toastString+filteredDataItems.get(position).title
-                        ,Toast.LENGTH_SHORT).show();*/
                 Snackbar.make(viewParent, toastString + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
                 break;
 
@@ -758,9 +742,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 for (long id : MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }
-                /*Toast.makeText(context
-                        ,toastString+filteredDataItems.get(position).title
-                        ,Toast.LENGTH_SHORT).show();*/
                 Snackbar.make(viewParent, toastString + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
                 break;
         }
@@ -807,10 +788,8 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                                     }
                                 }
                                 if (UtilityFun.Delete(context, files, ids)) {
-                                    //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                                     deleteSuccess();
                                 } else {
-                                    //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                                     Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_SHORT).show();
                                 }
                                 break;
@@ -819,11 +798,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                                 tracklist = MusicLibrary.getInstance().getSongListFromArtistIdNew(
                                         filteredDataItems.get(position).artist_id, Constants.SORT_ORDER.ASC);
                                 for (long id : tracklist) {
-                                    /*if(playerService.getCurrentTrack().getTitle().equals(track)){
-                                        ///Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
-                                        Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
-                                        return;
-                                    }*/
                                     TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
                                     if (item != null) {
                                         files.add(new File(item.getFilePath()));
@@ -831,10 +805,8 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                                     }
                                 }
                                 if (UtilityFun.Delete(context, files, ids)) {
-                                    //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                                     deleteSuccess();
                                 } else {
-                                    //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                                     Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_SHORT).show();
                                 }
                                 break;
@@ -843,11 +815,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                                 tracklist = MusicLibrary.getInstance().getSongListFromGenreIdNew(
                                         filteredDataItems.get(position).id, Constants.SORT_ORDER.ASC);
                                 for (long id : tracklist) {
-                                    /*if(playerService.getCurrentTrack().getTitle().equals(track)){
-                                        //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
-                                        Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
-                                        return;
-                                    }*/
                                     TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
                                     if (item != null) {
                                         files.add(new File(item.getFilePath()));
@@ -855,10 +822,8 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                                     }
                                 }
                                 if (UtilityFun.Delete(context, files, ids)) {
-                                    //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                                     deleteSuccess();
                                 } else {
-                                    //Toast.makeText(context, "Cannot delete " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                                     Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_SHORT).show();
                                 }
                                 break;
@@ -871,7 +836,6 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                         dataItems.remove(dataItems.get(position));
                         filteredDataItems.remove(filteredDataItems.get(position));
                         notifyItemRemoved(position);
-                        //notifyDataSetChanged();
                     }
                 })
                 .show();
