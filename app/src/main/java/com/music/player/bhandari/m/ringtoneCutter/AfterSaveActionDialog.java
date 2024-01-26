@@ -37,8 +37,8 @@ public class AfterSaveActionDialog extends Dialog {
 
         setTitle(R.string.alert_title_success);
 
-        ((Button)findViewById(R.id.button_make_default))
-            .setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.button_make_default))
+                .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
                         closeAndSendResult(R.id.button_make_default);
                     }
@@ -49,8 +49,8 @@ public class AfterSaveActionDialog extends Dialog {
                         closeAndSendResult(R.id.button_choose_contact);
                     }
                 });*/
-        ((Button)findViewById(R.id.button_do_nothing))
-            .setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.button_do_nothing))
+                .setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
                         closeAndSendResult(R.id.button_do_nothing);
                     }
@@ -59,7 +59,7 @@ public class AfterSaveActionDialog extends Dialog {
         mResponse = response;
 
 
-        if(getWindow()!=null){
+        if (getWindow() != null) {
             getWindow().setBackgroundDrawable(ColorHelper.getGradientDrawableDark());
             getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
         }

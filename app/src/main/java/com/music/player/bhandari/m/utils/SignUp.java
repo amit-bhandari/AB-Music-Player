@@ -12,24 +12,24 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class SignUp extends AsyncTask<String, String, String> {
 
-    private String name="";
+    private String name = "";
     private String response = "unexpected-error";
 
     @Override
@@ -41,7 +41,7 @@ public class SignUp extends AsyncTask<String, String, String> {
     protected String doInBackground(String... params) {
 
         String email = params[0];
-        if(params[1]!=null) {
+        if (params[1] != null) {
             name = params[1];
         }
 
@@ -58,7 +58,7 @@ public class SignUp extends AsyncTask<String, String, String> {
         try {
 
             URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             //Set to POST
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
@@ -71,10 +71,10 @@ public class SignUp extends AsyncTask<String, String, String> {
             writer.flush();
             writer.close();
 
-            response = readResponseFullyAsString(connection.getInputStream(),"UTF-8");
+            response = readResponseFullyAsString(connection.getInputStream(), "UTF-8");
             //processResponse(response);
 
-            Log.v("Response",response);
+            Log.v("Response", response);
 
         } catch (Exception e) {
 
@@ -103,7 +103,7 @@ public class SignUp extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        switch (response){
+        switch (response) {
             case "subscribed-successfully":
                 break;
 

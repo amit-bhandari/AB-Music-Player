@@ -63,13 +63,6 @@ public class FragmentAlbumArt extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_album_art, container, false);
 
-        /*Configuration configuration = getActivity().getResources().getConfiguration();
-        int screenWidthDp = configuration.screenWidthDp; //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
-
-        Log.d("Fragment Disc", "onCreateView: " + screenWidthDp);
-
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(screenWidthDp -50, screenWidthDp -50);*/
-
         ButterKnife.bind(this, layout);
 
         playerService = MyApp.getService();

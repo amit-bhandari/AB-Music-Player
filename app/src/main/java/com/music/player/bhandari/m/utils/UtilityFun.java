@@ -25,7 +25,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
+
 import androidx.annotation.NonNull;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -56,19 +58,19 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class UtilityFun {
@@ -77,14 +79,14 @@ public class UtilityFun {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
-    public static int getProgressPercentage(int currentDuration, int totalDuration){
+    public static int getProgressPercentage(int currentDuration, int totalDuration) {
         Double percentage;
 
         long currentSeconds = (int) (currentDuration);
         long totalSeconds = (int) (totalDuration);
 
         // calculating percentage
-        percentage =(((double)currentSeconds)/totalSeconds)*100;
+        percentage = (((double) currentSeconds) / totalSeconds) * 100;
 
         // return percentage
         return percentage.intValue();
@@ -93,41 +95,41 @@ public class UtilityFun {
     public static int progressToTimer(int progress, int totalDuration) {
         int currentDuration;
         totalDuration = totalDuration / 1000;
-        currentDuration = (int) ((((double)progress) / 100) * totalDuration);
+        currentDuration = (int) ((((double) progress) / 100) * totalDuration);
 
         // return current duration in milliseconds
         return currentDuration * 1000;
     }
 
     public static String msToString(long pTime) {
-        return String.format("%02d:%02d", (pTime/1000) / 60, (pTime/1000) % 60);
+        return String.format("%02d:%02d", (pTime / 1000) / 60, (pTime / 1000) % 60);
     }
 
-    public static String escapeDoubleQuotes(String title){
+    public static String escapeDoubleQuotes(String title) {
         //escape all the quotes
         ArrayList<Integer> indexList = new ArrayList<>();
         StringBuffer stringBuffer = new StringBuffer(title);
         int index = stringBuffer.indexOf("\"");
-        while(index >= 0) {
+        while (index >= 0) {
             indexList.add(index);
-            index = stringBuffer.indexOf("\"", index+1);
+            index = stringBuffer.indexOf("\"", index + 1);
         }
-        int i=0;
-        for(int tempIndex:indexList){
-            stringBuffer.insert(tempIndex+i,"\\");
+        int i = 0;
+        for (int tempIndex : indexList) {
+            stringBuffer.insert(tempIndex + i, "\\");
             i++;
         }
         return stringBuffer.toString();
     }
 
-    public static void AddToPlaylist(final Context context, final int[] song_titles){
+    public static void AddToPlaylist(final Context context, final int[] song_titles) {
         MaterialDialog dialog = new MyDialogBuilder(context)
                 .title(context.getString(R.string.select_playlist_title))
                 .items(PlaylistManager.getInstance(MyApp.getContext()).GetPlaylistList(true))
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        PlaylistManager.getInstance(MyApp.getContext()).AddSongToPlaylist(text.toString(),song_titles);
+                        PlaylistManager.getInstance(MyApp.getContext()).AddSongToPlaylist(text.toString(), song_titles);
                     }
                 })
                 .build();
@@ -138,13 +140,13 @@ public class UtilityFun {
 
     }
 
-    public static void Share(Context context, ArrayList<Uri> uris, String title){
-        if(uris.size()==1) {
+    public static void Share(Context context, ArrayList<Uri> uris, String title) {
+        if (uris.size() == 1) {
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("audio/*");
             share.putExtra(Intent.EXTRA_STREAM, uris.get(0));
             context.startActivity(Intent.createChooser(share, title));
-        }else {
+        } else {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND_MULTIPLE);
             intent.setType("*/*");
@@ -153,10 +155,10 @@ public class UtilityFun {
         }
     }
 
-    public static void ShareFromPath(Context context, String filePath){
+    public static void ShareFromPath(Context context, String filePath) {
         Intent intentShareFile = new Intent();
         intentShareFile.setType("audio/*");
-        intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+filePath));
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + filePath));
 
         intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
                 context.getString(R.string.share_file_extra_subject));
@@ -165,45 +167,45 @@ public class UtilityFun {
         context.startActivity(Intent.createChooser(intentShareFile, "Share track via"));
     }
 
-    public static void LaunchYoutube(@NonNull Context context, @NonNull String query){
+    public static void LaunchYoutube(@NonNull Context context, @NonNull String query) {
         Intent intent = new Intent(Intent.ACTION_SEARCH);
         intent.setPackage("com.google.android.youtube");
-        intent.putExtra("query",query );
+        intent.putExtra("query", query);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             context.startActivity(intent);
             Toast.makeText(context, "Launching youtube in a moment...", Toast.LENGTH_SHORT).show();
-        }catch (ActivityNotFoundException e){
+        } catch (ActivityNotFoundException e) {
             Toast.makeText(context, "Error launching Youtube", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public static boolean Delete(Context context, ArrayList<File> files, ArrayList<Integer> ids){
-        if(DeleteFiles(files)){
-            if(ids!=null) {
+    public static boolean Delete(Context context, ArrayList<File> files, ArrayList<Integer> ids) {
+        if (DeleteFiles(files)) {
+            if (ids != null) {
                 DeleteFromContentProvider(ids, context);
             }
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
-    private static boolean DeleteFiles(ArrayList<File> files){
-        boolean result=false;
-        for(File f:files){
-            if(f.delete()){
+    private static boolean DeleteFiles(ArrayList<File> files) {
+        boolean result = false;
+        for (File f : files) {
+            if (f.delete()) {
                 result = true;
-            }else {
+            } else {
                 result = false;
                 break;
             }
         }
-        return  result;
+        return result;
     }
 
-    private static void DeleteFromContentProvider(ArrayList<Integer> ids, Context context){
-       // boolean result =false;
+    private static void DeleteFromContentProvider(ArrayList<Integer> ids, Context context) {
+        // boolean result =false;
         try {
             for (int id : ids) { // NOTE: You would normally obtain this from the content provider!
                 Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -219,12 +221,13 @@ public class UtilityFun {
                     //result = true;
                 }
             }
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         //return  result;
     }
 
-    public static void SetRingtone(final Context context, final String filePath , final int id){
-        if(!checkSystemWritePermission(context)){
+    public static void SetRingtone(final Context context, final String filePath, final int id) {
+        if (!checkSystemWritePermission(context)) {
             MaterialDialog dialog = new MyDialogBuilder(context)
                     .title(context.getString(R.string.write_setting_perm_title))
                     .content(context.getString(R.string.write_setting_perm_content))
@@ -242,7 +245,7 @@ public class UtilityFun {
 
             dialog.show();
 
-        }else {
+        } else {
 
             MaterialDialog dialog = new MyDialogBuilder(context)
                     .title(context.getString(R.string.action_set_as_ringtone))
@@ -263,7 +266,7 @@ public class UtilityFun {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             final TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
-                            if(item==null) return;
+                            if (item == null) return;
 
                             Executors.newSingleThreadExecutor().execute(new Runnable() {
                                 @Override
@@ -273,18 +276,15 @@ public class UtilityFun {
                                     File newFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES)
                                             .getAbsolutePath()
                                             + "/" + item.getTitle() + "_tone");
-                                    try
-                                    {
+                                    try {
                                         newFile.createNewFile();
-                                        copy(k,newFile);
-                                    }
-                                    catch (IOException e)
-                                    {
+                                        copy(k, newFile);
+                                    } catch (IOException e) {
                                         e.printStackTrace();
                                     }
 
 
-                                    if(!k.canRead()){
+                                    if (!k.canRead()) {
                                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                                             @Override
                                             public void run() {
@@ -296,7 +296,7 @@ public class UtilityFun {
                                     }
                                     ContentValues values = new ContentValues();
                                     values.put(MediaStore.MediaColumns.DATA, newFile.getAbsolutePath());
-                                    values.put(MediaStore.MediaColumns.TITLE, item.getTitle()+" Tone");
+                                    values.put(MediaStore.MediaColumns.TITLE, item.getTitle() + " Tone");
                                     values.put(MediaStore.MediaColumns.SIZE, k.length());
                                     values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
                                     values.put(MediaStore.Audio.Media.DURATION, 230);
@@ -317,7 +317,7 @@ public class UtilityFun {
                                                 RingtoneManager.TYPE_RINGTONE,
                                                 newUri
                                         );
-                                    }catch (SecurityException e){
+                                    } catch (SecurityException e) {
                                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                                             @Override
                                             public void run() {
@@ -377,7 +377,7 @@ public class UtilityFun {
         context.startActivity(intent);
     }
 
-    public static boolean isConnectedToInternet(){
+    public static boolean isConnectedToInternet() {
         ConnectivityManager
                 cm = (ConnectivityManager) MyApp.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = null;
@@ -388,10 +388,10 @@ public class UtilityFun {
                 && activeNetwork.isConnectedOrConnecting();
     }
 
-    public static StringBuilder trackInfoBuild(int id){
+    public static StringBuilder trackInfoBuild(int id) {
         StringBuilder trackInfo = new StringBuilder();
         TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
-        if(item==null){
+        if (item == null) {
             return trackInfo;
         }
 
@@ -408,7 +408,7 @@ public class UtilityFun {
                 .append(item.getFilePath()).append("\n\n")
                 .append("File Size : ")
                 .append(android.text.format.Formatter.formatFileSize(MyApp.getContext(), new File(item.getFilePath()).length()));
-                //.append(new File(item.getFilePath()).length()/(1024*1024)).append(" MB");
+        //.append(new File(item.getFilePath()).length()/(1024*1024)).append(" MB");
 
         return trackInfo;
     }
@@ -421,12 +421,11 @@ public class UtilityFun {
 
         BitmapFactory.decodeStream(c.getContentResolver().openInputStream(uri), null, o);
 
-        int width_tmp = o.outWidth
-                , height_tmp = o.outHeight;
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
         int scale = 1;
 
-        while(true) {
-            if(width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
+        while (true) {
+            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
                 break;
             width_tmp /= 2;
             height_tmp /= 2;
@@ -443,25 +442,25 @@ public class UtilityFun {
 
         artist = artist.toLowerCase();
 
-        if(artist.contains("&")) {
+        if (artist.contains("&")) {
             String[] parts = artist.split("&");
             artist = parts[0];
             return artist;
         }
 
-        if(artist.contains(",")) {
+        if (artist.contains(",")) {
             String[] parts = artist.split(",");
             artist = parts[0];
             return artist;
         }
 
-        if(artist.contains("feat")) {
+        if (artist.contains("feat")) {
             String[] parts = artist.split("feat");
             artist = parts[0];
             return artist;
         }
 
-        if(artist.contains("ft")) {
+        if (artist.contains("ft")) {
             String[] parts = artist.split("ft");
             artist = parts[0];
             return artist;
@@ -470,25 +469,26 @@ public class UtilityFun {
         return artist;
     }
 
-    public static boolean isAdsRemoved(){
+    public static boolean isAdsRemoved() {
         return true;
         //boolean hideAdsTemp = MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_temp),false);
         //return MyApp.getPref().getBoolean(MyApp.getContext().getString(R.string.pref_remove_ads_after_payment),false);
     }
 
-    public static void logEvent(@NonNull Bundle bundle){
+    public static void logEvent(@NonNull Bundle bundle) {
         FirebaseAnalytics.getInstance(MyApp.getContext()).logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
     /**
      * This gives you a random number in between from (inclusive) and to (exclusive)
+     *
      * @param from
      * @param to
      * @return
      */
-    public static int getRandom(int from, int to){
+    public static int getRandom(int from, int to) {
         Random r = new Random();
-        return r.nextInt(to-from) + from;
+        return r.nextInt(to - from) + from;
     }
 
     public static void restartApp() {
@@ -498,28 +498,28 @@ public class UtilityFun {
         MyApp.getContext().startActivity(intent);
     }
 
-    public static Drawable getDefaultAlbumArtDrawable(){
+    public static Drawable getDefaultAlbumArtDrawable() {
         try {
             return Drawable.createFromPath(MyApp.getContext().getFilesDir()
                     + MyApp.getContext().getString(R.string.def_album_art_custom_image));
-        }catch (OutOfMemoryError e){
+        } catch (OutOfMemoryError e) {
             //return batman in case user selected image causes out of memory
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 return MyApp.getContext().getDrawable(R.drawable.ic_batman_1);
-            }else {
+            } else {
                 return MyApp.getContext().getResources().getDrawable(R.drawable.ic_batman_1);
             }
         }
     }
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-        if(drawable==null) return null;
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable == null) return null;
 
         Bitmap bitmap;
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
+            if (bitmapDrawable.getBitmap() != null) {
                 return bitmapDrawable.getBitmap();
             }
         }
@@ -549,29 +549,28 @@ public class UtilityFun {
     }*/
 
 
-
     /**
      * This method converts dp unit to equivalent pixels, depending on device density.
      *
-     * @param dp A value in dp (density independent pixels) unit. Which we need to convert into pixels
+     * @param dp      A value in dp (density independent pixels) unit. Which we need to convert into pixels
      * @param context Context to get resources and device specific display metrics
      * @return A float value to represent px equivalent to dp depending on device density
      */
-    public static float convertDpToPixel(float dp, Context context){
+    public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        float px = dp * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return px;
     }
 
     /**
      * This method converts device specific pixels to density independent pixels.
      *
-     * @param px A value in px (pixels) unit. Which we need to convert into db
+     * @param px      A value in px (pixels) unit. Which we need to convert into db
      * @param context Context to get resources and device specific display metrics
      * @return A float value to represent dp equivalent to px value
      */
-    public static float convertPixelsToDp(float px, Context context){
+    public static float convertPixelsToDp(float px, Context context) {
         return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
@@ -583,18 +582,19 @@ public class UtilityFun {
 
     /**
      * Recursive implementation, invokes itself for each factor of a thousand, increasing the class on each invokation.
-     * @param n the number to format
+     *
+     * @param n         the number to format
      * @param iteration in fact this is the class from the array c
      * @return a String representing the number n formatted in a cool looking way.
      */
     public static String coolFormat(double n, int iteration) {
         double d = ((long) n / 100) / 10.0;
-        boolean isRound = (d * 10) %10 == 0;//true if the decimal part is equal to 0 (then it's trimmed anyway)
-        return (d < 1000? //this determines the class, i.e. 'k', 'm' etc
-                ((d > 99.9 || isRound || (!isRound && d > 9.99)? //this decides whether to trim the decimals
+        boolean isRound = (d * 10) % 10 == 0;//true if the decimal part is equal to 0 (then it's trimmed anyway)
+        return (d < 1000 ? //this determines the class, i.e. 'k', 'm' etc
+                ((d > 99.9 || isRound || (!isRound && d > 9.99) ? //this decides whether to trim the decimals
                         (int) d * 10 / 10 : d + "" // (int) d * 10 / 10 drops the decimal
                 ) + "" + c[iteration])
-                : coolFormat(d, iteration+1));
+                : coolFormat(d, iteration + 1));
 
     }
 }

@@ -11,9 +11,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,22 +33,22 @@ import com.music.player.bhandari.m.utils.UtilityFun;
 import java.util.ArrayList;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-public class BatchDownloaderService extends Service implements  Lyrics.Callback {
+public class BatchDownloaderService extends Service implements Lyrics.Callback {
 
     Handler mHandler;
     NotificationManager mNotificationManager;
@@ -56,19 +58,19 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
     boolean subtitleDownloadThreadRunning = false;
     boolean cancelBatchService = true;
 
-    private final int FINISHED =1 ;
-    private final int CANCELLED =2;
-    private final int CONNECTION_ERROR=3;
-    private final int UNKNOWN =4;
+    private final int FINISHED = 1;
+    private final int CANCELLED = 2;
+    private final int CONNECTION_ERROR = 3;
+    private final int UNKNOWN = 4;
     int finishStatus = UNKNOWN;
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MyApp.isBatchServiceRunning=false;
+        MyApp.isBatchServiceRunning = false;
         stopForeground(false);
 
-        switch (finishStatus){
+        switch (finishStatus) {
             case FINISHED:
                 mBuilder.setContentTitle(getString(R.string.batch_download_finished));
                 mBuilder.setContentText(" ");
@@ -83,7 +85,7 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
                     bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "batch_download");
                     //Logs an app event.
                     FirebaseAnalytics.getInstance(this).logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
                 break;
@@ -105,7 +107,7 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent!=null && intent.getAction()!=null) {
+        if (intent != null && intent.getAction() != null) {
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         }
         return START_STICKY;
@@ -130,7 +132,7 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
                 .setContentIntent(clickOnNotif);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    /* Create or update. */
+            /* Create or update. */
             /*NotificationChannel channel = new NotificationChannel("channel_01",
                     "Playback Notification",
                     NotificationManager.IMPORTANCE_HIGH);
@@ -139,28 +141,28 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
             mBuilder.setChannelId("channel_01");
         }
 
-        startForeground(Constants.NOTIFICATION_ID.BATCH_DOWNLOADER,mBuilder.build());
+        startForeground(Constants.NOTIFICATION_ID.BATCH_DOWNLOADER, mBuilder.build());
 
         cancelBatchService = false;
         //start running thread
         runThread();
     }
 
-    private void runThread(){
+    private void runThread() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 ArrayList<dataItem> dataItems = new ArrayList<>(MusicLibrary.getInstance().getDataItemsForTracks().values());
                 int size = dataItems.size();
-                for(int i = 0; i<size;i++){
+                for (int i = 0; i < size; i++) {
                     dataItem currentItem;
                     try {
                         currentItem = dataItems.get(i);
-                    }catch (IndexOutOfBoundsException e){
+                    } catch (IndexOutOfBoundsException e) {
                         finishStatus = CONNECTION_ERROR;
                         continue;
                     }
-                    mBuilder.setProgress(size, i+1, false);
+                    mBuilder.setProgress(size, i + 1, false);
                     // Displays the progress bar for the first time.
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(currentItem.title)
@@ -172,7 +174,7 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
                     finishStatus = FINISHED;
 
                     //check if current song present in db
-                    if(OfflineStorageLyrics.isLyricsPresentInDB(currentItem.id)){
+                    if (OfflineStorageLyrics.isLyricsPresentInDB(currentItem.id)) {
                         continue;
                     }
 
@@ -189,12 +191,12 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        if(!UtilityFun.isConnectedToInternet()){
-                            cancelBatchService=true;
+                        if (!UtilityFun.isConnectedToInternet()) {
+                            cancelBatchService = true;
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getApplicationContext(),getString(R.string.error_no_internet),Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
                                     finishStatus = CONNECTION_ERROR;
                                     mBuilder.setContentText(getString(R.string.error_no_connection));
                                     stopForeground(false);
@@ -206,10 +208,10 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
                         }
                     }
 
-                    if(cancelBatchService){
+                    if (cancelBatchService) {
                         break;
                     }
-                    Log.v(Constants.TAG,"Task done for "+currentItem.title);
+                    Log.v(Constants.TAG, "Task done for " + currentItem.title);
                 }
 
                 stopSelf();
@@ -217,12 +219,12 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
         }).start();
     }
 
-    private void initializeReceiver(){
+    private void initializeReceiver() {
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if(intent.getAction()==null) return;
+                if (intent.getAction() == null) return;
                 switch (intent.getAction()) {
                     case Constants.ACTION.CLICK_TO_CANCEL:
                         cancelBatchService = true;
@@ -233,13 +235,13 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
             }
         };
 
-        IntentFilter intentFilter =  new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
 
         intentFilter.addAction(Constants.ACTION.CLICK_TO_CANCEL);
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiver, intentFilter);
     }
 
-    private void initializeIntents(){
+    private void initializeIntents() {
         Intent notificationIntent;
         notificationIntent = new Intent(this, BatchDownloaderService.class);
         notificationIntent.setAction(Constants.ACTION.CLICK_TO_CANCEL);

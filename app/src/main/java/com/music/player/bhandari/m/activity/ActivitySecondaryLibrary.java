@@ -14,11 +14,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -26,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -76,49 +80,65 @@ import butterknife.ButterKnife;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class ActivitySecondaryLibrary extends AppCompatActivity implements View.OnClickListener, ArtistInfo.Callback {
 
-    @BindView(R.id.secondaryLibraryList) RecyclerView mRecyclerView;
-    @BindView(R.id.albumsInArtistFrag) RecyclerView mAlbumsRecyclerView;
-    @BindView(R.id.artistBio) ExpandableTextView artistBio;
+    @BindView(R.id.secondaryLibraryList)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.albumsInArtistFrag)
+    RecyclerView mAlbumsRecyclerView;
+    @BindView(R.id.artistBio)
+    ExpandableTextView artistBio;
 
     private SecondaryLibraryAdapter adapter;
 
     private BroadcastReceiver mReceiverForMiniPLayerUpdate;
     private BroadcastReceiver mReceiverForDataReady;
-    @BindView(R.id.song_name_mini_player) TextView songNameMiniPlayer;
-    @BindView(R.id.artist_mini_player) TextView artistNameMiniPlayer;
-    @BindView(R.id.play_pause_mini_player)  ImageView buttonPlay;
-    @BindView(R.id.album_art_mini_player)  ImageView albumArtIv;
-    @BindView(R.id.mini_player) LinearLayout miniPlayer;
-    @BindView(R.id.next_mini_plaayrer) ImageView buttonNext;
-    @BindView(R.id.main_backdrop) ImageView mainBackdrop;
-    @BindView(R.id.fab_right_side) FloatingActionButton fab;
-    @BindView(R.id.border_view) View border;
-    @BindView(R.id.progressBar) View progressBar;
-    @BindView(R.id.main_collapsing) CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.root_view_secondary_lib) View rootView;
+    @BindView(R.id.song_name_mini_player)
+    TextView songNameMiniPlayer;
+    @BindView(R.id.artist_mini_player)
+    TextView artistNameMiniPlayer;
+    @BindView(R.id.play_pause_mini_player)
+    ImageView buttonPlay;
+    @BindView(R.id.album_art_mini_player)
+    ImageView albumArtIv;
+    @BindView(R.id.mini_player)
+    LinearLayout miniPlayer;
+    @BindView(R.id.next_mini_plaayrer)
+    ImageView buttonNext;
+    @BindView(R.id.main_backdrop)
+    ImageView mainBackdrop;
+    @BindView(R.id.fab_right_side)
+    FloatingActionButton fab;
+    @BindView(R.id.border_view)
+    View border;
+    @BindView(R.id.progressBar)
+    View progressBar;
+    @BindView(R.id.main_collapsing)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.root_view_secondary_lib)
+    View rootView;
 
-    @BindView(R.id.app_bar_layout_secondary_library) AppBarLayout appBarLayout;
+    @BindView(R.id.app_bar_layout_secondary_library)
+    AppBarLayout appBarLayout;
     private long mLastClickTime;
 
     private int status;
-    private int key=0;  //text view on which clicked
+    private int key = 0;  //text view on which clicked
     private String title;
 
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -127,7 +147,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
     private int RC_LOGIN = 100;
 
-    public ActivitySecondaryLibrary(){}
+    public ActivitySecondaryLibrary() {
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -151,8 +172,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 //data changed in edit track info activity, update item
                 adapter.updateItem(position, title, artist, album);
             }
-        }catch (Exception ignored){
-            Log.v(Constants.TAG,ignored.toString());
+        } catch (Exception ignored) {
+            Log.v(Constants.TAG, ignored.toString());
         }
         super.onNewIntent(intent);
     }
@@ -163,7 +184,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
 
         //if player service not running, kill the app
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             finish();
             return;
@@ -174,7 +195,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         ColorHelper.setStatusBarGradiant(this);
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-        switch (themeSelector){
+        switch (themeSelector) {
             case Constants.PRIMARY_COLOR.DARK:
                 setTheme(R.style.AppThemeDark);
                 break;
@@ -193,31 +214,32 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         final Toolbar toolbar = findViewById(R.id.toolbar_);
         try {
             toolbar.setCollapsible(false);
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        if(getIntent()!=null) {
-            status = getIntent().getIntExtra("status",0);
-            key = getIntent().getIntExtra("key",0);
+        if (getIntent() != null) {
+            status = getIntent().getIntExtra("status", 0);
+            key = getIntent().getIntExtra("key", 0);
             title = getIntent().getStringExtra("title");
         }
         //remove _ from playlist name
 
-        if(status==Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT){
-            setTitle(title.replace("_"," "));
-        }else {
+        if (status == Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT) {
+            setTitle(title.replace("_", " "));
+        } else {
             setTitle(title);
         }
 
-        if(MyApp.isLocked()){
+        if (MyApp.isLocked()) {
             //border.setVisibility(View.VISIBLE);
             border.setBackgroundResource(R.drawable.border_2dp);
-        }else {
+        } else {
             border.setBackgroundResource(0);
         }
 
@@ -229,14 +251,14 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
                         adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, MusicLibrary.getInstance()
                                 .getSongListFromArtistIdNew(key, Constants.SORT_ORDER.ASC));
-                        if(adapter.getList().isEmpty()) {
+                        if (adapter.getList().isEmpty()) {
                             break;
                         }
 
                         //get album list for artist
                         final ArrayList<dataItem> data = new ArrayList<>();
-                        for(dataItem d : MusicLibrary.getInstance().getDataItemsForAlbums()){
-                            if(d.artist_id == key) data.add(d);
+                        for (dataItem d : MusicLibrary.getInstance().getDataItemsForAlbums()) {
+                            if (d.artist_id == key) data.add(d);
                         }
 
                         handler.post(new Runnable() {
@@ -246,7 +268,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                             }
                         });
                         mAlbumsRecyclerView.setAdapter(new AlbumLibraryAdapter(ActivitySecondaryLibrary.this, data));
-                        mAlbumsRecyclerView.setLayoutManager( new LinearLayoutManager(ActivitySecondaryLibrary.this, LinearLayoutManager.HORIZONTAL, false));
+                        mAlbumsRecyclerView.setLayoutManager(new LinearLayoutManager(ActivitySecondaryLibrary.this, LinearLayoutManager.HORIZONTAL, false));
                         mAlbumsRecyclerView.setNestedScrollingEnabled(false);
 
                         TrackItem item = new TrackItem();
@@ -255,7 +277,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                         final ArtistInfo mArtistInfo = OfflineStorageArtistBio.getArtistBioFromTrackItem(item);
                         //second check is added to make sure internet call will happen
                         //when user manually changes artist tag
-                        if(mArtistInfo!=null && item.getArtist().trim().equals(mArtistInfo.getOriginalArtist().trim())){
+                        if (mArtistInfo != null && item.getArtist().trim().equals(mArtistInfo.getOriginalArtist().trim())) {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -266,7 +288,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                             String artist = item.getArtist();
                             artist = UtilityFun.filterArtistString(artist);
 
-                            new DownloadArtInfoThread(ActivitySecondaryLibrary.this, artist , item).start();
+                            new DownloadArtInfoThread(ActivitySecondaryLibrary.this, artist, item).start();
                         }
 
                         break;
@@ -277,8 +299,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                         Collections.sort(adapter.getList(), new Comparator<dataItem>() {
                             @Override
                             public int compare(dataItem dataItem, dataItem t1) {
-                                if(dataItem.trackNumber>t1.trackNumber) return 1;
-                                else if(dataItem.trackNumber<t1.trackNumber) return -1;
+                                if (dataItem.trackNumber > t1.trackNumber) return 1;
+                                else if (dataItem.trackNumber < t1.trackNumber) return -1;
                                 else return 0;
                             }
                         });
@@ -290,19 +312,19 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
                         adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this,
                                 MusicLibrary.getInstance().getSongListFromGenreIdNew(key, Constants.SORT_ORDER.ASC));
-                        if(adapter.getList().isEmpty()) {
+                        if (adapter.getList().isEmpty()) {
                             break;
                         }
                         break;
 
                     case Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT:
                         ArrayList<dataItem> trackList;
-                        title=title.replace(" ","_");
+                        title = title.replace(" ", "_");
                         switch (title) {
                             case Constants.SYSTEM_PLAYLISTS.MOST_PLAYED:
                                 trackList = PlaylistManager.getInstance(getApplicationContext())
                                         .GetPlaylist(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED);
-                                adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this,trackList , status, Constants.SYSTEM_PLAYLISTS.MOST_PLAYED);
+                                adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.MOST_PLAYED);
                                 break;
 
                             case Constants.SYSTEM_PLAYLISTS.MY_FAV:
@@ -320,7 +342,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                             case Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED:
                                 trackList = PlaylistManager.getInstance(getApplicationContext())
                                         .GetPlaylist(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED);
-                                adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this,trackList, status, Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED);
+                                adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED);
                                 break;
 
                             default:
@@ -330,7 +352,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                                 break;
                         }
 
-                        if(trackList.isEmpty()){
+                        if (trackList.isEmpty()) {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -344,7 +366,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(adapter!=null) {
+                        if (adapter != null) {
                             mRecyclerView.setAdapter(adapter);
                         }
 
@@ -358,21 +380,21 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                         border.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.INVISIBLE);
 
-                        TrackItem item=null;
+                        TrackItem item = null;
 
-                        if (adapter!=null && adapter.getList()!=null && adapter.getList().size() > 0) {
+                        if (adapter != null && adapter.getList() != null && adapter.getList().size() > 0) {
                             item = MusicLibrary.getInstance().getTrackItemFromId(adapter.getList().get(0).id);
                         }
 
                         Log.d("SecondaryLibraryActivi", "onCreate: item " + item);
-                        if(item!=null){
+                        if (item != null) {
                             String url = MusicLibrary.getInstance().getArtistUrls().get(item.getArtist());
                             Log.d("SecondaryLibraryActivi", "onCreate: url " + url);
-                            if(UtilityFun.isConnectedToInternet() && url!=null) {
+                            if (UtilityFun.isConnectedToInternet() && url != null) {
                                 setArtistImage(url);
-                            }else {
+                            } else {
                                 int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
-                                switch (defaultAlbumArtSetting){
+                                switch (defaultAlbumArtSetting) {
                                     case 0:
                                         Glide.with(ActivitySecondaryLibrary.this)
                                                 .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
@@ -400,14 +422,14 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             }
         });
 
-        mReceiverForMiniPLayerUpdate=new BroadcastReceiver() {
+        mReceiverForMiniPLayerUpdate = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateMiniplayerUI();
             }
         };
 
-        mReceiverForDataReady=new BroadcastReceiver() {
+        mReceiverForDataReady = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 //updateMiniplayerUI();
@@ -428,17 +450,15 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
 
 
-
-
         miniPlayer.setBackgroundColor(ColorHelper.getWidgetColor());
         //collapsingToolbarLayout.setContentScrimColor(ColorHelper.Ge());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(status==Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT && adapter.getItemCount()<=2){
-                    startActivity(new Intent(ActivitySecondaryLibrary.this,ActivityMain.class)
-                            .putExtra("move_to_tab",Constants.TABS.TRACKS));
-                   }else {
+                if (status == Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT && adapter.getItemCount() <= 2) {
+                    startActivity(new Intent(ActivitySecondaryLibrary.this, ActivityMain.class)
+                            .putExtra("move_to_tab", Constants.TABS.TRACKS));
+                } else {
                     if (adapter.getItemCount() <= 0) {
                         Toast.makeText(ActivitySecondaryLibrary.this, "Empty Track List", Toast.LENGTH_SHORT).show();
                     } else {
@@ -479,7 +499,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 
-    private void updateMiniplayerUI(){
+    private void updateMiniplayerUI() {
         try {
             if (playerService != null) {
                 if (playerService.getCurrentTrack() != null) {
@@ -493,14 +513,14 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
                     switch (defaultAlbumArtSetting) {
                         case 0:
-                           request.listener(new RequestListener<Uri, GlideDrawable>() {
+                            request.listener(new RequestListener<Uri, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
                                             //Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if(UtilityFun.isConnectedToInternet() &&
+                                            if (UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null)
+                                                if (url != null)
                                                     request.load(Uri.parse(url))
                                                             .into(albumArtIv);
                                                 return true;
@@ -521,10 +541,10 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
                                             //Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if(UtilityFun.isConnectedToInternet() &&
+                                            if (UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null)
+                                                if (url != null)
                                                     request.load(Uri.parse(url))
                                                             .into(albumArtIv);
                                                 return true;
@@ -559,41 +579,41 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 //restart app
                 System.exit(0);
             }
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
     }
 
     @Override
     public void onClick(View view) {
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             finish();
             return;
         }
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.mini_player:
-                Intent intent=new Intent(getApplicationContext(),ActivityNowPlaying.class);
+                Intent intent = new Intent(getApplicationContext(), ActivityNowPlaying.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 ActivityOptions options;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     options = ActivityOptions.makeSceneTransitionAnimation(this, albumArtIv, getString(R.string.transition));
                     ActivityCompat.startActivityForResult(this, intent, RC_LOGIN, options.toBundle());
-                }else {
+                } else {
                     startActivity(intent);
                     overridePendingTransition(R.anim.abc_slide_in_bottom, android.R.anim.fade_out);
                 }
-                Log.v(Constants.TAG,"Launch now playing Jarvis");
+                Log.v(Constants.TAG, "Launch now playing Jarvis");
                 break;
 
             case R.id.play_pause_mini_player:
-                if(playerService.getCurrentTrack()==null) {
-                    Toast.makeText(this,getString(R.string.nothing_to_play),Toast.LENGTH_LONG).show();
+                if (playerService.getCurrentTrack() == null) {
+                    Toast.makeText(this, getString(R.string.nothing_to_play), Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
@@ -611,7 +631,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 break;
 
             case R.id.next_mini_plaayrer:
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
@@ -620,7 +640,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 /*
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent()
                         .setAction(Constants.ACTION.NEXT_ACTION));*/
-                Log.v(Constants.TAG,"next track please Jarvis");
+                Log.v(Constants.TAG, "next track please Jarvis");
                 break;
         }
     }
@@ -634,9 +654,9 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        for(int i = 0; i < menu.size(); i++){
-            if(R.id.action_search==menu.getItem(i).getItemId()
-                   || R.id.action_sort==menu.getItem(i).getItemId() ) {
+        for (int i = 0; i < menu.size(); i++) {
+            if (R.id.action_search == menu.getItem(i).getItemId()
+                    || R.id.action_sort == menu.getItem(i).getItemId()) {
                 menu.getItem(i).setVisible(false);
             }
         }
@@ -650,7 +670,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 return true;
 
             case R.id.action_settings:
-                startActivity(new Intent(this,ActivitySettings.class).putExtra("ad",true));
+                startActivity(new Intent(this, ActivitySettings.class).putExtra("ad", true));
                 break;
 
             case R.id.action_sleep_timer:
@@ -661,17 +681,18 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 Intent intent = new Intent(AudioEffect
                         .ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
 
-                if(MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
-                        && (intent.resolveActivity(getPackageManager()) != null)){
+                if (MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
+                        && (intent.resolveActivity(getPackageManager()) != null)) {
                     try {
                         //show system equalizer
                         startActivityForResult(intent, 0);
-                    }catch (Exception ignored){}
-                }else {
+                    } catch (Exception ignored) {
+                    }
+                } else {
                     //show app equalizer
-                    if(playerService.getEqualizerHelper().isEqualizerSupported()) {
+                    if (playerService.getEqualizerHelper().isEqualizerSupported()) {
                         startActivity(new Intent(this, ActivityEqualizer.class));
-                    }else {
+                    } else {
                         Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_SHORT).show();
                     }
                 }
@@ -681,7 +702,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         return super.onOptionsItemSelected(item);
     }
 
-    public void setSleepTimerDialog(final Context context){
+    public void setSleepTimerDialog(final Context context) {
 
         MyDialogBuilder builder = new MyDialogBuilder(context);
 
@@ -689,11 +710,11 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         linear.setOrientation(LinearLayout.VERTICAL);
         final TextView text = new TextView(context);
 
-        int timer = MyApp.getPref().getInt(context.getString(R.string.pref_sleep_timer),0);
-        if(timer==0) {
-            String tempString = "0 "+context.getString(R.string.main_act_sleep_timer_status_minutes);
+        int timer = MyApp.getPref().getInt(context.getString(R.string.pref_sleep_timer), 0);
+        if (timer == 0) {
+            String tempString = "0 " + context.getString(R.string.main_act_sleep_timer_status_minutes);
             text.setText(tempString);
-        }else {
+        } else {
             String stringTemp = context.getString(R.string.main_act_sleep_timer_status_part1) +
                     timer +
                     context.getString(R.string.main_act_sleep_timer_status_part2);
@@ -704,26 +725,26 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     .onNeutral(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),0).apply();
+                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), 0).apply();
                             playerService.setSleepTimer(0, false);
                             //Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-                            Snackbar.make(rootView,context.getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(rootView, context.getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_SHORT).show();
                         }
                     });
         }
-        text.setPadding(0, 10,0,0);
+        text.setPadding(0, 10, 0, 0);
         text.setGravity(Gravity.CENTER);
         text.setTypeface(TypeFaceHelper.getTypeFace(this));
 
         final SeekBar seek = new SeekBar(context);
-        seek.setPadding(40,10,40,10);
+        seek.setPadding(40, 10, 40, 10);
         seek.setMax(100);
         seek.setProgress(0);
 
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                String tempString = progress+context.getString(R.string.main_act_sleep_timer_status_minutes);
+                String tempString = progress + context.getString(R.string.main_act_sleep_timer_status_minutes);
                 text.setText(tempString);
             }
 
@@ -747,8 +768,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if(seek.getProgress()!=0) {
-                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer),seek.getProgress()).apply();
+                        if (seek.getProgress() != 0) {
+                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), seek.getProgress()).apply();
                             playerService.setSleepTimer(seek.getProgress(), true);
                             String temp = context.getString(R.string.sleep_timer_successfully_set)
                                     + seek.getProgress()
@@ -758,13 +779,13 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                         }
                     }
                 })
-                .customView(linear,true)
+                .customView(linear, true)
                 .show();
     }
 
     @Override
     public void onDestroy() {
-        mRecyclerView=null;
+        mRecyclerView = null;
         super.onDestroy(); //get search icon back on action bar
     }
 
@@ -772,21 +793,21 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     public void onResume() {
         super.onResume();
         MyApp.isAppVisible = true;
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             finish();
             return;
-        }else {
+        } else {
             playerService = MyApp.getService();
         }
 
-        if(adapter!=null) {
+        if (adapter != null) {
             adapter.bindService();
         }
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiverForMiniPLayerUpdate
-                ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
+                , new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiverForMiniPLayerUpdate
-                ,new IntentFilter(Constants.ACTION.SECONDARY_ADAPTER_DATA_READY));
+                , new IntentFilter(Constants.ACTION.SECONDARY_ADAPTER_DATA_READY));
         updateMiniplayerUI();
     }
 
@@ -801,7 +822,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     @Override
@@ -835,7 +856,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
     @Override
     public void onArtInfoDownloaded(ArtistInfo artistInfo) {
-        if(artistInfo==null) return;
+        if (artistInfo == null) return;
 
         artistBio.setVisibility(View.VISIBLE);
         artistBio.setText(artistInfo.getArtistContent());

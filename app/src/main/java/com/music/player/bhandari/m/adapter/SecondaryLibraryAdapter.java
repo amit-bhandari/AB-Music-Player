@@ -3,10 +3,12 @@ package com.music.player.bhandari.m.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -35,24 +37,25 @@ import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibraryAdapter.MyViewHolder>
@@ -63,7 +66,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
     private Context context;
     private LayoutInflater inflater;
-    private int position=0;
+    private int position = 0;
 
     private int clikedON;
     private int status;
@@ -71,13 +74,13 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
     private PlayerService playerService;
 
-    public SecondaryLibraryAdapter(Context context, ArrayList<Integer> data){
-        this.context=context;
-        inflater=LayoutInflater.from(context);
+    public SecondaryLibraryAdapter(Context context, ArrayList<Integer> data) {
+        this.context = context;
+        inflater = LayoutInflater.from(context);
 
-        for (Integer id : data){
-            dataItem d= MusicLibrary.getInstance().getDataItemsForTracks().get(id);
-            if(d!=null){
+        for (Integer id : data) {
+            dataItem d = MusicLibrary.getInstance().getDataItemsForTracks().get(id);
+            if (d != null) {
                 dataItems.add(d);
             }
         }
@@ -106,15 +109,15 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
     //constructor for getMostPlayed and getRecentlyPlayed
     public SecondaryLibraryAdapter(Context context, ArrayList<dataItem> data, int status, String playlist_name) {
         this.playlist_name = playlist_name;
-        this.context=context;
-        inflater=LayoutInflater.from(context);
+        this.context = context;
+        inflater = LayoutInflater.from(context);
         dataItems.addAll(data);
         //add extra empty element
         //dataItems.add(new dataItem(0,"",0,"",0,"","","",""));
         //dataItems.add(new dataItem(0,"",0,"",0,"","","",""));
         setHasStableIds(true);
         bindService();
-        this.status=status;
+        this.status = status;
     }
 
     public void shuffleAll() {
@@ -122,8 +125,8 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
             //remove empty element from list of headers
 
             ArrayList<Integer> temp = new ArrayList<>();
-            for(dataItem d:dataItems){
-                if(d.id != 0) {
+            for (dataItem d : dataItems) {
+                if (d.id != 0) {
                     temp.add(d.id);
                 }
             }
@@ -133,11 +136,13 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         }
     }
 
-    public void bindService(){
+    public void bindService() {
         playerService = MyApp.getService();
     }
 
-    public ArrayList<dataItem> getList(){return dataItems;}
+    public ArrayList<dataItem> getList() {
+        return dataItems;
+    }
 
     @Override
     public SecondaryLibraryAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -146,12 +151,12 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         //int color = ColorHelper.getColor(R.color.colorwhite) ;
         //int color = ColorHelper.getBaseThemeTextColor();
 
-        ((TextView)(view.findViewById(R.id.header))).setTextColor(ColorHelper.getPrimaryTextColor());
-        ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(ColorHelper.getSecondaryTextColor());
-        ((TextView)(view.findViewById(R.id.count))).setTextColor(ColorHelper.getSecondaryTextColor());
-        ((ImageView)(view.findViewById(R.id.menuPopup))).setColorFilter(ColorHelper.getSecondaryTextColor());
+        ((TextView) (view.findViewById(R.id.header))).setTextColor(ColorHelper.getPrimaryTextColor());
+        ((TextView) (view.findViewById(R.id.secondaryHeader))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((TextView) (view.findViewById(R.id.count))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((ImageView) (view.findViewById(R.id.menuPopup))).setColorFilter(ColorHelper.getSecondaryTextColor());
 
-        return new SecondaryLibraryAdapter.MyViewHolder (view);
+        return new SecondaryLibraryAdapter.MyViewHolder(view);
     }
 
     @Override
@@ -170,13 +175,13 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         Log.d("SecondaryLibraryAdapter", "onBindViewHolder: " + dataItems.get(position).title);
 
 
-        if(dataItems.get(position).title.equals("")){
+        if (dataItems.get(position).title.equals("")) {
             holder.itemView.setVisibility(View.GONE);
             return;
         }
 
-        holder.title.setPadding(20,0,0,0);
-        holder.secondary.setPadding(20,0,0,0);
+        holder.title.setPadding(20, 0, 0, 0);
+        holder.secondary.setPadding(20, 0, 0, 0);
         String secondaryText = dataItems.get(position).artist_name
                 + " | "
                 + dataItems.get(position).albumName;
@@ -191,32 +196,32 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         return dataItems.size();
     }
 
-    public void onClick(View view,int position) {
-        this.position=position;
-        if(dataItems.get(position).title.equals("")){
+    public void onClick(View view, int position) {
+        this.position = position;
+        if (dataItems.get(position).title.equals("")) {
             return;
         }
 
         clikedON = dataItems.get(position).id;
         switch (view.getId()) {
             case R.id.libraryItem:
-                if(MyApp.isLocked()){
-                    Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
+                if (MyApp.isLocked()) {
+                    Toast.makeText(context, "Music is Locked!", Toast.LENGTH_SHORT).show();
                     //Snackbar.make(viewParent, "Music is Locked!", Snackbar.LENGTH_SHORT).show();
-                    return ;
+                    return;
                 }
                 Play();
-            break;
+                break;
 
             case R.id.menuPopup:
                 PopupMenu popup = new PopupMenu(context, view);
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.menu_tracks_by_title, popup.getMenu());
-                if(status==Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT){
+                if (status == Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT) {
                     //popup.getMenu().removeItem(R.id.action_delete);
-                    if( !( playlist_name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)
-                            || playlist_name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED)
-                            || playlist_name.replace(" ","_").equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED))) {
+                    if (!(playlist_name.replace(" ", "_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED)
+                            || playlist_name.replace(" ", "_").equals(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED)
+                            || playlist_name.replace(" ", "_").equals(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED))) {
                         popup.getMenu().add(REMOVE);
                     }
                 }
@@ -229,7 +234,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         }
     }
 
-    public void updateItem(int position, String ... param){
+    public void updateItem(int position, String... param) {
         dataItems.get(position).title = param[0];
         dataItems.get(position).artist_name = param[0];
         dataItems.get(position).albumName = param[0];
@@ -238,10 +243,10 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_play:
-                if(MyApp.isLocked()){
-                    Toast.makeText(context,context.getString(R.string.music_is_locked) ,Toast.LENGTH_SHORT).show();
+                if (MyApp.isLocked()) {
+                    Toast.makeText(context, context.getString(R.string.music_is_locked), Toast.LENGTH_SHORT).show();
                     //Snackbar.make(viewParent, "Music is Locked!", Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
@@ -250,7 +255,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
             case R.id.action_add_to_playlist:
                 int[] ids;
-                ids=new int[]{dataItems.get(position).id};
+                ids = new int[]{dataItems.get(position).id};
                 UtilityFun.AddToPlaylist(context, ids);
                 break;
 
@@ -260,11 +265,11 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                 try {
                     files.add(FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
                     UtilityFun.Share(context, files, dataItems.get(position).title);
-                }catch (IllegalArgumentException e) {
-                    try{
+                } catch (IllegalArgumentException e) {
+                    try {
                         UtilityFun.ShareFromPath(context, fileToBeShared.getAbsolutePath());
-                    }catch (Exception ex) {
-                        Toast.makeText(context,context.getString(R.string.error_unable_to_share) ,Toast.LENGTH_LONG).show();
+                    } catch (Exception ex) {
+                        Toast.makeText(context, context.getString(R.string.error_unable_to_share), Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
@@ -287,40 +292,40 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
             case R.id.action_edit_track_info:
                 TrackItem editItem = MusicLibrary.getInstance().getTrackItemFromId(dataItems.get(position).id);
-                if(editItem==null){
-                    Toast.makeText(context,context.getString(R.string.unknown_error) ,Toast.LENGTH_SHORT).show();
+                if (editItem == null) {
+                    Toast.makeText(context, context.getString(R.string.unknown_error), Toast.LENGTH_SHORT).show();
                     //Snackbar.make(viewParent, "Error occurred!", Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
                 context.startActivity(new Intent(context, ActivityTagEditor.class)
-                        .putExtra("from",Constants.TAG_EDITOR_LAUNCHED_FROM.SECONDARY_LIB)
-                        .putExtra("file_path",editItem.getFilePath())
-                        .putExtra("track_title",editItem.getTitle())
-                        .putExtra("position",position)
-                        .putExtra("id",editItem.getId()));
+                        .putExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.SECONDARY_LIB)
+                        .putExtra("file_path", editItem.getFilePath())
+                        .putExtra("track_title", editItem.getTitle())
+                        .putExtra("position", position)
+                        .putExtra("id", editItem.getId()));
                 break;
 
             case R.id.action_set_as_ringtone:
                 TrackItem tempItem = MusicLibrary.getInstance().getTrackItemFromId(dataItems.get(position).id);
-                if(tempItem==null){
-                    Toast.makeText(context,context.getString(R.string.error_something_wrong) ,Toast.LENGTH_LONG).show();
+                if (tempItem == null) {
+                    Toast.makeText(context, context.getString(R.string.error_something_wrong), Toast.LENGTH_LONG).show();
                     //Snackbar.make(viewParent, "Something went wrong!", Snackbar.LENGTH_SHORT).show();
                     return false;
                 }
                 UtilityFun.SetRingtone(context, tempItem.getFilePath()
-                        ,tempItem.getId());
+                        , tempItem.getId());
                 break;
 
         }
         if (item.getTitle().equals(REMOVE)) {
-            PlaylistManager.getInstance(MyApp.getContext()).RemoveSongFromPlaylistNew(playlist_name,dataItems.get(position).id);
+            PlaylistManager.getInstance(MyApp.getContext()).RemoveSongFromPlaylistNew(playlist_name, dataItems.get(position).id);
             dataItems.remove(position);
             notifyItemRemoved(position);
         }
         return true;
     }
 
-    private void setTrackInfoDialog(){
+    private void setTrackInfoDialog() {
         //final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         //alert.setTitle(context.getString(R.string.track_info_title) );
         LinearLayout linear = new LinearLayout(context);
@@ -329,7 +334,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         text.setTypeface(TypeFaceHelper.getTypeFace(context));
         text.setText(UtilityFun.trackInfoBuild(dataItems.get(position).id).toString());
 
-        text.setPadding(20, 20,20,10);
+        text.setPadding(20, 20, 20, 10);
         text.setTextSize(15);
         //text.setGravity(Gravity.CENTER);
 
@@ -344,10 +349,10 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                 .show();
     }
 
-    private void Play(){
+    private void Play() {
         ArrayList<Integer> temp = new ArrayList<>();
-        for(dataItem d: dataItems){
-            if(d.id != 0) {
+        for (dataItem d : dataItems) {
+            if (d.id != 0) {
                 temp.add(d.id);
             }
         }
@@ -355,22 +360,22 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
         playerService.playAtPosition(position);
     }
 
-    private void AddToQ(int positionToAdd){
+    private void AddToQ(int positionToAdd) {
         //we are using same function for adding to q and playing next
         // toastString is to identify which string to disokay as toast
-        String toastString=(positionToAdd==Constants.ADD_TO_Q.AT_LAST ? context.getString(R.string.added_to_q)
-                : context.getString(R.string.playing_next) ) ;
+        String toastString = (positionToAdd == Constants.ADD_TO_Q.AT_LAST ? context.getString(R.string.added_to_q)
+                : context.getString(R.string.playing_next));
 
         playerService.addToQ(clikedON, positionToAdd);
         //to update the to be next field in notification
         MyApp.getService().PostNotification();
         Toast.makeText(context
-                ,toastString+dataItems.get(position).title
-                ,Toast.LENGTH_SHORT).show();
+                , toastString + dataItems.get(position).title
+                , Toast.LENGTH_SHORT).show();
         //Snackbar.make(viewParent, toastString+clikedON, Snackbar.LENGTH_SHORT).show();
     }
 
-    private void DeleteDialog(){
+    private void DeleteDialog() {
 
         new MyDialogBuilder(context)
                 .title(context.getString(R.string.are_u_sure))
@@ -379,8 +384,8 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if(playerService.getCurrentTrack().getTitle().equals(dataItems.get(position).title)){
-                            Toast.makeText(context,context.getString(R.string.song_is_playing) ,Toast.LENGTH_SHORT).show();
+                        if (playerService.getCurrentTrack().getTitle().equals(dataItems.get(position).title)) {
+                            Toast.makeText(context, context.getString(R.string.song_is_playing), Toast.LENGTH_SHORT).show();
                             // Snackbar.make(viewParent, "Cannot delete currently playing song", Snackbar.LENGTH_SHORT).show();
                             return;
                         }
@@ -389,7 +394,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                         try {
                             file = new File(MusicLibrary.getInstance().getTrackItemFromId(dataItems.get(position).id)
                                     .getFilePath());
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             return;
                         }
                         //delete the file first
@@ -397,8 +402,8 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                         files.add(file);
                         ArrayList<Integer> ids = new ArrayList<>();
                         ids.add(dataItems.get(position).id);
-                        if(UtilityFun.Delete(context, files, ids)){
-                            Toast.makeText(context, context.getString(R.string.deleted)  + dataItems.get(position).title, Toast.LENGTH_SHORT).show();
+                        if (UtilityFun.Delete(context, files, ids)) {
+                            Toast.makeText(context, context.getString(R.string.deleted) + dataItems.get(position).title, Toast.LENGTH_SHORT).show();
                             dataItems.remove(dataItems.get(position));
                             notifyItemRemoved(position);
                             notifyDataSetChanged();
@@ -412,7 +417,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView title,secondary,count;
+        TextView title, secondary, count;
         ImageButton popUp;
 
         MyViewHolder(View itemView) {
@@ -435,7 +440,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
 
         @Override
         public void onClick(View view) {
-            SecondaryLibraryAdapter.this.onClick(view,getLayoutPosition());
+            SecondaryLibraryAdapter.this.onClick(view, getLayoutPosition());
         }
     }
 }

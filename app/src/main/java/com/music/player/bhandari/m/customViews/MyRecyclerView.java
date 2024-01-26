@@ -1,8 +1,10 @@
 package com.music.player.bhandari.m.customViews;
 
 import android.content.Context;
+
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 
 /**

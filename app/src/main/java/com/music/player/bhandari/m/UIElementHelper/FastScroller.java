@@ -5,9 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -96,23 +98,23 @@ public class FastScroller extends LinearLayout {
     }
 
     private void setRecyclerViewPosition(float y) {
-        try{
-        if (recyclerView != null) {
-            int itemCount = recyclerView.getAdapter().getItemCount();
-            float proportion;
-            if (handle.getY() == 0)
-                proportion = 0f;
-            else if (handle.getY() + handle.getHeight() >= height - TRACK_SNAP_RANGE)
-                proportion = 1f;
-            else
-                proportion = y / (float) height;
-            int targetPos = getValueInRange(0, itemCount - 1, (int) (proportion * (float) itemCount));
-            ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(targetPos, 0);
+        try {
+            if (recyclerView != null) {
+                int itemCount = recyclerView.getAdapter().getItemCount();
+                float proportion;
+                if (handle.getY() == 0)
+                    proportion = 0f;
+                else if (handle.getY() + handle.getHeight() >= height - TRACK_SNAP_RANGE)
+                    proportion = 1f;
+                else
+                    proportion = y / (float) height;
+                int targetPos = getValueInRange(0, itemCount - 1, (int) (proportion * (float) itemCount));
+                ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(targetPos, 0);
 //      recyclerView.oPositionWithOffset(targetPos);
-            String bubbleText = ((BubbleTextGetter) recyclerView.getAdapter()).getTextToShowInBubble(targetPos);
-            bubble.setText(bubbleText);
-        }
-        }catch(Exception e) {
+                String bubbleText = ((BubbleTextGetter) recyclerView.getAdapter()).getTextToShowInBubble(targetPos);
+                bubble.setText(bubbleText);
+            }
+        } catch (Exception e) {
             System.out.println("Exception At FastScroller 116");
         }
     }

@@ -35,7 +35,7 @@ import java.io.Serializable
 import java.util.*
 import java.util.concurrent.Executors
 
-class ActivitySavedLyrics: AppCompatActivity() {
+class ActivitySavedLyrics : AppCompatActivity() {
 
     private lateinit var mSearchAction: MenuItem
     private var isSearchOpened = false
@@ -50,7 +50,8 @@ class ActivitySavedLyrics: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ColorHelper.setStatusBarGradiant(this)
 
-        val themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
+        val themeSelector =
+            MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT)
         when (themeSelector) {
             Constants.PRIMARY_COLOR.DARK -> setTheme(R.style.AppThemeDark)
 
@@ -85,10 +86,10 @@ class ActivitySavedLyrics: AppCompatActivity() {
             artistImageUrls = OfflineStorageArtistBio.getArtistImageUrls()
             adapter.setLyrics(OfflineStorageLyrics.getAllSavedLyrics())
             handler.post {
-                binding.progressBarSavedLyrics.visibility =View.GONE
-                if(adapter.isEmpty()){
+                binding.progressBarSavedLyrics.visibility = View.GONE
+                if (adapter.isEmpty()) {
                     binding.emptyLyrics.visibility = View.VISIBLE
-                }else{
+                } else {
                     binding.recyclerViewSavedLyrics.visibility = View.VISIBLE
                 }
                 adapter.notifyDataSetChanged()
@@ -114,7 +115,9 @@ class ActivitySavedLyrics: AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> onBackPressed()
-            R.id.action_search -> {handleSearch()}
+            R.id.action_search -> {
+                handleSearch()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -145,13 +148,19 @@ class ActivitySavedLyrics: AppCompatActivity() {
                 supportActionBar!!.setCustomView(R.layout.search_bar_layout)//add the custom view
                 supportActionBar!!.setDisplayShowTitleEnabled(false) //hide the title
             }
-            editSearch = supportActionBar!!.customView.findViewById(R.id.edtSearch) //the text editor
+            editSearch =
+                supportActionBar!!.customView.findViewById(R.id.edtSearch) //the text editor
             editSearch.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
                     // TODO Auto-generated method stub
                 }
 
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                     // TODO Auto-generated method stub
                 }
 
@@ -160,7 +169,12 @@ class ActivitySavedLyrics: AppCompatActivity() {
                     adapter.filter(s.toString())
                 }
             })
-            editSearch.setOnClickListener { imm?.showSoftInput(editSearch, InputMethodManager.SHOW_IMPLICIT) }
+            editSearch.setOnClickListener {
+                imm?.showSoftInput(
+                    editSearch,
+                    InputMethodManager.SHOW_IMPLICIT
+                )
+            }
 
             editSearch.requestFocus()
 
@@ -183,10 +197,13 @@ class ActivitySavedLyrics: AppCompatActivity() {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
-    inner class SavedLyricsAdapter: RecyclerView.Adapter<SavedLyricsAdapter.MyViewHolder>() {
+    inner class SavedLyricsAdapter : RecyclerView.Adapter<SavedLyricsAdapter.MyViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            return MyViewHolder(LayoutInflater.from(this@ActivitySavedLyrics).inflate(R.layout.item_saved_lyric, parent, false))
+            return MyViewHolder(
+                LayoutInflater.from(this@ActivitySavedLyrics)
+                    .inflate(R.layout.item_saved_lyric, parent, false)
+            )
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -209,12 +226,12 @@ class ActivitySavedLyrics: AppCompatActivity() {
         private var lyrics: MutableList<Lyrics> = mutableListOf()
         private var copyLyrics: MutableList<Lyrics> = mutableListOf()
 
-        fun setLyrics(lyrics: MutableList<Lyrics>){
+        fun setLyrics(lyrics: MutableList<Lyrics>) {
             this.lyrics = lyrics
             copyLyrics.addAll(lyrics)
         }
 
-        fun isEmpty(): Boolean{
+        fun isEmpty(): Boolean {
             return lyrics.isEmpty()
         }
 
@@ -222,13 +239,13 @@ class ActivitySavedLyrics: AppCompatActivity() {
             return lyrics.size
         }
 
-        fun filter(keyword: String){
+        fun filter(keyword: String) {
             lyrics.clear()
-            if(keyword.isEmpty()){
+            if (keyword.isEmpty()) {
                 lyrics.addAll(copyLyrics)
-            }else{
+            } else {
                 copyLyrics.forEach { lyric ->
-                    if(lyric.track.contains(keyword, true) || lyric.artist.contains(keyword, true))
+                    if (lyric.track.contains(keyword, true) || lyric.artist.contains(keyword, true))
                         lyrics.add(lyric)
                 }
             }
@@ -243,7 +260,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
             return position
         }*/
 
-        inner class MyViewHolder(v: View): RecyclerView.ViewHolder(v), View.OnClickListener {
+        inner class MyViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
             init {
                 v.setOnClickListener(this)
@@ -251,8 +268,9 @@ class ActivitySavedLyrics: AppCompatActivity() {
             }
 
             override fun onClick(v: View?) {
-                val position = adapterPosition  //adapter position changes sometimes in between, don't know why
-                when(v?.id){
+                val position =
+                    adapterPosition  //adapter position changes sometimes in between, don't know why
+                when (v?.id) {
                     R.id.root_view_item_saved_lyrics -> {
                         val intent = Intent(this@ActivitySavedLyrics, ActivityLyricView::class.java)
                         intent.putExtra("track_title", lyrics[position].originalTrack)
@@ -261,15 +279,28 @@ class ActivitySavedLyrics: AppCompatActivity() {
                         startActivity(intent)
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     }
-                    R.id.delete ->{
+
+                    R.id.delete -> {
                         v.isEnabled = false  //to prevent double clicks
-                        if (OfflineStorageLyrics.clearLyricsFromDB(lyrics[position].originalTrack, lyrics[position].trackId)) {
-                            Snackbar.make(v, getString(R.string.lyrics_removed), Snackbar.LENGTH_SHORT).show()
+                        if (OfflineStorageLyrics.clearLyricsFromDB(
+                                lyrics[position].originalTrack,
+                                lyrics[position].trackId
+                            )
+                        ) {
+                            Snackbar.make(
+                                v,
+                                getString(R.string.lyrics_removed),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                             lyrics.removeAt(position)
                             notifyItemRemoved(position)
-                        }else{
+                        } else {
                             v.isEnabled = true //enable click again
-                            Snackbar.make(v, getString(R.string.error_removing), Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(
+                                v,
+                                getString(R.string.error_removing),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }

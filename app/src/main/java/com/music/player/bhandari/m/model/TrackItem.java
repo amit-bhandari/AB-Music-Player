@@ -6,84 +6,84 @@ import android.util.Log;
 import java.io.Serializable;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class TrackItem implements Serializable {
     private int id;
-    private String filePath="";
-    private String title="";
-    private String artist="";
-    private String album="";
-    private String genre="";
-    private String duration="";  //string in milliseconds
+    private String filePath = "";
+    private String title = "";
+    private String artist = "";
+    private String album = "";
+    private String genre = "";
+    private String duration = "";  //string in milliseconds
     private int album_id;
     private int artist_id;
+
     //default constructor
     public TrackItem() {
 
     }
 
-    public TrackItem(String filePath, String title, String artist, String album,String genre, String duration
-            , int album_id, int artist_id, int id){
-        this.filePath=filePath;
-        this.title=title;
-        this.artist=artist;
-        this.album=album;
-        this.genre=genre;
-        this.duration=duration;
-        this.album_id=album_id;
+    public TrackItem(String filePath, String title, String artist, String album, String genre, String duration
+            , int album_id, int artist_id, int id) {
+        this.filePath = filePath;
+        this.title = title;
+        this.artist = artist;
+        this.album = album;
+        this.genre = genre;
+        this.duration = duration;
+        this.album_id = album_id;
         this.id = id;
-        this.artist_id=artist_id;
+        this.artist_id = artist_id;
     }
-
 
 
     //if needed in case
     public TrackItem(String filePath) {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        Log.e("filepath",filePath);
+        Log.e("filepath", filePath);
         mmr.setDataSource(filePath);
-        String duration=mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-        this.title=(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
-        this.artist=(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
-        this.album=(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
-        this.duration=(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-        this.filePath=filePath;
+        String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        this.title = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
+        this.artist = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
+        this.album = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
+        this.duration = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+        this.filePath = filePath;
     }
 
     //return in ms
-    public int getDurInt(){
+    public int getDurInt() {
         int durationMs = 0;
         try {
             durationMs = Integer.parseInt(duration);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             //send predefined number 300 msec
             durationMs = 3000;
         }
         return durationMs;
     }
 
-    public String getDurStr(){
-        int minutes=(Integer.parseInt(duration)/1000)/60;
-        int seconds= (Integer.parseInt(duration)/1000)%60;
-        String durFormatted=String.format("%02d",seconds);
-        return  String.valueOf(minutes)+":"+durFormatted;
+    public String getDurStr() {
+        int minutes = (Integer.parseInt(duration) / 1000) / 60;
+        int seconds = (Integer.parseInt(duration) / 1000) % 60;
+        String durFormatted = String.format("%02d", seconds);
+        return String.valueOf(minutes) + ":" + durFormatted;
     }
 
-    public void setId(int id){
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -124,8 +124,8 @@ public class TrackItem implements Serializable {
     }
 
     public void setArtist(String artist) {
-        if (artist==null || artist.isEmpty()){
-            this.artist="<unknown>";
+        if (artist == null || artist.isEmpty()) {
+            this.artist = "<unknown>";
             return;
         }
         this.artist = artist;
@@ -139,15 +139,19 @@ public class TrackItem implements Serializable {
         this.duration = duration;
     }
 
-    public int getAlbumId(){return album_id;}
+    public int getAlbumId() {
+        return album_id;
+    }
 
-    public int getArtist_id(){return artist_id;}
+    public int getArtist_id() {
+        return artist_id;
+    }
 
-    public void setArtist_id(int artist_id){
+    public void setArtist_id(int artist_id) {
         this.artist_id = artist_id;
     }
 
-    public boolean haveAlbumArt(){
+    public boolean haveAlbumArt() {
         return MusicLibrary.getInstance().getAlbumArtUri(album_id) != null;
     }
 }

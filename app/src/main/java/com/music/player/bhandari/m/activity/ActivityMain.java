@@ -112,24 +112,24 @@ import butterknife.ButterKnife;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class ActivityMain extends AppCompatActivity
         implements ActionMode.Callback, NavigationView.OnNavigationItemSelectedListener, View.OnClickListener
-        , PopupMenu.OnMenuItemClickListener, GoogleApiClient.OnConnectionFailedListener{
+        , PopupMenu.OnMenuItemClickListener, GoogleApiClient.OnConnectionFailedListener {
 
     private int RC_LOGIN = 100;
 
@@ -143,40 +143,54 @@ public class ActivityMain extends AppCompatActivity
     private long mLastClickTime = 0;
 
     //to receive broadcast to update mini player
-    private  BroadcastReceiver mReceiverForMiniPLayerUpdate;
+    private BroadcastReceiver mReceiverForMiniPLayerUpdate;
     private BroadcastReceiver mReceiverForLibraryRefresh;
 
 
-    public static final String NOTIFY_BACK_PRESSED="BACK_PRESSED";
+    public static final String NOTIFY_BACK_PRESSED = "BACK_PRESSED";
 
-    @BindView(R.id.viewpager)  ViewPager viewPager;
-    private  ViewPagerAdapter viewPagerAdapter;
-    @BindView(R.id.play_pause_mini_player)  ImageView buttonPlay;
-    @BindView(R.id.next_mini_plaayrer)  ImageView buttonNext;
-    @BindView(R.id.album_art_mini_player)  ImageView albumArt;
-    @BindView(R.id.song_name_mini_player)   TextView songNameMiniPlayer;
-    @BindView(R.id.artist_mini_player)   TextView artistNameMiniPlayer;
-    @BindView(R.id.mini_player) View miniPlayer;
-    @BindView(R.id.nav_view)  NavigationView navigationView;
-    @BindView(R.id.drawer_bg)  ImageView navViewBack;
-    @BindView(R.id.fab_right_side) FloatingActionButton fab_right_side;
-    @BindView(R.id.fab_lock) FloatingActionButton fab_lock;
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
+    @BindView(R.id.play_pause_mini_player)
+    ImageView buttonPlay;
+    @BindView(R.id.next_mini_plaayrer)
+    ImageView buttonNext;
+    @BindView(R.id.album_art_mini_player)
+    ImageView albumArt;
+    @BindView(R.id.song_name_mini_player)
+    TextView songNameMiniPlayer;
+    @BindView(R.id.artist_mini_player)
+    TextView artistNameMiniPlayer;
+    @BindView(R.id.mini_player)
+    View miniPlayer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.drawer_bg)
+    ImageView navViewBack;
+    @BindView(R.id.fab_right_side)
+    FloatingActionButton fab_right_side;
+    @BindView(R.id.fab_lock)
+    FloatingActionButton fab_lock;
     //private SeekBar seekBar;
-    @BindView(R.id.root_view_main_activity) View rootView;
-    @BindView(R.id.album_art_mini_player_wrapper)  View miniPlayerWrapper;
-    @BindView(R.id.overlay_for_gradient) View gradientOverlay;
-    @BindView(R.id.overlay_for_custom_background) View customBackOverlay;
-
+    @BindView(R.id.root_view_main_activity)
+    View rootView;
+    @BindView(R.id.album_art_mini_player_wrapper)
+    View miniPlayerWrapper;
+    @BindView(R.id.overlay_for_gradient)
+    View gradientOverlay;
+    @BindView(R.id.overlay_for_custom_background)
+    View customBackOverlay;
 
 
     //bind player service
     private PlayerService playerService;
     //search box related things
-    private  MenuItem mSearchAction;
-    private  boolean isSearchOpened = false;
-    private  EditText editSearch;
-    private  String searchQuery="";
-    private  Handler mHandler = new Handler();
+    private MenuItem mSearchAction;
+    private boolean isSearchOpened = false;
+    private EditText editSearch;
+    private String searchQuery = "";
+    private Handler mHandler = new Handler();
     private InputMethodManager imm;
 
     private String currentPageSort = ""; //holds the value for pref id for current page sort by
@@ -185,29 +199,29 @@ public class ActivityMain extends AppCompatActivity
     private static final int RC_SIGN_IN = 7;
 
     //tab sequence
-    int[] savedTabSeqInt = {0,1,2,3,4,5};
+    int[] savedTabSeqInt = {0, 1, 2, 3, 4, 5};
 
     private boolean backPressedOnce = false;
 
     @Override
     protected void onNewIntent(Intent intent) {
         //go to tracks tab when clicked on add button in playlist section
-        int i = intent.getIntExtra("move_to_tab",-1);
+        int i = intent.getIntExtra("move_to_tab", -1);
 
-        int currentItemToBeSet=0;
-        for(int tab:savedTabSeqInt){
-            if(tab==i){
+        int currentItemToBeSet = 0;
+        for (int tab : savedTabSeqInt) {
+            if (tab == i) {
                 break;
             }
-            currentItemToBeSet ++;
+            currentItemToBeSet++;
         }
 
-        if(viewPager!=null && i!=-1){
+        if (viewPager != null && i != -1) {
             viewPager.setCurrentItem(currentItemToBeSet);
         }
 
-        boolean b = intent.getBooleanExtra("refresh",false);
-        if(b){
+        boolean b = intent.getBooleanExtra("refresh", false);
+        if (b) {
             //data changed in edit track info activity, update item
             String originalTitle = intent.getStringExtra("originalTitle");
             int position = intent.getIntExtra("position", -1);
@@ -215,16 +229,16 @@ public class ActivityMain extends AppCompatActivity
             String artist = intent.getStringExtra("artist");
             String album = intent.getStringExtra("album");
 
-            if(playerService.getCurrentTrack().getTitle().equals(originalTitle)){
+            if (playerService.getCurrentTrack().getTitle().equals(originalTitle)) {
                 //current song is playing, update  track item
-                playerService.updateTrackItem(playerService.getCurrentTrackPosition(),playerService.getCurrentTrack().getId(),title,artist,album);
+                playerService.updateTrackItem(playerService.getCurrentTrackPosition(), playerService.getCurrentTrack().getId(), title, artist, album);
                 playerService.PostNotification();
                 updateUI(false);
             }
 
-            if(viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentAlbumLibrary){
+            if (viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentAlbumLibrary) {
                 //this should not happen
-            }else if(viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentLibrary){
+            } else if (viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentLibrary) {
                 ((FragmentLibrary) viewPagerAdapter.getItem(viewPager.getCurrentItem()))
                         .updateItem(position, title, artist, album);
             }
@@ -233,8 +247,6 @@ public class ActivityMain extends AppCompatActivity
 
         super.onNewIntent(intent);
     }
-
-
 
 
     @SuppressLint({"RestrictedApi", "ClickableViewAccessibility"})
@@ -248,14 +260,14 @@ public class ActivityMain extends AppCompatActivity
         ColorHelper.setStatusBarGradiant(this);
         //if player service not running, kill the app
         playerService = MyApp.getService();
-        if(playerService==null){
+        if (playerService == null) {
             UtilityFun.restartApp();
             finish();
             return;
         }
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-        switch (themeSelector){
+        switch (themeSelector) {
             case Constants.PRIMARY_COLOR.DARK:
                 setTheme(R.style.AppThemeDark);
                 break;
@@ -303,7 +315,7 @@ public class ActivityMain extends AppCompatActivity
         //findViewById(R.id.tabs).setBackgroundColor(ColorHelper.getPrimaryColor());
 
         //findViewById(R.id.gradientBackGroundView)
-          //      .setBackgroundDrawable(ColorHelper.GetGradientDrawable());
+        //      .setBackgroundDrawable(ColorHelper.GetGradientDrawable());
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -320,12 +332,12 @@ public class ActivityMain extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         try {
             toolbar.setCollapsible(false);
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
         setSupportActionBar(toolbar);
 
-        mReceiverForMiniPLayerUpdate=new BroadcastReceiver() {
+        mReceiverForMiniPLayerUpdate = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d(Constants.TAG, "onReceive: Update UI");
@@ -333,11 +345,11 @@ public class ActivityMain extends AppCompatActivity
             }
         };
 
-        mReceiverForLibraryRefresh=new BroadcastReceiver() {
+        mReceiverForLibraryRefresh = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateUI(true);
-                if(MusicLibrary.getInstance().getDefaultTracklistNew().isEmpty()){
+                if (MusicLibrary.getInstance().getDefaultTracklistNew().isEmpty()) {
                     Snackbar.make(rootView, getString(R.string.main_act_empty_lib), Snackbar.LENGTH_SHORT).show();
                 }
             }
@@ -350,12 +362,12 @@ public class ActivityMain extends AppCompatActivity
 
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                Log.d("onDrawerSlide", "onDrawerSlide: " + slideOffset/2);
-                rootView.setTranslationX(slideOffset/2 * drawerView.getWidth());
+                Log.d("onDrawerSlide", "onDrawerSlide: " + slideOffset / 2);
+                rootView.setTranslationX(slideOffset / 2 * drawerView.getWidth());
                 drawer.bringChildToFront(drawerView);
                 drawer.requestLayout();
             }
@@ -373,9 +385,9 @@ public class ActivityMain extends AppCompatActivity
         }
 
         // 0 - System default   1 - custom
-        int currentMainLbBackground = MyApp.getPref().getInt(getString(R.string.pref_main_library_back),0);
+        int currentMainLbBackground = MyApp.getPref().getInt(getString(R.string.pref_main_library_back), 0);
 
-        switch (currentMainLbBackground){
+        switch (currentMainLbBackground) {
             case 0:
                 setSystemDefaultBackground();
                 break;
@@ -386,9 +398,9 @@ public class ActivityMain extends AppCompatActivity
         }
 
         // 0 - System default   1 - custom
-        int navLbBackground = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back),0);
+        int navLbBackground = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back), 0);
 
-        switch (navLbBackground){
+        switch (navLbBackground) {
             case 0:
                 navViewBack.setBackgroundDrawable(ColorHelper.getGradientDrawable());
                 break;
@@ -407,38 +419,38 @@ public class ActivityMain extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                Log.v(Constants.TAG,"position : " + viewPager.getCurrentItem());
+                Log.v(Constants.TAG, "position : " + viewPager.getCurrentItem());
                 invalidateOptionsMenu();
 
 
-                if(savedTabSeqInt[position]==Constants.TABS.PLAYLIST){
-                    fab_right_side.setImageDrawable(ContextCompat.getDrawable(ActivityMain.this,R.drawable.ic_add_black_24dp));
-                }else {
-                    fab_right_side.setImageDrawable(ContextCompat.getDrawable(ActivityMain.this,R.drawable.ic_shuffle_black_24dp));
+                if (savedTabSeqInt[position] == Constants.TABS.PLAYLIST) {
+                    fab_right_side.setImageDrawable(ContextCompat.getDrawable(ActivityMain.this, R.drawable.ic_add_black_24dp));
+                } else {
+                    fab_right_side.setImageDrawable(ContextCompat.getDrawable(ActivityMain.this, R.drawable.ic_shuffle_black_24dp));
                 }
-                if(!searchQuery.equals("")){
+                if (!searchQuery.equals("")) {
                     try {
                         if (savedTabSeqInt[position] != Constants.TABS.FOLDER
                                 && savedTabSeqInt[position] != Constants.TABS.PLAYLIST
                                 && savedTabSeqInt[position] != Constants.TABS.ALBUMS) {
-                            if (viewPagerAdapter.getItem(position) instanceof FragmentLibrary){
+                            if (viewPagerAdapter.getItem(position) instanceof FragmentLibrary) {
                                 ((FragmentLibrary) viewPagerAdapter.getItem(position))
                                         .filter(String.valueOf(searchQuery));
                             }
                         }
                         if (savedTabSeqInt[position] == Constants.TABS.ALBUMS) {
-                                if(viewPagerAdapter.getItem(position) instanceof FragmentAlbumLibrary) {
-                                    ((FragmentAlbumLibrary) viewPagerAdapter.getItem(position))
-                                            .filter(String.valueOf(searchQuery));
-                                }
+                            if (viewPagerAdapter.getItem(position) instanceof FragmentAlbumLibrary) {
+                                ((FragmentAlbumLibrary) viewPagerAdapter.getItem(position))
+                                        .filter(String.valueOf(searchQuery));
+                            }
                         }
-                        if (savedTabSeqInt[position] == Constants.TABS.FOLDER){
-                            if(viewPagerAdapter.getItem(position) instanceof FragmentFolderLibrary) {
+                        if (savedTabSeqInt[position] == Constants.TABS.FOLDER) {
+                            if (viewPagerAdapter.getItem(position) instanceof FragmentFolderLibrary) {
                                 ((FragmentFolderLibrary) viewPagerAdapter.getItem(position))
                                         .filter(String.valueOf(searchQuery));
                             }
                         }
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }
@@ -451,7 +463,7 @@ public class ActivityMain extends AppCompatActivity
         });
 
 
-        TabLayout tabLayout= findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         // Iterate over all tabs and set the custom view
@@ -468,12 +480,12 @@ public class ActivityMain extends AppCompatActivity
         fab_lock.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
         fab_lock.setOnClickListener(this);
 
-        if(MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button),false)){
+        if (MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button), false)) {
             fab_lock.setVisibility(View.GONE);
         }
-        if(MyApp.isLocked()){
+        if (MyApp.isLocked()) {
             findViewById(R.id.border_view).setVisibility(View.VISIBLE);
-        }else {
+        } else {
             findViewById(R.id.border_view).setVisibility(View.GONE);
         }
 
@@ -508,7 +520,7 @@ public class ActivityMain extends AppCompatActivity
                 .setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());*/
     }
 
-    public void setBlurryBackgroundForMainLib(){
+    public void setBlurryBackgroundForMainLib() {
         customBackOverlay.setVisibility(View.VISIBLE);
         Glide.with(this)
                 .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.main_lib_back_custom_image))))
@@ -518,7 +530,7 @@ public class ActivityMain extends AppCompatActivity
                 .into(((ImageView) findViewById(R.id.image_view_view_pager)));
     }
 
-    public void setBlurryBackgroundForNav(){
+    public void setBlurryBackgroundForNav() {
         Glide.with(this)
                 .load(Uri.fromFile(new File(MyApp.getContext().getFilesDir() + getString(R.string.nav_back_custom_image))))
                 .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
@@ -532,8 +544,8 @@ public class ActivityMain extends AppCompatActivity
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 
-    private void firstTimeInfoManage(){
-        if(!MyApp.getPref().getBoolean(getString(R.string.pref_lock_button_info_shown),false)){
+    private void firstTimeInfoManage() {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_lock_button_info_shown), false)) {
             showInfo(Constants.FIRST_TIME_INFO.MINI_PLAYER);
             return;
         }
@@ -553,9 +565,9 @@ public class ActivityMain extends AppCompatActivity
         }
 
         //if updating or first install
-        if(verCode!=0 && MyApp.getPref().getInt(getString(R.string.pref_version_code),-1) < verCode ) {
+        if (verCode != 0 && MyApp.getPref().getInt(getString(R.string.pref_version_code), -1) < verCode) {
 
-            MyApp.getPref().edit().putString(getString(R.string.pref_card_image_links),"").apply();
+            MyApp.getPref().edit().putString(getString(R.string.pref_card_image_links), "").apply();
             MaterialDialog dialog = new MyDialogBuilder(this)
                     .title(getString(R.string.main_act_whats_new_title))
                     .content(getString(R.string.whats_new))
@@ -580,7 +592,7 @@ public class ActivityMain extends AppCompatActivity
             dialog.show();
 
             int baseThemePref = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-            if(baseThemePref == Constants.PRIMARY_COLOR.LIGHT){
+            if (baseThemePref == Constants.PRIMARY_COLOR.LIGHT) {
                 MyApp.getPref().edit().putInt(getString(R.string.pref_theme)
                         , Constants.PRIMARY_COLOR.GLOSSY).apply();
             }
@@ -596,7 +608,8 @@ public class ActivityMain extends AppCompatActivity
                 if (f.exists()) {
                     f.delete();
                 }
-            }catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
 
             //invalidate spotify key
             MyApp.getPref().edit().putLong("spoty_expiry_time", 0).apply();
@@ -607,21 +620,21 @@ public class ActivityMain extends AppCompatActivity
     }
 
     @SuppressLint("WrongViewCast")
-    private void showInfo(int first_time_info){
-        if(first_time_info!=-1){
-            switch (first_time_info){
+    private void showInfo(int first_time_info) {
+        if (first_time_info != -1) {
+            switch (first_time_info) {
                 case Constants.FIRST_TIME_INFO.MINI_PLAYER:
                     TapTargetView.showFor(this,
                             TapTarget.forView(findViewById(R.id.album_art_mini_player),
-                                    getString(R.string.mini_player_primary)
-                                    , getString(R.string.mini_player_secondary))
+                                            getString(R.string.mini_player_primary)
+                                            , getString(R.string.mini_player_secondary))
                                     .outerCircleColorInt(ColorHelper.getPrimaryColor())
                                     .outerCircleAlpha(0.9f)
                                     .transparentTarget(true)
                                     .titleTextColor(R.color.colorwhite)
                                     .descriptionTextColor(R.color.colorwhite)
                                     .drawShadow(true)
-                                    .tintTarget(true)  ,
+                                    .tintTarget(true),
                             new TapTargetView.Listener() {
                                 @Override
                                 public void onTargetClick(TapTargetView view) {
@@ -641,8 +654,8 @@ public class ActivityMain extends AppCompatActivity
                                     showNext();
                                 }
 
-                                private void showNext(){
-                                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_button_info_shown),true).apply();
+                                private void showNext() {
+                                    MyApp.getPref().edit().putBoolean(getString(R.string.pref_lock_button_info_shown), true).apply();
                                     showInfo(Constants.FIRST_TIME_INFO.SORTING);
                                 }
                             });
@@ -650,20 +663,20 @@ public class ActivityMain extends AppCompatActivity
 
                 case Constants.FIRST_TIME_INFO.SORTING:
                     View menuItemView = findViewById(R.id.action_sort); // SAME ID AS MENU ID
-                    if(menuItemView==null){
+                    if (menuItemView == null) {
                         showInfo(Constants.FIRST_TIME_INFO.MINI_PLAYER);
-                    }else {
+                    } else {
                         TapTargetView.showFor(this,
                                 TapTarget.forView(findViewById(R.id.action_sort)
-                                        , getString(R.string.sorting_primary)
-                                        , getString(R.string.sorting_secondary))
+                                                , getString(R.string.sorting_primary)
+                                                , getString(R.string.sorting_secondary))
                                         .outerCircleColorInt(ColorHelper.getPrimaryColor())
                                         .outerCircleAlpha(0.9f)
                                         .transparentTarget(true)
                                         .titleTextColor(R.color.colorwhite)
                                         .descriptionTextColor(R.color.colorwhite)
                                         .drawShadow(true)
-                                        .tintTarget(true)  ,
+                                        .tintTarget(true),
                                 new TapTargetView.Listener() {
                                     @Override
                                     public void onTargetClick(TapTargetView view) {
@@ -683,7 +696,7 @@ public class ActivityMain extends AppCompatActivity
                                         showNext();
                                     }
 
-                                    private void showNext(){
+                                    private void showNext() {
                                         showInfo(Constants.FIRST_TIME_INFO.MUSIC_LOCK);
                                     }
                                 });
@@ -694,15 +707,15 @@ public class ActivityMain extends AppCompatActivity
                 case Constants.FIRST_TIME_INFO.MUSIC_LOCK:
                     TapTargetView.showFor(this,
                             TapTarget.forView(findViewById(R.id.fab_lock)
-                                    , getString(R.string.music_lock_primary)
-                                    , getString(R.string.music_lock_secondary))
+                                            , getString(R.string.music_lock_primary)
+                                            , getString(R.string.music_lock_secondary))
                                     .outerCircleColorInt(ColorHelper.getPrimaryColor())
                                     .outerCircleAlpha(0.9f)
                                     .transparentTarget(true)
                                     .titleTextColor(R.color.colorwhite)
                                     .descriptionTextColor(R.color.colorwhite)
                                     .drawShadow(true)
-                                    .tintTarget(true)  ,
+                                    .tintTarget(true),
                             new TapTargetView.Listener() {
                                 @Override
                                 public void onTargetClick(TapTargetView view) {
@@ -726,23 +739,23 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
-    private boolean ValidatePlaylistName(String playlist_name){
+    private boolean ValidatePlaylistName(String playlist_name) {
 
-        String pattern= "^[a-zA-Z0-9 ]*$";
-        if (playlist_name.matches(pattern)){
-            if(playlist_name.length()>2) {
+        String pattern = "^[a-zA-Z0-9 ]*$";
+        if (playlist_name.matches(pattern)) {
+            if (playlist_name.length() > 2) {
                 //if playlist starts with digit, not allowed
-                if(Character.isDigit(playlist_name.charAt(0))){
+                if (Character.isDigit(playlist_name.charAt(0))) {
                     Snackbar.make(rootView, getString(R.string.playlist_error_1), Snackbar.LENGTH_SHORT).show();
                     return false;
                 }
                 return true;
-            }else {
+            } else {
                 //Toast.makeText(this,"Enter at least 3 characters",Toast.LENGTH_SHORT).show();
                 Snackbar.make(rootView, getString(R.string.playlist_error_2), Snackbar.LENGTH_SHORT).show();
                 return false;
             }
-        }else {
+        } else {
             //Toast.makeText(this,"Only alphanumeric characters allowed",Toast.LENGTH_SHORT).show();
             Snackbar.make(rootView, getString(R.string.playlist_error_3), Snackbar.LENGTH_SHORT).show();
             return false;
@@ -752,7 +765,7 @@ public class ActivityMain extends AppCompatActivity
     //boolean to to let function know if expand is needed for mini player or not
     //in case of resuming activity, no need to expand mini player
     //even when pressed back from secondary activity, no need to expand
-    private void updateUI(boolean expandNeeded){
+    private void updateUI(boolean expandNeeded) {
         try {
             if (playerService != null) {
                 if (playerService.getCurrentTrack() != null) {
@@ -765,17 +778,17 @@ public class ActivityMain extends AppCompatActivity
                             .diskCacheStrategy(DiskCacheStrategy.ALL);
 
                     int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
-                    switch (defaultAlbumArtSetting){
+                    switch (defaultAlbumArtSetting) {
                         case 0:
                             request
                                     .listener(new RequestListener<Uri, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
                                             Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if(UtilityFun.isConnectedToInternet() &&
+                                            if (UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null && !url.isEmpty())
+                                                if (url != null && !url.isEmpty())
                                                     request.load(Uri.parse(url))
                                                             .into(albumArt);
                                                 return true;
@@ -797,10 +810,10 @@ public class ActivityMain extends AppCompatActivity
                                         @Override
                                         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
                                             Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if(UtilityFun.isConnectedToInternet() &&
+                                            if (UtilityFun.isConnectedToInternet() &&
                                                     !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
                                                 final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if(url!=null && !url.isEmpty())
+                                                if (url != null && !url.isEmpty())
                                                     request.load(Uri.parse(url))
                                                             .into(albumArt);
                                                 return true;
@@ -828,7 +841,7 @@ public class ActivityMain extends AppCompatActivity
 
                     songNameMiniPlayer.setText(playerService.getCurrentTrack().getTitle());
                     artistNameMiniPlayer.setText(playerService.getCurrentTrack().getArtist());
-                    if(expandNeeded) {
+                    if (expandNeeded) {
                         ((AppBarLayout) findViewById(R.id.app_bar_layout)).setExpanded(true);
                     }
                 }
@@ -843,9 +856,9 @@ public class ActivityMain extends AppCompatActivity
                 //this should not happen
                 //restart app
                 UtilityFun.restartApp();
-            finish();
+                finish();
             }
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
     }
@@ -856,42 +869,41 @@ public class ActivityMain extends AppCompatActivity
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
 
-
-        for(int tab:savedTabSeqInt){
-            switch (tab){
+        for (int tab : savedTabSeqInt) {
+            switch (tab) {
                 case Constants.TABS.ALBUMS:
-                    Bundle bundle3=new Bundle();
-                    bundle3.putInt("status",Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT);
-                    if(!MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view),true)) {
-                        FragmentLibrary musicByAlbumFrag=new FragmentLibrary();
+                    Bundle bundle3 = new Bundle();
+                    bundle3.putInt("status", Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT);
+                    if (!MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view), true)) {
+                        FragmentLibrary musicByAlbumFrag = new FragmentLibrary();
                         musicByAlbumFrag.setArguments(bundle3);
                         viewPagerAdapter.addFragment(musicByAlbumFrag, getString(R.string.tab_album));
-                    }else {
+                    } else {
                         FragmentAlbumLibrary musicByAlbumFrag = new FragmentAlbumLibrary();
                         musicByAlbumFrag.setArguments(bundle3);
-                        viewPagerAdapter.addFragment(musicByAlbumFrag,  getString(R.string.tab_album));
+                        viewPagerAdapter.addFragment(musicByAlbumFrag, getString(R.string.tab_album));
                     }
                     break;
 
                 case Constants.TABS.ARTIST:
-                    Bundle bundle2=new Bundle();
-                    bundle2.putInt("status",Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT);
-                    FragmentLibrary musicByArtistFrag=new FragmentLibrary();
+                    Bundle bundle2 = new Bundle();
+                    bundle2.putInt("status", Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT);
+                    FragmentLibrary musicByArtistFrag = new FragmentLibrary();
                     musicByArtistFrag.setArguments(bundle2);
-                    viewPagerAdapter.addFragment(musicByArtistFrag,  getString(R.string.tab_artist));
+                    viewPagerAdapter.addFragment(musicByArtistFrag, getString(R.string.tab_artist));
                     break;
 
                 case Constants.TABS.FOLDER:
-                    FragmentFolderLibrary folderFragment=new FragmentFolderLibrary();
+                    FragmentFolderLibrary folderFragment = new FragmentFolderLibrary();
                     viewPagerAdapter.addFragment(folderFragment, getString(R.string.tab_folder));
                     break;
 
                 case Constants.TABS.GENRE:
-                    Bundle bundle4=new Bundle();
-                    bundle4.putInt("status",Constants.FRAGMENT_STATUS.GENRE_FRAGMENT);
-                    FragmentLibrary musicByGenreFrag=new FragmentLibrary();
+                    Bundle bundle4 = new Bundle();
+                    bundle4.putInt("status", Constants.FRAGMENT_STATUS.GENRE_FRAGMENT);
+                    FragmentLibrary musicByGenreFrag = new FragmentLibrary();
                     musicByGenreFrag.setArguments(bundle4);
-                    viewPagerAdapter.addFragment(musicByGenreFrag,  getString(R.string.tab_genre));
+                    viewPagerAdapter.addFragment(musicByGenreFrag, getString(R.string.tab_genre));
                     break;
 
                 case Constants.TABS.PLAYLIST:
@@ -900,11 +912,11 @@ public class ActivityMain extends AppCompatActivity
                     break;
 
                 case Constants.TABS.TRACKS:
-                    Bundle bundle1=new Bundle();
-                    bundle1.putInt("status",Constants.FRAGMENT_STATUS.TITLE_FRAGMENT);
-                    FragmentLibrary musicByTitleFrag=new FragmentLibrary();
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putInt("status", Constants.FRAGMENT_STATUS.TITLE_FRAGMENT);
+                    FragmentLibrary musicByTitleFrag = new FragmentLibrary();
                     musicByTitleFrag.setArguments(bundle1);
-                    viewPagerAdapter.addFragment(musicByTitleFrag,  getString(R.string.tab_track));
+                    viewPagerAdapter.addFragment(musicByTitleFrag, getString(R.string.tab_track));
                     break;
             }
 
@@ -921,20 +933,19 @@ public class ActivityMain extends AppCompatActivity
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if(count>0) {
+        } else if (count > 0) {
             findViewById(R.id.mini_player).setVisibility(View.VISIBLE);
             getSupportFragmentManager().popBackStack();
         }//see if current fragment is folder fragment, if yes, override onBackPressed with fragments own action
-        else if(savedTabSeqInt[viewPager.getCurrentItem()]==Constants.TABS.FOLDER) {
+        else if (savedTabSeqInt[viewPager.getCurrentItem()] == Constants.TABS.FOLDER) {
             if (viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentFolderLibrary) {
                 Intent intent = new Intent(NOTIFY_BACK_PRESSED);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
             }
-        }else if(isSearchOpened){
+        } else if (isSearchOpened) {
             handleSearch();
-        }
-        else {
-            if(backPressedOnce){
+        } else {
+            if (backPressedOnce) {
                 super.onBackPressed();
                 return;
             }
@@ -955,12 +966,12 @@ public class ActivityMain extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        if(viewPager!=null) {
+        if (viewPager != null) {
             if (savedTabSeqInt[viewPager.getCurrentItem()] == Constants.TABS.FOLDER
                     || savedTabSeqInt[viewPager.getCurrentItem()] == Constants.TABS.PLAYLIST) {
                 for (int i = 0; i < menu.size(); i++) {
                     if (R.id.action_sort == menu.getItem(i).getItemId()
-                            ) {
+                    ) {
                         menu.getItem(i).setVisible(false);
                     }
                 }
@@ -974,9 +985,9 @@ public class ActivityMain extends AppCompatActivity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         mSearchAction = menu.findItem(R.id.action_search);
-        if(isSearchOpened) {
+        if (isSearchOpened) {
             mSearchAction.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_close_white_24dp));
-        }else {
+        } else {
             mSearchAction.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp));
         }
         return super.onPrepareOptionsMenu(menu);
@@ -988,11 +999,11 @@ public class ActivityMain extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(this,ActivitySettings.class)
-                        .putExtra("launchedFrom",Constants.PREF_LAUNCHED_FROM.MAIN)
-                        .putExtra("ad",true));
+                startActivity(new Intent(this, ActivitySettings.class)
+                        .putExtra("launchedFrom", Constants.PREF_LAUNCHED_FROM.MAIN)
+                        .putExtra("ad", true));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 break;
@@ -1026,17 +1037,18 @@ public class ActivityMain extends AppCompatActivity
         Intent intent = new Intent(AudioEffect
                 .ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
 
-        if(MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
-                && (intent.resolveActivity(getPackageManager()) != null)){
+        if (MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
+                && (intent.resolveActivity(getPackageManager()) != null)) {
             try {
                 //show system equalizer
                 startActivityForResult(intent, 0);
-            }catch (Exception ignored){}
-        }else {
+            } catch (Exception ignored) {
+            }
+        } else {
             //show app equalizer
-            if(playerService.getEqualizerHelper().isEqualizerSupported()) {
+            if (playerService.getEqualizerHelper().isEqualizerSupported()) {
                 startActivity(new Intent(this, ActivityEqualizer.class));
-            }else {
+            } else {
                 Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_SHORT).show();
             }
         }
@@ -1045,34 +1057,34 @@ public class ActivityMain extends AppCompatActivity
     private void sortLibrary() {
         PopupMenu popupMenu;
         View menuItemView = findViewById(R.id.action_sort); // SAME ID AS MENU ID
-        if(menuItemView==null){
-             popupMenu = new PopupMenu(this, findViewById(R.id.action_search));
-        }else {
-             popupMenu = new PopupMenu(this, menuItemView);
+        if (menuItemView == null) {
+            popupMenu = new PopupMenu(this, findViewById(R.id.action_search));
+        } else {
+            popupMenu = new PopupMenu(this, menuItemView);
         }
         popupMenu.inflate(R.menu.sort_menu);
 
-        if(savedTabSeqInt[viewPager.getCurrentItem()]!= Constants.TABS.TRACKS){
+        if (savedTabSeqInt[viewPager.getCurrentItem()] != Constants.TABS.TRACKS) {
             popupMenu.getMenu().removeItem(R.id.action_sort_size);
             popupMenu.getMenu().removeItem(R.id.action_sort_by_duration);
-            if(savedTabSeqInt[viewPager.getCurrentItem()]!=Constants.TABS.ALBUMS){
+            if (savedTabSeqInt[viewPager.getCurrentItem()] != Constants.TABS.ALBUMS) {
                 popupMenu.getMenu().removeItem(R.id.action_sort_year);
             }
         }
 
-        if(savedTabSeqInt[viewPager.getCurrentItem()]!=Constants.TABS.ARTIST){
+        if (savedTabSeqInt[viewPager.getCurrentItem()] != Constants.TABS.ARTIST) {
             popupMenu.getMenu().removeItem(R.id.action_sort_no_of_album);
             popupMenu.getMenu().removeItem(R.id.action_sort_no_of_tracks);
         }
 
 
-        if(MyApp.getPref().getInt(getString(R.string.pref_order_by),Constants.SORT_BY.ASC)==Constants.SORT_BY.ASC){
+        if (MyApp.getPref().getInt(getString(R.string.pref_order_by), Constants.SORT_BY.ASC) == Constants.SORT_BY.ASC) {
             popupMenu.getMenu().findItem(R.id.action_sort_asc).setChecked(true);
-        }else {
+        } else {
             popupMenu.getMenu().findItem(R.id.action_sort_asc).setChecked(false);
         }
 
-        switch (savedTabSeqInt[viewPager.getCurrentItem()]){
+        switch (savedTabSeqInt[viewPager.getCurrentItem()]) {
             case Constants.TABS.ALBUMS:
                 currentPageSort = getString(R.string.pref_album_sort_by);
                 break;
@@ -1094,7 +1106,7 @@ public class ActivityMain extends AppCompatActivity
                 break;
         }
 
-        switch (MyApp.getPref().getInt(currentPageSort,Constants.SORT_BY.NAME)){
+        switch (MyApp.getPref().getInt(currentPageSort, Constants.SORT_BY.NAME)) {
             case Constants.SORT_BY.NAME:
                 popupMenu.getMenu().findItem(R.id.action_sort_name).setChecked(true);
                 break;
@@ -1124,9 +1136,9 @@ public class ActivityMain extends AppCompatActivity
         popupMenu.show();
     }
 
-    protected void handleSearch(){
-        if(isSearchOpened){ //test if the search is open
-            if (getSupportActionBar() != null){
+    protected void handleSearch() {
+        if (isSearchOpened) { //test if the search is open
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowCustomEnabled(false);
                 getSupportActionBar().setDisplayShowTitleEnabled(true);
             }
@@ -1139,16 +1151,16 @@ public class ActivityMain extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
             //add the search icon in the action bar
-            mSearchAction.setIcon(ContextCompat.getDrawable(this,R.drawable.ic_search_white_48dp));
+            mSearchAction.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_search_white_48dp));
             clearSearch();
-            searchQuery="";
+            searchQuery = "";
             findViewById(R.id.mini_player).setVisibility(View.VISIBLE);
 
             isSearchOpened = false;
         } else { //open the search entry
             findViewById(R.id.mini_player).setVisibility(View.GONE);
 
-            if (getSupportActionBar() != null){
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowCustomEnabled(true); //enable it to display a custom view
                 getSupportActionBar().setCustomView(R.layout.search_bar_layout);//add the custom view
                 getSupportActionBar().setDisplayShowTitleEnabled(false); //hide the title
@@ -1167,7 +1179,7 @@ public class ActivityMain extends AppCompatActivity
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    searchQuery=String.valueOf(s).toLowerCase();
+                    searchQuery = String.valueOf(s).toLowerCase();
                     searchAdapters(searchQuery);
                 }
             });
@@ -1183,14 +1195,14 @@ public class ActivityMain extends AppCompatActivity
             //open the keyboard focused in the edtSearch
             imm.showSoftInput(editSearch, InputMethodManager.SHOW_IMPLICIT);
 
-            mSearchAction.setIcon(ContextCompat.getDrawable(this,R.drawable.ic_close_white_24dp));
+            mSearchAction.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_close_white_24dp));
             //add the close icon
             //mSearchAction.setIcon(getResources().getDrawable(R.drawable.cancel));
             isSearchOpened = true;
         }
     }
 
-    private void clearSearch(){
+    private void clearSearch() {
 
         String savedTabSeq = MyApp.getPref().getString(getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ);
         StringTokenizer st = new StringTokenizer(savedTabSeq, ",");
@@ -1199,28 +1211,28 @@ public class ActivityMain extends AppCompatActivity
             savedTabSeqInt[i] = Integer.parseInt(st.nextToken());
         }
 
-        for(int tab:savedTabSeqInt){
-            if(viewPagerAdapter.getItem(tab) instanceof FragmentAlbumLibrary){
-                ((FragmentAlbumLibrary)viewPagerAdapter.getItem(tab))
+        for (int tab : savedTabSeqInt) {
+            if (viewPagerAdapter.getItem(tab) instanceof FragmentAlbumLibrary) {
+                ((FragmentAlbumLibrary) viewPagerAdapter.getItem(tab))
                         .filter("");
-            } else if (viewPagerAdapter.getItem(tab) instanceof FragmentLibrary){
-                ((FragmentLibrary)viewPagerAdapter.getItem(tab))
+            } else if (viewPagerAdapter.getItem(tab) instanceof FragmentLibrary) {
+                ((FragmentLibrary) viewPagerAdapter.getItem(tab))
                         .filter("");
-            } else if (viewPagerAdapter.getItem(tab) instanceof FragmentFolderLibrary){
-                ((FragmentFolderLibrary)viewPagerAdapter.getItem(tab))
+            } else if (viewPagerAdapter.getItem(tab) instanceof FragmentFolderLibrary) {
+                ((FragmentFolderLibrary) viewPagerAdapter.getItem(tab))
                         .filter("");
             }
         }
     }
 
-    private void searchAdapters(String searchQuery){
-        if(viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentAlbumLibrary){
+    private void searchAdapters(String searchQuery) {
+        if (viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentAlbumLibrary) {
             ((FragmentAlbumLibrary) viewPagerAdapter.getItem(viewPager.getCurrentItem()))
                     .filter(String.valueOf(searchQuery));
-        }else if(viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentLibrary){
+        } else if (viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentLibrary) {
             ((FragmentLibrary) viewPagerAdapter.getItem(viewPager.getCurrentItem()))
                     .filter(String.valueOf(searchQuery));
-        } else if(viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentFolderLibrary){
+        } else if (viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentFolderLibrary) {
             ((FragmentFolderLibrary) viewPagerAdapter.getItem(viewPager.getCurrentItem()))
                     .filter(String.valueOf(searchQuery));
         }
@@ -1232,31 +1244,31 @@ public class ActivityMain extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if(id==R.id.nav_settings){
-            startActivity(new Intent(this,ActivitySettings.class)
-                    .putExtra("launchedFrom",Constants.PREF_LAUNCHED_FROM.DRAWER)
-                    .putExtra("ad",true));
+        if (id == R.id.nav_settings) {
+            startActivity(new Intent(this, ActivitySettings.class)
+                    .putExtra("launchedFrom", Constants.PREF_LAUNCHED_FROM.DRAWER)
+                    .putExtra("ad", true));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
-        } else if(id==R.id.nav_share){
+        } else if (id == R.id.nav_share) {
             shareApp();
-        } else if(id==R.id.nav_rate){
+        } else if (id == R.id.nav_rate) {
             setRateDialog();
-        } else if(id==R.id.nav_website){
+        } else if (id == R.id.nav_website) {
             openUrl(Uri.parse(WEBSITE));
-        } else if(id==R.id.nav_explore_lyrics){
+        } else if (id == R.id.nav_explore_lyrics) {
             startActivity(new Intent(this, ActivityExploreLyrics.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if(id==R.id.nav_dev_message){
+        } else if (id == R.id.nav_dev_message) {
             devMessageDialog();
-        } else if(id == R.id.nav_lyric_card){
+        } else if (id == R.id.nav_lyric_card) {
             lyricCardDialog();
-        } else if(id==192){
+        } else if (id == 192) {
             //uploadPhotos();
-        } else if(id == R.id.nav_saved_lyrics){
+        } else if (id == R.id.nav_saved_lyrics) {
             startActivity(new Intent(this, ActivitySavedLyrics.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if(id == R.id.nav_ringtone_cutter){
+        } else if (id == R.id.nav_ringtone_cutter) {
             showRingtoneCutterDialog();
         }
 
@@ -1376,11 +1388,11 @@ public class ActivityMain extends AppCompatActivity
 
     }
 */
-    private void lyricCardDialog(){
+    private void lyricCardDialog() {
         final String link = FirebaseRemoteConfig.getInstance().getString("sample_lyric_card");
 
         MaterialDialog dialog = new MyDialogBuilder(this)
-               .title(getString(R.string.nav_lyric_cards))
+                .title(getString(R.string.nav_lyric_cards))
                 .customView(R.layout.lyric_card_dialog, false)
                 //.content(R.string.dialog_lyric_card_content)
                 .positiveText(R.string.dialog_lyric_card_pos)
@@ -1444,7 +1456,7 @@ public class ActivityMain extends AppCompatActivity
 
     }
 
-    private void tryApp(){
+    private void tryApp() {
         final String appPackageName = "in.thetechguru.walle.remote.abremotewallpaperchanger"; // getPackageName() from Context or Activity object
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
@@ -1466,7 +1478,7 @@ public class ActivityMain extends AppCompatActivity
         String myDeviceModel = "Model : " + Build.MODEL + " Version : " + Build.VERSION.RELEASE;
 
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto",getString(R.string.au_email_id), null));
+                "mailto", getString(R.string.au_email_id), null));
         String[] address = new String[]{getString(R.string.au_email_id)};
         emailIntent.putExtra(Intent.EXTRA_EMAIL, address);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "¯\\_(ツ)_/¯ AB Music ¯\\_(ツ)_/¯  : " + myDeviceModel);
@@ -1476,21 +1488,21 @@ public class ActivityMain extends AppCompatActivity
 
     private void shareApp() {
         try {
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-                String sAux = getString(R.string.main_act_share_app_text);
-                sAux = sAux + getString(R.string.share_app) + " \n\n";
-                i.putExtra(Intent.EXTRA_TEXT, sAux);
-                startActivity(Intent.createChooser(i, getString(R.string.main_act_share_app_choose)));
-        } catch(Exception e) {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+            String sAux = getString(R.string.main_act_share_app_text);
+            sAux = sAux + getString(R.string.share_app) + " \n\n";
+            i.putExtra(Intent.EXTRA_TEXT, sAux);
+            startActivity(Intent.createChooser(i, getString(R.string.main_act_share_app_choose)));
+        } catch (Exception e) {
             //e.toString();
         }
     }
 
-    private void devMessageDialog(){
+    private void devMessageDialog() {
 
-        if(MyApp.getPref().getBoolean("new_dev_message", false)) {
+        if (MyApp.getPref().getBoolean("new_dev_message", false)) {
             MyApp.getPref().edit().putBoolean("new_dev_message", false).apply();
             updateNewDevMessageDot(false);
         }
@@ -1535,13 +1547,13 @@ public class ActivityMain extends AppCompatActivity
         dialog.show();
     }
 
-    private void setRateDialog(){
+    private void setRateDialog() {
         LinearLayout linear = new LinearLayout(this);
         linear.setOrientation(LinearLayout.VERTICAL);
         final TextView text = new TextView(this);
         text.setText(getString(R.string.main_act_rate_us));
         text.setTypeface(TypeFaceHelper.getTypeFace(this));
-        text.setPadding(20, 10,20,10);
+        text.setPadding(20, 10, 20, 10);
         text.setTextSize(16);
         //text.setGravity(Gravity.CENTER);
 
@@ -1553,7 +1565,7 @@ public class ActivityMain extends AppCompatActivity
         ratingBar.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-       //ratingBar.setNumStars(5);
+        //ratingBar.setNumStars(5);
         ratingBar.setRating(5);
         ratingWrap.addView(ratingBar);
 
@@ -1562,7 +1574,7 @@ public class ActivityMain extends AppCompatActivity
 
         MaterialDialog dialog = new MyDialogBuilder(this)
                 .title(getString(R.string.main_act_rate_dialog_title))
-               // .content(getString(R.string.lyric_art_info_content))
+                // .content(getString(R.string.lyric_art_info_content))
                 .positiveText(getString(R.string.main_act_rate_dialog_pos))
                 .negativeText(getString(R.string.cancel))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -1577,7 +1589,7 @@ public class ActivityMain extends AppCompatActivity
                         }
                     }
                 })
-                .customView(linear,true)
+                .customView(linear, true)
                 .build();
 
         //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
@@ -1586,7 +1598,7 @@ public class ActivityMain extends AppCompatActivity
 
     }
 
-    public void setSleepTimerDialog(){
+    public void setSleepTimerDialog() {
 
         MyDialogBuilder builder = new MyDialogBuilder(this);
 
@@ -1594,11 +1606,11 @@ public class ActivityMain extends AppCompatActivity
         linear.setOrientation(LinearLayout.VERTICAL);
         final TextView text = new TextView(this);
 
-        int timer = MyApp.getPref().getInt(this.getString(R.string.pref_sleep_timer),0);
-        if(timer==0) {
-            String tempString = "0 "+this.getString(R.string.main_act_sleep_timer_status_minutes);
+        int timer = MyApp.getPref().getInt(this.getString(R.string.pref_sleep_timer), 0);
+        if (timer == 0) {
+            String tempString = "0 " + this.getString(R.string.main_act_sleep_timer_status_minutes);
             text.setText(tempString);
-        }else {
+        } else {
             String stringTemp = this.getString(R.string.main_act_sleep_timer_status_part1) +
                     timer +
                     this.getString(R.string.main_act_sleep_timer_status_part2);
@@ -1607,28 +1619,28 @@ public class ActivityMain extends AppCompatActivity
 
             builder.neutralText(this.getString(R.string.main_act_sleep_timer_neu))
                     .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer),0).apply();
-                        playerService.setSleepTimer(0, false);
-                        //Toast.makeText(this, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-                        Snackbar.make(rootView,getString(R.string.sleep_timer_discarded) , Snackbar.LENGTH_SHORT).show();
-                    }
-            });
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer), 0).apply();
+                            playerService.setSleepTimer(0, false);
+                            //Toast.makeText(this, "Sleep timer discarded", Toast.LENGTH_LONG).show();
+                            Snackbar.make(rootView, getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
         }
-        text.setPadding(0, 10,0,0);
+        text.setPadding(0, 10, 0, 0);
         text.setGravity(Gravity.CENTER);
         text.setTypeface(TypeFaceHelper.getTypeFace(this));
 
         final SeekBar seek = new SeekBar(this);
-        seek.setPadding(40,10,40,10);
+        seek.setPadding(40, 10, 40, 10);
         seek.setMax(100);
         seek.setProgress(0);
 
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                String tempString = progress+getString(R.string.main_act_sleep_timer_status_minutes);
+                String tempString = progress + getString(R.string.main_act_sleep_timer_status_minutes);
                 text.setText(tempString);
             }
 
@@ -1652,8 +1664,8 @@ public class ActivityMain extends AppCompatActivity
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if(seek.getProgress()!=0) {
-                            MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer),seek.getProgress()).apply();
+                        if (seek.getProgress() != 0) {
+                            MyApp.getPref().edit().putInt(getString(R.string.pref_sleep_timer), seek.getProgress()).apply();
                             playerService.setSleepTimer(seek.getProgress(), true);
                             String temp = getString(R.string.sleep_timer_successfully_set)
                                     + seek.getProgress()
@@ -1663,13 +1675,14 @@ public class ActivityMain extends AppCompatActivity
                         }
                     }
                 })
-                .customView(linear,true)
+                .customView(linear, true)
                 .build();
 
         //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -1682,14 +1695,14 @@ public class ActivityMain extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        Log.v("TAG","Main activity getting destroyed");
+        Log.v("TAG", "Main activity getting destroyed");
         try {
             mHandler.removeCallbacksAndMessages(null);
             viewPager.clearOnPageChangeListeners();
             viewPager = null;
             viewPagerAdapter = null;
             navigationView.setNavigationItemSelectedListener(null);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.d("TAG", "onDestroy: destroy called because of null player service");
         }
         super.onDestroy();
@@ -1697,39 +1710,39 @@ public class ActivityMain extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             finish();
             return;
         }
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.mini_player:
 
-                Intent intent=new Intent(getApplicationContext(),ActivityNowPlaying.class);
+                Intent intent = new Intent(getApplicationContext(), ActivityNowPlaying.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
                 ActivityOptions options;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     options = ActivityOptions.makeSceneTransitionAnimation(this, miniPlayerWrapper, getString(R.string.transition));
                     ActivityCompat.startActivityForResult(this, intent, RC_LOGIN, options.toBundle());
-                }else {
+                } else {
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
 
-                Log.v(Constants.TAG,"Launch now playing Jarvis");
+                Log.v(Constants.TAG, "Launch now playing Jarvis");
                 break;
 
             case R.id.play_pause_mini_player:
                 ColorSwitchRunnableForImageView colorSwitchRunnablePlay = new ColorSwitchRunnableForImageView((ImageView) view);
                 mHandler.post(colorSwitchRunnablePlay);
-                if(playerService.getCurrentTrack()==null) {
+                if (playerService.getCurrentTrack() == null) {
                     //Toast.makeText(this,"Nothing to play!",Toast.LENGTH_LONG).show();
                     Snackbar.make(rootView, getString(R.string.nothing_to_play), Snackbar.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
@@ -1749,22 +1762,22 @@ public class ActivityMain extends AppCompatActivity
             case R.id.next_mini_plaayrer:
                 ColorSwitchRunnableForImageView colorSwitchRunnableNext = new ColorSwitchRunnableForImageView((ImageView) view);
                 mHandler.post(colorSwitchRunnableNext);
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
                 playerService.nextTrack();
                 //no need to expand mini player
                 updateUI(false);
-                Log.v(Constants.TAG,"next track please Jarvis");
+                Log.v(Constants.TAG, "next track please Jarvis");
                 break;
 
             case R.id.fab_lock:
-                if(MyApp.isLocked()){
+                if (MyApp.isLocked()) {
                     MyApp.setLocked(false);
                     fab_lock.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_lock_open_black_24dp));
                     findViewById(R.id.border_view).setVisibility(View.GONE);
-                }else {
+                } else {
                     findViewById(R.id.border_view).setVisibility(View.VISIBLE);
                     fab_lock.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_lock_outline_black_24dp));
                     MyApp.setLocked(true);
@@ -1775,12 +1788,12 @@ public class ActivityMain extends AppCompatActivity
                 break;
 
             case R.id.fab_right_side:
-                if(savedTabSeqInt[viewPager.getCurrentItem()]==Constants.TABS.PLAYLIST){
+                if (savedTabSeqInt[viewPager.getCurrentItem()] == Constants.TABS.PLAYLIST) {
                     CreatePlaylistDialog();
-                }else {
-                    if(MyApp.isLocked()){
+                } else {
+                    if (MyApp.isLocked()) {
                         Snackbar.make(rootView, getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
-                        return ;
+                        return;
                     }
                     if (playerService.getTrackList().size() > 0) {
                         playerService.shuffleAll();
@@ -1805,20 +1818,20 @@ public class ActivityMain extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             finish();
             return;
-        }else {
+        } else {
             playerService = MyApp.getService();
         }
 
         MyApp.isAppVisible = true;
         updateUI(false);
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiverForMiniPLayerUpdate
-                ,new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
+                , new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiverForLibraryRefresh
-                ,new IntentFilter(Constants.ACTION.REFRESH_LIB));
+                , new IntentFilter(Constants.ACTION.REFRESH_LIB));
         //seekBar.setProgress(UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress(), playerService.getCurrentTrackDuration()));
         //startUpdateTask();
     }
@@ -1829,22 +1842,23 @@ public class ActivityMain extends AppCompatActivity
         updateUI(false);
     }
 
-    public void hideFab(boolean hide){
-        if(hide && fab_right_side.isShown()) {
+    public void hideFab(boolean hide) {
+        if (hide && fab_right_side.isShown()) {
             fab_right_side.hide();
-            if(!MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button),false)) {
+            if (!MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button), false)) {
                 fab_lock.hide();
             }
-        }else {
+        } else {
             fab_right_side.show();
-            if(!MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button),false)) {
+            if (!MyApp.getPref().getBoolean(getString(R.string.pref_hide_lock_button), false)) {
                 fab_lock.show();
             }
         }
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(playerService==null) {
+        if (playerService == null) {
             UtilityFun.restartApp();
             finish();
             return false;
@@ -1883,53 +1897,53 @@ public class ActivityMain extends AppCompatActivity
     @Override
     public boolean onMenuItemClick(MenuItem item) {
 
-        int sort_id = MyApp.getPref().getInt(currentPageSort,Constants.SORT_BY.NAME);
-        switch (item.getItemId()){
-            case  R.id.action_sort_name:
-                MyApp.getPref().edit().putInt(currentPageSort,Constants.SORT_BY.NAME).apply();
+        int sort_id = MyApp.getPref().getInt(currentPageSort, Constants.SORT_BY.NAME);
+        switch (item.getItemId()) {
+            case R.id.action_sort_name:
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.NAME).apply();
                 sort_id = Constants.SORT_BY.NAME;
                 break;
 
             case R.id.action_sort_year:
-                MyApp.getPref().edit().putInt(currentPageSort,Constants.SORT_BY.YEAR).apply();
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.YEAR).apply();
                 sort_id = Constants.SORT_BY.YEAR;
                 break;
 
             case R.id.action_sort_size:
-                MyApp.getPref().edit().putInt(currentPageSort,Constants.SORT_BY.SIZE).apply();
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.SIZE).apply();
                 sort_id = Constants.SORT_BY.SIZE;
                 break;
 
             case R.id.action_sort_no_of_album:
-                MyApp.getPref().edit().putInt(currentPageSort,Constants.SORT_BY.NO_OF_ALBUMS).apply();
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.NO_OF_ALBUMS).apply();
                 sort_id = Constants.SORT_BY.NO_OF_ALBUMS;
                 break;
 
             case R.id.action_sort_no_of_tracks:
-                MyApp.getPref().edit().putInt(currentPageSort,Constants.SORT_BY.NO_OF_TRACKS).apply();
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.NO_OF_TRACKS).apply();
                 sort_id = Constants.SORT_BY.NO_OF_TRACKS;
                 break;
 
             case R.id.action_sort_by_duration:
-                MyApp.getPref().edit().putInt(currentPageSort,Constants.SORT_BY.DURATION).apply();
+                MyApp.getPref().edit().putInt(currentPageSort, Constants.SORT_BY.DURATION).apply();
                 sort_id = Constants.SORT_BY.DURATION;
                 break;
 
             case R.id.action_sort_asc:
-                if(!item.isChecked()) {
+                if (!item.isChecked()) {
                     MyApp.getPref().edit().putInt(getString(R.string.pref_order_by), Constants.SORT_BY.ASC).apply();
 
-                }else {
+                } else {
                     MyApp.getPref().edit().putInt(getString(R.string.pref_order_by), Constants.SORT_BY.DESC).apply();
                 }
                 break;
         }
 
-        Log.v(Constants.TAG,"view pager item"+viewPager.getCurrentItem()+"");
+        Log.v(Constants.TAG, "view pager item" + viewPager.getCurrentItem() + "");
 
-        if(viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof  FragmentAlbumLibrary){
+        if (viewPagerAdapter.getItem(viewPager.getCurrentItem()) instanceof FragmentAlbumLibrary) {
             ((FragmentAlbumLibrary) viewPagerAdapter.getItem(viewPager.getCurrentItem())).sort(sort_id);
-        }else {
+        } else {
             ((FragmentLibrary) viewPagerAdapter.getItem(viewPager.getCurrentItem())).sort(sort_id);
         }
         return true;
@@ -1940,8 +1954,8 @@ public class ActivityMain extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void lockInfoDialog(){
-        if(!MyApp.getPref().getBoolean(getString(R.string.pref_show_lock_info_dialog),true)){
+    private void lockInfoDialog() {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_show_lock_info_dialog), true)) {
             return;
         }
 
@@ -1954,7 +1968,7 @@ public class ActivityMain extends AppCompatActivity
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_hide_lock_button),true).apply();
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_hide_lock_button), true).apply();
                         fab_lock.hide();
                         MyApp.setLocked(false);
                         findViewById(R.id.border_view).setVisibility(View.GONE);
@@ -1963,7 +1977,7 @@ public class ActivityMain extends AppCompatActivity
                 .onNeutral(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_show_lock_info_dialog),false).apply();
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_show_lock_info_dialog), false).apply();
                     }
                 })
                 .build();
@@ -1974,15 +1988,15 @@ public class ActivityMain extends AppCompatActivity
 
     }
 
-    private void CreatePlaylistDialog(){
+    private void CreatePlaylistDialog() {
         final EditText input = new EditText(ActivityMain.this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
 
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                input.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN , 0, 0, 0));
-                input.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP , 0, 0, 0));
+                input.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0));
+                input.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 0, 0, 0));
             }
         }, 200);
 
@@ -1994,13 +2008,13 @@ public class ActivityMain extends AppCompatActivity
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         String playlist_name = input.getText().toString().trim();
-                        if(ValidatePlaylistName(playlist_name)) {
-                            if(PlaylistManager.getInstance(MyApp.getContext()).CreatePlaylist(playlist_name)) {
+                        if (ValidatePlaylistName(playlist_name)) {
+                            if (PlaylistManager.getInstance(MyApp.getContext()).CreatePlaylist(playlist_name)) {
 
                                 int tabCount = 0;
-                                for(int tab:savedTabSeqInt){
-                                    if(tab==Constants.TABS.PLAYLIST){
-                                        if((viewPagerAdapter
+                                for (int tab : savedTabSeqInt) {
+                                    if (tab == Constants.TABS.PLAYLIST) {
+                                        if ((viewPagerAdapter
                                                 .getItem(tabCount)) instanceof FragmentPlaylistLibrary) {
                                             ((FragmentPlaylistLibrary) viewPagerAdapter
                                                     .getItem(tabCount))
@@ -2013,14 +2027,14 @@ public class ActivityMain extends AppCompatActivity
 
                                 //Toast.makeText(ActivityMain.this, "Playlist created", Toast.LENGTH_SHORT).show();
                                 Snackbar.make(rootView, getString(R.string.play_list_created), Snackbar.LENGTH_SHORT).show();
-                            }else {
+                            } else {
                                 //Toast.makeText(ActivityMain.this, "Playlist already exists", Toast.LENGTH_SHORT).show();
                                 Snackbar.make(rootView, getString(R.string.play_list_already_exists), Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     }
                 })
-                .customView(input,true)
+                .customView(input, true)
                 .build();
 
         //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
@@ -2030,14 +2044,14 @@ public class ActivityMain extends AppCompatActivity
 
     private void updateDrawerUI(String displayName, String personPhotoUrl, boolean signedIn) {
         final TextView textView = navigationView.getHeaderView(0).findViewById(R.id.signed_up_user_name);
-        if(displayName!=null) {
+        if (displayName != null) {
             textView.setText(displayName);
-        }else {
+        } else {
             textView.setText("");
         }
 
         final RoundedImageView imageView = navigationView.getHeaderView(0).findViewById(R.id.navHeaderImageView);
-        if(personPhotoUrl!=null) {
+        if (personPhotoUrl != null) {
             Glide.with(getApplicationContext()).load(personPhotoUrl)
                     .asBitmap()
                     .thumbnail(0.5f)
@@ -2048,9 +2062,9 @@ public class ActivityMain extends AppCompatActivity
                             imageView.setImageBitmap(resource);
                         }
                     });
-        }else {
+        } else {
             int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
-            switch (defaultAlbumArtSetting){
+            switch (defaultAlbumArtSetting) {
                 case 0:
                     imageView.setImageResource(R.drawable.ic_batman_1);
                     break;
@@ -2062,14 +2076,14 @@ public class ActivityMain extends AppCompatActivity
         }
 
         navigationView.getMenu().clear(); //clear old inflated items.
-        if(signedIn) {
+        if (signedIn) {
             navigationView.inflateMenu(R.menu.drawer_menu_logged_in);
-        }else {
+        } else {
             navigationView.inflateMenu(R.menu.drawer_menu_logged_out);
         }
 
         //set red dot if new developer message arrives
-        if(MyApp.getPref().getBoolean("new_dev_message", false)) {
+        if (MyApp.getPref().getBoolean("new_dev_message", false)) {
             updateNewDevMessageDot(true);
         }
 
@@ -2084,9 +2098,9 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void updateNewDevMessageDot(boolean set) {
-        if(set) {
+        if (set) {
             navigationView.getMenu().findItem(R.id.nav_dev_message).setActionView(R.layout.nav_item_dev_message);
-        }else {
+        } else {
             navigationView.getMenu().findItem(R.id.nav_dev_message).setActionView(null);
         }
     }
@@ -2100,7 +2114,7 @@ public class ActivityMain extends AppCompatActivity
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        if(actionMode!=null) {
+        if (actionMode != null) {
             MenuInflater inflater = actionMode.getMenuInflater();
             inflater.inflate(R.menu.menu_cab_recyclerview_lyrics, menu);
             return true;
@@ -2165,16 +2179,17 @@ public class ActivityMain extends AppCompatActivity
         ImageView v;
         boolean colorChanged = false;
 
-        public ColorSwitchRunnableForImageView(ImageView v){
+        public ColorSwitchRunnableForImageView(ImageView v) {
             this.v = v;
         }
+
         @Override
         public void run() {
-            if(!colorChanged) {
+            if (!colorChanged) {
                 v.setColorFilter(ColorHelper.getWidgetColor());
-                colorChanged=true;
-                mHandler.postDelayed(this,200);
-            }else {
+                colorChanged = true;
+                mHandler.postDelayed(this, 200);
+            } else {
                 v.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
                 colorChanged = false;
             }

@@ -24,25 +24,25 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class OfflineStorageArtistBio {
 
-    public static ArtistInfo getArtistBioFromTrackItem(TrackItem item){
-        if(item==null){
+    public static ArtistInfo getArtistBioFromTrackItem(TrackItem item) {
+        if (item == null) {
             return null;
         }
         ArtistInfo artistInfo = null;
@@ -54,22 +54,23 @@ public class OfflineStorageArtistBio {
             dbHelperArtistBio.onCreate(db);
 
             String where = DbHelperArtistBio.ARTIST_ID + " = " + item.getArtist_id()
-                    + " OR " + DbHelperArtistBio.KEY_ARTIST + "= '" + item.getArtist().replace("'","''") +"'" ;;
+                    + " OR " + DbHelperArtistBio.KEY_ARTIST + "= '" + item.getArtist().replace("'", "''") + "'";
+            ;
 
-            cursor = db.query(DbHelperArtistBio.TABLE_NAME,new String[]{DbHelperArtistBio.ARTIST_BIO}
-                    ,where,null,null,null,null,"1");
+            cursor = db.query(DbHelperArtistBio.TABLE_NAME, new String[]{DbHelperArtistBio.ARTIST_BIO}
+                    , where, null, null, null, null, "1");
 
-            if(cursor!=null && cursor.getCount()!=0){
+            if (cursor != null && cursor.getCount() != 0) {
                 cursor.moveToFirst();
                 //retrieve and fill lyrics object
                 Gson gson = new Gson();
                 artistInfo = gson.fromJson(cursor.getString
-                        (cursor.getColumnIndex(DbHelperArtistBio.ARTIST_BIO)),ArtistInfo.class);
+                        (cursor.getColumnIndex(DbHelperArtistBio.ARTIST_BIO)), ArtistInfo.class);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
-        }finally {
+        } finally {
             if (cursor != null) {
                 cursor.close();
             }
@@ -81,24 +82,25 @@ public class OfflineStorageArtistBio {
         return artistInfo;
     }
 
-    public static void putArtistBioToDB(ArtistInfo artistInfo, TrackItem item){
-        if(item==null || artistInfo==null){
+    public static void putArtistBioToDB(ArtistInfo artistInfo, TrackItem item) {
+        if (item == null || artistInfo == null) {
             return;
         }
-        Cursor cursor=null;
+        Cursor cursor = null;
         SQLiteDatabase db = null;
         try {
             DbHelperArtistBio dbHelperArtistBio = new DbHelperArtistBio(MyApp.getContext());
-             db = dbHelperArtistBio.getWritableDatabase();
+            db = dbHelperArtistBio.getWritableDatabase();
             dbHelperArtistBio.onCreate(db);
 
             //check if already exists, if yes, return
             String where = DbHelperArtistBio.ARTIST_ID + " = " + item.getArtist_id()
-                    + " OR " + DbHelperArtistBio.KEY_ARTIST + "= '" + item.getArtist().replace("'","''") +"'" ;;
+                    + " OR " + DbHelperArtistBio.KEY_ARTIST + "= '" + item.getArtist().replace("'", "''") + "'";
+            ;
 
-            cursor = db.query(DbHelperArtistBio.TABLE_NAME,new String[]{DbHelperArtistBio.KEY_ARTIST}
-                    ,where,null,null,null,null,"1");
-            if(cursor!=null && cursor.getCount()>0){
+            cursor = db.query(DbHelperArtistBio.TABLE_NAME, new String[]{DbHelperArtistBio.KEY_ARTIST}
+                    , where, null, null, null, null, "1");
+            if (cursor != null && cursor.getCount() > 0) {
                 cursor.close();
                 return;
             }
@@ -112,9 +114,9 @@ public class OfflineStorageArtistBio {
             c.put(DbHelperArtistBio.KEY_ARTIST, item.getArtist());
             c.put(DbHelperArtistBio.ARTIST_ID, item.getArtist_id());
             db.insert(DbHelperArtistBio.TABLE_NAME, null, c);
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
-        }finally {
+        } finally {
             if (cursor != null) {
                 cursor.close();
             }
@@ -124,22 +126,22 @@ public class OfflineStorageArtistBio {
         }
     }
 
-    public static void putArtistInfoToCache(final ArtistInfo artistInfo){
+    public static void putArtistInfoToCache(final ArtistInfo artistInfo) {
         //don't care about exception.
         //
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    String CACHE_ART_INFO = MyApp.getContext().getCacheDir()+"/artistInfo/";
-                    String actual_file_path = CACHE_ART_INFO+artistInfo.getCorrectedArtist();
+                    String CACHE_ART_INFO = MyApp.getContext().getCacheDir() + "/artistInfo/";
+                    String actual_file_path = CACHE_ART_INFO + artistInfo.getCorrectedArtist();
 
-                    if(new File(actual_file_path).exists()){
+                    if (new File(actual_file_path).exists()) {
                         return;
                     }
 
                     File f = new File(CACHE_ART_INFO);
-                    if(!f.exists()){
+                    if (!f.exists()) {
                         f.mkdir();
                     }
                     ObjectOutput out;
@@ -154,9 +156,9 @@ public class OfflineStorageArtistBio {
         });
     }
 
-    public static ArtistInfo getArtistInfoFromCache(String artist){
-        String CACHE_ART_INFO = MyApp.getContext().getCacheDir()+"/artistInfo/";
-        String actual_file_path = CACHE_ART_INFO+artist;
+    public static ArtistInfo getArtistInfoFromCache(String artist) {
+        String CACHE_ART_INFO = MyApp.getContext().getCacheDir() + "/artistInfo/";
+        String actual_file_path = CACHE_ART_INFO + artist;
         ObjectInputStream in;
         ArtistInfo artistInfo = null;
         try {
@@ -168,27 +170,27 @@ public class OfflineStorageArtistBio {
             e.printStackTrace();
         }
 
-        if(artistInfo!=null){
-            Log.v("Amit AB", "got from cache"+artistInfo.getOriginalArtist());
+        if (artistInfo != null) {
+            Log.v("Amit AB", "got from cache" + artistInfo.getOriginalArtist());
         }
         return artistInfo;
     }
 
-    public static HashMap<String, String> getArtistImageUrls(){
+    public static HashMap<String, String> getArtistImageUrls() {
         HashMap<String, String> map = new HashMap<>();
-        try{
+        try {
             ArrayList<dataItem> artistItems = new ArrayList<>(MusicLibrary.getInstance().getDataItemsArtist());
-            for (dataItem item: artistItems){
+            for (dataItem item : artistItems) {
                 TrackItem trackItem = new TrackItem();
                 trackItem.setArtist(item.artist_name);
                 trackItem.setArtist_id(item.artist_id);
 
                 ArtistInfo artistInfo = OfflineStorageArtistBio.getArtistBioFromTrackItem(trackItem);
-                if(artistInfo!=null && !artistInfo.getCorrectedArtist().equals("[unknown]")){
+                if (artistInfo != null && !artistInfo.getCorrectedArtist().equals("[unknown]")) {
                     map.put(artistInfo.getOriginalArtist(), artistInfo.getImageUrl());
                 }
             }
-        }catch (ConcurrentModificationException e){
+        } catch (ConcurrentModificationException e) {
             return map;
         }
         return map;

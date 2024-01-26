@@ -27,7 +27,7 @@ public class Levenshtein {
         a = a.toLowerCase(Locale.US);
         b = b.toLowerCase(Locale.US);
         // i == 0
-        int [] costs = new int [b.length() + 1];
+        int[] costs = new int[b.length() + 1];
         for (int j = 0; j < costs.length; j++)
             costs[j] = j;
         for (int i = 1; i <= a.length(); i++) {

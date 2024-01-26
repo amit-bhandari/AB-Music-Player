@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,20 +22,21 @@ import com.music.player.bhandari.m.service.NotificationListenerService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class ActivityRequestNotificationAccess extends AppCompatActivity implements View.OnClickListener {
@@ -54,7 +57,7 @@ public class ActivityRequestNotificationAccess extends AppCompatActivity impleme
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
 
-        switch (themeSelector){
+        switch (themeSelector) {
             case Constants.PRIMARY_COLOR.DARK:
                 setTheme(R.style.AppThemeDark);
                 break;
@@ -94,16 +97,16 @@ public class ActivityRequestNotificationAccess extends AppCompatActivity impleme
     @Override
     protected void onResume() {
         super.onResume();
-        if(NotificationListenerService.isListeningAuthorized(this)){
+        if (NotificationListenerService.isListeningAuthorized(this)) {
             launchMainActivity();
         }
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.request_button:
-                Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
                 startActivity(intent);
                 Toast.makeText(this, "Click on AB Music to enable!", Toast.LENGTH_LONG).show();
                 break;
@@ -125,7 +128,7 @@ public class ActivityRequestNotificationAccess extends AppCompatActivity impleme
     }
 
     private void launchMainActivity() {
-        Intent mainActIntent=new Intent(this, ActivityMain.class);
+        Intent mainActIntent = new Intent(this, ActivityMain.class);
         startActivity(mainActIntent);
         finish();
     }

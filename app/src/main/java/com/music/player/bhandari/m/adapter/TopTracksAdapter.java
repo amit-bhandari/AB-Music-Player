@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,19 +26,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyViewHolder> implements PopupMenu.OnMenuItemClickListener {
@@ -47,7 +48,7 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
     private List<Track> trackList;
     private int clickedPostion;
 
-    public TopTracksAdapter(Context context, List<Track> trackList){
+    public TopTracksAdapter(Context context, List<Track> trackList) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.trackList = trackList;
@@ -67,12 +68,12 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.track_item_square_image, parent, false);
-        return new MyViewHolder (view);
+        return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        String trackInfo = trackList.get(position).artist + " - " + trackList.get(position).title ;
+        String trackInfo = trackList.get(position).artist + " - " + trackList.get(position).title;
         String playcount = "Playcount - " + trackList.get(position).playCount;
         holder.trackName.setText(trackInfo);
         holder.playCount.setText(playcount);
@@ -109,21 +110,26 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_search_youtube:
-                UtilityFun.LaunchYoutube(context,trackList.get(clickedPostion).artist + " - " + trackList.get(clickedPostion).title);
+                UtilityFun.LaunchYoutube(context, trackList.get(clickedPostion).artist + " - " + trackList.get(clickedPostion).title);
                 break;
         }
         return true;
     }
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.trackInfo) TextView trackName;
-        @BindView(R.id.playCount) TextView playCount;
-        @BindView(R.id.imageView) ImageView imageView;
-        @BindView(R.id.more) ImageView overflow;
+        @BindView(R.id.trackInfo)
+        TextView trackName;
+        @BindView(R.id.playCount)
+        TextView playCount;
+        @BindView(R.id.imageView)
+        ImageView imageView;
+        @BindView(R.id.more)
+        ImageView overflow;
+
         MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -133,7 +139,7 @@ public class TopTracksAdapter extends RecyclerView.Adapter<TopTracksAdapter.MyVi
 
         @Override
         public void onClick(View v) {
-            TopTracksAdapter.this.onClick(v,getLayoutPosition());
+            TopTracksAdapter.this.onClick(v, getLayoutPosition());
         }
     }
 

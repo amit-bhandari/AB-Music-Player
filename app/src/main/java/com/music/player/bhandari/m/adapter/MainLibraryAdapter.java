@@ -7,12 +7,16 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -58,19 +62,19 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -84,11 +88,11 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
     private LayoutInflater inflater;
     private FragmentLibrary fl;
     private PopupMenu popup;
-    private ArrayList<Integer> id_list =new ArrayList<>();
+    private ArrayList<Integer> id_list = new ArrayList<>();
     private PlayerService playerService;
     private int position;
-    private ArrayList<dataItem> dataItems=new ArrayList<>();
-    private ArrayList<dataItem> filteredDataItems=new ArrayList<>();
+    private ArrayList<dataItem> dataItems = new ArrayList<>();
+    private ArrayList<dataItem> filteredDataItems = new ArrayList<>();
 
     private int mItemHeight;
     private long mLastClickTime;
@@ -98,11 +102,11 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
     private SparseBooleanArray selectedItems;
 
-    public MainLibraryAdapter(final FragmentLibrary fl, final Context context, ArrayList<dataItem> data){
-        this.context=context;
+    public MainLibraryAdapter(final FragmentLibrary fl, final Context context, ArrayList<dataItem> data) {
+        this.context = context;
         selectedItems = new SparseBooleanArray();
-        inflater= LayoutInflater.from(context);
-        this.fl=fl;
+        inflater = LayoutInflater.from(context);
+        this.fl = fl;
         this.dataItems = data;
         filteredDataItems.addAll(dataItems);
         playerService = MyApp.getService();
@@ -119,45 +123,45 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         setHasStableIds(true);
     }
 
-    public void filter(String searchQuery){
-        if(!searchQuery.equals("")){
+    public void filter(String searchQuery) {
+        if (!searchQuery.equals("")) {
             filteredDataItems.clear();
-            switch (fl.getStatus()){
+            switch (fl.getStatus()) {
                 case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                    for(dataItem d:dataItems){
-                        if(d.title.toLowerCase().contains(searchQuery)){
+                    for (dataItem d : dataItems) {
+                        if (d.title.toLowerCase().contains(searchQuery)) {
                             filteredDataItems.add(d);
                         }
                     }
                     break;
 
                 case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                    for(dataItem d:dataItems){
-                        if(d.title.toLowerCase().contains(searchQuery)){
+                    for (dataItem d : dataItems) {
+                        if (d.title.toLowerCase().contains(searchQuery)) {
                             filteredDataItems.add(d);
                         }
                     }
                     break;
 
                 case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                    for(dataItem d:dataItems){
-                        if(d.title.toLowerCase().contains(searchQuery)){
+                    for (dataItem d : dataItems) {
+                        if (d.title.toLowerCase().contains(searchQuery)) {
                             filteredDataItems.add(d);
                         }
                     }
                     break;
 
                 case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
-                    for(dataItem d:dataItems){
-                        if(d.title.toLowerCase().contains(searchQuery)
+                    for (dataItem d : dataItems) {
+                        if (d.title.toLowerCase().contains(searchQuery)
                                 || d.artist_name.toLowerCase().contains(searchQuery)
-                                || d.albumName.toLowerCase().contains(searchQuery)){
+                                || d.albumName.toLowerCase().contains(searchQuery)) {
                             filteredDataItems.add(d);
                         }
                     }
                     break;
             }
-        }else {
+        } else {
             filteredDataItems.clear();
             filteredDataItems.addAll(dataItems);
         }
@@ -169,22 +173,22 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
     public MyViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         final View parentView = inflater.inflate(R.layout.fragment_library_item, parent, false);
         viewParent = parent;
-        int color = ColorHelper.getPrimaryTextColor() ;
-        int subColor = ColorHelper.getSecondaryTextColor() ;
-        ((TextView)(parentView.findViewById(R.id.header))).setTextColor(color);
-        ((TextView)(parentView.findViewById(R.id.secondaryHeader))).setTextColor(subColor);
-        ((TextView)(parentView.findViewById(R.id.count))).setTextColor(subColor);
-        ((ImageView)(parentView.findViewById(R.id.menuPopup))).setColorFilter(color);
+        int color = ColorHelper.getPrimaryTextColor();
+        int subColor = ColorHelper.getSecondaryTextColor();
+        ((TextView) (parentView.findViewById(R.id.header))).setTextColor(color);
+        ((TextView) (parentView.findViewById(R.id.secondaryHeader))).setTextColor(subColor);
+        ((TextView) (parentView.findViewById(R.id.count))).setTextColor(subColor);
+        ((ImageView) (parentView.findViewById(R.id.menuPopup))).setColorFilter(color);
 
 
-        return  new MainLibraryAdapter.MyViewHolder(parentView);
+        return new MainLibraryAdapter.MyViewHolder(parentView);
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
 
         final String url = MusicLibrary.getInstance().getArtistUrls().get(filteredDataItems.get(position).artist_name);
-       // mItemHeight = holder.itemView.getMeasuredHeight();
+        // mItemHeight = holder.itemView.getMeasuredHeight();
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
                 Glide
@@ -194,7 +198,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             @Override
                             public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
                                 //Log.d("AlbumLibraryAdapter", "onException: ");
-                                if(UtilityFun.isConnectedToInternet() &&
+                                if (UtilityFun.isConnectedToInternet() &&
                                         !MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) {
                                     Glide
                                             .with(context)
@@ -218,7 +222,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                         .placeholder(batmanDrawable)
                         .crossFade()
                         .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                        .override(100,100)
+                        .override(100, 100)
                         .into(holder.image);
 
                 holder.title.setText(filteredDataItems.get(position).title);
@@ -233,15 +237,15 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                         .placeholder(batmanDrawable)
                         .into(holder.image);
                 holder.title.setText(filteredDataItems.get(position).albumName);
-                int trackCount= filteredDataItems.get(position).numberOfTracks;
-                String trackCoun ;
-                if(trackCount>1)
-                    trackCoun = trackCount+context.getString(R.string.tracks);
+                int trackCount = filteredDataItems.get(position).numberOfTracks;
+                String trackCoun;
+                if (trackCount > 1)
+                    trackCoun = trackCount + context.getString(R.string.tracks);
                 else
-                    trackCoun = trackCount+context.getString(R.string.track);
+                    trackCoun = trackCount + context.getString(R.string.track);
                 StringBuilder albumSecondaryString = new StringBuilder()
                         .append(filteredDataItems.get(position).artist_name)
-                        .append( " | ")
+                        .append(" | ")
                         .append(trackCoun);
                 holder.secondary.setText(albumSecondaryString);
                 break;
@@ -249,16 +253,16 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
                 //holder.wrapper.setVisibility(View.GONE);
                 holder.title.setText(filteredDataItems.get(position).artist_name);
-                int tracksCount=filteredDataItems.get(position).numberOfTracks;
-                int albumCount=filteredDataItems.get(position).numberOfAlbums;
+                int tracksCount = filteredDataItems.get(position).numberOfTracks;
+                int albumCount = filteredDataItems.get(position).numberOfAlbums;
                 StringBuilder stringBuilder = new StringBuilder()
                         .append(tracksCount).append(context.getString(R.string.tracks))
                         .append(" | ").append(albumCount)
                         .append(context.getString(R.string.albums));
                 holder.secondary.setText(stringBuilder);
-                holder.title.setPadding(20,0,0,0);
-                holder.secondary.setPadding(20,0,0,0);
-                if(!MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) {
+                holder.title.setPadding(20, 0, 0, 0);
+                holder.secondary.setPadding(20, 0, 0, 0);
+                if (!MyApp.getPref().getBoolean(context.getString(R.string.pref_data_saver), false)) {
                     Log.d("MainLibraryAdapter", "onBindViewHolder: " + filteredDataItems.get(position).artist_name + ":" + url);
                     Glide
                             .with(context)
@@ -268,7 +272,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .override(100, 100)
                             .into(holder.image);
-                }else {
+                } else {
                     holder.image.setBackgroundResource(R.drawable.person_blue);
                 }
                 break;
@@ -276,7 +280,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
                 holder.wrapper.setVisibility(View.GONE);
                 holder.title.setText(filteredDataItems.get(position).title);
-                holder.title.setPadding(20,0,0,0);
+                holder.title.setPadding(20, 0, 0, 0);
                 break;
         }
 
@@ -298,29 +302,29 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         return position;
     }
 
-    public void clear(){
+    public void clear() {
         id_list.clear();
-        inflater=null;
-        fl=null;
-        popup=null;
+        inflater = null;
+        fl = null;
+        popup = null;
     }
 
     public void onClick(View view, final int position) {
-        this.position=position;
-        switch (view.getId()){
+        this.position = position;
+        switch (view.getId()) {
             case R.id.libraryItem:
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 500){
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 500) {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
                 Executors.newSingleThreadExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
-                        String title="";
-                        int key=0;
+                        String title = "";
+                        int key = 0;
                         switch (fl.getStatus()) {
                             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
-                                if(MyApp.isLocked()){
+                                if (MyApp.isLocked()) {
                                     new Handler(context.getMainLooper()).post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -335,25 +339,25 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
 
                             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                                title=filteredDataItems.get(position).albumName;
-                                key=filteredDataItems.get(position).album_id;
+                                title = filteredDataItems.get(position).albumName;
+                                key = filteredDataItems.get(position).album_id;
                                 break;
 
                             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                                title=filteredDataItems.get(position).artist_name;
-                                key=filteredDataItems.get(position).artist_id;
+                                title = filteredDataItems.get(position).artist_name;
+                                key = filteredDataItems.get(position).artist_id;
                                 break;
 
                             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                                title=filteredDataItems.get(position).title;
-                                key=filteredDataItems.get(position).id;
+                                title = filteredDataItems.get(position).title;
+                                key = filteredDataItems.get(position).id;
                                 break;
                         }
-                        if(fl.getStatus()!=Constants.FRAGMENT_STATUS.TITLE_FRAGMENT){
-                            Intent intent = new Intent(context,ActivitySecondaryLibrary.class);
-                            intent.putExtra("status",fl.getStatus());
-                            intent.putExtra("key",key);
-                            intent.putExtra("title",title.trim());
+                        if (fl.getStatus() != Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
+                            Intent intent = new Intent(context, ActivitySecondaryLibrary.class);
+                            intent.putExtra("status", fl.getStatus());
+                            intent.putExtra("key", key);
+                            intent.putExtra("title", title.trim());
                             ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             context.startActivity(intent);
                         }
@@ -362,10 +366,10 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case R.id.menuPopup:
-                popup=new PopupMenu(context,view);
+                popup = new PopupMenu(context, view);
                 MenuInflater inflater = popup.getMenuInflater();
                 inflater.inflate(R.menu.menu_tracks_by_title, popup.getMenu());
-                if(fl.getStatus()!=Constants.FRAGMENT_STATUS.TITLE_FRAGMENT){
+                if (fl.getStatus() != Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
                     popup.getMenu().removeItem(R.id.action_set_as_ringtone);
                     popup.getMenu().removeItem(R.id.action_track_info);
                     popup.getMenu().removeItem(R.id.action_edit_track_info);
@@ -379,9 +383,9 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_play:
-                if(MyApp.isLocked()){
+                if (MyApp.isLocked()) {
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
                     Snackbar.make(viewParent, context.getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
                     return true;
@@ -396,7 +400,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
             case R.id.action_share:
                 try {
                     Share();
-                }catch (Exception e){
+                } catch (Exception e) {
                     //Toast.makeText(context,"Something wrong!",Toast.LENGTH_LONG).show();
                     Snackbar.make(viewParent, context.getString(R.string.error_unable_to_share), Snackbar.LENGTH_SHORT).show();
                 }
@@ -416,7 +420,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
             case R.id.action_set_as_ringtone:
                 UtilityFun.SetRingtone(context, filteredDataItems.get(position).file_path
-                        ,filteredDataItems.get(position).id);
+                        , filteredDataItems.get(position).id);
                 break;
 
             case R.id.action_track_info:
@@ -425,34 +429,34 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
             case R.id.action_edit_track_info:
                 context.startActivity(new Intent(context, ActivityTagEditor.class)
-                        .putExtra("from",Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB)
-                        .putExtra("file_path",filteredDataItems.get(position).file_path)
-                        .putExtra("track_title",filteredDataItems.get(position).title)
-                        .putExtra("position",position)
-                        .putExtra("id",filteredDataItems.get(position).id));
-                ((Activity)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        .putExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB)
+                        .putExtra("file_path", filteredDataItems.get(position).file_path)
+                        .putExtra("track_title", filteredDataItems.get(position).title)
+                        .putExtra("position", position)
+                        .putExtra("id", filteredDataItems.get(position).id));
+                ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
             case R.id.action_search_youtube:
-                UtilityFun.LaunchYoutube(context,filteredDataItems.get(position).artist_name + " - "
-                        +filteredDataItems.get(position).title );
+                UtilityFun.LaunchYoutube(context, filteredDataItems.get(position).artist_name + " - "
+                        + filteredDataItems.get(position).title);
                 break;
         }
         return true;
     }
 
-    public void sort(int sort_id){
-        int sort_order = MyApp.getPref().getInt(context.getResources().getString(R.string.pref_order_by),Constants.SORT_BY.ASC);
-        switch (sort_id){
+    public void sort(int sort_id) {
+        int sort_order = MyApp.getPref().getInt(context.getResources().getString(R.string.pref_order_by), Constants.SORT_BY.ASC);
+        switch (sort_id) {
             case Constants.SORT_BY.NAME:
-                if(sort_order==Constants.SORT_BY.ASC) {
+                if (sort_order == Constants.SORT_BY.ASC) {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
                             return o1.title.compareToIgnoreCase(o2.title);
                         }
                     });
-                }else {
+                } else {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
@@ -464,14 +468,14 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.SORT_BY.SIZE:
-                if(sort_order==Constants.SORT_BY.ASC) {
+                if (sort_order == Constants.SORT_BY.ASC) {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
                             return (int) (new File(o1.file_path).length() - new File(o2.file_path).length());
                         }
                     });
-                }else {
+                } else {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
@@ -482,14 +486,14 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.SORT_BY.YEAR:
-                if(sort_order==Constants.SORT_BY.ASC) {
+                if (sort_order == Constants.SORT_BY.ASC) {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
                             return o1.year.compareToIgnoreCase(o2.year);
                         }
                     });
-                }else {
+                } else {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
@@ -500,14 +504,14 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.SORT_BY.NO_OF_ALBUMS:
-                if(sort_order==Constants.SORT_BY.ASC) {
+                if (sort_order == Constants.SORT_BY.ASC) {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
                             return o1.numberOfAlbums - o2.numberOfAlbums;
                         }
                     });
-                }else {
+                } else {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
@@ -518,14 +522,14 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.SORT_BY.NO_OF_TRACKS:
-                if(sort_order==Constants.SORT_BY.ASC) {
+                if (sort_order == Constants.SORT_BY.ASC) {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
                             return o1.numberOfTracks - o2.numberOfTracks;
                         }
                     });
-                }else {
+                } else {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
@@ -536,18 +540,18 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.SORT_BY.DURATION:
-                if(sort_order==Constants.SORT_BY.ASC) {
+                if (sort_order == Constants.SORT_BY.ASC) {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
-                            return Integer.valueOf(o1.duration) -Integer.valueOf(o2.duration) ;
+                            return Integer.valueOf(o1.duration) - Integer.valueOf(o2.duration);
                         }
                     });
-                }else {
+                } else {
                     Collections.sort(filteredDataItems, new Comparator<dataItem>() {
                         @Override
                         public int compare(dataItem o1, dataItem o2) {
-                            return Integer.valueOf(o2.duration) -Integer.valueOf(o1.duration) ;
+                            return Integer.valueOf(o2.duration) - Integer.valueOf(o1.duration);
                         }
                     });
                 }
@@ -556,14 +560,14 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         notifyDataSetChanged();
     }
 
-    private void setTrackInfoDialog(){
+    private void setTrackInfoDialog() {
         LinearLayout linear = new LinearLayout(context);
         linear.setOrientation(LinearLayout.VERTICAL);
         final TextView text = new TextView(context);
         text.setTypeface(TypeFaceHelper.getTypeFace(context));
         text.setText(UtilityFun.trackInfoBuild(filteredDataItems.get(position).id).toString());
 
-        text.setPadding(20, 20,20,10);
+        text.setPadding(20, 20, 20, 10);
         text.setTextSize(15);
         text.setTypeface(TypeFaceHelper.getTypeFace(context));
         //text.setGravity(Gravity.CENTER);
@@ -577,9 +581,9 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 .show();
     }
 
-    private void Play(){
+    private void Play() {
 
-        if(playerService==null) return;
+        if (playerService == null) return;
 
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
@@ -587,7 +591,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 if (playerService.getStatus() == PlayerService.PLAYING)
                     playerService.pause();
                 id_list.clear();
-                for(dataItem d:filteredDataItems){
+                for (dataItem d : filteredDataItems) {
                     id_list.add(d.id);
                 }
                 playerService.setTrackList(id_list);
@@ -597,62 +601,59 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                int album_id=filteredDataItems.get(position).album_id;
-                playerService.setTrackList(MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id,Constants.SORT_ORDER.ASC));
+                int album_id = filteredDataItems.get(position).album_id;
+                playerService.setTrackList(MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC));
                 break;
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                int artist_id=filteredDataItems.get(position).artist_id;
-                playerService.setTrackList(MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id,Constants.SORT_ORDER.ASC));
+                int artist_id = filteredDataItems.get(position).artist_id;
+                playerService.setTrackList(MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC));
                 break;
 
             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                int genre_id=filteredDataItems.get(position).id;
-                playerService.setTrackList(MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id,Constants.SORT_ORDER.ASC));
+                int genre_id = filteredDataItems.get(position).id;
+                playerService.setTrackList(MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC));
                 break;
         }
-        if(fl.getStatus()!=Constants.FRAGMENT_STATUS.TITLE_FRAGMENT){
+        if (fl.getStatus() != Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
             playerService.playAtPosition(0);
         }
     }
 
-    private void AddToPlaylist(){
+    private void AddToPlaylist() {
         int[] ids;
         ArrayList<Integer> temp;
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
-                ids=new int[]{filteredDataItems.get(position).id};
+                ids = new int[]{filteredDataItems.get(position).id};
                 UtilityFun.AddToPlaylist(context, ids);
                 break;
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                int album_id=filteredDataItems.get(position).album_id;
-                temp = MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id,Constants.SORT_ORDER.ASC);
+                int album_id = filteredDataItems.get(position).album_id;
+                temp = MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC);
                 ids = new int[temp.size()];
-                for (int i=0; i < ids.length; i++)
-                {
+                for (int i = 0; i < ids.length; i++) {
                     ids[i] = temp.get(i);
                 }
                 UtilityFun.AddToPlaylist(context, ids);
                 break;
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                int artist_id=filteredDataItems.get(position).artist_id;
-                temp = MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id,Constants.SORT_ORDER.ASC);
+                int artist_id = filteredDataItems.get(position).artist_id;
+                temp = MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC);
                 ids = new int[temp.size()];
-                for (int i=0; i < ids.length; i++)
-                {
+                for (int i = 0; i < ids.length; i++) {
                     ids[i] = temp.get(i);
                 }
                 UtilityFun.AddToPlaylist(context, ids);
                 break;
 
             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                int genre_id=filteredDataItems.get(position).id;
-                temp = MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id,Constants.SORT_ORDER.ASC);
+                int genre_id = filteredDataItems.get(position).id;
+                temp = MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC);
                 ids = new int[temp.size()];
-                for (int i=0; i < ids.length; i++)
-                {
+                for (int i = 0; i < ids.length; i++) {
                     ids[i] = temp.get(i);
                 }
                 UtilityFun.AddToPlaylist(context, ids);
@@ -661,7 +662,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         //
     }
 
-    private void Share(){
+    private void Share() {
         ArrayList<Uri> files = new ArrayList<>();  //for sending multiple files
 
         switch (fl.getStatus()) {
@@ -670,10 +671,10 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                     File fileToBeShared = new File(filteredDataItems.get(position).file_path);
                     files.add(FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
                     UtilityFun.Share(context, files, filteredDataItems.get(position).title);
-                }catch (IllegalArgumentException e){
-                    try{
+                } catch (IllegalArgumentException e) {
+                    try {
                         UtilityFun.ShareFromPath(context, filteredDataItems.get(position).file_path);
-                    }catch (Exception ex) {
+                    } catch (Exception ex) {
                         Snackbar.make(viewParent, R.string.error_unable_to_share, Snackbar.LENGTH_SHORT).show();
                     }
                 }
@@ -706,61 +707,61 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 }
                 break;
         }
-        if(fl.getStatus()!=Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
+        if (fl.getStatus() != Constants.FRAGMENT_STATUS.TITLE_FRAGMENT) {
             UtilityFun.Share(context, files, "Multiple audio files");
         }
     }
 
-    private void AddToQ(int positionToAdd){
+    private void AddToQ(int positionToAdd) {
         //we are using same function for adding to q and playing next
         // toastString is to identify which string to disokay as toast
-        String toastString=(positionToAdd==Constants.ADD_TO_Q.AT_LAST ? context.getString(R.string.added_to_q)
-                : context.getString(R.string.playing_next)) ;
+        String toastString = (positionToAdd == Constants.ADD_TO_Q.AT_LAST ? context.getString(R.string.added_to_q)
+                : context.getString(R.string.playing_next));
         //when adding to playing next, order of songs should be desc
         //and asc for adding at last
         //this is how the function in player service is writte, deal with it
-        int sortOrder=(positionToAdd==Constants.ADD_TO_Q.AT_LAST ? Constants.SORT_ORDER.ASC : Constants.SORT_ORDER.DESC);
+        int sortOrder = (positionToAdd == Constants.ADD_TO_Q.AT_LAST ? Constants.SORT_ORDER.ASC : Constants.SORT_ORDER.DESC);
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
                 playerService.addToQ(filteredDataItems.get(position).id, positionToAdd);
                 //Toast.makeText(context
-                  //      ,toastString+filteredDataItems.get(position).title
-                    ///    ,Toast.LENGTH_SHORT).show();
-                Snackbar.make(viewParent, toastString+filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
+                //      ,toastString+filteredDataItems.get(position).title
+                ///    ,Toast.LENGTH_SHORT).show();
+                Snackbar.make(viewParent, toastString + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
                 break;
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                int album_id=filteredDataItems.get(position).album_id;
-                for(int id:MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id,sortOrder)){
+                int album_id = filteredDataItems.get(position).album_id;
+                for (int id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }
                 //Toast.makeText(context
-                  //      ,toastString+filteredDataItems.get(position).title
-                    //    ,Toast.LENGTH_SHORT).show();
-                Snackbar.make(viewParent, toastString+filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
+                //      ,toastString+filteredDataItems.get(position).title
+                //    ,Toast.LENGTH_SHORT).show();
+                Snackbar.make(viewParent, toastString + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
 
                 break;
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                int artist_id=filteredDataItems.get(position).artist_id;
-                for(int id:MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id,sortOrder)){
-                    playerService.addToQ(id,  positionToAdd);
-                }
-                /*Toast.makeText(context
-                        ,toastString+filteredDataItems.get(position).title
-                        ,Toast.LENGTH_SHORT).show();*/
-                Snackbar.make(viewParent, toastString+filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
-                break;
-
-            case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                int genre_id=filteredDataItems.get(position).id;
-                for(int id:MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id,sortOrder)){
+                int artist_id = filteredDataItems.get(position).artist_id;
+                for (int id : MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }
                 /*Toast.makeText(context
                         ,toastString+filteredDataItems.get(position).title
                         ,Toast.LENGTH_SHORT).show();*/
-                Snackbar.make(viewParent, toastString+filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(viewParent, toastString + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
+                break;
+
+            case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
+                int genre_id = filteredDataItems.get(position).id;
+                for (int id : MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, sortOrder)) {
+                    playerService.addToQ(id, positionToAdd);
+                }
+                /*Toast.makeText(context
+                        ,toastString+filteredDataItems.get(position).title
+                        ,Toast.LENGTH_SHORT).show();*/
+                Snackbar.make(viewParent, toastString + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
                 break;
         }
 
@@ -768,7 +769,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         MyApp.getService().PostNotification();
     }
 
-    private void DeleteDialog(){
+    private void DeleteDialog() {
 
         new MyDialogBuilder(context)
                 .title(context.getString(R.string.are_u_sure))
@@ -787,7 +788,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                                 //delete the file first
                                 files.add(new File(filteredDataItems.get(position).file_path));
                                 ids.add(filteredDataItems.get(position).id);
-                                if(UtilityFun.Delete(context, files, ids)){
+                                if (UtilityFun.Delete(context, files, ids)) {
                                     deleteSuccess();
                                 } else {
                                     Snackbar.make(viewParent, context.getString(R.string.unable_to_del), Snackbar.LENGTH_SHORT).show();
@@ -797,15 +798,15 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
                                 tracklist = MusicLibrary.getInstance().getSongListFromAlbumIdNew(
                                         filteredDataItems.get(position).album_id, Constants.SORT_ORDER.ASC);
-                                for(int id:tracklist){
+                                for (int id : tracklist) {
 
                                     TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
-                                    if(item!=null) {
+                                    if (item != null) {
                                         files.add(new File(item.getFilePath()));
                                         ids.add(item.getId());
                                     }
                                 }
-                                if(UtilityFun.Delete(context, files, ids)){
+                                if (UtilityFun.Delete(context, files, ids)) {
                                     //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                                     deleteSuccess();
                                 } else {
@@ -817,19 +818,19 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
                                 tracklist = MusicLibrary.getInstance().getSongListFromArtistIdNew(
                                         filteredDataItems.get(position).artist_id, Constants.SORT_ORDER.ASC);
-                                for(int id:tracklist){
+                                for (int id : tracklist) {
                                     /*if(playerService.getCurrentTrack().getTitle().equals(track)){
                                         ///Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
                                         Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
                                         return;
                                     }*/
                                     TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
-                                    if(item!=null) {
+                                    if (item != null) {
                                         files.add(new File(item.getFilePath()));
                                         ids.add(item.getId());
                                     }
                                 }
-                                if(UtilityFun.Delete(context, files, ids)){
+                                if (UtilityFun.Delete(context, files, ids)) {
                                     //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                                     deleteSuccess();
                                 } else {
@@ -841,19 +842,19 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
                                 tracklist = MusicLibrary.getInstance().getSongListFromGenreIdNew(
                                         filteredDataItems.get(position).id, Constants.SORT_ORDER.ASC);
-                                for(int id:tracklist){
+                                for (int id : tracklist) {
                                     /*if(playerService.getCurrentTrack().getTitle().equals(track)){
                                         //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
                                         Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
                                         return;
                                     }*/
                                     TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
-                                    if(item!=null) {
+                                    if (item != null) {
                                         files.add(new File(item.getFilePath()));
                                         ids.add(item.getId());
                                     }
                                 }
-                                if(UtilityFun.Delete(context, files, ids)){
+                                if (UtilityFun.Delete(context, files, ids)) {
                                     //Toast.makeText(context, "Deleted " + filteredDataItems.get(position).title, Toast.LENGTH_SHORT).show();
                                     deleteSuccess();
                                 } else {
@@ -866,7 +867,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
                     private void deleteSuccess() {
                         Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
-                        playerService.removeTrack((Integer)filteredDataItems.get(position).id);
+                        playerService.removeTrack((Integer) filteredDataItems.get(position).id);
                         dataItems.remove(dataItems.get(position));
                         filteredDataItems.remove(filteredDataItems.get(position));
                         notifyItemRemoved(position);
@@ -876,26 +877,26 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 .show();
     }
 
-    public void updateItem(int position, String ... param){
-        if(param.length==1){
+    public void updateItem(int position, String... param) {
+        if (param.length == 1) {
             filteredDataItems.get(position).title = param[0];
             notifyItemChanged(position);
-        }else {
-           filteredDataItems.get(position).title = param[0];
-           filteredDataItems.get(position).artist_name = param[1];
-           filteredDataItems.get(position).albumName = param[2];
-           notifyItemChanged(position);
+        } else {
+            filteredDataItems.get(position).title = param[0];
+            filteredDataItems.get(position).artist_name = param[1];
+            filteredDataItems.get(position).albumName = param[2];
+            notifyItemChanged(position);
         }
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return mItemHeight;
     }
 
     @NonNull
     @Override
     public String getSectionName(int position) {
-        return filteredDataItems.get(position).title.substring(0,1).toUpperCase();
+        return filteredDataItems.get(position).title.substring(0, 1).toUpperCase();
     }
 
     //action mode related methods
@@ -904,8 +905,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
         if (selectedItems.get(pos, false)) {
             selectedItems.delete(pos);
-        }
-        else {
+        } else {
             selectedItems.put(pos, true);
         }
         notifyItemChanged(pos);
@@ -931,11 +931,11 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
     @Override
     public String getTextToShowInBubble(int pos) {
-        return filteredDataItems.get(pos).title.substring(0,1).toUpperCase();
+        return filteredDataItems.get(pos).title.substring(0, 1).toUpperCase();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView title,secondary,count;
+        TextView title, secondary, count;
         ImageView image;
         View wrapper;
 
@@ -946,7 +946,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
             secondary = itemView.findViewById(R.id.secondaryHeader);
 
             count = itemView.findViewById(R.id.count);
-            image= itemView.findViewById(R.id.imageVIewForStubAlbumArt);
+            image = itemView.findViewById(R.id.imageVIewForStubAlbumArt);
 
             wrapper = itemView.findViewById(R.id.album_art_wrapper);
             itemView.setOnClickListener(this);
@@ -954,8 +954,8 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
         }
 
         @Override
-        public void onClick(View v){
-            MainLibraryAdapter.this.onClick(v,this.getLayoutPosition());
+        public void onClick(View v) {
+            MainLibraryAdapter.this.onClick(v, this.getLayoutPosition());
         }
 
 

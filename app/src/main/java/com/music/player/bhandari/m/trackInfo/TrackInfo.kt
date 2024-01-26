@@ -3,11 +3,11 @@ package com.music.player.bhandari.m.trackInfo.models
 /*
 model to return to activity for showing track info
  */
-enum class RESULT{
+enum class RESULT {
     POSITIVE, NEGATIVE
 }
 
-class TrackInfo{
+class TrackInfo {
 
     var track: com.music.player.bhandari.m.trackInfo.models.track.Track? = null
     var album: com.music.player.bhandari.m.trackInfo.models.album.Album? = null

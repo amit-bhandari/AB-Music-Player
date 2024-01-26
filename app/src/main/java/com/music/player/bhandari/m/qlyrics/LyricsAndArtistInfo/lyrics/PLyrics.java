@@ -20,7 +20,6 @@
 package com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics;
 
 
-
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.annotations.Reflection;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.Net;
 

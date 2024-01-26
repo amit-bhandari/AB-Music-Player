@@ -10,15 +10,19 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.StateListDrawable;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
+
 import com.google.android.material.appbar.AppBarLayout;
+
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,19 +35,19 @@ import com.music.player.bhandari.m.adapter.MainLibraryAdapter;
 import com.music.player.bhandari.m.model.Constants;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class RecyclerFastScroller extends FrameLayout {
@@ -461,13 +465,14 @@ public class RecyclerFastScroller extends FrameLayout {
     }
 
     void updateRvScroll(int dY) {
-        Log.v(Constants.TAG,"scroll by" + dY);
-        if(mAdapter instanceof MainLibraryAdapter){
+        Log.v(Constants.TAG, "scroll by" + dY);
+        if (mAdapter instanceof MainLibraryAdapter) {
             try {
-                int itemHeight = ((MainLibraryAdapter)mAdapter).getHeight();
-                if(dY - (dY % itemHeight) !=0)
-                    dY = dY - ( dY % itemHeight ) ;
-            }catch (Exception ignored){}
+                int itemHeight = ((MainLibraryAdapter) mAdapter).getHeight();
+                if (dY - (dY % itemHeight) != 0)
+                    dY = dY - (dY % itemHeight);
+            } catch (Exception ignored) {
+            }
         }
         //dY = dY - ( dY % 112 ) ;
         if (mRecyclerView != null && mHandle != null) {

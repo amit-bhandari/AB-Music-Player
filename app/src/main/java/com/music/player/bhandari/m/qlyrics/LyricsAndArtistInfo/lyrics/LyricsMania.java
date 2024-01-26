@@ -69,7 +69,7 @@ public class LyricsMania {
             Element lyricsBody = document.getElementsByClass("lyrics-body").get(0);
             // lyricsBody.select("div").last().remove();
             text = Jsoup.clean(lyricsBody.html(), "", Whitelist.basic().addTags("div"));
-            text = text.substring(text.indexOf("</strong>")+10, text.lastIndexOf("</div>"));
+            text = text.substring(text.indexOf("</strong>") + 10, text.lastIndexOf("</div>"));
 
             String[] keywords =
                     document.getElementsByTag("meta").attr("name", "keywords").get(0).attr("content").split(",");

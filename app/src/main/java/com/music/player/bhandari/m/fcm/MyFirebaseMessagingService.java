@@ -16,7 +16,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.core.app.NotificationCompat;
+
 import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -40,46 +42,46 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-public class MyFirebaseMessagingService extends FirebaseMessagingService{
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Log.d("MyFirebaseMessaging", "onMessageReceived: " + remoteMessage.toString());
 
-        final Map<String,String> map = remoteMessage.getData();
-        for(String keys: map.keySet()){
+        final Map<String, String> map = remoteMessage.getData();
+        for (String keys : map.keySet()) {
             Log.d("MyFirebaseMessaging", "onMessageReceived: " + keys);
         }
 
         //if opt out of notifications in settings, this part should never be executed
         //in case it does, ignore the message
-        if(!MyApp.getPref().getBoolean(getString(R.string.pref_notifications), true)){
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_notifications), true)) {
             return;
         }
 
         //do not show notification to users with ads removed
-        if(map.get("type").equals("discount") && UtilityFun.isAdsRemoved()){
+        if (map.get("type").equals("discount") && UtilityFun.isAdsRemoved()) {
             return;
         }
 
-        if(map.get("type").equals("review") && (!AppLaunchCountManager.isEligibleForRatingAsk()
-                || MyApp.getPref().getBoolean(getString(R.string.pref_already_rated), false))){
+        if (map.get("type").equals("review") && (!AppLaunchCountManager.isEligibleForRatingAsk()
+                || MyApp.getPref().getBoolean(getString(R.string.pref_already_rated), false))) {
             return;
         }
 
@@ -120,7 +122,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -199,7 +201,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
                     } catch (Exception ignored) {
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification_crashed_app");
                 UtilityFun.logEvent(bundle);
@@ -207,11 +209,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
         }
 
         //helper methods to build specific notifications
-        private void discountNotif(){
+        private void discountNotif() {
 
         }
 
-        private void trending_tracksNotif(){
+        private void trending_tracksNotif() {
 
             int requestCode = new Random().nextInt();
 
@@ -227,7 +229,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
 
         }
 
-        private void Check_out_lyricNotif(Map<String, String> map){
+        private void Check_out_lyricNotif(Map<String, String> map) {
 
             String trackTitle = map.get("trackname");
             String artist = map.get("artist");
@@ -247,7 +249,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
 
         }
 
-        private void UnknownNotif(Map<String, String> map){
+        private void UnknownNotif(Map<String, String> map) {
 
             Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
             notificationIntent.setData(Uri.parse(map.get("link")));
@@ -258,7 +260,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
 
         }
 
-        private void searchLyricNotif(){
+        private void searchLyricNotif() {
 
             int requestCode = new Random().nextInt();
 
@@ -273,7 +275,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
             builder.setContentIntent(contentIntent);
         }
 
-        private void reviewNotif(Map<String, String> map){
+        private void reviewNotif(Map<String, String> map) {
             Intent action1Intent = new Intent(MyApp.getContext(), NotificationActionService.class)
                     .setAction(ALREADY_RATED);
             action1Intent.putExtra("from_notif", true);
@@ -286,8 +288,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
             PendingIntent rateNowIntent = PendingIntent.getService(MyApp.getContext(), 20,
                     action2Intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_MUTABLE);
 
-            builder.addAction(new NotificationCompat.Action(R.drawable.ic_close_white_24dp,"Rate now!", rateNowIntent));
-            builder.addAction(new NotificationCompat.Action(R.drawable.ic_close_white_24dp,"Already rated", alreadyRatedIntent));
+            builder.addAction(new NotificationCompat.Action(R.drawable.ic_close_white_24dp, "Rate now!", rateNowIntent));
+            builder.addAction(new NotificationCompat.Action(R.drawable.ic_close_white_24dp, "Already rated", alreadyRatedIntent));
             builder.setContentIntent(rateNowIntent);
         }
 
@@ -300,21 +302,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
             @Override
             protected void onHandleIntent(Intent intent) {
                 String action = intent.getAction();
-                if(action==null) return;
+                if (action == null) return;
 
-                if(intent.getExtras()!=null && intent.getExtras().getBoolean("from_notif")){
+                if (intent.getExtras() != null && intent.getExtras().getBoolean("from_notif")) {
                     try {
                         Bundle bundle = new Bundle();
                         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification_clicked");
                         UtilityFun.logEvent(bundle);
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
                     }
                 }
 
                 Log.d("NotificationAction", "onHandleIntent: " + action);
-                switch (action){
+                switch (action) {
                     case ALREADY_RATED:
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_already_rated),true).apply();
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_already_rated), true).apply();
                         break;
 
                     case RATE_NOW:
@@ -329,13 +331,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
                             Bundle bundle = new Bundle();
                             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "rate_on_notif_click");
                             UtilityFun.logEvent(bundle);
-                        }catch (Exception ignored){
+                        } catch (Exception ignored) {
                         }
                         break;
                 }
 
-                NotificationManager notificationManager= (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                if(notificationManager!=null){
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (notificationManager != null) {
                     notificationManager.cancel(Constants.NOTIFICATION_ID.FCM);
                 }
 

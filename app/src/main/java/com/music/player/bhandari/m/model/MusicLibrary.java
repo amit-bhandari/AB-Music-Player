@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -33,24 +34,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 
 //singleton class
 //maintains music library
 
-public class MusicLibrary{
+public class MusicLibrary {
 
     private final Context context;
     @SuppressLint("StaticFieldLeak")
@@ -60,7 +61,7 @@ public class MusicLibrary{
     private int libraryLoadCounter;
 
     //artist photo urls for art library fragment only
-    private static final HashMap<String, String> artistUrls=new HashMap<>();
+    private static final HashMap<String, String> artistUrls = new HashMap<>();
 
     //short clip time
     private int SHORT_CLIPS_TIME_IN_MS;
@@ -68,7 +69,7 @@ public class MusicLibrary{
     private String[] excludedFolders;
 
     //all the folders in which songs are there
-    private final ArrayList<String> foldersList=new ArrayList<>();
+    private final ArrayList<String> foldersList = new ArrayList<>();
 
     //data for all frgaments
     private final Map<Integer, dataItem> dataItemsForTracks = Collections.synchronizedMap(new LinkedHashMap<Integer, dataItem>());
@@ -79,26 +80,26 @@ public class MusicLibrary{
 
     //track id to track name hashmap
     //used for shuffling tracks using track name in now playing
-    private final SparseArray<String> trackMap= new SparseArray<>();
+    private final SparseArray<String> trackMap = new SparseArray<>();
 
-    private MusicLibrary(){
-        this.context= MyApp.getContext();
+    private MusicLibrary() {
+        this.context = MyApp.getContext();
         this.cr = context.getContentResolver();
         RefreshLibrary();
     }
 
-    public void RefreshLibrary(){
+    public void RefreshLibrary() {
 
-        String excludedFoldersString = MyApp.getPref().getString(context.getString(R.string.pref_excluded_folders),"");
+        String excludedFoldersString = MyApp.getPref().getString(context.getString(R.string.pref_excluded_folders), "");
         excludedFolders = excludedFoldersString.split(",");
 
         //filter audio based on track duration
-        SHORT_CLIPS_TIME_IN_MS = MyApp.getPref().getInt(context.getString(R.string.pref_hide_short_clips),10)*1000;
+        SHORT_CLIPS_TIME_IN_MS = MyApp.getPref().getInt(context.getString(R.string.pref_hide_short_clips), 10) * 1000;
 
         //filter audio based on name
-        REMOVE_TRACK_CONTAINING_1 = MyApp.getPref().getString(context.getString(R.string.pref_hide_tracks_starting_with_1),"");
-        REMOVE_TRACK_CONTAINING_2 = MyApp.getPref().getString(context.getString(R.string.pref_hide_tracks_starting_with_2),"");
-        REMOVE_TRACK_CONTAINING_3 = MyApp.getPref().getString(context.getString(R.string.pref_hide_tracks_starting_with_3),"");
+        REMOVE_TRACK_CONTAINING_1 = MyApp.getPref().getString(context.getString(R.string.pref_hide_tracks_starting_with_1), "");
+        REMOVE_TRACK_CONTAINING_2 = MyApp.getPref().getString(context.getString(R.string.pref_hide_tracks_starting_with_2), "");
+        REMOVE_TRACK_CONTAINING_3 = MyApp.getPref().getString(context.getString(R.string.pref_hide_tracks_starting_with_3), "");
 
         atomicInt.set(0);
         dataItemsForTracks.clear();
@@ -109,14 +110,14 @@ public class MusicLibrary{
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                long start= System.currentTimeMillis();
+                long start = System.currentTimeMillis();
 
-                Log.v(Constants.TAG,"refresh started");
+                Log.v(Constants.TAG, "refresh started");
                 fillDataForTracks();
                 fillDataForAlbums();
                 fillDataForArtist();
                 fillDataForGenre();
-                while (libraryLoadCounter!=4){
+                while (libraryLoadCounter != 4) {
                     //Log.v(Constants.TAG,"waiting..");
                     try {
                         Thread.sleep(200);
@@ -125,17 +126,17 @@ public class MusicLibrary{
                     }
                 }
                 atomicInt.set(0);
-                libraryLoadCounter=0;
-                Log.v(Constants.TAG,"refreshed");
+                libraryLoadCounter = 0;
+                Log.v(Constants.TAG, "refreshed");
                 PlaylistManager.getInstance(MyApp.getContext()).PopulateUserMusicTable();
                 LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(Constants.ACTION.REFRESH_LIB));
 
-                Log.v("See the time",(System.currentTimeMillis()-start)+"");
+                Log.v("See the time", (System.currentTimeMillis() - start) + "");
             }
         });
     }
 
-    private void fillFoldersList(){
+    private void fillFoldersList() {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -147,32 +148,32 @@ public class MusicLibrary{
 
                         boolean isExcluded = false;
                         //check if excluded folder
-                        for(String excludedPath: excludedFolders){
-                            if(excludedPath.equals(path)){
-                                isExcluded=true;
+                        for (String excludedPath : excludedFolders) {
+                            if (excludedPath.equals(path)) {
+                                isExcluded = true;
                             }
                         }
-                        if(isExcluded) continue;
+                        if (isExcluded) continue;
 
                         if (!foldersList.contains(path)) {
                             foldersList.add(path);
                         }
                     }
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
             }
         });
     }
 
-    public static MusicLibrary getInstance(){
-        if (musicLibrary==null){
+    public static MusicLibrary getInstance() {
+        if (musicLibrary == null) {
             musicLibrary = new MusicLibrary();
         }
         return musicLibrary;
     }
 
-    public ArrayList<Integer> getDefaultTracklistNew(){
+    public ArrayList<Integer> getDefaultTracklistNew() {
         ArrayList<Integer> tracklist = new ArrayList<>();
         try {
             if (dataItemsForTracks != null) {
@@ -181,16 +182,16 @@ public class MusicLibrary{
                 }
             }
             return tracklist;
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
             return tracklist;
         }
     }
 
-    public ArrayList<String> getFoldersList(){
+    public ArrayList<String> getFoldersList() {
         return foldersList;
     }
 
-    private void fillDataForTracks(){
+    private void fillDataForTracks() {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @SuppressLint("Range")
             @Override
@@ -210,30 +211,30 @@ public class MusicLibrary{
                         MediaStore.Audio.Media.TRACK
                 };
                 String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
-                Cursor cursor=null;
+                Cursor cursor = null;
                 try {
                     cursor = cr.query(uri, projection, selection, null, sortOrder);
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
                     System.out.println(ignored);
                 }
-                if(cursor!=null && cursor.getCount()>0) {
+                if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
 
-                        if(!REMOVE_TRACK_CONTAINING_1.equals("")
+                        if (!REMOVE_TRACK_CONTAINING_1.equals("")
                                 && cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE).startsWith(REMOVE_TRACK_CONTAINING_1)) {
                             continue;
                         }
-                        if(!REMOVE_TRACK_CONTAINING_2.equals("")
+                        if (!REMOVE_TRACK_CONTAINING_2.equals("")
                                 && cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE).startsWith(REMOVE_TRACK_CONTAINING_2)) {
                             continue;
                         }
-                        if(!REMOVE_TRACK_CONTAINING_3.equals("")
+                        if (!REMOVE_TRACK_CONTAINING_3.equals("")
                                 && cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE).startsWith(REMOVE_TRACK_CONTAINING_3)) {
                             continue;
                         }
 
                         String filePath = cursor.getString(6);
-                        if(filePath!=null) {
+                        if (filePath != null) {
                             String folderPath = filePath.substring(0, filePath.lastIndexOf("/"));
 
                             boolean isExcluded = false;
@@ -251,15 +252,15 @@ public class MusicLibrary{
                         if (cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) > SHORT_CLIPS_TIME_IN_MS) {
                             dataItemsForTracks.put(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
                                     new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
-                                    ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-                                    ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
-                                    ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
-                                    ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
-                                    ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
-                                    ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR))
-                                    ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
-                                    ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
-                                    ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)))
+                                            , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+                                            , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
+                                            , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
+                                            , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
+                                            , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
+                                            , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR))
+                                            , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
+                                            , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
+                                            , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)))
                             );
 
                             trackMap.put(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
@@ -267,7 +268,7 @@ public class MusicLibrary{
                         }
                     }
                 }
-                if(cursor!=null) {
+                if (cursor != null) {
                     cursor.close();
                 }
 
@@ -277,7 +278,7 @@ public class MusicLibrary{
         });
     }
 
-    private void fillDataForArtist(){
+    private void fillDataForArtist() {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @SuppressLint("Range")
             @Override
@@ -297,19 +298,19 @@ public class MusicLibrary{
                             null,
                             null,
                             MediaStore.Audio.Artists.ARTIST + " ASC");
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
-                if(cursor!=null && cursor.getCount()>0) {
+                if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         dataItemsForArtists.add(new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists._ID))
-                                ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))
-                                ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS))
-                                ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS))
+                                , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))
+                                , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS))
+                                , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS))
                         ));
                     }
                 }
-                if(cursor!=null) {
+                if (cursor != null) {
                     cursor.close();
                 }
 
@@ -331,7 +332,7 @@ public class MusicLibrary{
 
     }
 
-    private void fillDataForAlbums(){
+    private void fillDataForAlbums() {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @SuppressLint("Range")
             @Override
@@ -355,17 +356,17 @@ public class MusicLibrary{
                             null,
                             null,
                             MediaStore.Audio.Albums.ALBUM + " ASC");
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
                     System.out.println(ignored);
                 }
-                if(cursor!=null && cursor.getCount()>0) {
+                if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         dataItemsForAlbums.add(new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Albums._ID))
-                                ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM))
-                                ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST))
-                                ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS))
-                                ,cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.FIRST_YEAR))
-                                ,cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
+                                , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM))
+                                , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST))
+                                , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS))
+                                , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.FIRST_YEAR))
+                                , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
                         ));
 
                         /*Log.d("MusicLibrary", "album : " + cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM))
@@ -380,7 +381,7 @@ public class MusicLibrary{
 
     }
 
-    private void fillDataForGenre(){
+    private void fillDataForGenre() {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @SuppressLint("Range")
             @Override
@@ -398,19 +399,20 @@ public class MusicLibrary{
                             null,
                             null,
                             MediaStore.Audio.Genres.NAME + " ASC");
-                }catch (Exception ignored){}
-                if(cursor!=null && cursor.getCount()>0) {
+                } catch (Exception ignored) {
+                }
+                if (cursor != null && cursor.getCount() > 0) {
                     while (cursor.moveToNext()) {
                         ArrayList<Integer> songList = getSongListFromGenreIdNew(cursor.getInt(MusicLibrary.INDEX_FOR_GENRE_CURSOR._ID)
                                 , Constants.SORT_ORDER.ASC);
-                        if (songList==null || songList.size() == 0)
+                        if (songList == null || songList.size() == 0)
                             continue;
 
                         String genre_name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Genres.NAME));
-                        if(genre_name==null) continue;
+                        if (genre_name == null) continue;
                         dataItemsForGenres.add(new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Genres._ID))
                                 , genre_name
-                                ,0)
+                                , 0)
                         );
                     }
                     cursor.close();
@@ -421,9 +423,9 @@ public class MusicLibrary{
 
     }
 
-    public dataItem updateTrackNew(int id, String... param){
+    public dataItem updateTrackNew(int id, String... param) {
         dataItem d = dataItemsForTracks.get(id);
-        if(d!=null){
+        if (d != null) {
             d.title = param[0];
             d.artist_name = param[1];
             d.albumName = param[2];
@@ -432,19 +434,19 @@ public class MusicLibrary{
         return null;
     }
 
-    public ArrayList<dataItem> getDataItemsForAlbums(){
+    public ArrayList<dataItem> getDataItemsForAlbums() {
         return dataItemsForAlbums;
     }
 
-    public ArrayList<dataItem> getDataItemsArtist(){
+    public ArrayList<dataItem> getDataItemsArtist() {
         return dataItemsForArtists;
     }
 
-    public Map<Integer, dataItem> getDataItemsForTracks(){
+    public Map<Integer, dataItem> getDataItemsForTracks() {
         return dataItemsForTracks;
     }
 
-    public ArrayList<dataItem> getDataItemsForGenres(){
+    public ArrayList<dataItem> getDataItemsForGenres() {
         return dataItemsForGenres;
     }
 
@@ -452,28 +454,29 @@ public class MusicLibrary{
         return trackMap;
     }
 
-    public ArrayList<Integer> getSongListFromArtistIdNew(int artist_id, int sort){
-        ArrayList<Integer> songList=new ArrayList<>();
+    public ArrayList<Integer> getSongListFromArtistIdNew(int artist_id, int sort) {
+        ArrayList<Integer> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ARTIST_ID + "=" +artist_id;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ARTIST_ID + "=" + artist_id;
         String[] projection = {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media._ID
         };
-        String sortOrder="";
-        if(sort== Constants.SORT_ORDER.ASC) {
+        String sortOrder = "";
+        if (sort == Constants.SORT_ORDER.ASC) {
             sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
-        }else{
+        } else {
             sortOrder = MediaStore.Audio.Media.TITLE + " DESC";
         }
         Cursor cursor = null;
         try {
             cursor = cr.query(uri, projection, selection, null, sortOrder);
-        }catch (Exception ignored){}
-        if(cursor!=null){
-            while (cursor.moveToNext()){
-                if(cursor.getInt(1)> SHORT_CLIPS_TIME_IN_MS) {
+        } catch (Exception ignored) {
+        }
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                if (cursor.getInt(1) > SHORT_CLIPS_TIME_IN_MS) {
                     songList.add(cursor.getInt(2));
                 }
             }
@@ -483,28 +486,29 @@ public class MusicLibrary{
         return null;
     }
 
-    public ArrayList<Integer> getSongListFromAlbumIdNew(int album_id,int sort){
-        ArrayList<Integer> songList=new ArrayList<>();
+    public ArrayList<Integer> getSongListFromAlbumIdNew(int album_id, int sort) {
+        ArrayList<Integer> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ALBUM_ID + "=" +album_id;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ALBUM_ID + "=" + album_id;
         String[] projection = {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media._ID
         };
-        String sortOrder="";
-        if(sort==Constants.SORT_ORDER.ASC) {
+        String sortOrder = "";
+        if (sort == Constants.SORT_ORDER.ASC) {
             sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
-        }else{
+        } else {
             sortOrder = MediaStore.Audio.Media.TITLE + " DESC";
         }
         Cursor cursor = null;
         try {
             cursor = cr.query(uri, projection, selection, null, sortOrder);
-        }catch (Exception ignored){}
-        if(cursor!=null){
-            while (cursor.moveToNext()){
-                if(cursor.getInt(1)> SHORT_CLIPS_TIME_IN_MS) {
+        } catch (Exception ignored) {
+        }
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                if (cursor.getInt(1) > SHORT_CLIPS_TIME_IN_MS) {
                     songList.add(cursor.getInt(2));
                 }
             }
@@ -514,25 +518,26 @@ public class MusicLibrary{
         return null;
     }
 
-    public ArrayList<Integer> getSongListFromGenreIdNew(int genre_id,int sort){
-        ArrayList<Integer> songList=new ArrayList<>();
+    public ArrayList<Integer> getSongListFromGenreIdNew(int genre_id, int sort) {
+        ArrayList<Integer> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", genre_id);
         String[] projection = new String[]{MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media._ID};
-        String sortOrder="";
-        if(sort==Constants.SORT_ORDER.ASC) {
+        String sortOrder = "";
+        if (sort == Constants.SORT_ORDER.ASC) {
             sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
-        }else{
+        } else {
             sortOrder = MediaStore.Audio.Media.TITLE + " DESC";
         }
         Cursor cursor = null;
         try {
-            cursor=cr.query(uri, projection, null, null, sortOrder);
-        }catch (Exception ignored){}
-        if(cursor!=null){
-            while (cursor.moveToNext()){
-                if(cursor.getInt(1)> SHORT_CLIPS_TIME_IN_MS) {
+            cursor = cr.query(uri, projection, null, null, sortOrder);
+        } catch (Exception ignored) {
+        }
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                if (cursor.getInt(1) > SHORT_CLIPS_TIME_IN_MS) {
                     songList.add(cursor.getInt(2));
                 }
             }
@@ -542,17 +547,17 @@ public class MusicLibrary{
         return null;
     }
 
-    public TrackItem getTrackItemFromTitle(String title){
+    public TrackItem getTrackItemFromTitle(String title) {
 
-        if(title.contains("'")){
+        if (title.contains("'")) {
             //title = ((char)34+title+(char)34);
             //fuck you bug
             //you bugged my mind
-            title = title.replaceAll("'","''");
+            title = title.replaceAll("'", "''");
         }
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection =  MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
-                +MediaStore.Audio.Media.TITLE  + "= '" +   title  +"'";
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
+                + MediaStore.Audio.Media.TITLE + "= '" + title + "'";
         String[] projection = {
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE,
@@ -571,8 +576,9 @@ public class MusicLibrary{
                     selection,
                     null,
                     MediaStore.Audio.Media.TITLE + " ASC");
-        }catch (Exception ignored){}
-        if(cursor!=null && cursor.getCount()!=0){
+        } catch (Exception ignored) {
+        }
+        if (cursor != null && cursor.getCount() != 0) {
             cursor.moveToFirst();
             @SuppressLint("Range") TrackItem item = new TrackItem(cursor.getString(INDEX_FOR_TRACK_CURSOR.DATA_PATH),
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE),
@@ -584,16 +590,16 @@ public class MusicLibrary{
                     cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)),
                     cursor.getInt(INDEX_FOR_TRACK_CURSOR._ID));
             cursor.close();
-            return  item;
+            return item;
         }
         return null;
     }
 
-    public TrackItem getTrackItemFromId(int _id){
+    public TrackItem getTrackItemFromId(int _id) {
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection =  MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
-                + MediaStore.Audio.Media._ID  + "= '" +   _id  +"'";
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
+                + MediaStore.Audio.Media._ID + "= '" + _id + "'";
         String[] projection = {
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE,
@@ -612,8 +618,9 @@ public class MusicLibrary{
                     selection,
                     null,
                     MediaStore.Audio.Media.TITLE + " ASC");
-        }catch (Exception ignored){}
-        if(cursor!=null && cursor.getCount()!=0){
+        } catch (Exception ignored) {
+        }
+        if (cursor != null && cursor.getCount() != 0) {
             cursor.moveToFirst();
             @SuppressLint("Range") TrackItem item = new TrackItem(cursor.getString(INDEX_FOR_TRACK_CURSOR.DATA_PATH),
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE),
@@ -625,13 +632,13 @@ public class MusicLibrary{
                     cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)),
                     cursor.getInt(INDEX_FOR_TRACK_CURSOR._ID));
             cursor.close();
-            return  item;
+            return item;
         }
         return null;
     }
 
-    public int getIdFromFilePath(String filePath){
-        if(filePath.contains("\"")){
+    public int getIdFromFilePath(String filePath) {
+        if (filePath.contains("\"")) {
             filePath = UtilityFun.escapeDoubleQuotes(filePath);
         }
         Uri videosUri = MediaStore.Audio.Media.getContentUri("external");
@@ -639,9 +646,10 @@ public class MusicLibrary{
         Cursor cursor = null;
         try {
             cursor = cr.query(videosUri, projection, MediaStore.Audio.Media.DATA + " LIKE ?", new String[]{filePath}, null);
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
-        if(cursor!=null && cursor.getCount()!=0) {
+        if (cursor != null && cursor.getCount() != 0) {
             cursor.moveToFirst();
             int id;
             try {
@@ -652,16 +660,16 @@ public class MusicLibrary{
             }
             cursor.close();
             return id;
-        }else {
+        } else {
             return -1;
         }
     }
 
-    public Bitmap getAlbumArtFromId(int id){
+    public Bitmap getAlbumArtFromId(int id) {
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
-                +MediaStore.Audio.Media._ID  + "=" +  "'" + id + "'" ;
+                + MediaStore.Audio.Media._ID + "=" + "'" + id + "'";
         String[] projection = {
                 MediaStore.Audio.Media.ALBUM_ID
         };
@@ -673,14 +681,13 @@ public class MusicLibrary{
                     selection,
                     null,
                     MediaStore.Audio.Media.TITLE + " ASC");
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
         }
-        if(cursor!=null && cursor.getCount()!=0){
+        if (cursor != null && cursor.getCount() != 0) {
             cursor.moveToFirst();
-            int album_id=cursor.getInt(0);
+            int album_id = cursor.getInt(0);
             Bitmap bm = null;
-            try
-            {
+            try {
                 final Uri sArtworkUri = Uri
                         .parse("content://media/external/audio/albumart");
 
@@ -689,8 +696,7 @@ public class MusicLibrary{
                 ParcelFileDescriptor pfd = cr
                         .openFileDescriptor(uri, "r");
 
-                if (pfd != null)
-                {
+                if (pfd != null) {
                     FileDescriptor fd = pfd.getFileDescriptor();
                     bm = BitmapFactory.decodeFileDescriptor(fd);
                 }
@@ -699,7 +705,7 @@ public class MusicLibrary{
             }
 
             cursor.close();
-            if(bm!=null) {
+            if (bm != null) {
                 return bm;
             }
         }
@@ -709,11 +715,12 @@ public class MusicLibrary{
         return null;
     }
 
-    public Uri getAlbumArtUri(int album_id){
+    public Uri getAlbumArtUri(int album_id) {
+        System.out.println("AMIT ALBUM");
         Uri songCover = Uri.parse("content://media/external/audio/albumart");
         Uri uriSongCover = ContentUris.withAppendedId(songCover, album_id);
         //Log.d("MusicLibrary", "getAlbumArtUri: path " + new File(uriSongCover.getPath()).length());
-        if(uriSongCover==null){
+        if (uriSongCover == null) {
             //String packageName = context.getPackageName();
             //Uri uri = Uri.parse("android.resource://"+packageName+"/drawable/ic_batman_1");
             return null;
@@ -722,33 +729,33 @@ public class MusicLibrary{
         return uriSongCover;
     }
 
-    interface INDEX_FOR_TRACK_CURSOR{
-        int _ID=0;
-        int TITLE=1;
-        int DATA_PATH=2;
-        int ARTIST=3;
-        int ALBUM=4;
-        int DURATION=5;
-        int ALBUM_ID=6;
+    interface INDEX_FOR_TRACK_CURSOR {
+        int _ID = 0;
+        int TITLE = 1;
+        int DATA_PATH = 2;
+        int ARTIST = 3;
+        int ALBUM = 4;
+        int DURATION = 5;
+        int ALBUM_ID = 6;
 
     }
 
-    interface INDEX_FOR_GENRE_CURSOR{
-        int _ID=0;
-        int GENRE=1;
-        int NUMBER_OF_TRACKS=2;
+    interface INDEX_FOR_GENRE_CURSOR {
+        int _ID = 0;
+        int GENRE = 1;
+        int NUMBER_OF_TRACKS = 2;
     }
 
-    private synchronized void updateArtistInfo(){
+    private synchronized void updateArtistInfo() {
         artistUrls.clear();
         artistUrls.putAll(OfflineStorageArtistBio.getArtistImageUrls());
     }
 
-    public synchronized void putEntryInArtistUrl(String artist, String link){
+    public synchronized void putEntryInArtistUrl(String artist, String link) {
         artistUrls.put(artist, link);
     }
 
-    public @NonNull HashMap<String, String> getArtistUrls(){
+    public @NonNull HashMap<String, String> getArtistUrls() {
         return artistUrls;
     }
 

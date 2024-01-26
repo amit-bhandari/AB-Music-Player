@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,26 +30,26 @@ import com.music.player.bhandari.m.model.MusicLibrary;
 import java.util.concurrent.Executors;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class FragmentFolderLibrary extends Fragment implements SwipeRefreshLayout.OnRefreshListener
-        /*ActionMode.Callback*/{
+        /*ActionMode.Callback*/ {
 
-    private  RecyclerView mRecyclerView;
-    private  FolderLibraryAdapter adapter;
+    private RecyclerView mRecyclerView;
+    private FolderLibraryAdapter adapter;
 
     /*overwrite back button for this fragment as we will be using same recycler view for
         walking into directory
@@ -55,20 +57,20 @@ public class FragmentFolderLibrary extends Fragment implements SwipeRefreshLayou
     private static BroadcastReceiver mReceiverForBackPressedAction;
     private BroadcastReceiver mReceiverForLibraryRefresh;
 
-    public FragmentFolderLibrary(){
-        mReceiverForBackPressedAction=new BroadcastReceiver() {
+    public FragmentFolderLibrary() {
+        mReceiverForBackPressedAction = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (adapter!= null){
+                if (adapter != null) {
                     adapter.onStepBack();
                 }
             }
         };
-        mReceiverForLibraryRefresh=new BroadcastReceiver() {
+        mReceiverForLibraryRefresh = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 //updateUI();
-                adapter=new FolderLibraryAdapter(getContext());
+                adapter = new FolderLibraryAdapter(getContext());
                 Handler mHandler = new Handler(getContext().getMainLooper());
                 mHandler.post(new Runnable() {
                     @Override
@@ -81,16 +83,16 @@ public class FragmentFolderLibrary extends Fragment implements SwipeRefreshLayou
         };
     }
 
-    public void filter(String s){
-        if(adapter!=null) {
+    public void filter(String s) {
+        if (adapter != null) {
             adapter.filter(s);
         }
     }
 
     @Override
     public void onDestroy() {
-        if(adapter!=null)
-        adapter.clear();
+        if (adapter != null)
+            adapter.clear();
         super.onDestroy();
     }
 
@@ -106,16 +108,16 @@ public class FragmentFolderLibrary extends Fragment implements SwipeRefreshLayou
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(MyApp.getContext()).registerReceiver(mReceiverForBackPressedAction,new IntentFilter(ActivityMain.NOTIFY_BACK_PRESSED));
+        LocalBroadcastManager.getInstance(MyApp.getContext()).registerReceiver(mReceiverForBackPressedAction, new IntentFilter(ActivityMain.NOTIFY_BACK_PRESSED));
         LocalBroadcastManager.getInstance(MyApp.getContext()).registerReceiver(mReceiverForLibraryRefresh
-                ,new IntentFilter(Constants.ACTION.REFRESH_LIB));
-        Log.d("FragmentFolderLibrary", "onResume: receivers registered" );
+                , new IntentFilter(Constants.ACTION.REFRESH_LIB));
+        Log.d("FragmentFolderLibrary", "onResume: receivers registered");
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(MyApp.getContext()).unregisterReceiver(mReceiverForBackPressedAction);
         LocalBroadcastManager.getInstance(MyApp.getContext()).unregisterReceiver(mReceiverForLibraryRefresh);
@@ -142,22 +144,18 @@ public class FragmentFolderLibrary extends Fragment implements SwipeRefreshLayou
         mRecyclerView.addItemDecoration(bottomOffsetDecoration);
         adapter = new FolderLibraryAdapter(getActivity());
         mRecyclerView.setAdapter(adapter);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if (dy > 0  )
-                {
-                    ((ActivityMain)getActivity()).hideFab(true);
-                }else ((ActivityMain)getActivity()).hideFab(false);
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    ((ActivityMain) getActivity()).hideFab(true);
+                } else ((ActivityMain) getActivity()).hideFab(false);
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
-            {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                {
-                    ((ActivityMain)getActivity()).hideFab(false);
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    ((ActivityMain) getActivity()).hideFab(false);
                 }
 
                 super.onScrollStateChanged(recyclerView, newState);

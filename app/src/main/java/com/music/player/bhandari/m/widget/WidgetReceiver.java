@@ -23,19 +23,19 @@ import com.music.player.bhandari.m.MyApp;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class WidgetReceiver extends AppWidgetProvider {
@@ -68,32 +68,32 @@ public class WidgetReceiver extends AppWidgetProvider {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        Log.v(TAG,"Intent "+ intent.getAction());
+        Log.v(TAG, "Intent " + intent.getAction());
         this.context = context;
-        action=intent.getAction();
+        action = intent.getAction();
 
-        if(intent.getAction()==null){
+        if (intent.getAction() == null) {
             //launch player
-            if(MyApp.getService()==null){
+            if (MyApp.getService() == null) {
                 MusicLibrary.getInstance();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(new Intent(context, PlayerService.class).setAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET));
                 } else {
-                    context.startService(new Intent(context,PlayerService.class)
-                        .setAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET));
+                    context.startService(new Intent(context, PlayerService.class)
+                            .setAction(Constants.ACTION.LAUNCH_PLAYER_FROM_WIDGET));
                 }
 
-            }else {
+            } else {
                 //permission seek activity is used here to show splash screen
                 context.startActivity(new Intent(context, ActivityPermissionSeek.class).addFlags(FLAG_ACTIVITY_NEW_TASK));
             }
-        }else {
-            if(MyApp.getService()==null){
-                Log.v(TAG,"Widget "+ "Service is null");
+        } else {
+            if (MyApp.getService() == null) {
+                Log.v(TAG, "Widget " + "Service is null");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(new Intent(context, PlayerService.class).setAction(intent.getAction()));
                 } else {
-                    context.startService(new Intent(context,PlayerService.class));
+                    context.startService(new Intent(context, PlayerService.class));
                 }
 
                 /*try {
@@ -120,7 +120,7 @@ public class WidgetReceiver extends AppWidgetProvider {
                         }
                     }
                 }, 500);*/
-            }else {
+            } else {
                 context.startService(new Intent(context, PlayerService.class)
                         .setAction(intent.getAction()));
             }
@@ -133,10 +133,10 @@ public class WidgetReceiver extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
         Log.d("WidgetReceiver", "onUpdate: called");
-        
+
         //if player service is null, start the service
         //current song info will be updated in widget from the service itself
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             Log.d("WidgetReceiver", "onUpdate: Music service is null");
             MusicLibrary.getInstance();
             try {
@@ -144,7 +144,7 @@ public class WidgetReceiver extends AppWidgetProvider {
                 playerServiceIntent.setAction(Constants.ACTION.WIDGET_UPDATE);
                 context.startService(playerServiceIntent);
                 //context.bindService(playerServiceIntent, playerServiceConnection, Context.BIND_AUTO_CREATE);
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.d("WidgetReceiver", "onUpdate: Error in creating widget");
                 e.printStackTrace();
             }
@@ -194,7 +194,7 @@ public class WidgetReceiver extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.widget_shuffle, shuffle_p);
             views.setOnClickPendingIntent(R.id.widget_fav, fav_p);
 
-            if(MyApp.getService()!=null) {
+            if (MyApp.getService() != null) {
                 MyApp.getService().updateWidget(true);
             }
 

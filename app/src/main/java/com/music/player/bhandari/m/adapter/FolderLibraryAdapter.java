@@ -6,11 +6,15 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.content.FileProvider;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -46,32 +50,32 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdapter.MyViewHolder>
-        implements PopupMenu.OnMenuItemClickListener, FastScrollRecyclerView.SectionedAdapter, BubbleTextGetter{
+        implements PopupMenu.OnMenuItemClickListener, FastScrollRecyclerView.SectionedAdapter, BubbleTextGetter {
 
-    private LinkedHashMap<String,File> files =new LinkedHashMap<>();   //for getting file from inflated list string value
-    private ArrayList<String> headers=new ArrayList<>();   //for inflating list
+    private LinkedHashMap<String, File> files = new LinkedHashMap<>();   //for getting file from inflated list string value
+    private ArrayList<String> headers = new ArrayList<>();   //for inflating list
     private ArrayList<String> filteredHeaders = new ArrayList<>();
 
-    private static boolean isHomeFolder =true;
+    private static boolean isHomeFolder = true;
     private Context context;
     private LayoutInflater inflater;
-    private int clickedItemPosition=0;
+    private int clickedItemPosition = 0;
     private File clickedFile;
 
     private View viewParent;
@@ -83,10 +87,10 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
     private Parcelable recyclerViewState;
     private RecyclerView rv;
 
-    public FolderLibraryAdapter(Context context){
+    public FolderLibraryAdapter(Context context) {
         //create first page for folder fragment
-        this.context=context;
-        inflater=LayoutInflater.from(context);
+        this.context = context;
+        inflater = LayoutInflater.from(context);
         initializeFirstPage();
         /*if(context instanceof ActivityMain){
             recyclerView=((ActivityMain) context).findViewById(R.id.recyclerviewList);
@@ -94,24 +98,24 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         playerService = MyApp.getService();
     }
 
-    public void clear(){
+    public void clear() {
         headers.clear();
         filteredHeaders.clear();
-        inflater=null;
+        inflater = null;
         files.clear();
     }
 
-    private void initializeFirstPage(){
+    private void initializeFirstPage() {
         headers.clear();
         filteredHeaders.clear();
         files.clear();
         //list all the folders having songs
-        for(String path:MusicLibrary.getInstance().getFoldersList()){
-            if(path.equals(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+        for (String path : MusicLibrary.getInstance().getFoldersList()) {
+            if (path.equals(Environment.getExternalStorageDirectory().getAbsolutePath())) {
                 continue;
             }
             File file = new File(path);
-            if(file.canRead()){
+            if (file.canRead()) {
                 files.put(file.getName(), file);
             }
         }
@@ -126,20 +130,21 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                     headers.add(f.getName());
                 }
             }
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
         filteredHeaders.addAll(headers);
         Collections.sort(filteredHeaders);
         notifyDataSetChanged();
-        isHomeFolder =true;
+        isHomeFolder = true;
 
-        if(rv!=null && rv.getLayoutManager()!=null) rv.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        if (rv != null && rv.getLayoutManager() != null)
+            rv.getLayoutManager().onRestoreInstanceState(recyclerViewState);
     }
 
     private boolean isFileExtensionValid(File f) {
         return f.getName().endsWith("mp3") || f.getName().endsWith("wav") || f.getName().endsWith("aac") ||
-        f.getName().endsWith("flac") || f.getName().endsWith("wma") || f.getName().endsWith("m4a");
+                f.getName().endsWith("flac") || f.getName().endsWith("wma") || f.getName().endsWith("m4a");
     }
 
     private boolean isFileExtensionValid(String name) {
@@ -147,15 +152,15 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                 name.endsWith("flac") || name.endsWith("wma") || name.endsWith("m4a");
     }
 
-    public void filter (String searchQuery){
-        if(!searchQuery.equals("")){
+    public void filter(String searchQuery) {
+        if (!searchQuery.equals("")) {
             filteredHeaders.clear();
-            for(String s : headers){
-                if(s.toLowerCase().contains(searchQuery.toLowerCase())){
+            for (String s : headers) {
+                if (s.toLowerCase().contains(searchQuery.toLowerCase())) {
                     filteredHeaders.add(s);
                 }
             }
-        }else {
+        } else {
             filteredHeaders.clear();
             filteredHeaders.addAll(headers);
         }
@@ -168,24 +173,24 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         View view = inflater.inflate(R.layout.fragment_library_item, parent, false);
         viewParent = parent;
         //stub=((ViewStub)view.findViewById(R.id.stub_in_fragment_library_item)).inflate();
-        final FolderLibraryAdapter.MyViewHolder holder=new FolderLibraryAdapter.MyViewHolder (view);
+        final FolderLibraryAdapter.MyViewHolder holder = new FolderLibraryAdapter.MyViewHolder(view);
         //int color = ColorHelper.getPrimaryTextColor() ;
-        ((TextView)(view.findViewById(R.id.header))).setTextColor(ColorHelper.getPrimaryTextColor());
-        ((TextView)(view.findViewById(R.id.secondaryHeader))).setTextColor(ColorHelper.getSecondaryTextColor());
-        ((TextView)(view.findViewById(R.id.count))).setTextColor(ColorHelper.getSecondaryTextColor());
-        ((ImageView)(view.findViewById(R.id.menuPopup))).setColorFilter(ColorHelper.getSecondaryTextColor());
+        ((TextView) (view.findViewById(R.id.header))).setTextColor(ColorHelper.getPrimaryTextColor());
+        ((TextView) (view.findViewById(R.id.secondaryHeader))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((TextView) (view.findViewById(R.id.count))).setTextColor(ColorHelper.getSecondaryTextColor());
+        ((ImageView) (view.findViewById(R.id.menuPopup))).setColorFilter(ColorHelper.getSecondaryTextColor());
 
         return holder;
     }
 
-    private void refreshList(File fNavigate){
+    private void refreshList(File fNavigate) {
         files.clear();
         headers.clear();
         filteredHeaders.clear();
         //previousPath=fNavigate;
-        if(fNavigate.canRead()) {
+        if (fNavigate.canRead()) {
             for (File f : fNavigate.listFiles()) {
-                if(f.isFile() && (isFileExtensionValid(f))) {
+                if (f.isFile() && (isFileExtensionValid(f))) {
                     files.put(f.getName(), f);
                 }
             }
@@ -197,10 +202,10 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         notifyDataSetChanged();
     }
 
-    public void onStepBack(){
+    public void onStepBack() {
 
-        if(isHomeFolder){
-            if(backPressedOnce){
+        if (isHomeFolder) {
+            if (backPressedOnce) {
                 ((ActivityMain) context).finish();
                 return;
             }
@@ -226,12 +231,12 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         String fileName = filteredHeaders.get(position);
         File positionalFile = files.get(fileName);
 
-        if(fileName==null || positionalFile==null){
+        if (fileName == null || positionalFile == null) {
             return;
         }
 
         holder.title.setText(fileName);
-        if(positionalFile.isDirectory()){
+        if (positionalFile.isDirectory()) {
             holder.image.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_folder_special_black_24dp));
             try {
                 holder.secondary.setText(positionalFile.listFiles(new FilenameFilter() {
@@ -240,10 +245,10 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                         return isFileExtensionValid(name);
                     }
                 }).length + context.getString(R.string.tracks));
-            }catch (NullPointerException e) {
+            } catch (NullPointerException e) {
                 Log.d("FolderLibraryAdapter", "onBindViewHolder: ");
             }
-        }else{
+        } else {
             holder.image.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_audiotrack_black_24dp));
             holder.secondary.setText(android.text.format.Formatter.formatFileSize(MyApp.getContext(), positionalFile.length()));
         }
@@ -267,23 +272,24 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         rv = null;
     }
 
-    public void onClick(View view, int position){
+    public void onClick(View view, int position) {
         Log.d("FolderLibraryAdapter", "onClick: " + position);
         clickedItemPosition = position;
         clickedFile = files.get(filteredHeaders.get(clickedItemPosition));
-        if(clickedFile==null) return;
-        switch (view.getId()){
+        if (clickedFile == null) return;
+        switch (view.getId()) {
             case R.id.libraryItem:
-                if(clickedFile.isDirectory()) {
+                if (clickedFile.isDirectory()) {
                     //update list here
-                    if(rv.getLayoutManager() != null) recyclerViewState = rv.getLayoutManager().onSaveInstanceState();
+                    if (rv.getLayoutManager() != null)
+                        recyclerViewState = rv.getLayoutManager().onSaveInstanceState();
                     refreshList(clickedFile);
-                    isHomeFolder =false;
-                } else{
-                    if(MyApp.isLocked()){
+                    isHomeFolder = false;
+                } else {
+                    if (MyApp.isLocked()) {
                         //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                        Snackbar.make(viewParent, context.getString(R.string.music_is_locked) , Snackbar.LENGTH_SHORT).show();
-                        return ;
+                        Snackbar.make(viewParent, context.getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
+                        return;
                     }
                     Play();
                 }
@@ -295,9 +301,9 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                 inflater.inflate(R.menu.menu_tracks_by_title, popup.getMenu());
                 //popup.getMenu().removeItem(R.id.action_delete);
                 popup.getMenu().removeItem(R.id.action_edit_track_info);
-                if(clickedFile.isDirectory()) {
+                if (clickedFile.isDirectory()) {
                     popup.getMenu().removeItem(R.id.action_set_as_ringtone);
-                }else {
+                } else {
                     popup.getMenu().removeItem(R.id.action_exclude_folder);
                 }
                 popup.show();
@@ -308,14 +314,14 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        if(clickedFile==null){
+        if (clickedFile == null) {
             return false;
         }
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_play:
-                if(MyApp.isLocked()){
+                if (MyApp.isLocked()) {
                     //Toast.makeText(context,"Music is Locked!",Toast.LENGTH_SHORT).show();
-                    Snackbar.make(viewParent, context.getString(R.string.music_is_locked) , Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(viewParent, context.getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
                 Play();
@@ -341,7 +347,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             case R.id.action_set_as_ringtone:
                 String abPath = files.get(filteredHeaders.get(clickedItemPosition)).getAbsolutePath();
                 UtilityFun.SetRingtone(context, abPath
-                        ,MusicLibrary.getInstance().getIdFromFilePath(abPath));
+                        , MusicLibrary.getInstance().getIdFromFilePath(abPath));
                 break;
 
             case R.id.action_track_info:
@@ -357,12 +363,12 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                 break;
 
             case R.id.action_search_youtube:
-                UtilityFun.LaunchYoutube(context,filteredHeaders.get(clickedItemPosition));
+                UtilityFun.LaunchYoutube(context, filteredHeaders.get(clickedItemPosition));
         }
         return true;
     }
 
-    private void excludeFolder(){
+    private void excludeFolder() {
         MyApp.getPref().edit().putString(MyApp.getContext().getString(R.string.pref_excluded_folders)
                 , MyApp.getPref().getString(MyApp.getContext().getString(R.string.pref_excluded_folders), "") + clickedFile.getAbsolutePath() + ",").apply();
         try {
@@ -370,14 +376,14 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             filteredHeaders.remove(clickedFile.getName());
             headers.remove(clickedFile.getName());
             notifyItemRemoved(clickedItemPosition);
-        }catch (ArrayIndexOutOfBoundsException ignored){}
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
 
         MusicLibrary.getInstance().RefreshLibrary();
 
     }
 
-    private void setTrackInfoDialog(){
-
+    private void setTrackInfoDialog() {
 
 
         //final AlertDialog.Builder alert = new AlertDialog.Builder(context);
@@ -387,19 +393,19 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         final TextView text = new TextView(context);
         text.setTypeface(TypeFaceHelper.getTypeFace(context));
 
-        if(clickedFile.isFile()){
-            int id=MusicLibrary.getInstance().getIdFromFilePath(clickedFile.getAbsolutePath());
-            if(id!=-1) {
+        if (clickedFile.isFile()) {
+            int id = MusicLibrary.getInstance().getIdFromFilePath(clickedFile.getAbsolutePath());
+            if (id != -1) {
                 text.setText(UtilityFun.trackInfoBuild(id).toString());
-            }else {
+            } else {
                 text.setText(context.getString(R.string.no_info_available));
             }
-        }else {
+        } else {
             String info = "File path : " + clickedFile.getAbsolutePath();
             text.setText(info);
         }
 
-        text.setPadding(20, 20,20,10);
+        text.setPadding(20, 20, 20, 10);
         text.setTextSize(15);
         //text.setGravity(Gravity.CENTER);
 
@@ -415,32 +421,31 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                 .show();
     }
 
-    private void Play(){
-        if(clickedFile.isFile()) {
+    private void Play() {
+        if (clickedFile.isFile()) {
             File[] fileList = clickedFile.getParentFile().listFiles();
             ArrayList<Integer> songTitles = new ArrayList<>();
-            int i = 0, original_file_index=0;
-            for(File f:fileList){
-                if(isFileExtensionValid(f)) {
+            int i = 0, original_file_index = 0;
+            for (File f : fileList) {
+                if (isFileExtensionValid(f)) {
                     int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
                     songTitles.add(id);
-                    if(f.equals(clickedFile)){
+                    if (f.equals(clickedFile)) {
                         original_file_index = i;
                     }
                     i++;
                 }
             }
-            if(songTitles.isEmpty()){
-                Snackbar.make(viewParent, context.getString(R.string.nothing_to_play) , Snackbar.LENGTH_SHORT).show();
+            if (songTitles.isEmpty()) {
+                Snackbar.make(viewParent, context.getString(R.string.nothing_to_play), Snackbar.LENGTH_SHORT).show();
                 return;
             }
             playerService.setTrackList(songTitles);
             playerService.playAtPosition(original_file_index);
-        }
-        else {
+        } else {
             File[] fileList = clickedFile.listFiles();
             ArrayList<Integer> songTitles = new ArrayList<>();
-            if(fileList!=null) {
+            if (fileList != null) {
                 for (File f : fileList) {
                     if (isFileExtensionValid(f)) {
                         int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
@@ -448,8 +453,8 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                     }
                 }
             }
-            if(songTitles.isEmpty()){
-                Snackbar.make(viewParent, context.getString(R.string.nothing_to_play) , Snackbar.LENGTH_SHORT).show();
+            if (songTitles.isEmpty()) {
+                Snackbar.make(viewParent, context.getString(R.string.nothing_to_play), Snackbar.LENGTH_SHORT).show();
                 return;
             }
             playerService.setTrackList(songTitles);
@@ -457,40 +462,38 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         }
     }
 
-    private void AddToPlaylist(){
+    private void AddToPlaylist() {
         ArrayList<Integer> temp = new ArrayList<>();
         int[] ids;
-        if(clickedFile.isFile()) {
-            int id=MusicLibrary.getInstance().getIdFromFilePath(clickedFile.getAbsolutePath());
+        if (clickedFile.isFile()) {
+            int id = MusicLibrary.getInstance().getIdFromFilePath(clickedFile.getAbsolutePath());
             ids = new int[temp.size()];
-            for (int i=0; i < ids.length; i++)
-            {
+            for (int i = 0; i < ids.length; i++) {
                 ids[i] = temp.get(i);
             }
             UtilityFun.AddToPlaylist(context, ids);
-        }else {
+        } else {
             File[] fileList = clickedFile.listFiles();
-            for(File f:fileList){
-                if(isFileExtensionValid(f)) {
+            for (File f : fileList) {
+                if (isFileExtensionValid(f)) {
                     int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
                     temp.add(id);
                 }
             }
-            if(temp.isEmpty()){
+            if (temp.isEmpty()) {
                 //Toast.makeText(context,"Nothing to add!",Toast.LENGTH_LONG).show();
                 Snackbar.make(viewParent, "Nothing to add!", Snackbar.LENGTH_SHORT).show();
                 return;
             }
             ids = new int[temp.size()];
-            for (int i=0; i < ids.length; i++)
-            {
+            for (int i = 0; i < ids.length; i++) {
                 ids[i] = temp.get(i);
             }
             UtilityFun.AddToPlaylist(context, ids);
         }
     }
 
-    private void Share(){
+    private void Share() {
         try {
             ArrayList<Uri> files = new ArrayList<>();  //for sending multiple files
             if (clickedFile.isFile()) {
@@ -507,35 +510,35 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                 }
             }
             UtilityFun.Share(context, files, "music");
-        }catch (IllegalArgumentException e){
-            try{
+        } catch (IllegalArgumentException e) {
+            try {
                 if (clickedFile.isFile()) {
                     UtilityFun.ShareFromPath(context, clickedFile.getAbsolutePath());
                 } else {
                     throw new Exception();
                 }
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 Snackbar.make(viewParent, R.string.error_unable_to_share, Snackbar.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void AddToQ(int positionToAdd){
+    private void AddToQ(int positionToAdd) {
         //we are using same function for adding to q and playing next
         // toastString is to identify which string to disokay as toast
-        String toastString=(positionToAdd==Constants.ADD_TO_Q.AT_LAST ? context.getString(R.string.added_to_q)
-                : context.getString(R.string.playing_next) ) ;
-        if(clickedFile.isFile()) {
-            int id=MusicLibrary.getInstance().getIdFromFilePath(clickedFile.getAbsolutePath());
+        String toastString = (positionToAdd == Constants.ADD_TO_Q.AT_LAST ? context.getString(R.string.added_to_q)
+                : context.getString(R.string.playing_next));
+        if (clickedFile.isFile()) {
+            int id = MusicLibrary.getInstance().getIdFromFilePath(clickedFile.getAbsolutePath());
             playerService.addToQ(id, positionToAdd);
             /*Toast.makeText(context
                     ,toastString+title
                     ,Toast.LENGTH_SHORT).show();*/
-            Snackbar.make(viewParent, toastString+clickedFile.getName(), Snackbar.LENGTH_SHORT).show();
-        }else {
+            Snackbar.make(viewParent, toastString + clickedFile.getName(), Snackbar.LENGTH_SHORT).show();
+        } else {
             File[] fileList = clickedFile.listFiles();
-            for(File f:fileList){
-                if(isFileExtensionValid(f)) {
+            for (File f : fileList) {
+                if (isFileExtensionValid(f)) {
                     int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
                     playerService.addToQ(id, positionToAdd);
                 }
@@ -543,7 +546,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             /*Toast.makeText(context
                     ,toastString+clickedFile.getName()
                     ,Toast.LENGTH_SHORT).show();*/
-            Snackbar.make(viewParent, toastString+clickedFile.getName(), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(viewParent, toastString + clickedFile.getName(), Snackbar.LENGTH_SHORT).show();
         }
 
         //to update the to be next field in notification
@@ -551,7 +554,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
 
     }
 
-    private void Delete(){
+    private void Delete() {
 
         /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(context.getString(R.string.are_u_sure))
@@ -566,18 +569,18 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         ArrayList<File> files = new ArrayList<>();
-                        if(clickedFile.isFile()) {
+                        if (clickedFile.isFile()) {
                             files.add(clickedFile);
-                        }else {
+                        } else {
                             files.addAll(Arrays.asList(clickedFile.listFiles()));
                             files.add(clickedFile);
                         }
 
-                        if(UtilityFun.Delete(context, files, null)){
+                        if (UtilityFun.Delete(context, files, null)) {
                             deleteSuccess();
-                            Toast.makeText(context,context.getString(R.string.deleted),Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(context,context.getString(R.string.unable_to_del),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.deleted), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, context.getString(R.string.unable_to_del), Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -591,23 +594,24 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             filteredHeaders.remove(clickedFile.getName());
             headers.remove(clickedFile.getName());
             notifyItemRemoved(clickedItemPosition);
-        }catch (ArrayIndexOutOfBoundsException ignored){}
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
     }
 
     @NonNull
     @Override
     public String getSectionName(int position) {
-        return filteredHeaders.get(position).substring(0,1).toUpperCase();
+        return filteredHeaders.get(position).substring(0, 1).toUpperCase();
     }
 
     @Override
     public String getTextToShowInBubble(int pos) {
-        return filteredHeaders.get(pos).substring(0,1).toUpperCase();
+        return filteredHeaders.get(pos).substring(0, 1).toUpperCase();
     }
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView title,secondary;
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView title, secondary;
         ImageView image;
 
         MyViewHolder(View itemView) {
@@ -615,7 +619,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             title = itemView.findViewById(R.id.header);
             secondary = itemView.findViewById(R.id.secondaryHeader);
             itemView.findViewById(R.id.album_art_wrapper).setVisibility(View.INVISIBLE);
-            image= itemView.findViewById(R.id.imageVIewForFolderLib);
+            image = itemView.findViewById(R.id.imageVIewForFolderLib);
             image.setVisibility(View.VISIBLE);
             itemView.setOnClickListener(this);
             itemView.findViewById(R.id.menuPopup).setOnClickListener(this);
@@ -623,7 +627,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
 
         @Override
         public void onClick(View v) {
-            FolderLibraryAdapter.this.onClick(v,getLayoutPosition());
+            FolderLibraryAdapter.this.onClick(v, getLayoutPosition());
         }
     }
 }

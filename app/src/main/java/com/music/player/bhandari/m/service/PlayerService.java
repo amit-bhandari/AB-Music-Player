@@ -936,7 +936,7 @@ public class PlayerService extends Service implements
                     //builder.setOngoing(true);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification, FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
-                    } else{
+                    } else {
                         startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
                     }
                 } else {
