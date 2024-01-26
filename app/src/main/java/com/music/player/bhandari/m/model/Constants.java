@@ -123,35 +123,6 @@ public class Constants {
         int ASAP = 3;
         int SYSTEM_DEFAULT = 4;
         int ROBOTO = 14;
-
-        /*int ACME = 5;
-        int ACLONICA = 6;
-        int CHEERYSWASH = 7;
-        int CORBEN = 8;
-        int NOVA_R = 9;
-        int NOVA_S = 10;
-        int PACFITO = 11;
-        int PURPLEPURSE = 12;
-        int QUATICO = 13;
-        int ROBOTO = 14;
-        int ROBOTO_C = 15;
-        int ROBOTO_M = 16;
-        int TRADE_WINDS = 17;
-        int UBUNTU = 18;
-
-        int CONCERT_ONCE = 19;
-        int LATO = 20;
-        int LATO_ITALIC = 21;
-        int LORA = 22;
-        int MONTESERRAT = 23;
-        int OPEN_SANS_LIGHT = 24;
-        int OSWALD = 25;
-        int PROMPT = 26;
-        int PROMPT_MEDIUM = 27;
-        int PT_SANS_CAPTION = 28;
-        int RALEWAY = 29;
-        int SLABO = 30;
-        int SOURCE_SANS_PRO = 31;*/
     }
 
     public interface PREF_LAUNCHED_FROM {

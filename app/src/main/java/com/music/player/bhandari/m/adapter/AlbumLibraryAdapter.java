@@ -246,16 +246,8 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                 intent.putExtra("status", Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT);
                 intent.putExtra("key", key);
                 intent.putExtra("title", title.trim());
-                /*ActivityOptions options;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    options = ActivityOptions.makeSceneTransitionAnimation((ActivityMain)context
-                            , view.findViewById(R.id.thumbnail), context.getString(R.string.secondary_transition));
-                    ActivityCompat.startActivityForResult((ActivityMain)context, intent, 100, options.toBundle());
-                }else {*/
-                //((Activity) context).finish();
                 context.startActivity(intent);
                 ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                //}
                 break;
 
             case R.id.overflow:

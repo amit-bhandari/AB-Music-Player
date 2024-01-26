@@ -259,12 +259,6 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
     private String[] parseLine(String line) {
         Matcher matcher = Pattern.compile("\\[.+\\].+").matcher(line);
 
-        /*if (!matcher.matches() || line.contains("By:")) {
-            if (line.contains("[by:") && line.length() > 6)
-                this.uploader = line.substring(5, line.length() - 1);
-            return null;
-        }*/
-
         if (line.endsWith("]"))
             line += " ";
         line = line.replaceAll("\\[", "");

@@ -319,17 +319,6 @@ public class PlayerService extends Service implements
         } else {
             Log.d("PlayerService", "onStartCommand: null intent or no action in intent");
         }
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.notification_channel))
-                    .setContentTitle(getString(R.string.app_name))
-                    .setContentText("AB Music")
-                    .setAutoCancel(true);
-
-            Notification notification = builder.build();
-            startForeground(1, notification);
-
-        }*/
         return START_STICKY;
     }
 

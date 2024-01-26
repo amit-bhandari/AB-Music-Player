@@ -148,12 +148,6 @@ public class ActivityTagEditor extends AppCompatActivity implements View.OnClick
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }*/
         setTitle(getString(R.string.title_tag_editor));
 
         album_art.setOnClickListener(this);
@@ -372,40 +366,6 @@ public class ActivityTagEditor extends AppCompatActivity implements View.OnClick
                 MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         intent.setType("image/*");
         startActivityForResult(intent, 1);
-    }
-
-    /*private void deletePhoto(){
-        if(album_art!=null){
-            album_art.setImageDrawable(getResources().getDrawable(R.drawable.ic_batman_1));
-        }
-        Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
-        getContentResolver().delete(ContentUris.withAppendedId(sArtworkUri, item.getAlbumId()), null, null);
-        String customAlbumArt = Environment.getExternalStorageDirectory().getAbsolutePath()
-                +"/"+getString(R.string.album_art_dir_name)+"/"
-                +item.getAlbumId();
-        File f = new File(customAlbumArt);
-        if(f.exists()){
-            try {
-                f.delete();
-            }catch (Exception ignored){
-
-            }
-        }
-    }*/
-
-    public static void dumpIntent(Intent i) {
-
-        Bundle bundle = i.getExtras();
-        if (bundle != null) {
-            Set<String> keys = bundle.keySet();
-            Iterator<String> it = keys.iterator();
-            Log.e(Constants.TAG, "Dumping Intent start");
-            while (it.hasNext()) {
-                String key = it.next();
-                Log.e(Constants.TAG, "[" + key + "=" + bundle.get(key) + "]");
-            }
-            Log.e(Constants.TAG, "Dumping Intent end");
-        }
     }
 
     @Override

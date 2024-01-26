@@ -95,31 +95,6 @@ public class WidgetReceiver extends AppWidgetProvider {
                 } else {
                     context.startService(new Intent(context, PlayerService.class));
                 }
-
-                /*try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
-
-                /*new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        IBinder service = peekService(context, new Intent(context, PlayerService.class));
-
-                        if (service != null){
-                            PlayerService.PlayerBinder playerBinder = (PlayerService.PlayerBinder) service;
-                            PlayerService playerService = playerBinder.getTrackInfoService();
-                            MyApp.setService(playerService);
-                            context.startService(new Intent(context, PlayerService.class)
-                                    .setAction(action));
-                            Log.v(TAG,"Widget "+ action);
-                            Log.v(TAG,"Widget "+ "Service started");
-                        }else {
-                            Log.v(TAG,"Widget "+ "Service null");
-                        }
-                    }
-                }, 500);*/
             } else {
                 context.startService(new Intent(context, PlayerService.class)
                         .setAction(intent.getAction()));

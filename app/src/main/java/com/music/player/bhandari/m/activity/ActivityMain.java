@@ -287,17 +287,6 @@ public class ActivityMain extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        /*seekBar = findViewById(R.id.seekbar);
-        seekBar.setMax(100);
-        seekBar.setPadding(0,0,0,0);
-        seekBar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });*/
-
-
         // Obtain the Firebase Analytics instance.
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         //Sets whether analytics collection is enabled for this app on this device.
@@ -308,21 +297,6 @@ public class ActivityMain extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
         disableNavigationViewScrollbars();
-
-        //navigationView.setBackgroundDrawable(ColorHelper.getColoredThemeGradientDrawable());
-
-        //findViewById(R.id.app_bar_layout).setBackgroundColor(ColorHelper.getPrimaryColor());
-        //findViewById(R.id.tabs).setBackgroundColor(ColorHelper.getPrimaryColor());
-
-        //findViewById(R.id.gradientBackGroundView)
-        //      .setBackgroundDrawable(ColorHelper.GetGradientDrawable());
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            //window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            //window.setStatusBarColor(ColorHelper.getDarkPrimaryColor());
-            //window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }*/
 
         setTitle(getString(R.string.abm_title));
 
@@ -500,8 +474,6 @@ public class ActivityMain extends AppCompatActivity
     private void setTextAndIconColor() {
         songNameMiniPlayer.setTextColor(ColorHelper.getPrimaryTextColor());
         artistNameMiniPlayer.setTextColor(ColorHelper.getSecondaryTextColor());
-        /*buttonPlay.setColorFilter(ColorHelper.getPrimaryTextColor());
-        buttonNext.setColorFilter(ColorHelper.getPrimaryTextColor());*/
     }
 
     private void disableNavigationViewScrollbars() {
@@ -514,10 +486,7 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void setSystemDefaultBackground() {
-        //findViewById(R.id.image_view_view_pager).setBackgroundDrawable(ColorHelper.getBaseThemeDrawable());
         gradientOverlay.setVisibility(View.VISIBLE);
-        /*findViewById(R.id.image_view_view_pager)
-                .setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());*/
     }
 
     public void setBlurryBackgroundForMainLib() {
@@ -845,12 +814,6 @@ public class ActivityMain extends AppCompatActivity
                         ((AppBarLayout) findViewById(R.id.app_bar_layout)).setExpanded(true);
                     }
                 }
-
-                /*if (playerService.getStatus() == PlayerService.PLAYING) {
-                    startUpdateTask();
-                } else {
-                    stopUpdateTask();
-                }*/
 
             } else {
                 //this should not happen
@@ -1285,111 +1248,9 @@ public class ActivityMain extends AppCompatActivity
                 .show();
     }
 
-    /**
-     * upload lyric card photos
-     */
-    /*private void uploadPhotos(){
-        Log.d("ActivityMain", "uploadPhotos: ");
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("cardlinksNew");
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final int numberOfLinks =((int) dataSnapshot.getChildrenCount());
-
-                Executors.newSingleThreadExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-
-
-                        File dir =new File(Environment.getExternalStorageDirectory().toString() + "/upload/compressjpeg");
-
-                        File[] files = dir.listFiles();
-                        for(int i=numberOfLinks; i<files.length+numberOfLinks; i++){
-
-                            if(files[i-numberOfLinks].isDirectory()) continue;
-
-                            File thumbFile = new File(dir + "/thumb/" + files[i-numberOfLinks].getName().replace(".jpg","") + "_tn.jpg" );
-                            StorageReference uploadedFileThumb = FirebaseStorage.getInstance().getReference().child("cardimages").child(thumbFile.getName());
-                            final UploadTask uploadTaskThumb = uploadedFileThumb.putFile(Uri.fromFile(thumbFile));
-                            Log.d("ActivityMain", "run: Uploading " + thumbFile.getName());
-
-                            final String[] thumbUrl = new String[1];
-                            uploadTaskThumb.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getUploadSessionUri());
-                                    thumbUrl[0] = taskSnapshot.getDownloadUrl().toString();
-                                }
-                            });
-
-                            try {
-                                com.google.android.gms.tasks.Tasks.await(uploadTaskThumb);
-                            }catch (UnsupportedOperationException e){
-                                e.printStackTrace();
-                            }
-                            catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            }
-
-                            StorageReference uploadedFile = FirebaseStorage.getInstance().getReference().child("cardimages").child(files[i-numberOfLinks].getName());
-                            final UploadTask uploadTask = uploadedFile.putFile(Uri.fromFile(files[i-numberOfLinks]));
-                            Log.d("ActivityMain", "run: Uploading " + files[i-numberOfLinks].getName());
-
-                            final int finalI = i;
-                            uploadTask.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("ActivityMain", "onFailure: " + e.getLocalizedMessage());
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                                    Log.d("ActivityMain", "onSuccess: " + taskSnapshot.getDownloadUrl());
-                                    if(taskSnapshot.getDownloadUrl()==null)  return;
-
-                                    Map<String, String> image = new HashMap<>();
-                                    image.put("thumb", thumbUrl[0]);
-                                    image.put("image", taskSnapshot.getDownloadUrl().toString());
-                                    myRef.child(Integer.toString(finalI)).setValue(image);
-
-                                    Toast.makeText(playerService, "Uploaded : " + taskSnapshot.getDownloadUrl().toString(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                            try {
-                                com.google.android.gms.tasks.Tasks.await(uploadTask);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-*/
     private void lyricCardDialog() {
         final String link = FirebaseRemoteConfig.getInstance().getString("sample_lyric_card");
+        System.out.println("AMIT " + link);
 
         MaterialDialog dialog = new MyDialogBuilder(this)
                 .title(getString(R.string.nav_lyric_cards))

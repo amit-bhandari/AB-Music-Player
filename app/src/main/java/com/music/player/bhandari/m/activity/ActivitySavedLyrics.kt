@@ -26,6 +26,7 @@ import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
 import com.music.player.bhandari.m.databinding.ActivitySavedLyricsBinding
+import com.music.player.bhandari.m.databinding.ItemSavedLyricBinding
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio
@@ -201,26 +202,27 @@ class ActivitySavedLyrics : AppCompatActivity() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
             return MyViewHolder(
-                LayoutInflater.from(this@ActivitySavedLyrics)
-                    .inflate(R.layout.item_saved_lyric, parent, false)
+                ItemSavedLyricBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            /*holder.itemView.trackInfo?.text = lyrics[position].track
-            holder.itemView.playCount?.text = lyrics[position].artist
-            holder.itemView.delete?.isEnabled = true
+            holder.binding.trackInfo.text = lyrics[position].track
+            holder.binding.playCount.text = lyrics[position].artist
+            holder.binding.delete.isEnabled = true
             Glide.with(this@ActivitySavedLyrics)
-                    .load(artistImageUrls[lyrics[position].originalArtist])
-                    .asBitmap()
-                    .thumbnail(0.5f)
-                    //.signature(StringSignature(System.currentTimeMillis().toString()))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(object: SimpleTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                            holder.itemView.imageView.setImageBitmap(resource)
-                        }
-                    })*/
+                .load(artistImageUrls[lyrics[position].originalArtist])
+                .asBitmap()
+                .thumbnail(0.5f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap?,
+                        glideAnimation: GlideAnimation<in Bitmap>?
+                    ) {
+                        holder.binding.imageView.setImageBitmap(resource)
+                    }
+                })
         }
 
         private var lyrics: MutableList<Lyrics> = mutableListOf()
@@ -252,19 +254,12 @@ class ActivitySavedLyrics : AppCompatActivity() {
             notifyDataSetChanged()
         }
 
-        /*override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return position
-        }*/
-
-        inner class MyViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
+        inner class MyViewHolder(val binding: ItemSavedLyricBinding) :
+            RecyclerView.ViewHolder(binding.root),
+            View.OnClickListener {
 
             init {
-                v.setOnClickListener(this)
-                //v.delete.setOnClickListener(this)
+                binding.root.setOnClickListener(this)
             }
 
             override fun onClick(v: View?) {

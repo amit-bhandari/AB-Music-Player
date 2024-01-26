@@ -756,10 +756,6 @@ public class PlaylistManager {
         Cursor cursor = db.query(DbHelperUserMusicData.TABLE_NAME, new String[]{DbHelperUserMusicData.KEY_ID}
                 , where, null, null, null, DbHelperUserMusicData.KEY_COUNT + " DESC", "" + Constants.SYSTEM_PLAYLISTS.MOST_PLAYED_MAX);
 
-        /*while (cursor.moveToNext()){
-            tracklist.add(cursor.getString(0));
-        }*/
-
         while (cursor.moveToNext()) {
             for (dataItem d : MusicLibrary.getInstance().getDataItemsForTracks().values()) {
                 if (d.id == cursor.getInt(0)) {

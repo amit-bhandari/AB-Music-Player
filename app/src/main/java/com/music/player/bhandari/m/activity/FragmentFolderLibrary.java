@@ -128,16 +128,10 @@ public class FragmentFolderLibrary extends Fragment implements SwipeRefreshLayou
     public View onCreateView(@NonNull final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_library, container, false);
-        /*swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(this);*/
         mRecyclerView = layout.findViewById(R.id.recyclerviewList);
 
-        //private SwipeRefreshLayout swipeRefreshLayout;
         FastScroller fastScroller = layout.findViewById(R.id.fastscroller);
         fastScroller.setRecyclerView(mRecyclerView);
-        /*mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
-        mRecyclerView.setThumbColor(ColorHelper.getAccentColor());
-        mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/
         mRecyclerView.setLayoutManager(new FragmentFolderLibrary.WrapContentLinearLayoutManager(getContext()));
         float offsetPx = getResources().getDimension(R.dimen.bottom_offset_dp);
         BottomOffsetDecoration bottomOffsetDecoration = new BottomOffsetDecoration((int) offsetPx);

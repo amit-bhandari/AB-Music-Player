@@ -92,9 +92,6 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         this.context = context;
         inflater = LayoutInflater.from(context);
         initializeFirstPage();
-        /*if(context instanceof ActivityMain){
-            recyclerView=((ActivityMain) context).findViewById(R.id.recyclerviewList);
-        }*/
         playerService = MyApp.getService();
     }
 
@@ -531,9 +528,6 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
         if (clickedFile.isFile()) {
             int id = MusicLibrary.getInstance().getIdFromFilePath(clickedFile.getAbsolutePath());
             playerService.addToQ(id, positionToAdd);
-            /*Toast.makeText(context
-                    ,toastString+title
-                    ,Toast.LENGTH_SHORT).show();*/
             Snackbar.make(viewParent, toastString + clickedFile.getName(), Snackbar.LENGTH_SHORT).show();
         } else {
             File[] fileList = clickedFile.listFiles();
@@ -543,9 +537,6 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                     playerService.addToQ(id, positionToAdd);
                 }
             }
-            /*Toast.makeText(context
-                    ,toastString+clickedFile.getName()
-                    ,Toast.LENGTH_SHORT).show();*/
             Snackbar.make(viewParent, toastString + clickedFile.getName(), Snackbar.LENGTH_SHORT).show();
         }
 
@@ -555,11 +546,6 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
     }
 
     private void Delete() {
-
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(R.string.are_u_sure))
-                .setPositiveButton(context.getString(R.string.yes), dialogClickListener)
-                .setNegativeButton(context.getString(R.string.no), dialogClickListener).show();*/
 
         new MyDialogBuilder(context)
                 .title(context.getString(R.string.are_u_sure))

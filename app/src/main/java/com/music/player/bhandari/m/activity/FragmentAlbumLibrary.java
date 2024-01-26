@@ -124,10 +124,6 @@ public class FragmentAlbumLibrary extends Fragment implements SwipeRefreshLayout
         fastScroller = layout.findViewById(R.id.fastscroller);
         fastScroller.setRecyclerView(mRecyclerView);
 
-        /*mRecyclerView.setTrackColor(ColorHelper.getColor(R.color.colorTransparent));
-        mRecyclerView.setThumbColor(ColorHelper.getAccentColor());
-        mRecyclerView.setPopupBgColor(ColorHelper.getAccentColor());*/
-
         albumLibraryAdapter = new AlbumLibraryAdapter(getContext(), MusicLibrary.getInstance().getDataItemsForAlbums());
         albumLibraryAdapter.sort(MyApp.getPref().getInt(getString(R.string.pref_album_sort_by), Constants.SORT_BY.NAME));
 

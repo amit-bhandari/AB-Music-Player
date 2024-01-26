@@ -166,10 +166,6 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
         if (!trackList.isEmpty()) {
             playerService.setTrackList(trackList);
             playerService.playAtPosition(0);
-            /*
-            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent()
-                    .setAction(Constants.ACTION.PLAY_AT_POSITION)
-                    .putExtra("position",0));*/
         } else {
             //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();
             Snackbar.make(viewParent, context.getString(R.string.empty_play_list), Snackbar.LENGTH_SHORT).show();
@@ -228,10 +224,6 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
             }
             //to update the to be next field in notification
             MyApp.getService().PostNotification();
-
-            /*Toast.makeText(context
-                    , toastString + headers.get(position)
-                    , Toast.LENGTH_SHORT).show();*/
             Snackbar.make(viewParent, toastString + headers.get(position), Snackbar.LENGTH_SHORT).show();
         } else {
             //Toast.makeText(context,"empty playlist",Toast.LENGTH_SHORT).show();

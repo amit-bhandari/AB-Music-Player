@@ -118,25 +118,6 @@ public class ViewLyrics {
             }
         }
 
-        //lrcIndex = 0;
-
-        /*for(int i=0;i<results.size();i++) {
-            Log.v("ViewLyrics", "Lyrics " + i + " : " + results.get(i).getOriginalTrack() + " : " + results.get(i).getOriginalTrack());
-            Log.v("ViewLyrics", "Lyrics " + i + " : " + results.get(i).getURL());
-        }
-
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        /*
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                new MyDialogBuilder(MyApp.getContext())
-                        .title("title").show();
-            }
-        });*/
-
         String url;
         String foundTitle;
         String foundArtist;

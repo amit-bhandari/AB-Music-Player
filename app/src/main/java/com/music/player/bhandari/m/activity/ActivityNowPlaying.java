@@ -394,17 +394,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         sharedExit.setPathMotion(arcMotion);
         sharedExit.setInterpolator(easeInOut);
 
-        /*if (second_card != null) {
-            sharedEnter.addTarget(second_card)
-            sharedReturn.addTarget(second_card)
-        }*/
-
         getWindow().setSharedElementEnterTransition(sharedEnter);
         getWindow().setSharedElementExitTransition(sharedExit);
         postponeEnterTransition();
-        //getWindow().sharedElementEnterTransition = sharedEnter
-        //getWindow().sharedElementReturnTransition = sharedReturn
-
     }
 
     @Override
@@ -413,18 +405,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     }
 
     private void acquireWindowPowerLock(boolean acquire) {
-        /*if(acquire) {
-            if (mWakeLock != null && !mWakeLock.isHeld()) {
-                this.mWakeLock.acquire(10*60*1000L); //10 minutes
-            }
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }else {
-            if(mWakeLock!=null && mWakeLock.isHeld()) {
-                this.mWakeLock.release();
-            }
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }*/
-
         if (acquire) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
@@ -518,29 +498,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         Log.v(Constants.TAG, "DESTORY NOW PLAYING");
         //this removes any memory leak caused by handler
         mHandler.removeCallbacksAndMessages(null);
-
-        //save exit status so than we can open corresponding frag next time
-        /*switch (viewPager.getCurrentItem()){
-            case 2:
-                MyApp.getPref().edit()
-                        .putInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.LYRICS_FRAG).apply();
-                break;
-
-            case 0:
-                MyApp.getPref().edit()
-                        .putInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.ARTIST_FRAG).apply();
-                break;
-
-            case 1:
-            default:
-                MyApp.getPref().edit()
-                        .putInt(getString(R.string.pref_exit_now_playing_at),Constants.EXIT_NOW_PLAYING_AT.DISC_FRAG).apply();
-                break;
-        }*/
-
-        /*if(mWakeLock!=null && mWakeLock.isHeld()){
-            mWakeLock.release();
-        }*/
 
         super.onDestroy();
     }

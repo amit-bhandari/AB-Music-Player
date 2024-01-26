@@ -524,11 +524,6 @@ public class UtilityFun {
             }
         }
 
-        /*if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }*/
         bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(bitmap);
@@ -542,11 +537,6 @@ public class UtilityFun {
         return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
                 && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED;
     }
-
-    /*public static int getCurrentThemeId(){
-        //@todo do this in my app maybe, avoid lookup of mypref every time
-        return MyApp.getPref().getInt(MyApp.getContext().getString(R.string.pref_theme_id), 0);
-    }*/
 
 
     /**

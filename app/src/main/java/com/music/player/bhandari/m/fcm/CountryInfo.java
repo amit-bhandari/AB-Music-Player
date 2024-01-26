@@ -86,28 +86,6 @@ public class CountryInfo extends Thread {
 
                         FirebaseMessaging.getInstance().subscribeToTopic(country);
                         FirebaseMessaging.getInstance().subscribeToTopic("ab_music");
-
-                        /*FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        final DatabaseReference myRef = database.getReference("countries").child(country);
-
-                        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                try {
-                                    if (dataSnapshot.getValue() == null) {
-                                        myRef.setValue(1L);
-                                    } else {
-                                        myRef.setValue((Long) dataSnapshot.getValue() + 1L);
-                                    }
-                                } catch (Exception ignored) {
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });*/
                     } catch (Exception ignored) {
                     }
 
@@ -116,9 +94,5 @@ public class CountryInfo extends Thread {
                 }
             }
         });
-
-
     }
-
-
 }
