@@ -29,7 +29,7 @@ public class TrackItem implements Serializable {
     private String album = "";
     private String genre = "";
     private String duration = "";  //string in milliseconds
-    private int album_id;
+    private long album_id;
     private int artist_id;
 
     //default constructor
@@ -38,7 +38,7 @@ public class TrackItem implements Serializable {
     }
 
     public TrackItem(String filePath, String title, String artist, String album, String genre, String duration
-            , int album_id, int artist_id, int id) {
+            , long album_id, int artist_id, int id) {
         this.filePath = filePath;
         this.title = title;
         this.artist = artist;
@@ -48,20 +48,6 @@ public class TrackItem implements Serializable {
         this.album_id = album_id;
         this.id = id;
         this.artist_id = artist_id;
-    }
-
-
-    //if needed in case
-    public TrackItem(String filePath) {
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        Log.e("filepath", filePath);
-        mmr.setDataSource(filePath);
-        String duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-        this.title = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
-        this.artist = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
-        this.album = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
-        this.duration = (mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-        this.filePath = filePath;
     }
 
     //return in ms
@@ -139,7 +125,7 @@ public class TrackItem implements Serializable {
         this.duration = duration;
     }
 
-    public int getAlbumId() {
+    public long getAlbumId() {
         return album_id;
     }
 
@@ -149,9 +135,5 @@ public class TrackItem implements Serializable {
 
     public void setArtist_id(int artist_id) {
         this.artist_id = artist_id;
-    }
-
-    public boolean haveAlbumArt() {
-        return MusicLibrary.getInstance().getAlbumArtUri(album_id) != null;
     }
 }

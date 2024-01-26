@@ -321,7 +321,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                     @Override
                     public void run() {
                         String title = "";
-                        int key = 0;
+                        long key = 0;
                         switch (fl.getStatus()) {
                             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
                                 if (MyApp.isLocked()) {
@@ -601,7 +601,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                int album_id = filteredDataItems.get(position).album_id;
+                long album_id = filteredDataItems.get(position).album_id;
                 playerService.setTrackList(MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC));
                 break;
 
@@ -630,7 +630,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                int album_id = filteredDataItems.get(position).album_id;
+                long album_id = filteredDataItems.get(position).album_id;
                 temp = MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC);
                 ids = new int[temp.size()];
                 for (int i = 0; i < ids.length; i++) {
@@ -681,7 +681,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                int album_id = filteredDataItems.get(position).album_id;
+                long album_id = filteredDataItems.get(position).album_id;
                 for (int id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)) {
                     File file = new File(MusicLibrary.getInstance().getTrackItemFromId(id).getFilePath());
                     Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", file);
@@ -731,7 +731,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                int album_id = filteredDataItems.get(position).album_id;
+                long album_id = filteredDataItems.get(position).album_id;
                 for (int id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }

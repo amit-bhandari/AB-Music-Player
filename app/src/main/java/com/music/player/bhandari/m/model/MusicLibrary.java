@@ -242,7 +242,7 @@ public class MusicLibrary {
                                         , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
                                         , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
                                         , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
-                                        , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
+                                        , cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
                                         , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
                                         , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.YEAR))
                                         , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
@@ -331,7 +331,7 @@ public class MusicLibrary {
             }
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    dataItemsForAlbums.add(new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Albums._ID))
+                    dataItemsForAlbums.add(new dataItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID))
                             , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM))
                             , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST))
                             , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS))
@@ -449,7 +449,7 @@ public class MusicLibrary {
         return null;
     }
 
-    public ArrayList<Integer> getSongListFromAlbumIdNew(int album_id, int sort) {
+    public ArrayList<Integer> getSongListFromAlbumIdNew(long album_id, int sort) {
         ArrayList<Integer> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ALBUM_ID + "=" + album_id;
@@ -549,7 +549,7 @@ public class MusicLibrary {
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.ALBUM),
                     "",
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.DURATION),
-                    cursor.getInt(INDEX_FOR_TRACK_CURSOR.ALBUM_ID),
+                    cursor.getLong(INDEX_FOR_TRACK_CURSOR.ALBUM_ID),
                     cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)),
                     cursor.getInt(INDEX_FOR_TRACK_CURSOR._ID));
             cursor.close();
@@ -591,7 +591,7 @@ public class MusicLibrary {
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.ALBUM),
                     "",
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.DURATION),
-                    cursor.getInt(INDEX_FOR_TRACK_CURSOR.ALBUM_ID),
+                    cursor.getLong(INDEX_FOR_TRACK_CURSOR.ALBUM_ID),
                     cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)),
                     cursor.getInt(INDEX_FOR_TRACK_CURSOR._ID));
             cursor.close();
@@ -678,8 +678,8 @@ public class MusicLibrary {
         return null;
     }
 
-    public Uri getAlbumArtUri(int album_id) {
-        System.out.println("AMIT ALBUM");
+    public Uri getAlbumArtUri(long album_id) {
+        System.out.println("AMIT ALBUM " + album_id);
         Uri songCover = Uri.parse("content://media/external/audio/albumart");
         return ContentUris.withAppendedId(songCover, album_id);
     }

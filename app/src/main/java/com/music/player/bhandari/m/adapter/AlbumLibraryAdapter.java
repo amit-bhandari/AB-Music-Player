@@ -237,7 +237,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
     public void onClick(View view, int position) {
         this.position = position;
         String title;
-        int key;
+        long key;
         switch (view.getId()) {
             case R.id.card_view_album:
                 title = filteredDataItems.get(position).albumName;
@@ -286,7 +286,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
 
             case R.id.action_add_to_playlist:
                 ArrayList<Integer> temp;
-                int album_id = filteredDataItems.get(position).album_id;
+                long album_id = filteredDataItems.get(position).album_id;
                 temp = MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC);
                 int[] ids = new int[temp.size()];
                 for (int i = 0; i < ids.length; i++) {
@@ -334,7 +334,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
     }
 
     private void Play() {
-        int album_id = filteredDataItems.get(position).album_id;
+        long album_id = filteredDataItems.get(position).album_id;
         playerService.setTrackList(MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC));
         playerService.playAtPosition(0);
     }
@@ -348,7 +348,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
         //and asc for adding at last
         //this is how the function in player service is writte, deal with it
         int sortOrder = (positionToAdd == Constants.ADD_TO_Q.AT_LAST ? Constants.SORT_ORDER.ASC : Constants.SORT_ORDER.DESC);
-        int album_id = filteredDataItems.get(position).album_id;
+        long album_id = filteredDataItems.get(position).album_id;
         for (int id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, sortOrder)) {
             playerService.addToQ(id, positionToAdd);
         }

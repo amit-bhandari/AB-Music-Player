@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 public class dataItem {
 
 
-    public dataItem(int id, String title, int artist_id, String artist_name, int album_id, String albumName
+    public dataItem(int id, String title, int artist_id, String artist_name, long album_id, String albumName
             , String year, String file_path, String duration, int trackNumber) {
         if (title != null) {
             this.title = title;
@@ -68,7 +68,7 @@ public class dataItem {
     }
 
 
-    public dataItem(int id, String title, String artist_name, int numberOfTracks, String year, int artist_id) {
+    public dataItem(long id, String title, String artist_name, int numberOfTracks, String year, int artist_id) {
         this.artist_name = artist_name;
         this.artist_id = artist_id;
         if (title != null) {
@@ -100,7 +100,7 @@ public class dataItem {
     public int artist_id;
     public String artist_name = "";
 
-    public int album_id;
+    public long album_id;
     public String albumName = "";
 
     public String year = "zzzz";
