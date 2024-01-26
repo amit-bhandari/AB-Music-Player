@@ -9,27 +9,10 @@ import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -42,14 +25,25 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.BottomOffsetDecoration;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
@@ -59,19 +53,17 @@ import com.music.player.bhandari.m.adapter.AlbumLibraryAdapter;
 import com.music.player.bhandari.m.adapter.SecondaryLibraryAdapter;
 import com.music.player.bhandari.m.customViews.ExpandableTextView;
 import com.music.player.bhandari.m.model.Constants;
+import com.music.player.bhandari.m.model.MusicLibrary;
+import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.model.TrackItem;
 import com.music.player.bhandari.m.model.dataItem;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.ArtistInfo.ArtistInfo;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.DownloadArtInfoThread;
 import com.music.player.bhandari.m.service.PlayerService;
-import com.music.player.bhandari.m.model.MusicLibrary;
-import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Executors;
 
@@ -138,14 +130,12 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     private long mLastClickTime;
 
     private int status;
-    private int key = 0;  //text view on which clicked
+    private long key = 0;  //text view on which clicked
     private String title;
 
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     PlayerService playerService;
-
-    private int RC_LOGIN = 100;
 
     public ActivitySecondaryLibrary() {
     }
@@ -172,8 +162,8 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 //data changed in edit track info activity, update item
                 adapter.updateItem(position, title, artist, album);
             }
-        } catch (Exception ignored) {
-            Log.v(Constants.TAG, ignored.toString());
+        } catch (Exception e) {
+            Log.v(Constants.TAG, e.toString());
         }
         super.onNewIntent(intent);
     }
@@ -196,17 +186,9 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector) {
-            case Constants.PRIMARY_COLOR.DARK:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.GLOSSY:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.LIGHT:
-                setTheme(R.style.AppThemeLight);
-                break;
+            case Constants.PRIMARY_COLOR.DARK, Constants.PRIMARY_COLOR.GLOSSY ->
+                    setTheme(R.style.AppThemeDark);
+            case Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight);
         }
         setContentView(R.layout.activity_secondary_library);
         ButterKnife.bind(this);
@@ -225,7 +207,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
         if (getIntent() != null) {
             status = getIntent().getIntExtra("status", 0);
-            key = getIntent().getIntExtra("key", 0);
+            key = getIntent().getLongExtra("key", 0);
             title = getIntent().getStringExtra("title");
         }
         //remove _ from playlist name
@@ -243,183 +225,131 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             border.setBackgroundResource(0);
         }
 
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                switch (status) {
-                    case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-
-                        adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, MusicLibrary.getInstance()
-                                .getSongListFromArtistIdNew(key, Constants.SORT_ORDER.ASC));
-                        if (adapter.getList().isEmpty()) {
-                            break;
-                        }
-
-                        //get album list for artist
-                        final ArrayList<dataItem> data = new ArrayList<>();
-                        for (dataItem d : MusicLibrary.getInstance().getDataItemsForAlbums()) {
-                            if (d.artist_id == key) data.add(d);
-                        }
-
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mAlbumsRecyclerView.setVisibility(View.VISIBLE);
-                            }
-                        });
-                        mAlbumsRecyclerView.setAdapter(new AlbumLibraryAdapter(ActivitySecondaryLibrary.this, data));
-                        mAlbumsRecyclerView.setLayoutManager(new LinearLayoutManager(ActivitySecondaryLibrary.this, LinearLayoutManager.HORIZONTAL, false));
-                        mAlbumsRecyclerView.setNestedScrollingEnabled(false);
-
-                        TrackItem item = new TrackItem();
-                        item.setArtist_id(key);
-                        item.setArtist(title);
-                        final ArtistInfo mArtistInfo = OfflineStorageArtistBio.getArtistBioFromTrackItem(item);
-                        //second check is added to make sure internet call will happen
-                        //when user manually changes artist tag
-                        if (mArtistInfo != null && item.getArtist().trim().equals(mArtistInfo.getOriginalArtist().trim())) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    onArtInfoDownloaded(mArtistInfo);
-                                }
-                            });
-                        } else if (UtilityFun.isConnectedToInternet()) {
-                            String artist = item.getArtist();
-                            artist = UtilityFun.filterArtistString(artist);
-
-                            new DownloadArtInfoThread(ActivitySecondaryLibrary.this, artist, item).start();
-                        }
-
+        Executors.newSingleThreadExecutor().execute(() -> {
+            switch (status) {
+                case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT -> {
+                    adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, MusicLibrary.getInstance()
+                            .getSongListFromArtistIdNew(key, Constants.SORT_ORDER.ASC));
+                    if (adapter.getList().isEmpty()) {
                         break;
+                    }
 
-                    case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
-                        adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this,
-                                MusicLibrary.getInstance().getSongListFromAlbumIdNew(key, Constants.SORT_ORDER.ASC));
-                        Collections.sort(adapter.getList(), new Comparator<dataItem>() {
-                            @Override
-                            public int compare(dataItem dataItem, dataItem t1) {
-                                if (dataItem.trackNumber > t1.trackNumber) return 1;
-                                else if (dataItem.trackNumber < t1.trackNumber) return -1;
-                                else return 0;
-                            }
-                        });
-                        /*if(adapter.getList().isEmpty()) {
-                            break;
-                        }*/
-                        break;
+                    //get album list for artist
+                    final ArrayList<dataItem> data = new ArrayList<>();
+                    for (dataItem d : MusicLibrary.getInstance().getDataItemsForAlbums()) {
+                        if (d.artist_id == key) data.add(d);
+                    }
+                    handler.post(() -> mAlbumsRecyclerView.setVisibility(View.VISIBLE));
+                    mAlbumsRecyclerView.setAdapter(new AlbumLibraryAdapter(ActivitySecondaryLibrary.this, data));
+                    mAlbumsRecyclerView.setLayoutManager(new LinearLayoutManager(ActivitySecondaryLibrary.this, LinearLayoutManager.HORIZONTAL, false));
+                    mAlbumsRecyclerView.setNestedScrollingEnabled(false);
+                    TrackItem item = new TrackItem();
+                    item.setArtist_id(key);
+                    item.setArtist(title);
+                    final ArtistInfo mArtistInfo = OfflineStorageArtistBio.getArtistBioFromTrackItem(item);
+                    //second check is added to make sure internet call will happen
+                    //when user manually changes artist tag
+                    if (mArtistInfo != null && item.getArtist().trim().equals(mArtistInfo.getOriginalArtist().trim())) {
+                        handler.post(() -> onArtInfoDownloaded(mArtistInfo));
+                    } else if (UtilityFun.isConnectedToInternet()) {
+                        String artist = item.getArtist();
+                        artist = UtilityFun.filterArtistString(artist);
 
-                    case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
+                        new DownloadArtInfoThread(ActivitySecondaryLibrary.this, artist, item).start();
+                    }
+                }
+                case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT -> {
+                    adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this,
+                            MusicLibrary.getInstance().getSongListFromAlbumIdNew(key, Constants.SORT_ORDER.ASC));
+                    adapter.getList().sort(Comparator.comparingInt(dataItem -> dataItem.trackNumber));
+                }
+                case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT ->
                         adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this,
                                 MusicLibrary.getInstance().getSongListFromGenreIdNew(key, Constants.SORT_ORDER.ASC));
-                        if (adapter.getList().isEmpty()) {
-                            break;
+                case Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT -> {
+                    ArrayList<dataItem> trackList;
+                    title = title.replace(" ", "_");
+                    switch (title) {
+                        case Constants.SYSTEM_PLAYLISTS.MOST_PLAYED -> {
+                            trackList = PlaylistManager.getInstance(getApplicationContext())
+                                    .GetPlaylist(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED);
+                            adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.MOST_PLAYED);
                         }
-                        break;
-
-                    case Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT:
-                        ArrayList<dataItem> trackList;
-                        title = title.replace(" ", "_");
-                        switch (title) {
-                            case Constants.SYSTEM_PLAYLISTS.MOST_PLAYED:
-                                trackList = PlaylistManager.getInstance(getApplicationContext())
-                                        .GetPlaylist(Constants.SYSTEM_PLAYLISTS.MOST_PLAYED);
-                                adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.MOST_PLAYED);
-                                break;
-
-                            case Constants.SYSTEM_PLAYLISTS.MY_FAV:
-                                trackList = PlaylistManager.getInstance(getApplicationContext())
-                                        .GetPlaylist(Constants.SYSTEM_PLAYLISTS.MY_FAV);
-                                adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.MY_FAV);
-                                break;
-
-                            case Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED:
-                                trackList = PlaylistManager.getInstance(getApplicationContext())
-                                        .GetPlaylist(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED);
-                                adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED);
-                                break;
-
-                            case Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED:
-                                trackList = PlaylistManager.getInstance(getApplicationContext())
-                                        .GetPlaylist(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED);
-                                adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED);
-                                break;
-
-                            default:
-                                trackList = PlaylistManager.getInstance(getApplicationContext())
-                                        .GetPlaylist(title);
-                                adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, title);
-                                break;
+                        case Constants.SYSTEM_PLAYLISTS.MY_FAV -> {
+                            trackList = PlaylistManager.getInstance(getApplicationContext())
+                                    .GetPlaylist(Constants.SYSTEM_PLAYLISTS.MY_FAV);
+                            adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.MY_FAV);
                         }
-
-                        if (trackList.isEmpty()) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    fab.setImageDrawable(ContextCompat.getDrawable(ActivitySecondaryLibrary.this, R.drawable.ic_add_black_24dp));
-                                }
-                            });
+                        case Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED -> {
+                            trackList = PlaylistManager.getInstance(getApplicationContext())
+                                    .GetPlaylist(Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED);
+                            adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.RECENTLY_ADDED);
                         }
-                        break;
-                }
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (adapter != null) {
-                            mRecyclerView.setAdapter(adapter);
+                        case Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED -> {
+                            trackList = PlaylistManager.getInstance(getApplicationContext())
+                                    .GetPlaylist(Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED);
+                            adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, Constants.SYSTEM_PLAYLISTS.RECENTLY_PLAYED);
                         }
-
-                        mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(ActivitySecondaryLibrary.this));
-                        mRecyclerView.setNestedScrollingEnabled(false);
-
-                        float offsetPx = getResources().getDimension(R.dimen.bottom_offset_secondary_lib);
-                        BottomOffsetDecoration bottomOffsetDecoration = new BottomOffsetDecoration((int) offsetPx);
-                        mRecyclerView.addItemDecoration(bottomOffsetDecoration);
-
-                        border.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.INVISIBLE);
-
-                        TrackItem item = null;
-
-                        if (adapter != null && adapter.getList() != null && adapter.getList().size() > 0) {
-                            item = MusicLibrary.getInstance().getTrackItemFromId(adapter.getList().get(0).id);
-                        }
-
-                        Log.d("SecondaryLibraryActivi", "onCreate: item " + item);
-                        if (item != null) {
-                            String url = MusicLibrary.getInstance().getArtistUrls().get(item.getArtist());
-                            Log.d("SecondaryLibraryActivi", "onCreate: url " + url);
-                            if (UtilityFun.isConnectedToInternet() && url != null) {
-                                setArtistImage(url);
-                            } else {
-                                int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
-                                switch (defaultAlbumArtSetting) {
-                                    case 0:
-                                        Glide.with(ActivitySecondaryLibrary.this)
-                                                .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
-                                                .centerCrop()
-                                                .placeholder(R.drawable.ic_batman_1)
-                                                .crossFade()
-                                                .into(mainBackdrop);
-                                        break;
-
-                                    case 1:
-                                        Glide.with(ActivitySecondaryLibrary.this)
-                                                .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
-                                                .centerCrop()
-                                                .placeholder(UtilityFun.getDefaultAlbumArtDrawable())
-                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                .crossFade().diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                .into(mainBackdrop);
-                                        break;
-                                }
-
-                            }
+                        default -> {
+                            trackList = PlaylistManager.getInstance(getApplicationContext())
+                                    .GetPlaylist(title);
+                            adapter = new SecondaryLibraryAdapter(ActivitySecondaryLibrary.this, trackList, status, title);
                         }
                     }
-                });
+                    if (trackList.isEmpty()) {
+                        handler.post(() -> fab.setImageDrawable(ContextCompat.getDrawable(ActivitySecondaryLibrary.this, R.drawable.ic_add_black_24dp)));
+                    }
+                }
             }
+
+            handler.post(() -> {
+                if (adapter != null) {
+                    mRecyclerView.setAdapter(adapter);
+                }
+
+                mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(ActivitySecondaryLibrary.this));
+                mRecyclerView.setNestedScrollingEnabled(false);
+
+                float offsetPx = getResources().getDimension(R.dimen.bottom_offset_secondary_lib);
+                BottomOffsetDecoration bottomOffsetDecoration = new BottomOffsetDecoration((int) offsetPx);
+                mRecyclerView.addItemDecoration(bottomOffsetDecoration);
+
+                border.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+
+                TrackItem item = null;
+
+                if (adapter != null && adapter.getList() != null && adapter.getList().size() > 0) {
+                    item = MusicLibrary.getInstance().getTrackItemFromId(adapter.getList().get(0).id);
+                }
+
+                Log.d("SecondaryLibraryActivi", "onCreate: item " + item);
+                if (item != null) {
+                    String url = MusicLibrary.getInstance().getArtistUrls().get(item.getArtist());
+                    Log.d("SecondaryLibraryActivi", "onCreate: url " + url);
+                    if (UtilityFun.isConnectedToInternet() && url != null) {
+                        setArtistImage(url);
+                    } else {
+                        int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
+                        switch (defaultAlbumArtSetting) {
+                            case 0 -> Glide.with(ActivitySecondaryLibrary.this)
+                                    .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
+                                    .centerCrop()
+                                    .placeholder(R.drawable.ic_batman_1)
+                                    .crossFade()
+                                    .into(mainBackdrop);
+                            case 1 -> Glide.with(ActivitySecondaryLibrary.this)
+                                    .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
+                                    .centerCrop()
+                                    .placeholder(UtilityFun.getDefaultAlbumArtDrawable())
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .crossFade().diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(mainBackdrop);
+                        }
+
+                    }
+                }
+            });
         });
 
         mReceiverForMiniPLayerUpdate = new BroadcastReceiver() {
@@ -432,7 +362,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         mReceiverForDataReady = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                //updateMiniplayerUI();
                 border.setVisibility(View.VISIBLE);
             }
         };
@@ -443,27 +372,21 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
         buttonNext.setOnClickListener(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        }
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
 
         miniPlayer.setBackgroundColor(ColorHelper.getWidgetColor());
-        //collapsingToolbarLayout.setContentScrimColor(ColorHelper.Ge());
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (status == Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT && adapter.getItemCount() <= 2) {
-                    startActivity(new Intent(ActivitySecondaryLibrary.this, ActivityMain.class)
-                            .putExtra("move_to_tab", Constants.TABS.TRACKS));
+        fab.setOnClickListener(view -> {
+            if (status == Constants.FRAGMENT_STATUS.PLAYLIST_FRAGMENT && adapter.getItemCount() <= 2) {
+                startActivity(new Intent(ActivitySecondaryLibrary.this, ActivityMain.class)
+                        .putExtra("move_to_tab", Constants.TABS.TRACKS));
+            } else {
+                if (adapter.getItemCount() <= 0) {
+                    Toast.makeText(ActivitySecondaryLibrary.this, "Empty Track List", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (adapter.getItemCount() <= 0) {
-                        Toast.makeText(ActivitySecondaryLibrary.this, "Empty Track List", Toast.LENGTH_SHORT).show();
-                    } else {
-                        adapter.shuffleAll();
-                    }
+                    adapter.shuffleAll();
                 }
             }
         });
@@ -478,8 +401,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         songNameMiniPlayer.setTextColor(ColorHelper.getPrimaryTextColor());
         artistNameMiniPlayer.setTextColor(ColorHelper.getSecondaryTextColor());
         artistBio.setTextColor(ColorHelper.getPrimaryTextColor());
-        /*buttonPlay.setColorFilter(ColorHelper.getPrimaryTextColor());
-        buttonNext.setColorFilter(ColorHelper.getPrimaryTextColor());*/
     }
 
     private void setArtistImage(String url) {
@@ -512,58 +433,51 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
                     int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
                     switch (defaultAlbumArtSetting) {
-                        case 0:
-                            request.listener(new RequestListener<Uri, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            //Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if (UtilityFun.isConnectedToInternet() &&
-                                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if (url != null)
-                                                    request.load(Uri.parse(url))
-                                                            .into(albumArtIv);
-                                                return true;
-                                            }
-                                            return false;
+                        case 0 -> request.listener(new RequestListener<>() {
+                                    @Override
+                                    public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        if (UtilityFun.isConnectedToInternet() &&
+                                                !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
+                                            final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
+                                            if (url != null)
+                                                request.load(Uri.parse(url))
+                                                        .into(albumArtIv);
+                                            return true;
                                         }
+                                        return false;
+                                    }
 
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            return false;
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .placeholder(R.drawable.ic_batman_1);
+                        case 1 -> request.listener(new RequestListener<>() {
+                                    @Override
+                                    public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        //Log.d("AlbumLibraryAdapter", "onException: ");
+                                        if (UtilityFun.isConnectedToInternet() &&
+                                                !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
+                                            final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
+                                            if (url != null)
+                                                request.load(Uri.parse(url))
+                                                        .into(albumArtIv);
+                                            return true;
                                         }
-                                    })
-                                    .placeholder(R.drawable.ic_batman_1);
-                            break;
+                                        return false;
+                                    }
 
-                        case 1:
-                            request.listener(new RequestListener<Uri, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            //Log.d("AlbumLibraryAdapter", "onException: ");
-                                            if (UtilityFun.isConnectedToInternet() &&
-                                                    !MyApp.getPref().getBoolean(getString(R.string.pref_data_saver), false)) {
-                                                final String url = MusicLibrary.getInstance().getArtistUrls().get(playerService.getCurrentTrack().getArtist());
-                                                if (url != null)
-                                                    request.load(Uri.parse(url))
-                                                            .into(albumArtIv);
-                                                return true;
-                                            }
-                                            return false;
-                                        }
-
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            return false;
-                                        }
-                                    })
-                                    .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
-                            break;
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .placeholder(UtilityFun.getDefaultAlbumArtDrawable());
                     }
 
                     request.into(albumArtIv);
 
-                    //albumArtIv.setImageBitmap(playerService.getAlbumArt());
                     if (playerService.getStatus() == PlayerService.PLAYING) {
                         buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
                     } else {
@@ -572,7 +486,6 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                     songNameMiniPlayer.setText(playerService.getCurrentTrack().getTitle());
                     artistNameMiniPlayer.setText(playerService.getCurrentTrack().getArtist());
                     ((AppBarLayout) findViewById(R.id.app_bar_layout)).setExpanded(true);
-                    //mHandler.post(getDominantColorRunnable());
                 }
             } else {
                 //this should not happen
@@ -593,55 +506,41 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
         }
 
         switch (view.getId()) {
-            case R.id.mini_player:
+            case R.id.mini_player -> {
                 Intent intent = new Intent(getApplicationContext(), ActivityNowPlaying.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 ActivityOptions options;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    options = ActivityOptions.makeSceneTransitionAnimation(this, albumArtIv, getString(R.string.transition));
-                    ActivityCompat.startActivityForResult(this, intent, RC_LOGIN, options.toBundle());
-                } else {
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.abc_slide_in_bottom, android.R.anim.fade_out);
-                }
+                options = ActivityOptions.makeSceneTransitionAnimation(this, albumArtIv, getString(R.string.transition));
+                int RC_LOGIN = 100;
+                ActivityCompat.startActivityForResult(this, intent, RC_LOGIN, options.toBundle());
                 Log.v(Constants.TAG, "Launch now playing Jarvis");
-                break;
-
-            case R.id.play_pause_mini_player:
+            }
+            case R.id.play_pause_mini_player -> {
                 if (playerService.getCurrentTrack() == null) {
                     Toast.makeText(this, getString(R.string.nothing_to_play), Toast.LENGTH_LONG).show();
                     return;
                 }
-
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
                 playerService.play();
                 playerService.PostNotification();
-
                 if (playerService.getStatus() == PlayerService.PLAYING) {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_pause_black_24dp));
                 } else {
                     buttonPlay.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_play_arrow_black_24dp));
                 }
-                /*
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent()
-                        .setAction(Constants.ACTION.PLAY_PAUSE_ACTION));*/
-                break;
-
-            case R.id.next_mini_plaayrer:
+            }
+            case R.id.next_mini_plaayrer -> {
                 if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
                 playerService.nextTrack();
                 updateMiniplayerUI();
-                /*
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent()
-                        .setAction(Constants.ACTION.NEXT_ACTION));*/
                 Log.v(Constants.TAG, "next track please Jarvis");
-                break;
+            }
         }
     }
 
@@ -665,22 +564,16 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
+            case android.R.id.home -> {
                 onBackPressed();
                 return true;
-
-            case R.id.action_settings:
-                startActivity(new Intent(this, ActivitySettings.class).putExtra("ad", true));
-                break;
-
-            case R.id.action_sleep_timer:
-                setSleepTimerDialog(this);
-                break;
-
-            case R.id.action_equ:
+            }
+            case R.id.action_settings ->
+                    startActivity(new Intent(this, ActivitySettings.class).putExtra("ad", true));
+            case R.id.action_sleep_timer -> setSleepTimerDialog(this);
+            case R.id.action_equ -> {
                 Intent intent = new Intent(AudioEffect
                         .ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-
                 if (MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
                         && (intent.resolveActivity(getPackageManager()) != null)) {
                     try {
@@ -696,7 +589,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                         Snackbar.make(rootView, R.string.error_equ_not_supported, Snackbar.LENGTH_SHORT).show();
                     }
                 }
-                break;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -722,14 +615,11 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
             text.setText(stringTemp);
 
             builder.neutralText(context.getString(R.string.main_act_sleep_timer_neu))
-                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), 0).apply();
-                            playerService.setSleepTimer(0, false);
-                            //Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-                            Snackbar.make(rootView, context.getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_SHORT).show();
-                        }
+                    .onNeutral((dialog, which) -> {
+                        MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), 0).apply();
+                        playerService.setSleepTimer(0, false);
+                        //Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
+                        Snackbar.make(rootView, context.getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_SHORT).show();
                     });
         }
         text.setPadding(0, 10, 0, 0);
@@ -765,18 +655,15 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
                 .title(context.getString(R.string.main_act_sleep_timer_title))
                 .positiveText(context.getString(R.string.okay))
                 .negativeText(context.getString(R.string.cancel))
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if (seek.getProgress() != 0) {
-                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), seek.getProgress()).apply();
-                            playerService.setSleepTimer(seek.getProgress(), true);
-                            String temp = context.getString(R.string.sleep_timer_successfully_set)
-                                    + seek.getProgress()
-                                    + context.getString(R.string.main_act_sleep_timer_status_minutes);
-                            //Toast.makeText(context, temp, Toast.LENGTH_LONG).show();
-                            Snackbar.make(rootView, temp, Snackbar.LENGTH_SHORT).show();
-                        }
+                .onPositive((dialog, which) -> {
+                    if (seek.getProgress() != 0) {
+                        MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), seek.getProgress()).apply();
+                        playerService.setSleepTimer(seek.getProgress(), true);
+                        String temp = context.getString(R.string.sleep_timer_successfully_set)
+                                + seek.getProgress()
+                                + context.getString(R.string.main_act_sleep_timer_status_minutes);
+                        //Toast.makeText(context, temp, Toast.LENGTH_LONG).show();
+                        Snackbar.make(rootView, temp, Snackbar.LENGTH_SHORT).show();
                     }
                 })
                 .customView(linear, true)
@@ -828,27 +715,12 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
-            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-            case KeyEvent.KEYCODE_MEDIA_PAUSE:
-            case KeyEvent.KEYCODE_MEDIA_PLAY:
-                playerService.play();
-                break;
-
-            case KeyEvent.KEYCODE_MEDIA_NEXT:
-                playerService.nextTrack();
-                break;
-
-            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                playerService.prevTrack();
-                break;
-
-            case KeyEvent.KEYCODE_MEDIA_STOP:
-                playerService.stop();
-                break;
-
-            case KeyEvent.KEYCODE_BACK:
-                onBackPressed();
-                break;
+            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY ->
+                    playerService.play();
+            case KeyEvent.KEYCODE_MEDIA_NEXT -> playerService.nextTrack();
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS -> playerService.prevTrack();
+            case KeyEvent.KEYCODE_MEDIA_STOP -> playerService.stop();
+            case KeyEvent.KEYCODE_BACK -> onBackPressed();
         }
 
         return false;
@@ -865,7 +737,7 @@ public class ActivitySecondaryLibrary extends AppCompatActivity implements View.
     }
 
     //for catching exception generated by recycler view which was causing abend, no other way to handle this
-    class WrapContentLinearLayoutManager extends LinearLayoutManager {
+    static class WrapContentLinearLayoutManager extends LinearLayoutManager {
         WrapContentLinearLayoutManager(Context context) {
             super(context);
         }

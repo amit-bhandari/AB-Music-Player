@@ -30,7 +30,7 @@ public class TrackItem implements Serializable {
     private String genre = "";
     private String duration = "";  //string in milliseconds
     private long album_id;
-    private int artist_id;
+    private long artist_id;
 
     //default constructor
     public TrackItem() {
@@ -129,11 +129,11 @@ public class TrackItem implements Serializable {
         return album_id;
     }
 
-    public int getArtist_id() {
+    public long getArtist_id() {
         return artist_id;
     }
 
-    public void setArtist_id(int artist_id) {
+    public void setArtist_id(long artist_id) {
         this.artist_id = artist_id;
     }
 }

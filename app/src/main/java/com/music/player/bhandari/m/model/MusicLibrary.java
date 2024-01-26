@@ -417,7 +417,7 @@ public class MusicLibrary {
         return trackMap;
     }
 
-    public ArrayList<Integer> getSongListFromArtistIdNew(int artist_id, int sort) {
+    public ArrayList<Integer> getSongListFromArtistIdNew(long artist_id, int sort) {
         ArrayList<Integer> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ARTIST_ID + "=" + artist_id;
@@ -450,6 +450,7 @@ public class MusicLibrary {
     }
 
     public ArrayList<Integer> getSongListFromAlbumIdNew(long album_id, int sort) {
+        System.out.println("AMIT getSongListFromAlbumIdNew " + album_id + " " + sort);
         ArrayList<Integer> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ALBUM_ID + "=" + album_id;
@@ -481,7 +482,7 @@ public class MusicLibrary {
         return null;
     }
 
-    public ArrayList<Integer> getSongListFromGenreIdNew(int genre_id, int sort) {
+    public ArrayList<Integer> getSongListFromGenreIdNew(long genre_id, int sort) {
         ArrayList<Integer> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", genre_id);
         String[] projection = new String[]{MediaStore.Audio.Media.TITLE,
@@ -679,7 +680,6 @@ public class MusicLibrary {
     }
 
     public Uri getAlbumArtUri(long album_id) {
-        System.out.println("AMIT ALBUM " + album_id);
         Uri songCover = Uri.parse("content://media/external/audio/albumart");
         return ContentUris.withAppendedId(songCover, album_id);
     }
