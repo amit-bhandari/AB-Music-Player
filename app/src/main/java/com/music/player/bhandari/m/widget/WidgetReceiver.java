@@ -153,37 +153,37 @@ public class WidgetReceiver extends AppWidgetProvider {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
             Intent intent = new Intent(context, WidgetReceiver.class);
-            PendingIntent activity_p = PendingIntent.getBroadcast(context, 0, intent, 0);
+            PendingIntent activity_p = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
 
             Intent previousIntent = new Intent(context, WidgetReceiver.class);
             previousIntent.setAction(Constants.ACTION.PREV_ACTION);
             PendingIntent prev_p = PendingIntent.getBroadcast(context, 0,
-                    previousIntent, 0);
+                    previousIntent, PendingIntent.FLAG_MUTABLE);
 
             Intent playIntent = new Intent(context, WidgetReceiver.class);
             playIntent.setAction(Constants.ACTION.PLAY_PAUSE_ACTION);
             PendingIntent play_pause_p = PendingIntent.getBroadcast(context, 0,
-                    playIntent, 0);
+                    playIntent, PendingIntent.FLAG_MUTABLE);
 
             Intent nextIntent = new Intent(context, WidgetReceiver.class);
             nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
             PendingIntent next_p = PendingIntent.getBroadcast(context, 0,
-                    nextIntent, 0);
+                    nextIntent, PendingIntent.FLAG_MUTABLE);
 
             Intent shuffleIntent = new Intent(context, WidgetReceiver.class);
             shuffleIntent.setAction(Constants.ACTION.SHUFFLE_WIDGET);
             PendingIntent shuffle_p = PendingIntent.getBroadcast(context, 0,
-                    shuffleIntent, 0);
+                    shuffleIntent, PendingIntent.FLAG_MUTABLE);
 
             Intent repeatIntent = new Intent(context, WidgetReceiver.class);
             repeatIntent.setAction(Constants.ACTION.REPEAT_WIDGET);
             PendingIntent repeat_p = PendingIntent.getBroadcast(context, 0,
-                    repeatIntent, 0);
+                    repeatIntent, PendingIntent.FLAG_MUTABLE);
 
             Intent favIntent = new Intent(context, WidgetReceiver.class);
             favIntent.setAction(Constants.ACTION.FAV_WIDGET);
             PendingIntent fav_p = PendingIntent.getBroadcast(context, 0,
-                    favIntent, 0);
+                    favIntent, PendingIntent.FLAG_MUTABLE);
 
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.wigdet);
             views.setOnClickPendingIntent(R.id.root_view_widget, activity_p);

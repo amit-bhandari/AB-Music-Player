@@ -29,7 +29,6 @@
     <string name="nav_website">Посетить сайт</string>
     <string name="nav_settings">Настройки</string>
     <string name="nav_logout">Выйти</string>
-    <string name="nav_login">зарегистрироваться</string>
     <string name="menu_search">Поиск</string>
     <string name="menu_sort_by">Сортировка</string>
     <string name="action_play">Воспроизвести</string>

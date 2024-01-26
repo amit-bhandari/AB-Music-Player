@@ -221,7 +221,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
             notificationIntent.putExtra("from_notif", true);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent contentIntent = PendingIntent.getActivity(MyApp.getContext(), requestCode,
-                    notificationIntent, 0);
+                    notificationIntent, PendingIntent.FLAG_MUTABLE);
 
             builder.setContentIntent(contentIntent);
 
@@ -241,7 +241,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
             notificationIntent.putExtra("from_notif", true);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent contentIntent = PendingIntent.getActivity(MyApp.getContext(), requestCode,
-                    notificationIntent, 0);
+                    notificationIntent, PendingIntent.FLAG_MUTABLE);
 
             builder.setContentIntent(contentIntent);
 
@@ -252,7 +252,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
             Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
             notificationIntent.setData(Uri.parse(map.get("link")));
             PendingIntent contentIntent = PendingIntent.getActivity(MyApp.getContext(), 0,
-                    notificationIntent, 0);
+                    notificationIntent, PendingIntent.FLAG_MUTABLE);
 
             builder.setContentIntent(contentIntent);
 
@@ -268,7 +268,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
             notificationIntent.putExtra("from_notif", true);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent contentIntent = PendingIntent.getActivity(MyApp.getContext(), requestCode,
-                    notificationIntent, 0);
+                    notificationIntent, PendingIntent.FLAG_MUTABLE);
 
             builder.setContentIntent(contentIntent);
         }
@@ -278,13 +278,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
                     .setAction(ALREADY_RATED);
             action1Intent.putExtra("from_notif", true);
             PendingIntent alreadyRatedIntent = PendingIntent.getService(MyApp.getContext(), 20,
-                    action1Intent, PendingIntent.FLAG_ONE_SHOT);
+                    action1Intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_MUTABLE);
 
             Intent action2Intent = new Intent(MyApp.getContext(), NotificationActionService.class)
                     .setAction(RATE_NOW);
             action2Intent.putExtra("from_notif", true);
             PendingIntent rateNowIntent = PendingIntent.getService(MyApp.getContext(), 20,
-                    action2Intent, PendingIntent.FLAG_ONE_SHOT);
+                    action2Intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_MUTABLE);
 
             builder.addAction(new NotificationCompat.Action(R.drawable.ic_close_white_24dp,"Rate now!", rateNowIntent));
             builder.addAction(new NotificationCompat.Action(R.drawable.ic_close_white_24dp,"Already rated", alreadyRatedIntent));

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +14,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -45,19 +48,19 @@ import butterknife.OnClick;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * <a href="http://www.apache.org/licenses/LICENSE-2.0">...</a>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -87,25 +90,17 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
         }
 
         ColorHelper.setStatusBarGradiant(this);
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-        switch (themeSelector){
-            case Constants.PRIMARY_COLOR.DARK:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.GLOSSY:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.LIGHT:
-                setTheme(R.style.AppThemeLight);
-                break;
+        switch (themeSelector) {
+            case Constants.PRIMARY_COLOR.DARK, Constants.PRIMARY_COLOR.GLOSSY ->
+                    setTheme(R.style.AppThemeDark);
+            case Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight);
         }
         setContentView(R.layout.activity_invite);
         ButterKnife.bind(this);
@@ -119,24 +114,18 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }*/
-
         List<InvitationItem> items = GetInvitedItems();
-        if(items!=null && items.size()!=0){
+        if (items != null && items.size() != 0) {
             invitedPeopleLayout.setVisibility(View.VISIBLE);
             inviteButtonLayout.setVisibility(View.INVISIBLE);
             setUpRecyclerView();
-        }else {
+        } else {
             invitedPeopleLayout.setVisibility(View.INVISIBLE);
             inviteButtonLayout.setVisibility(View.VISIBLE);
         }
@@ -148,7 +137,7 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
         String json = MyApp.getPref().getString(getString(R.string.pref_sent_invittions), "");
         List<InvitationItem> items = new Gson().fromJson(json, new TypeToken<List<InvitationItem>>() {
         }.getType());
-        if(items==null){
+        if (items == null) {
             items = new ArrayList<>();
         }
         return items;
@@ -159,7 +148,7 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
     }
 
     @OnClick(R.id.invite_button)
-    void invite(){
+    void invite() {
         Intent intent = new AppInviteInvitation.IntentBuilder("Send invitation for AB Music")
                 .setMessage("I have been using this amazing music player with instant lyrics feature, Give it a try.")
                 .setDeepLink(Uri.parse("https://ddhk8.app.goo.gl/H3Ed"))
@@ -169,11 +158,11 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
     }
 
     @OnClick(R.id.invite_more_button)
-    void inviteMore(){
+    void inviteMore() {
         invite();
     }
 
-    private void setUpRecyclerView(){
+    private void setUpRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
@@ -209,17 +198,15 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onRefresh() {
-        if(adapter!=null){
+        if (adapter != null) {
             adapter.refreshInvitationStatus();
         }
     }
@@ -228,42 +215,44 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
+
     class SentInvitationAdapter extends RecyclerView.Adapter<SentInvitationAdapter.MyViewHolder> {
 
         private List<InvitationItem> invitationItems;
 
-        private SentInvitationAdapter(){
+        private SentInvitationAdapter() {
             refreshInvitationStatus();
         }
 
-        private void refreshInvitationStatus(){
+        private void refreshInvitationStatus() {
             invitationItems = GetInvitedItems();
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             final DatabaseReference myRef = database.getReference("invites");
 
             int position = 0;
-            for(final InvitationItem invitationItem: invitationItems){
+            for (final InvitationItem invitationItem : invitationItems) {
                 final int finalPosition = position;
                 ValueEventListener listener = new ValueEventListener() {
-                   int pos = finalPosition;
+                    final int pos = finalPosition;
+
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if(dataSnapshot.getValue()==null) return;
+                        if (dataSnapshot.getValue() == null) return;
 
-                        if(UtilityFun.isAdsRemoved()) {
+                        if (UtilityFun.isAdsRemoved()) {
                             finish();
                             return;
                         }
 
-                        boolean status = (boolean)dataSnapshot.getValue();
+                        boolean status = (boolean) dataSnapshot.getValue();
                         //remove ads and exit the activity
-                        if(status){
+                        if (status) {
                             MyApp.getPref().edit().putBoolean(getString(R.string.pref_remove_ads_after_payment), true).apply();
                             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("referrals_installs");
                             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     try {
                                         if (dataSnapshot.getValue() == null) {
                                             ref.setValue(1L);
@@ -275,38 +264,27 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
                                 }
 
                                 @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                 }
                             });
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(), getString(R.string.ads_removed),Toast.LENGTH_LONG).show();
-                                    Toast.makeText(getApplicationContext(), getString(R.string.ads_still_showing),Toast.LENGTH_LONG).show();
-                                }
+                            handler.post(() -> {
+                                Toast.makeText(getApplicationContext(), getString(R.string.ads_removed), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.ads_still_showing), Toast.LENGTH_LONG).show();
                             });
                             finish();
                         }
                         invitationItems.get(pos).invitationAccepted = status;
 
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                notifyItemChanged(pos);
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
+                        handler.post(() -> {
+                            notifyItemChanged(pos);
+                            swipeRefreshLayout.setRefreshing(false);
                         });
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(ActivityInvite.this, "Error while retrieving invitation status, write me if problem persists", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        handler.post(() -> Toast.makeText(ActivityInvite.this, "Error while retrieving invitation status, write me if problem persists", Toast.LENGTH_SHORT).show());
                     }
                 };
                 myRef.child(invitationItem.invitationId).addListenerForSingleValueEvent(listener);
@@ -314,8 +292,9 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
             }
         }
 
+        @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.item_invite, parent, false);
             return new MyViewHolder(view);
@@ -324,10 +303,10 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
 
-            holder.invitationId.setText(invitation + (position+1));
-            if(invitationItems.get(position).invitationAccepted) {
+            holder.invitationId.setText(invitation + (position + 1));
+            if (invitationItems.get(position).invitationAccepted) {
                 holder.status.setImageDrawable(getResources().getDrawable(R.drawable.ic_cloud_done_black_24dp));
-            }else {
+            } else {
                 holder.status.setImageDrawable(getResources().getDrawable(R.drawable.ic_access_time_black_24dp));
             }
         }
@@ -337,7 +316,7 @@ public class ActivityInvite extends AppCompatActivity implements SwipeRefreshLay
             return invitationItems.size();
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder{
+        class MyViewHolder extends RecyclerView.ViewHolder {
             @BindView(R.id.invite_id)
             TextView invitationId;
 

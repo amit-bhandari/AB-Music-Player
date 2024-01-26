@@ -30,17 +30,4 @@
         android:title="@string/nav_website"
         app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/nav_call_for_help"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/action_call_for_help" />
-
-    <item
-        android:id="@+id/action_support_dev"
-        android:orderInCategory="100"
-        android:title="@string/action_support_dev"
-        app:showAsAction="never" />
-
-
 </menu>

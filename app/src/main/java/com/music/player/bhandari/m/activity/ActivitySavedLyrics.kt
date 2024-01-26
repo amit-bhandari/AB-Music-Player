@@ -25,13 +25,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.music.player.bhandari.m.MyApp
 import com.music.player.bhandari.m.R
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper
+import com.music.player.bhandari.m.databinding.ActivitySavedLyricsBinding
 import com.music.player.bhandari.m.model.Constants
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageLyrics
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_saved_lyrics.*
-import kotlinx.android.synthetic.main.item_saved_lyric.view.*
 import java.io.Serializable
 import java.util.*
 import java.util.concurrent.Executors
@@ -46,6 +45,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
     val adapter = SavedLyricsAdapter()
     var artistImageUrls: HashMap<String, String> = hashMapOf()
     val handler = Handler(Looper.getMainLooper())
+    lateinit var binding: ActivitySavedLyricsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ColorHelper.setStatusBarGradiant(this)
@@ -60,7 +60,8 @@ class ActivitySavedLyrics: AppCompatActivity() {
         }
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_saved_lyrics)
+        binding = ActivitySavedLyricsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar_)
         setSupportActionBar(toolbar)
@@ -72,8 +73,8 @@ class ActivitySavedLyrics: AppCompatActivity() {
             supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
 
-        recyclerViewSavedLyrics.adapter = adapter
-        recyclerViewSavedLyrics.layoutManager = LinearLayoutManager(this)
+        binding.recyclerViewSavedLyrics.adapter = adapter
+        binding.recyclerViewSavedLyrics.layoutManager = LinearLayoutManager(this)
 
         title = getString(R.string.nav_saved_lyrics)
 
@@ -84,11 +85,11 @@ class ActivitySavedLyrics: AppCompatActivity() {
             artistImageUrls = OfflineStorageArtistBio.getArtistImageUrls()
             adapter.setLyrics(OfflineStorageLyrics.getAllSavedLyrics())
             handler.post {
-                progressBarSavedLyrics.visibility =View.GONE
+                binding.progressBarSavedLyrics.visibility =View.GONE
                 if(adapter.isEmpty()){
-                    emptyLyrics.visibility = View.VISIBLE
+                    binding.emptyLyrics.visibility = View.VISIBLE
                 }else{
-                    recyclerViewSavedLyrics.visibility = View.VISIBLE
+                    binding.recyclerViewSavedLyrics.visibility = View.VISIBLE
                 }
                 adapter.notifyDataSetChanged()
             }
@@ -189,7 +190,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            holder.itemView.trackInfo?.text = lyrics[position].track
+            /*holder.itemView.trackInfo?.text = lyrics[position].track
             holder.itemView.playCount?.text = lyrics[position].artist
             holder.itemView.delete?.isEnabled = true
             Glide.with(this@ActivitySavedLyrics)
@@ -202,7 +203,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
                         override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
                             holder.itemView.imageView.setImageBitmap(resource)
                         }
-                    })
+                    })*/
         }
 
         private var lyrics: MutableList<Lyrics> = mutableListOf()
@@ -246,7 +247,7 @@ class ActivitySavedLyrics: AppCompatActivity() {
 
             init {
                 v.setOnClickListener(this)
-                v.delete.setOnClickListener(this)
+                //v.delete.setOnClickListener(this)
             }
 
             override fun onClick(v: View?) {

@@ -18,21 +18,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import androidx.annotation.NonNull;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.internal.NavigationMenuView;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager.widget.ViewPager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.appcompat.view.ActionMode;
-import androidx.appcompat.widget.PopupMenu;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -40,17 +25,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
@@ -63,6 +42,22 @@ import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager.widget.ViewPager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -78,32 +73,34 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.StringSignature;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.internal.NavigationMenuView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 import com.music.player.bhandari.m.UIElementHelper.TypeFaceHelper;
 import com.music.player.bhandari.m.customViews.RoundedImageView;
 import com.music.player.bhandari.m.model.Constants;
+import com.music.player.bhandari.m.model.MusicLibrary;
+import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
-import com.music.player.bhandari.m.model.MusicLibrary;
-import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.model.PlaylistManager;
 import com.music.player.bhandari.m.utils.SignUp;
 import com.music.player.bhandari.m.utils.UtilityFun;
-
 
 import java.io.File;
 import java.util.ArrayList;
@@ -339,7 +336,7 @@ public class ActivityMain extends AppCompatActivity
         mReceiverForLibraryRefresh=new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                //updateUI();
+                updateUI(true);
                 if(MusicLibrary.getInstance().getDefaultTracklistNew().isEmpty()){
                     Snackbar.make(rootView, getString(R.string.main_act_empty_lib), Snackbar.LENGTH_SHORT).show();
                 }
@@ -485,15 +482,6 @@ public class ActivityMain extends AppCompatActivity
 
         firstTimeInfoManage();
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(MyApp.getContext())
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
         setTextAndIconColor();
     }
 
@@ -506,7 +494,7 @@ public class ActivityMain extends AppCompatActivity
 
     private void disableNavigationViewScrollbars() {
         if (navigationView != null) {
-            NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
+            @SuppressLint("RestrictedApi") NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
             if (navigationMenuView != null) {
                 navigationMenuView.setVerticalScrollBarEnabled(false);
             }
@@ -843,7 +831,6 @@ public class ActivityMain extends AppCompatActivity
                     if(expandNeeded) {
                         ((AppBarLayout) findViewById(R.id.app_bar_layout)).setExpanded(true);
                     }
-
                 }
 
                 /*if (playerService.getStatus() == PlayerService.PLAYING) {
@@ -1257,17 +1244,11 @@ public class ActivityMain extends AppCompatActivity
             setRateDialog();
         } else if(id==R.id.nav_website){
             openUrl(Uri.parse(WEBSITE));
-        } else if(id==R.id.nav_signup){
-            signIn();
-        } else if(id==R.id.nav_logout){
-            signOut();
         } else if(id==R.id.nav_explore_lyrics){
             startActivity(new Intent(this, ActivityExploreLyrics.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if(id==R.id.nav_dev_message){
             devMessageDialog();
-        } else if(id==R.id.nav_instagram){
-            openUrl(Uri.parse(INSTA_WEBSITE));
         } else if(id == R.id.nav_lyric_card){
             lyricCardDialog();
         } else if(id==192){
@@ -1692,31 +1673,6 @@ public class ActivityMain extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        loginSilently();
-    }
-
-    private void loginSilently() {
-        //login silently to google
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        if (opr.isDone()) {
-            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
-            // and the GoogleSignInResult will be available instantly.
-            Log.d(Constants.TAG, "Got cached sign-in");
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result, false);
-        } else {
-            // If the user has not previously signed in on this device or the sign-in has expired,
-            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-            // single sign-on will occur in this branch.
-            //showProgressDialog();
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(GoogleSignInResult googleSignInResult) {
-                    //hideProgressDialog();
-                    handleSignInResult(googleSignInResult, false);
-                }
-            });
-        }
     }
 
     @Override
@@ -1823,7 +1779,6 @@ public class ActivityMain extends AppCompatActivity
                     CreatePlaylistDialog();
                 }else {
                     if(MyApp.isLocked()){
-
                         Snackbar.make(rootView, getString(R.string.music_is_locked), Snackbar.LENGTH_SHORT).show();
                         return ;
                     }
@@ -1983,10 +1938,6 @@ public class ActivityMain extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result, true);
-        }
     }
 
     private void lockInfoDialog(){
@@ -2075,73 +2026,6 @@ public class ActivityMain extends AppCompatActivity
         //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
 
         dialog.show();
-    }
-
-    private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        //updateUI(false);
-                        MyApp.hasUserSignedIn=false;
-                        updateDrawerUI(null, null, false);
-                        Snackbar.make(rootView, getString(R.string.signed_out), Snackbar.LENGTH_SHORT).show();
-
-                    }
-                });
-    }
-
-    private void handleSignInResult(GoogleSignInResult result, boolean manualSignIn) {
-        Log.d(Constants.TAG, "handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-
-            if(manualSignIn){
-                //permanently hide  sign in button on now playing activity
-                MyApp.getPref().edit().putBoolean("never_show_button_again",true).apply();
-            }
-
-            MyApp.hasUserSignedIn = true;
-
-            GoogleSignInAccount acct = result.getSignInAccount();
-            if(acct==null){
-                return;
-            }
-
-            //sign up user to tech guru newsletter
-            String email = acct.getEmail();
-            String name = acct.getGivenName();
-            //store this email id and time of first sign in
-            if(manualSignIn && email!=null) {
-                new SignUp().execute(email,name);
-            }
-
-            String personPhotoUrl="";
-            if(acct.getPhotoUrl()!=null) {
-                personPhotoUrl = acct.getPhotoUrl().toString();
-            }
-
-            updateDrawerUI(acct.getDisplayName(), personPhotoUrl, true);
-        } else {
-            // some Error or user logged out, either case, update the drawer and give user appropriate info
-            MyApp.hasUserSignedIn=false;
-
-            updateDrawerUI(null,null, false);
-            if(manualSignIn) {
-                if (result.getStatus().getStatusCode() == CommonStatusCodes.NETWORK_ERROR) {
-                    //Toast.makeText(this, "Network Error, try again later!", Toast.LENGTH_SHORT).show();
-                    Snackbar.make(rootView, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
-                } else {
-                    //Toast.makeText(this, "Unknown Error, try again later!", Toast.LENGTH_SHORT).show();
-                    Snackbar.make(rootView, getString(R.string.unknown_error), Snackbar.LENGTH_SHORT).show();
-                }
-            }
-        }
     }
 
     private void updateDrawerUI(String displayName, String personPhotoUrl, boolean signedIn) {

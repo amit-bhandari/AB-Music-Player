@@ -244,7 +244,7 @@ public class BatchDownloaderService extends Service implements  Lyrics.Callback 
         notificationIntent = new Intent(this, BatchDownloaderService.class);
         notificationIntent.setAction(Constants.ACTION.CLICK_TO_CANCEL);
         clickOnNotif = PendingIntent.getService(this, 0,
-                notificationIntent, 0);
+                notificationIntent, PendingIntent.FLAG_MUTABLE);
     }
 
     @Nullable

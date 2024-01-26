@@ -1,5 +1,7 @@
 package com.music.player.bhandari.m.activity;
 
+import static com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics.POSITIVE_RESULT;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,22 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.core.content.FileProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.transition.ArcMotion;
@@ -54,15 +40,25 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.material.snackbar.Snackbar;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.ColorHelper;
@@ -83,7 +79,6 @@ import com.music.player.bhandari.m.trackInfo.TrackInfoActivity;
 import com.music.player.bhandari.m.transition.MorphMiniToNowPlaying;
 import com.music.player.bhandari.m.transition.MorphNowPlayingToMini;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
-import com.music.player.bhandari.m.utils.SignUp;
 import com.music.player.bhandari.m.utils.UtilityFun;
 import com.sackcentury.shinebuttonlib.ShineButton;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -97,10 +92,8 @@ import java.util.concurrent.Executors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import jp.wasabeef.blurry.Blurry;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
-
-import static com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics.POSITIVE_RESULT;
+import jp.wasabeef.blurry.Blurry;
 
 /**
  Copyright 2017 Amit Bhandari AB
@@ -159,7 +152,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             new ActivityNowPlaying.WrapContentLinearLayoutManager(this);
     private ItemTouchHelper mItemTouchHelper;
     private  Handler mHandler = new Handler();
-    private GoogleApiClient mGoogleApiClient;
+
     //now playing background bitmap
     Bitmap nowPlayingCustomBackBitmap;
 
@@ -223,22 +216,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
                     }
         });
-
-        if(!MyApp.getPref().getBoolean("never_show_button_again", false)){
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .build();
-
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                        @Override
-                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                            Log.d(Constants.TAG, "onConnectionFailed:" + connectionResult);
-                        }
-                    })
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                    .build();
-        }
 
         if(getIntent().getAction()!=null) {
             if (getIntent().getAction().equals(Constants.ACTION.OPEN_FROM_FILE_EXPLORER)) {
@@ -1299,13 +1276,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
     }
 
-    public void signIn() {
-        if(mGoogleApiClient==null){
-            return;
-        }
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
     //for catching exception generated by recycler view which was causing abend, no other way to handle this
     private class WrapContentLinearLayoutManager extends LinearLayoutManager {
         WrapContentLinearLayoutManager(Context context) {
@@ -1326,48 +1296,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
-        }
-    }
-
-    private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(Constants.TAG, "handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-
-                //permanently hide  sign in button on now playing activity
-            MyApp.getPref().edit().putBoolean("never_show_button_again",true).apply();
-
-
-            MyApp.hasUserSignedIn = true;
-
-            GoogleSignInAccount acct = result.getSignInAccount();
-            if(acct==null){
-                return;
-            }
-
-            //sign up user to tech guru newsletter
-            String email = acct.getEmail();
-            String name = acct.getGivenName();
-
-            //store this email id and time of first sign in
-            if(email!=null) {
-                new SignUp().execute(email,name);
-            }
-
-        } else {
-            // some Error or user logged out, either case, update the drawer and give user appropriate info
-            MyApp.hasUserSignedIn=false;
-
-            if (result.getStatus().getStatusCode() == CommonStatusCodes.NETWORK_ERROR) {
-                Snackbar.make(rootView, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(rootView, getString(R.string.unknown_error), Snackbar.LENGTH_SHORT).show();
-            }
-
-        }
     }
 
     private void shareApp() {
@@ -1505,7 +1433,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
         mLastClickTime = SystemClock.elapsedRealtime();
         playerService.nextTrack();
-        //LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
 
     }
@@ -1521,7 +1448,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
         mLastClickTime = SystemClock.elapsedRealtime();
         playerService.prevTrack();
-        //LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.COMPLETE_UI_UPDATE));
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));
 
     }

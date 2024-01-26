@@ -86,14 +86,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"/>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fb_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/website_link"
-                android:layout_marginTop="10dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/facebook" />
         </RelativeLayout>
 
         <LinearLayout

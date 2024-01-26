@@ -77,7 +77,7 @@ public class NotificationListenerService extends android.service.notification.No
         Intent notificationIntent = new Intent(this, ActivityInstantLyric.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         contentIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, 0);
+                notificationIntent, PendingIntent.FLAG_MUTABLE);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mController = new RemoteController(this, this);

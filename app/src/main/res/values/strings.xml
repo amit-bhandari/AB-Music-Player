@@ -47,8 +47,6 @@
     <string name="nav_social">We are Social!</string>
     <string name="nav_website">Visit Website</string>
     <string name="nav_settings">Settings</string>
-    <string name="nav_logout">Sign Out</string>
-    <string name="nav_login">Sign Up</string>
 
     <!-- menu -->
     <string name="menu_search">Search</string>

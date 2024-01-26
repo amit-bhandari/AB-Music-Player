@@ -86,6 +86,7 @@ import java.util.concurrent.Executors;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK;
 
 public class PlayerService extends Service implements
         AudioManager.OnAudioFocusChangeListener, ShakeDetector.Listener {
@@ -488,44 +489,44 @@ public class PlayerService extends Service implements
             notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
+                    notificationIntent, PendingIntent.FLAG_MUTABLE);
         } else if (MyApp.getPref().getInt(getString(R.string.pref_click_on_notif)
                 , Constants.CLICK_ON_NOTIF.OPEN_LIBRARY_VIEW) == Constants.CLICK_ON_NOTIF.OPEN_DISC_VIEW) {
             notificationIntent = new Intent(this, ActivityNowPlaying.class);
             notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
+                    notificationIntent, PendingIntent.FLAG_MUTABLE);
         }
 
         Intent favIntent = new Intent(this, PlayerService.class);
         favIntent.setAction(Constants.ACTION.FAV_ACTION);
         PendingIntent pfavintent = PendingIntent.getService(this, 0,
-                favIntent, 0);
+                favIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent previousIntent = new Intent(this, PlayerService.class);
         previousIntent.setAction(Constants.ACTION.PREV_ACTION);
         ppreviousIntent = PendingIntent.getService(this, 0,
-                previousIntent, 0);
+                previousIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent playIntent = new Intent(this, PlayerService.class);
         playIntent.setAction(Constants.ACTION.PLAY_PAUSE_ACTION);
         pplayIntent = PendingIntent.getService(this, 0,
-                playIntent, 0);
+                playIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent nextIntent = new Intent(this, PlayerService.class);
         nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
         pnextIntent = PendingIntent.getService(this, 0,
-                nextIntent, 0);
+                nextIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent dismissIntent = new Intent(this, PlayerService.class);
         dismissIntent.setAction(Constants.ACTION.DISMISS_EVENT);
         pdismissIntent = PendingIntent.getService(this, 0,
-                dismissIntent, 0);
+                dismissIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent swipeToDismissIntent = new Intent(this, PlayerService.class);
         swipeToDismissIntent.setAction(Constants.ACTION.SWIPE_TO_DISMISS);
-        pSwipeToDismiss = PendingIntent.getService(this, 0, swipeToDismissIntent, 0);
+        pSwipeToDismiss = PendingIntent.getService(this, 0, swipeToDismissIntent, PendingIntent.FLAG_MUTABLE);
 
     }
 
@@ -894,8 +895,8 @@ public class PlayerService extends Service implements
                         .setAutoCancel(false);
 
                 //posting notification fails for huawei devices in case of mediastyle notification
-                boolean isHuawei = (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1
-                        || android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
+                boolean isHuawei = (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1
+                        || Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
                         && Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("huawei");
                 if (!isHuawei) {
                     builder.setStyle(mediaStyle);
@@ -933,7 +934,11 @@ public class PlayerService extends Service implements
 
                 if (getStatus() == PLAYING) {
                     //builder.setOngoing(true);
-                    startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification, FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+                    } else{
+                        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+                    }
                 } else {
                     //stopForeground(false);
                     mNotificationManager.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
@@ -1032,8 +1037,6 @@ public class PlayerService extends Service implements
         } catch (Exception ignored) {
 
         }
-        //Intent intent = new Intent().setAction(Constants.ACTION.UPDATE_LYRIC_AND_INFO);
-        //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     public void updateWidget(boolean loadBitmap) {

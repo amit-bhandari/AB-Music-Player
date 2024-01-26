@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.model;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -12,14 +13,14 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.music.player.bhandari.m.BuildConfig;
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.MyApp;
-import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.BulkArtInfoGrabber;
 import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.offlineStorage.OfflineStorageArtistBio;
+import com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.tasks.BulkArtInfoGrabber;
 import com.music.player.bhandari.m.utils.UtilityFun;
 
 import java.io.FileDescriptor;
@@ -38,8 +39,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
 
- http://www.apache.org/licenses/LICENSE-2.0
-
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,14 +52,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MusicLibrary{
 
-    private Context context;
+    private final Context context;
+    @SuppressLint("StaticFieldLeak")
     private static MusicLibrary musicLibrary = new MusicLibrary();
-    private ContentResolver cr;
-    private AtomicInteger atomicInt = new AtomicInteger();
+    private final ContentResolver cr;
+    private final AtomicInteger atomicInt = new AtomicInteger();
     private int libraryLoadCounter;
 
     //artist photo urls for art library fragment only
-    private static HashMap<String, String> artistUrls=new HashMap<>();
+    private static final HashMap<String, String> artistUrls=new HashMap<>();
 
     //short clip time
     private int SHORT_CLIPS_TIME_IN_MS;
@@ -68,18 +68,18 @@ public class MusicLibrary{
     private String[] excludedFolders;
 
     //all the folders in which songs are there
-    private ArrayList<String> foldersList=new ArrayList<>();
+    private final ArrayList<String> foldersList=new ArrayList<>();
 
     //data for all frgaments
-    private Map<Integer, dataItem> dataItemsForTracks = Collections.synchronizedMap(new LinkedHashMap<Integer, dataItem>());
-    private ArrayList<dataItem> dataItemsForAlbums = new ArrayList<>();
-    private ArrayList<dataItem> dataItemsForGenres = new ArrayList<>();
-    private ArrayList<dataItem> dataItemsForArtists = new ArrayList<>();
+    private final Map<Integer, dataItem> dataItemsForTracks = Collections.synchronizedMap(new LinkedHashMap<Integer, dataItem>());
+    private final ArrayList<dataItem> dataItemsForAlbums = new ArrayList<>();
+    private final ArrayList<dataItem> dataItemsForGenres = new ArrayList<>();
+    private final ArrayList<dataItem> dataItemsForArtists = new ArrayList<>();
 
 
     //track id to track name hashmap
     //used for shuffling tracks using track name in now playing
-    private SparseArray<String> trackMap= new SparseArray<>();
+    private final SparseArray<String> trackMap= new SparseArray<>();
 
     private MusicLibrary(){
         this.context= MyApp.getContext();
@@ -192,6 +192,7 @@ public class MusicLibrary{
 
     private void fillDataForTracks(){
         Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @SuppressLint("Range")
             @Override
             public void run() {
                 Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -212,7 +213,9 @@ public class MusicLibrary{
                 Cursor cursor=null;
                 try {
                     cursor = cr.query(uri, projection, selection, null, sortOrder);
-                }catch (Exception ignored){}
+                }catch (Exception ignored){
+                    System.out.println(ignored);
+                }
                 if(cursor!=null && cursor.getCount()>0) {
                     while (cursor.moveToNext()) {
 
@@ -276,6 +279,7 @@ public class MusicLibrary{
 
     private void fillDataForArtist(){
         Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @SuppressLint("Range")
             @Override
             public void run() {
                 String[] mProjection =
@@ -313,7 +317,7 @@ public class MusicLibrary{
                 updateArtistInfo();
                 libraryLoadCounter = atomicInt.incrementAndGet();
 
-                if(!BuildConfig.DEBUG) {
+                /*if(!BuildConfig.DEBUG) {
                     //if its been more than 2 days since artist info has been cached locally, do it
                     //fetch art info thread
                     Long lastTimeDidAt = MyApp.getPref().getLong(context.getString(R.string.pref_artinfo_libload), 0);
@@ -321,7 +325,7 @@ public class MusicLibrary{
                             (2 * 24 * 60 * 60 * 1000)) {
                         new BulkArtInfoGrabber().start();
                     }
-                }
+                }*/
             }
         });
 
@@ -329,6 +333,7 @@ public class MusicLibrary{
 
     private void fillDataForAlbums(){
         Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @SuppressLint("Range")
             @Override
             public void run() {
                 String[] mProjection =
@@ -377,6 +382,7 @@ public class MusicLibrary{
 
     private void fillDataForGenre(){
         Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @SuppressLint("Range")
             @Override
             public void run() {
                 String[] mProjection =
@@ -568,7 +574,7 @@ public class MusicLibrary{
         }catch (Exception ignored){}
         if(cursor!=null && cursor.getCount()!=0){
             cursor.moveToFirst();
-            TrackItem item = new TrackItem(cursor.getString(INDEX_FOR_TRACK_CURSOR.DATA_PATH),
+            @SuppressLint("Range") TrackItem item = new TrackItem(cursor.getString(INDEX_FOR_TRACK_CURSOR.DATA_PATH),
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE),
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.ARTIST),
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.ALBUM),
@@ -609,7 +615,7 @@ public class MusicLibrary{
         }catch (Exception ignored){}
         if(cursor!=null && cursor.getCount()!=0){
             cursor.moveToFirst();
-            TrackItem item = new TrackItem(cursor.getString(INDEX_FOR_TRACK_CURSOR.DATA_PATH),
+            @SuppressLint("Range") TrackItem item = new TrackItem(cursor.getString(INDEX_FOR_TRACK_CURSOR.DATA_PATH),
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.TITLE),
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.ARTIST),
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.ALBUM),

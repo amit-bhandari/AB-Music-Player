@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.telephony.PhoneStateListener;
@@ -26,32 +27,31 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-
-import android.os.Handler;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.music.player.bhandari.m.R;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Executors;
 
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * <a href="http://www.apache.org/licenses/LICENSE-2.0">...</a>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 
@@ -68,7 +68,7 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
     private static final String AUTHORITY_MEDIA = "media";
     private static final int CONTENT_QUERY_TOKEN = 1000;
     private static final int CONTENT_BAD_QUERY_TOKEN = CONTENT_QUERY_TOKEN + 1;
-    private static final String[] MEDIA_PROJECTION = new String[] {
+    private static final String[] MEDIA_PROJECTION = new String[]{
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST
     };
@@ -115,18 +115,16 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
         super.onPause();
     }
 
-    private  class UiHandler extends Handler {
+    private class UiHandler extends Handler {
 
         static final int MSG_UPDATE_PROGRESS = 1000;
 
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_UPDATE_PROGRESS:
-                    updateProgressForPlayer();
-                    break;
-                default:
-                    super.handleMessage(msg);
+            if (msg.what == MSG_UPDATE_PROGRESS) {
+                updateProgressForPlayer();
+            } else {
+                super.handleMessage(msg);
             }
         }
 
@@ -144,11 +142,11 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
             }
         }
     };
-    private UiHandler mHandler = new UiHandler();
+    private final UiHandler mHandler = new UiHandler();
     private static AsyncQueryHandler sAsyncQueryHandler;
     private AudioManager mAudioManager;
     private PreviewPlayer mPreviewPlayer;
-    private PreviewSong mPreviewSong = new PreviewSong();
+    private final PreviewSong mPreviewSong = new PreviewSong();
     private int mDuration = 0;
     private int mLastOrientationWhileBuffering;
 
@@ -206,7 +204,7 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
         sAsyncQueryHandler = new AsyncQueryHandler(getContentResolver()) {
             @Override
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-                AudioPreviewActivity.this.onQueryComplete(token, cookie, cursor);
+                AudioPreviewActivity.this.onQueryComplete(token, cursor);
             }
         };
         initializeInterface();
@@ -230,7 +228,7 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         if (mIsReceiverRegistered) {
             unregisterReceiver(mAudioNoisyReceiver);
             mIsReceiverRegistered = false;
@@ -266,10 +264,8 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
 
     private void handleStateChangeForUi() {
         switch (mCurrentState) {
-            case INIT:
-                Logger.logd(TAG, "INIT");
-                break;
-            case PREPARED:
+            case INIT -> Logger.logd(TAG, "INIT");
+            case PREPARED -> {
                 Logger.logd(TAG, "PREPARED");
                 if (mPreviewPlayer != null) {
                     mDuration = mPreviewPlayer.getDuration();
@@ -288,26 +284,26 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
                     mPlayPauseBtn.setEnabled(true);
                     mPlayPauseBtn.setOnClickListener(this);
                 }
-                break;
-            case PLAYING:
+            }
+            case PLAYING -> {
                 Logger.logd(TAG, "PLAYING");
                 if (mPlayPauseBtn != null) {
                     mPlayPauseBtn.setImageResource(R.drawable.ic_pause_black_24dp);
                     mPlayPauseBtn.setEnabled(true);
                 }
-                break;
-            case PAUSED:
+            }
+            case PAUSED -> {
                 Logger.logd(TAG, "PAUSED");
                 if (mPlayPauseBtn != null) {
                     mPlayPauseBtn.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                     mPlayPauseBtn.setEnabled(true);
                 }
-                break;
+            }
         }
         setNames();
     }
 
-    private void onQueryComplete(int token, Object cookie, Cursor cursor) {
+    private void onQueryComplete(int token, Cursor cursor) {
         String title = null;
         String artist = null;
         if (cursor == null || cursor.getCount() < 1) {
@@ -319,9 +315,9 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
             Logger.loge(TAG, "Failed to read cursor!");
             return;
         }
-        int index = -1;
+        int index;
         switch (token) {
-            case CONTENT_QUERY_TOKEN:
+            case CONTENT_QUERY_TOKEN -> {
                 index = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
                 if (index > -1) {
                     title = cursor.getString(index);
@@ -330,16 +326,14 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
                 if (index > -1) {
                     artist = cursor.getString(index);
                 }
-                break;
-            case CONTENT_BAD_QUERY_TOKEN:
+            }
+            case CONTENT_BAD_QUERY_TOKEN -> {
                 index = cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME);
                 if (index > -1) {
                     title = cursor.getString(index);
                 }
-                break;
-            default:
-                title = null;
-                break;
+            }
+            default -> title = null;
         }
         cursor.close();
 
@@ -378,12 +372,12 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
         // Make it so if the user touches the background overlay we exit
         View v = findViewById(R.id.grp_transparent_wrapper);
         v.setOnTouchListener(this);
-        mTitleTextView = (TextView) findViewById(R.id.tv_title);
-        mArtistTextView = (TextView) findViewById(R.id.tv_artist);
-        mSeekBar = (SeekBar) findViewById(R.id.sb_progress);
+        mTitleTextView = findViewById(R.id.tv_title);
+        mArtistTextView = findViewById(R.id.tv_artist);
+        mSeekBar = findViewById(R.id.sb_progress);
         mSeekBar.setOnSeekBarChangeListener(this);
-        mProgressBar = (ProgressBar) findViewById(R.id.pb_loader);
-        mPlayPauseBtn = (ImageButton) findViewById(R.id.ib_playpause);
+        mProgressBar = findViewById(R.id.pb_loader);
+        mPlayPauseBtn = findViewById(R.id.ib_playpause);
     }
 
     private void processUri() {
@@ -418,7 +412,7 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
                 Message msg = mHandler.obtainMessage(UiHandler.MSG_UPDATE_PROGRESS);
                 mHandler.sendMessageDelayed(msg, PROGRESS_DELAY_INTERVAL);
             }
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
@@ -440,7 +434,7 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
     private void handleFileScheme() {
         String path = mPreviewSong.URI.getPath();
         sAsyncQueryHandler.startQuery(CONTENT_QUERY_TOKEN, null, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                MEDIA_PROJECTION, "_data=?", new String[] { path }, null);
+                MEDIA_PROJECTION, "_data=?", new String[]{path}, null);
     }
 
     private void handleHttpScheme() {
@@ -472,30 +466,22 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         switch (what) {
-            case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                Toast.makeText(this, getString(R.string.preview_player_server_died), Toast.LENGTH_SHORT).show();
-                break;
-            case MediaPlayer.MEDIA_ERROR_IO:
-                Toast.makeText(this, getString(R.string.preview_player_io_error), Toast.LENGTH_SHORT).show();
-                break;
-            case MediaPlayer.MEDIA_ERROR_MALFORMED:
-                Toast.makeText(this, getString(R.string.preview_player_malform_media), Toast.LENGTH_SHORT).show();
-                break;
-            case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:
-                Toast.makeText(this, getString(R.string.preview_player_invalid), Toast.LENGTH_SHORT)
-                        .show();
-                break;
-            case MediaPlayer.MEDIA_ERROR_TIMED_OUT:
-                Toast.makeText(this, getString(R.string.preview_player_time_out), Toast.LENGTH_SHORT).show();
-                break;
-            case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
-                Toast.makeText(this, getString(R.string.preview_player_unsupported), Toast.LENGTH_SHORT).show();
-                break;
-            case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-            default:
-                Toast.makeText(this, getString(R.string.preview_player_unknown) + what, Toast.LENGTH_LONG)
-                        .show();
-                break;
+            case MediaPlayer.MEDIA_ERROR_SERVER_DIED ->
+                    Toast.makeText(this, getString(R.string.preview_player_server_died), Toast.LENGTH_SHORT).show();
+            case MediaPlayer.MEDIA_ERROR_IO ->
+                    Toast.makeText(this, getString(R.string.preview_player_io_error), Toast.LENGTH_SHORT).show();
+            case MediaPlayer.MEDIA_ERROR_MALFORMED ->
+                    Toast.makeText(this, getString(R.string.preview_player_malform_media), Toast.LENGTH_SHORT).show();
+            case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK ->
+                    Toast.makeText(this, getString(R.string.preview_player_invalid), Toast.LENGTH_SHORT)
+                            .show();
+            case MediaPlayer.MEDIA_ERROR_TIMED_OUT ->
+                    Toast.makeText(this, getString(R.string.preview_player_time_out), Toast.LENGTH_SHORT).show();
+            case MediaPlayer.MEDIA_ERROR_UNSUPPORTED ->
+                    Toast.makeText(this, getString(R.string.preview_player_unsupported), Toast.LENGTH_SHORT).show();
+            default ->
+                    Toast.makeText(this, getString(R.string.preview_player_unknown) + what, Toast.LENGTH_LONG)
+                            .show();
         }
         stopPlaybackAndTeardown();
         finish();
@@ -530,19 +516,19 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ib_playpause:
+            case R.id.ib_playpause -> {
                 if (mCurrentState == State.PREPARED || mCurrentState == State.PAUSED) {
                     startPlayback();
                 } else {
                     pausePlayback();
                 }
-                break;
-            case R.id.grp_transparent_wrapper:
+            }
+            case R.id.grp_transparent_wrapper -> {
                 stopPlaybackAndTeardown();
                 finish();
-                break;
-            default:
-                break;
+            }
+            default -> {
+            }
         }
     }
 
@@ -592,7 +578,7 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
                 mPreviewPlayer = null;
             }
             abandonAudioFocus();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -681,7 +667,7 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
 
     private void UnregisterPhoneStateListener() {
         TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        if(mgr != null) {
+        if (mgr != null) {
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
     }
@@ -693,10 +679,10 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
                 if (state == TelephonyManager.CALL_STATE_RINGING) {
                     //Incoming call: Pause music
                     stopPlaybackAndTeardown();
-                } else if(state == TelephonyManager.CALL_STATE_IDLE) {
+                } else if (state == TelephonyManager.CALL_STATE_IDLE) {
                     //Not in call
 
-                } else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                } else if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                     //A call is dialing, active or on hold
                     stopPlaybackAndTeardown();
                 }
@@ -704,7 +690,7 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
             }
         };
         TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        if(mgr != null) {
+        if (mgr != null) {
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
     }
@@ -738,11 +724,11 @@ public class AudioPreviewActivity extends Activity implements MediaPlayer.OnComp
         }
 
         /* package */ void setCallbackActivity(AudioPreviewActivity activity)
-                throws IllegalArgumentException{
+                throws IllegalArgumentException {
             if (activity == null) {
                 throw new IllegalArgumentException("'activity' cannot be null!");
             }
-            mActivityReference = new WeakReference<AudioPreviewActivity>(activity);
+            mActivityReference = new WeakReference<>(activity);
             setOnErrorListener(activity);
             setOnCompletionListener(activity);
         }
