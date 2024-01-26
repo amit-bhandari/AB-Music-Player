@@ -40,7 +40,7 @@ public class Lyrics implements Serializable, Parcelable {
     private String mCoverURL;
     private String mLyrics;
     private String mSource;
-    private int trackId = -1;
+    private long trackId = -1;
     private boolean mLRC = false;
     private final int mFlag;
     public static final int NO_RESULT = -2;
@@ -49,11 +49,11 @@ public class Lyrics implements Serializable, Parcelable {
     public static final int ERROR = -3;
     public static final int SEARCH_ITEM = 2;
 
-    public int getTrackId() {
+    public long getTrackId() {
         return trackId;
     }
 
-    public void setTrackId(int trackId) {
+    public void setTrackId(long trackId) {
         this.trackId = trackId;
     }
 
@@ -77,7 +77,7 @@ public class Lyrics implements Serializable, Parcelable {
         mSource = in.readString();
         mLRC = in.readByte() != 0;
         mFlag = in.readInt();
-        trackId = in.readInt();
+        trackId = in.readLong();
     }
 
     public static final Creator<Lyrics> CREATOR = new Creator<Lyrics>() {
@@ -207,8 +207,7 @@ public class Lyrics implements Serializable, Parcelable {
             result &= this.getArtist().equals(other.getArtist());
             result &= this.getTrack().equals(other.getTrack());
             return result;
-        }
-        else
+        } else
             return false;
     }
 
@@ -216,7 +215,7 @@ public class Lyrics implements Serializable, Parcelable {
     public int hashCode() {
         // Potential issue with the Birthday Paradox when we hash over 50k lyrics
         return this.getURL() != null ? this.getURL().hashCode() :
-                (""+this.getOriginalArtist()+this.getOriginalTrack()+this.getSource()).hashCode();
+                ("" + this.getOriginalArtist() + this.getOriginalTrack() + this.getSource()).hashCode();
     }
 
     @Override
@@ -236,6 +235,6 @@ public class Lyrics implements Serializable, Parcelable {
         dest.writeString(mSource);
         dest.writeByte((byte) (mLRC ? 1 : 0));
         dest.writeInt(mFlag);
-        dest.writeInt(trackId);
+        dest.writeLong(trackId);
     }
 }

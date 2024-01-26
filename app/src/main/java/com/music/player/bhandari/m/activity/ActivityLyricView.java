@@ -14,14 +14,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.view.GestureDetectorCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.text.Html;
 import android.view.ActionMode;
 import android.view.GestureDetector;
@@ -99,7 +103,6 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 public class ActivityLyricView extends AppCompatActivity implements View.OnClickListener, RecyclerView.OnItemTouchListener, Lyrics.Callback
         , ActionMode.Callback, ArtistInfo.Callback {
-
     private Handler handler;
     private String trackTitle = "";
     private String artist = "";

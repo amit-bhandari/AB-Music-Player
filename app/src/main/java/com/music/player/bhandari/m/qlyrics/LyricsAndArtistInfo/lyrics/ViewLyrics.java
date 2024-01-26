@@ -88,12 +88,12 @@ public class ViewLyrics {
 
     private static final byte[] magickey = "Mlv1clt4.0".getBytes();
 
-	/*
+    /*
      * Search function
-    	 */
+     */
 
     @Reflection
-    public static Lyrics fromURL(String url, String artist, String title){
+    public static Lyrics fromURL(String url, String artist, String title) {
         // TODO: support ViewLyrics URL
         return new Lyrics(NO_RESULT);
     }
@@ -110,41 +110,22 @@ public class ViewLyrics {
         int lrcIndex = 0;
         boolean lrcLyricFound = false;
 
-        for(int i=0;i<results.size();i++){
-            if(results.get(i).getURL().endsWith("lrc")){
-                lrcLyricFound=true;
-                lrcIndex=i;
+        for (int i = 0; i < results.size(); i++) {
+            if (results.get(i).getURL().endsWith("lrc")) {
+                lrcLyricFound = true;
+                lrcIndex = i;
                 break;
             }
         }
 
-        //lrcIndex = 0;
-
-        /*for(int i=0;i<results.size();i++) {
-            Log.v("ViewLyrics", "Lyrics " + i + " : " + results.get(i).getOriginalTrack() + " : " + results.get(i).getOriginalTrack());
-            Log.v("ViewLyrics", "Lyrics " + i + " : " + results.get(i).getURL());
-        }
-
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        /*
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                new MyDialogBuilder(MyApp.getContext())
-                        .title("title").show();
-            }
-        });*/
-
         String url;
         String foundTitle;
         String foundArtist;
-        if(lrcLyricFound) {
+        if (lrcLyricFound) {
             url = results.get(lrcIndex).getURL();
             foundTitle = results.get(lrcIndex).getTrack();
             foundArtist = results.get(lrcIndex).getArtist();
-        }else {
+        } else {
             url = results.get(0).getURL();
             foundTitle = results.get(0).getTrack();
             foundArtist = results.get(0).getArtist();
@@ -162,22 +143,22 @@ public class ViewLyrics {
         result.setOriginalTitle(title);
         result.setSource(clientUserAgent);
 
-        String[] arr = Net.getUrlAsString(url).replaceAll("(\\[(?=.[a-z]).+\\]|<.+?>|www.*[\\s])", "").replaceAll("[\n]\\[(.*?)\\]+[\\s]","").split("\n");
+        String[] arr = Net.getUrlAsString(url).replaceAll("(\\[(?=.[a-z]).+\\]|<.+?>|www.*[\\s])", "").replaceAll("[\n]\\[(.*?)\\]+[\\s]", "").split("\n");
         String output = "";
 
         if (url.endsWith("txt") /*|| artistDistance > 6 || titleDistance > 6*/) {
 
-            for(String line : arr) {
-                output = output.concat(line+"\n");
+            for (String line : arr) {
+                output = output.concat(line + "\n");
             }
-            result.setText(output.replace("\n","<br />"));
+            result.setText(output.replace("\n", "<br />"));
             return result;
         }
 
         result.setLRC(url.endsWith("lrc"));
-        for(String line : arr){
-            String word = line.replaceAll("[^A-Za-z\\s]","");
-            String newLine = line.replaceAll("\\]\\[","\\]"+word+"\n\\[");
+        for (String line : arr) {
+            String word = line.replaceAll("[^A-Za-z\\s]", "");
+            String newLine = line.replaceAll("\\]\\[", "\\]" + word + "\n\\[");
             output = output.concat(newLine);
         }
         result.setText(output.replaceAll("\\[", "\n\\[ "));
@@ -226,19 +207,19 @@ public class ViewLyrics {
             return;
         }
 
-        for(int i=0;i<results.size();i++) {
+        for (int i = 0; i < results.size(); i++) {
             //Log.v("ViewLyrics", "Lyrics " + i + " : " + results.get(i).getOriginalTrack() + " : " + results.get(i).getOriginalTrack());
             Log.v("ViewLyrics", "Lyrics " + i + " : " + results.get(i).getURL());
         }
 
-        Log.d("ActivityInstantLyric", "onLyricsDownloaded: found lyrics count "  + results.size());
+        Log.d("ActivityInstantLyric", "onLyricsDownloaded: found lyrics count " + results.size());
 
         //show dialog with available options
         final ArrayList<String> resultTrackTitles = new ArrayList<>();
-        for(Lyrics lyric:results){
-            if(lyric.getURL().endsWith("lrc")) {
+        for (Lyrics lyric : results) {
+            if (lyric.getURL().endsWith("lrc")) {
                 resultTrackTitles.add(lyric.getTrack() + " : " + lyric.getArtist() + " (Running lyrics) ");
-            }else {
+            } else {
                 resultTrackTitles.add(lyric.getTrack() + " : " + lyric.getArtist());
             }
         }
@@ -275,7 +256,7 @@ public class ViewLyrics {
 
                                         String[] arr = new String[0];
                                         try {
-                                            arr = Net.getUrlAsString(url).replaceAll("(\\[(?=.[a-z]).+\\]|<.+?>|www.*[\\s])", "").replaceAll("[\n]\\[(.*?)\\]+[\\s]","").split("\n");
+                                            arr = Net.getUrlAsString(url).replaceAll("(\\[(?=.[a-z]).+\\]|<.+?>|www.*[\\s])", "").replaceAll("[\n]\\[(.*?)\\]+[\\s]", "").split("\n");
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -284,16 +265,16 @@ public class ViewLyrics {
                                         Log.d("ActivityInstantLyric", "onLyricsDownloaded: lyrics type " + (url.endsWith("lrc") ? "lrc" : "txt"));
 
                                         if (url.endsWith("txt") /*|| artistDistance > 6 || titleDistance > 6*/) {
-                                            for(String line : arr) {
-                                                output = output.concat(line+"\n");
+                                            for (String line : arr) {
+                                                output = output.concat(line + "\n");
                                             }
-                                            result.setText(output.replace("\n","<br />"));
+                                            result.setText(output.replace("\n", "<br />"));
                                             //return result;
-                                        }else {
+                                        } else {
                                             result.setLRC(url.endsWith("lrc"));
-                                            for(String line : arr){
-                                                String word = line.replaceAll("[^A-Za-z\\s]","");
-                                                String newLine = line.replaceAll("\\]\\[","\\]"+word+"\n\\[");
+                                            for (String line : arr) {
+                                                String word = line.replaceAll("[^A-Za-z\\s]", "");
+                                                String newLine = line.replaceAll("\\]\\[", "\\]" + word + "\n\\[");
                                                 output = output.concat(newLine);
                                             }
 
@@ -302,14 +283,14 @@ public class ViewLyrics {
 
                                         }
 
-                                        if(item!=null && result.getFlag()==Lyrics.POSITIVE_RESULT) {
+                                        if (item != null && result.getFlag() == Lyrics.POSITIVE_RESULT) {
                                             // Log.v(Constants.L_TAG,lyrics.getText() );
                                             OfflineStorageLyrics.clearLyricsFromDB(item);
                                             OfflineStorageLyrics.putLyricsInDB(result, item);
                                         }
 
                                         //if from instant lyric activity, delete current lyrics from cache
-                                        if(result.getFlag()==POSITIVE_RESULT){
+                                        if (result.getFlag() == POSITIVE_RESULT) {
                                             OfflineStorageLyrics.clearLyricsFromCache(result);
                                         }
 
@@ -368,9 +349,9 @@ public class ViewLyrics {
         return parseResultXML(decryptResultXML(full));
     }
 
-	/*
+    /*
      * Add MD5 and Encrypts Search Query
-	 */
+     */
 
     public static byte[] assembleQuery(byte[] valueBytes) throws NoSuchAlgorithmException, IOException {
         // Create the variable POG to be used in a dirt code
@@ -418,9 +399,9 @@ public class ViewLyrics {
         return result.toByteArray();
     }
 
-	/*
+    /*
      * Decrypts only the XML from the entire result
-	 */
+     */
 
     public static String decryptResultXML(String value) {
         // Get Magic key value
@@ -438,9 +419,9 @@ public class ViewLyrics {
         return neomagic.toString();
     }
 
-	/*
-	 * Create the ArrayList<LyricInfo>
-	 */
+    /*
+     * Create the ArrayList<LyricInfo>
+     */
 
     private static String readStrFromAttr(Element elem, String attr, String def) {
         String data = elem.getAttribute(attr);

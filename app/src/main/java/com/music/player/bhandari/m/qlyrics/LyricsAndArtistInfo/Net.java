@@ -42,7 +42,7 @@ public class Net {
         Response response = client.newCall(request).execute();
 
         String string = response.body().toString();
-        Log.d("Lyrics", "getUrlAsString: "+string);
+        Log.d("Lyrics", "getUrlAsString: " + string);
         return response.body().string();
     }
 }

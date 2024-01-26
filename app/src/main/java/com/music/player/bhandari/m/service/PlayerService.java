@@ -86,6 +86,7 @@ import java.util.concurrent.Executors;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK;
 
 public class PlayerService extends Service implements
         AudioManager.OnAudioFocusChangeListener, ShakeDetector.Listener {
@@ -96,7 +97,7 @@ public class PlayerService extends Service implements
     private boolean playAfterPrepare = false;
 
     //playlist (now playing)
-    private ArrayList<Integer> trackList = new ArrayList<>();
+    private ArrayList<Long> trackList = new ArrayList<>();
     private TrackItem currentTrack;
     private int currentVolume = 0;
     private boolean fVolumeIsBeingChanged = false;
@@ -184,7 +185,7 @@ public class PlayerService extends Service implements
                     } else {
                         if (MyApp.getPref().getBoolean(getString(R.string.pref_continuous_playback), false)) {
                             if (trackList.size() < 10) {
-                                List<Integer> dataItems = MusicLibrary.getInstance().getDefaultTracklistNew();
+                                List<Long> dataItems = MusicLibrary.getInstance().getDefaultTracklistNew();
                                 Collections.shuffle(dataItems);
                                 trackList.addAll(dataItems);
                                 playTrack(currentTrackPosition + 1);
@@ -318,17 +319,6 @@ public class PlayerService extends Service implements
         } else {
             Log.d("PlayerService", "onStartCommand: null intent or no action in intent");
         }
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.notification_channel))
-                    .setContentTitle(getString(R.string.app_name))
-                    .setContentText("AB Music")
-                    .setAutoCancel(true);
-
-            Notification notification = builder.build();
-            startForeground(1, notification);
-
-        }*/
         return START_STICKY;
     }
 
@@ -488,44 +478,44 @@ public class PlayerService extends Service implements
             notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
+                    notificationIntent, PendingIntent.FLAG_MUTABLE);
         } else if (MyApp.getPref().getInt(getString(R.string.pref_click_on_notif)
                 , Constants.CLICK_ON_NOTIF.OPEN_LIBRARY_VIEW) == Constants.CLICK_ON_NOTIF.OPEN_DISC_VIEW) {
             notificationIntent = new Intent(this, ActivityNowPlaying.class);
             notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
+                    notificationIntent, PendingIntent.FLAG_MUTABLE);
         }
 
         Intent favIntent = new Intent(this, PlayerService.class);
         favIntent.setAction(Constants.ACTION.FAV_ACTION);
         PendingIntent pfavintent = PendingIntent.getService(this, 0,
-                favIntent, 0);
+                favIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent previousIntent = new Intent(this, PlayerService.class);
         previousIntent.setAction(Constants.ACTION.PREV_ACTION);
         ppreviousIntent = PendingIntent.getService(this, 0,
-                previousIntent, 0);
+                previousIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent playIntent = new Intent(this, PlayerService.class);
         playIntent.setAction(Constants.ACTION.PLAY_PAUSE_ACTION);
         pplayIntent = PendingIntent.getService(this, 0,
-                playIntent, 0);
+                playIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent nextIntent = new Intent(this, PlayerService.class);
         nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
         pnextIntent = PendingIntent.getService(this, 0,
-                nextIntent, 0);
+                nextIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent dismissIntent = new Intent(this, PlayerService.class);
         dismissIntent.setAction(Constants.ACTION.DISMISS_EVENT);
         pdismissIntent = PendingIntent.getService(this, 0,
-                dismissIntent, 0);
+                dismissIntent, PendingIntent.FLAG_MUTABLE);
 
         Intent swipeToDismissIntent = new Intent(this, PlayerService.class);
         swipeToDismissIntent.setAction(Constants.ACTION.SWIPE_TO_DISMISS);
-        pSwipeToDismiss = PendingIntent.getService(this, 0, swipeToDismissIntent, 0);
+        pSwipeToDismiss = PendingIntent.getService(this, 0, swipeToDismissIntent, PendingIntent.FLAG_MUTABLE);
 
     }
 
@@ -894,8 +884,8 @@ public class PlayerService extends Service implements
                         .setAutoCancel(false);
 
                 //posting notification fails for huawei devices in case of mediastyle notification
-                boolean isHuawei = (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1
-                        || android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
+                boolean isHuawei = (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1
+                        || Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
                         && Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("huawei");
                 if (!isHuawei) {
                     builder.setStyle(mediaStyle);
@@ -933,7 +923,11 @@ public class PlayerService extends Service implements
 
                 if (getStatus() == PLAYING) {
                     //builder.setOngoing(true);
-                    startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification, FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+                    } else {
+                        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+                    }
                 } else {
                     //stopForeground(false);
                     mNotificationManager.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
@@ -949,7 +943,7 @@ public class PlayerService extends Service implements
     //this will be called when song is played from music library
     private void shuffleTracklist(int position) {
         if (!trackList.isEmpty()) {
-            Integer originalSongPlayed = trackList.get(position);
+            Long originalSongPlayed = trackList.get(position);
             Collections.shuffle(trackList);
             trackList.remove(originalSongPlayed);
             trackList.add(position, originalSongPlayed);
@@ -959,7 +953,7 @@ public class PlayerService extends Service implements
     //this will be called when clicked on shuffle button on now playing
     public void shuffle(boolean shuffleStatus) {
         if (!trackList.isEmpty()) {
-            Integer currentSongPlaying = trackList.get(currentTrackPosition);
+            Long currentSongPlaying = trackList.get(currentTrackPosition);
             if (shuffleStatus) {
                 Collections.shuffle(trackList);
                 trackList.remove(currentSongPlaying);
@@ -967,15 +961,12 @@ public class PlayerService extends Service implements
                 currentTrackPosition = 0;
             } else {
                 long time = System.currentTimeMillis();
-                Collections.sort(trackList, new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer integer, Integer t1) {
-                        try {
-                            return MusicLibrary.getInstance().getTrackMap().get(integer)
-                                    .compareToIgnoreCase(MusicLibrary.getInstance().getTrackMap().get(t1));
-                        } catch (NullPointerException e) {
-                            return 0;
-                        }
+                Collections.sort(trackList, (integer, t1) -> {
+                    try {
+                        return MusicLibrary.getInstance().getTrackMap().get(integer)
+                                .compareToIgnoreCase(MusicLibrary.getInstance().getTrackMap().get(t1));
+                    } catch (NullPointerException e) {
+                        return 0;
                     }
                 });
                 Log.d(TAG, "shuffle: sorted in " + (System.currentTimeMillis() - time));
@@ -996,13 +987,13 @@ public class PlayerService extends Service implements
 
     public void swapPosition(int from, int to) {
         if (!trackList.isEmpty()) {
-            int currentTrack = trackList.get(currentTrackPosition);
+            long currentTrack = trackList.get(currentTrackPosition);
             Collections.swap(trackList, from, to);
             currentTrackPosition = trackList.indexOf(currentTrack);
         }
     }
 
-    public void removeTrack(int position) {
+    public void removeTrack(long position) {
         if (currentTrackPosition > position) {
             currentTrackPosition--;
         }
@@ -1032,8 +1023,6 @@ public class PlayerService extends Service implements
         } catch (Exception ignored) {
 
         }
-        //Intent intent = new Intent().setAction(Constants.ACTION.UPDATE_LYRIC_AND_INFO);
-        //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     public void updateWidget(boolean loadBitmap) {
@@ -1136,7 +1125,7 @@ public class PlayerService extends Service implements
         return currentTrackPosition;
     }
 
-    public ArrayList<Integer> getTrackList() {
+    public ArrayList<Long> getTrackList() {
         return trackList;
     }
 
@@ -1343,7 +1332,7 @@ public class PlayerService extends Service implements
     }
 
     public void shuffleAll() {
-        ArrayList<Integer> tempList = MusicLibrary.getInstance().getDefaultTracklistNew();
+        ArrayList<Long> tempList = MusicLibrary.getInstance().getDefaultTracklistNew();
         if (tempList != null) {
             Collections.shuffle(tempList);
             setTrackList(tempList);
@@ -1360,7 +1349,7 @@ public class PlayerService extends Service implements
                 status = which fragment  (title,artist,albumName,genre)
                 whereToAdd = position where to add (immediately, atLast)
      */
-    public void addToQ(int clickedOn, int whereToAdd) {
+    public void addToQ(long clickedOn, int whereToAdd) {
         int addPosition = (whereToAdd == Constants.ADD_TO_Q.IMMEDIATE_NEXT ? currentTrackPosition : trackList.size() - 1);
         try {
             trackList.add(addPosition + 1, clickedOn);
@@ -1385,7 +1374,7 @@ public class PlayerService extends Service implements
             } else {
                 if (MyApp.getPref().getBoolean(getString(R.string.pref_continuous_playback), false)) {
                     if (trackList.size() < 10) {
-                        List<Integer> dataItems = MusicLibrary.getInstance().getDefaultTracklistNew();
+                        List<Long> dataItems = MusicLibrary.getInstance().getDefaultTracklistNew();
                         Collections.shuffle(dataItems);
                         trackList.addAll(dataItems);
                         playTrack(currentTrackPosition + 1);
@@ -1423,7 +1412,7 @@ public class PlayerService extends Service implements
     }
 
     //to update trackitem when tags are changed
-    public void updateTrackItem(int position, int _id, String... param) {
+    public void updateTrackItem(int position, long _id, String... param) {
         if (position == getCurrentTrackPosition()) {
             try {
                 currentTrack.setTitle(param[0]);
@@ -1474,7 +1463,7 @@ public class PlayerService extends Service implements
         }
     }
 
-    public void setTrackList(ArrayList<Integer> tracklist1) {
+    public void setTrackList(ArrayList<Long> tracklist1) {
         this.trackList.clear();
         this.trackList.addAll(tracklist1);
     }

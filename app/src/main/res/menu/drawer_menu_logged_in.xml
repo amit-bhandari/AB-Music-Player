@@ -45,15 +45,5 @@
             android:icon="@drawable/ic_star_black_24dp"
             android:title="@string/nav_rate" />
 
-        <item
-            android:id="@+id/nav_instagram"
-            android:icon="@drawable/ic_person_black_24dp"
-            android:title="@string/title_find_me_on_instagram" />
-
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_people_black_24dp"
-            android:title="@string/nav_logout" />
-
     </group>
 </menu>

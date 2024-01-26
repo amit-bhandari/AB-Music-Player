@@ -89,10 +89,6 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
     @BindView(R.id.loading_lyrics_animation)
     AVLoadingIndicatorView lyricLoadAnimation;
 
-    /*@BindView(R.id.ad_view_wrapper) View adViewWrapper;
-    @BindView(R.id.adView)  AdView mAdView;
-    @BindView(R.id.ad_close)  TextView adCloseText;*/
-
     private BroadcastReceiver mLyricChange;
     @BindView(R.id.text_view_lyric_status)
     TextView lyricStatus;
@@ -397,16 +393,7 @@ public class FragmentLyrics extends Fragment implements RecyclerView.OnItemTouch
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mLyricChange
                 , new IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO));
-        /*LocalBroadcastManager.getInstance(getContext()).registerReceiver(mPlayPauseUpdateReceiver
-                ,new IntentFilter(Constants.ACTION.PLAY_PAUSE_UI_UPDATE));*/
-        //UpdateUI();
         updateLyrics();
-
-        /*if(!fSeekbarRunning && playerService.getStatus()==PlayerService.PLAYING) {
-            fSeekbarThreadCancelled = false;
-            Executors.newSingleThreadExecutor().execute(seekbarUpdater);
-        }*/
-
     }
 
     private void startLyricUpdater() {

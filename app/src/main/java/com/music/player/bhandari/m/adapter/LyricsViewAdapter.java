@@ -3,7 +3,9 @@ package com.music.player.bhandari.m.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Html;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -32,19 +34,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.MyViewHolder> {
@@ -67,10 +69,10 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
     //flag is used when lyric are searched through explre feature
     private Boolean noDynamicLyrics = false;
 
-    public LyricsViewAdapter(Context context, Lyrics lyrics){
+    public LyricsViewAdapter(Context context, Lyrics lyrics) {
         this.context = context;
         copyRightText = context.getString(R.string.lyric_copy_right_msg);
-        inflater= LayoutInflater.from(context);
+        inflater = LayoutInflater.from(context);
         mLyrics = lyrics;
         dictionary.clear();
 
@@ -79,16 +81,17 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
         //happens when service is not started and instant lyric started
         try {
             mCurrentTime = MyApp.getService().getCurrentTrackProgress();
-        }catch (NullPointerException ignored){}
+        } catch (NullPointerException ignored) {
+        }
 
         mNextTime = 0L;
         mPrevTime = 0L;
         mTimes.clear();
         selectedItems = new SparseBooleanArray();
 
-        if(mLyrics.isLRC()) {
+        if (mLyrics.isLRC()) {
             setDynamicDictionary();
-        }else {
+        } else {
             setStaticDictionary();
         }
 
@@ -96,7 +99,7 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
 
     }
 
-    public void setNoDynamicLyrics(Boolean noDynamicLyrics){
+    public void setNoDynamicLyrics(Boolean noDynamicLyrics) {
         this.noDynamicLyrics = noDynamicLyrics;
     }
 
@@ -121,7 +124,7 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
             } else {
                 view = inflater.inflate(R.layout.lyrics_line_text_view, parent, false);
             }
-        }catch (InflateException e){
+        } catch (InflateException e) {
             TextView textView = new TextView(context);
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -130,7 +133,7 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setTypeface(TypeFaceHelper.getTypeFace(context));
             textView.setClickable(true);
-            textView.setPadding(10,10,10,10);
+            textView.setPadding(10, 10, 10, 10);
             textView.setId(R.id.lyrics_line);
             return new LyricsViewAdapter.MyViewHolder(textView);
         }
@@ -142,24 +145,24 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
         String line = "";
 
         line = dictionary.get(mTimes.get(position));
-        if(line!=null) {
+        if (line != null) {
             holder.line.setText(line);
             Log.d("LyricsViewAdapter", "onBindViewHolder: current time " + mCurrentTime);
             //when lyrics are searched through explore, no need of running lyrics
-            if(mLyrics.isLRC() && !noDynamicLyrics) {
+            if (mLyrics.isLRC() && !noDynamicLyrics) {
                 int color = mTimes.get(position) <= mCurrentTime ? Color.YELLOW : Color.WHITE;
                 holder.line.setTextColor(color);
                 Log.d("LyricsViewAdapter", "onBindViewHolder: setting color " + color);
             }
 
-        }else {
+        } else {
             holder.line.setText("");
         }
 
         //last item is copyright text
-        if(position==mTimes.size()-1){
+        if (position == mTimes.size() - 1) {
             holder.line.setTextSize(10);
-        }else {
+        } else {
             holder.line.setTextSize(22);
         }
 
@@ -169,17 +172,17 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
 
     @Override
     public int getItemCount() {
-            return mTimes.size();
+        return mTimes.size();
     }
 
-    public String getLineAtPosition(int position){
+    public String getLineAtPosition(int position) {
         return dictionary.get(mTimes.get(position));
     }
 
-    private void setStaticDictionary(){
+    private void setStaticDictionary() {
         long i = 0;
         try {
-            BufferedReader br = new BufferedReader (new StringReader(Html.fromHtml(mLyrics.getText()).toString()));
+            BufferedReader br = new BufferedReader(new StringReader(Html.fromHtml(mLyrics.getText()).toString()));
             String str;
             while ((str = br.readLine()) != null) {
                 //lyricLines.add(str);
@@ -189,8 +192,8 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
             }
 
             //put last element as lyrics copyright text
-            if(mTimes.size()!=0) {
-                dictionary.put(i,copyRightText);
+            if (mTimes.size() != 0) {
+                dictionary.put(i, copyRightText);
                 mTimes.add(i);
             }
             br.close();
@@ -199,7 +202,7 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
     }
 
     private void setDynamicDictionary() {
-        if(mLyrics==null){
+        if (mLyrics == null) {
             return;
         }
 
@@ -220,7 +223,7 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
                 }
 
 
-                if ((1 == arr.length) && texts.size()!=0) {
+                if ((1 == arr.length) && texts.size() != 0) {
                     String last = texts.remove(texts.size() - 1);
                     texts.add(last + arr[0]);
                     continue;
@@ -238,16 +241,16 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
         // Collections.sort(mTimes);
         for (int i = 0; i < mTimes.size(); i++) {
 
-                if (!(dictionary.isEmpty() && texts.get(i).replaceAll("\\s", "").isEmpty())) {
-                    // Log.v(Constants.L_TAG+" chavan",texts.get(i));
-                    dictionary.put(mTimes.get(i), texts.get(i));
-                }
+            if (!(dictionary.isEmpty() && texts.get(i).replaceAll("\\s", "").isEmpty())) {
+                // Log.v(Constants.L_TAG+" chavan",texts.get(i));
+                dictionary.put(mTimes.get(i), texts.get(i));
+            }
         }
 
         Collections.sort(mTimes);
 
         //put last element as lyrics copyright text
-        if(mTimes.size()!=0) {
+        if (mTimes.size() != 0) {
             dictionary.put(mTimes.get(mTimes.size() - 1) + 500, copyRightText);
             mTimes.add(mTimes.get(mTimes.size() - 1) + 500);
         }
@@ -255,12 +258,6 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
 
     private String[] parseLine(String line) {
         Matcher matcher = Pattern.compile("\\[.+\\].+").matcher(line);
-
-        /*if (!matcher.matches() || line.contains("By:")) {
-            if (line.contains("[by:") && line.length() > 6)
-                this.uploader = line.substring(5, line.length() - 1);
-            return null;
-        }*/
 
         if (line.endsWith("]"))
             line += " ";
@@ -316,8 +313,8 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
 
     }
 
-    public int getCurrentTimeIndex(){
-        if(mTimes==null){
+    public int getCurrentTimeIndex() {
+        if (mTimes == null) {
             return -1;
         }
         return mTimes.indexOf(dictionary.floorKey(mCurrentTime));
@@ -342,8 +339,7 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
 
         if (selectedItems.get(pos, false)) {
             selectedItems.delete(pos);
-        }
-        else {
+        } else {
             selectedItems.put(pos, true);
         }
         notifyItemChanged(pos);
@@ -367,7 +363,7 @@ public class LyricsViewAdapter extends RecyclerView.Adapter<LyricsViewAdapter.My
         return items;
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyViewHolder extends RecyclerView.ViewHolder {
         TextView line;
 
         MyViewHolder(View itemView) {

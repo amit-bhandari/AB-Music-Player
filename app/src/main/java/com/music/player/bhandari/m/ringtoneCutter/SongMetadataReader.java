@@ -47,11 +47,11 @@ public class SongMetadataReader {
         // Get a map from genre ids to names
         HashMap<String, String> genreIdMap = new HashMap<String, String>();
         Cursor c = mActivity.getContentResolver().query(
-            GENRES_URI,
-            new String[] {
-                    MediaStore.Audio.Genres._ID,
-                    MediaStore.Audio.Genres.NAME },
-            null, null, null);
+                GENRES_URI,
+                new String[]{
+                        MediaStore.Audio.Genres._ID,
+                        MediaStore.Audio.Genres.NAME},
+                null, null, null);
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             genreIdMap.put(c.getString(0), c.getString(1));
         }
@@ -59,10 +59,10 @@ public class SongMetadataReader {
         mGenre = "";
         for (String genreId : genreIdMap.keySet()) {
             c = mActivity.getContentResolver().query(
-                makeGenreUri(genreId),
-                new String[] { MediaStore.Audio.Media.DATA },
-                MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"",
-                null, null);
+                    makeGenreUri(genreId),
+                    new String[]{MediaStore.Audio.Media.DATA},
+                    MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"",
+                    null, null);
             if (c.getCount() != 0) {
                 mGenre = genreIdMap.get(genreId);
                 break;
@@ -73,16 +73,16 @@ public class SongMetadataReader {
 
         Uri uri = MediaStore.Audio.Media.getContentUriForPath(mFilename);
         c = mActivity.getContentResolver().query(
-            uri,
-            new String[] {
-                MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.YEAR,
-                MediaStore.Audio.Media.DATA },
-            MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"",
-            null, null);
+                uri,
+                new String[]{
+                        MediaStore.Audio.Media._ID,
+                        MediaStore.Audio.Media.TITLE,
+                        MediaStore.Audio.Media.ARTIST,
+                        MediaStore.Audio.Media.ALBUM,
+                        MediaStore.Audio.Media.YEAR,
+                        MediaStore.Audio.Media.DATA},
+                MediaStore.Audio.Media.DATA + " LIKE \"" + mFilename + "\"",
+                null, null);
         if (c.getCount() == 0) {
             mTitle = getBasename(mFilename);
             mArtist = "";
@@ -104,13 +104,13 @@ public class SongMetadataReader {
     private Uri makeGenreUri(String genreId) {
         String CONTENTDIR = MediaStore.Audio.Genres.Members.CONTENT_DIRECTORY;
         return Uri.parse(
-            new StringBuilder()
-            .append(GENRES_URI.toString())
-            .append("/")
-            .append(genreId)
-            .append("/")
-            .append(CONTENTDIR)
-            .toString());
+                new StringBuilder()
+                        .append(GENRES_URI.toString())
+                        .append("/")
+                        .append(genreId)
+                        .append("/")
+                        .append(CONTENTDIR)
+                        .toString());
     }
 
     private String getStringFromColumn(Cursor c, String columnName) {
@@ -135,6 +135,6 @@ public class SongMetadataReader {
 
     private String getBasename(String filename) {
         return filename.substring(filename.lastIndexOf('/') + 1,
-                                  filename.lastIndexOf('.'));
+                filename.lastIndexOf('.'));
     }
 }

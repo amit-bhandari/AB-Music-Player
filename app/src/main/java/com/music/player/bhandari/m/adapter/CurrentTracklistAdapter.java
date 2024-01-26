@@ -7,12 +7,14 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.core.view.MotionEventCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -49,23 +51,23 @@ import java.util.Collections;
 import java.util.concurrent.Executors;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTracklistAdapter.MyViewHolder>
-        implements ItemTouchHelperAdapter, PopupMenu.OnMenuItemClickListener{
+        implements ItemTouchHelperAdapter, PopupMenu.OnMenuItemClickListener {
 
     private static ArrayList<dataItem> dataItems = new ArrayList<>();
     private PlayerService playerService;
@@ -74,14 +76,14 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
     private Context context;
     private LayoutInflater inflater;
     //current playing position
-    private int position=0;
+    private int position = 0;
     private int tempPosition = 0; //temporary variable to hold position for onMenuItemClick
     private Handler handler;
 
-    public CurrentTracklistAdapter(Context context, OnStartDragListener dragStartListener){
+    public CurrentTracklistAdapter(Context context, OnStartDragListener dragStartListener) {
         mDragStartListener = dragStartListener;
 
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             return;
         }
@@ -94,24 +96,24 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
 
         position = playerService.getCurrentTrackPosition();
-        this.context=context;
-        inflater=LayoutInflater.from(context);
-                //setHasStableIds(true);
+        this.context = context;
+        inflater = LayoutInflater.from(context);
+        //setHasStableIds(true);
     }
 
     //very badly written code
-    public void fillData(){
-        if(playerService==null) return;
+    public void fillData() {
+        if (playerService == null) return;
         dataItems.clear();
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                ArrayList<Integer> temp = playerService.getTrackList();
+                ArrayList<Long> temp = playerService.getTrackList();
                 //HashMap<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
                 try {
-                    for (int id:temp){
+                    for (long id : temp) {
                         dataItem d = MusicLibrary.getInstance().getDataItemsForTracks().get(id);
-                        if(d!=null){
+                        if (d != null) {
                             dataItems.add(d);
                         }
                     }
@@ -122,9 +124,9 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                             notifyDataSetChanged();
                         }
                     });
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
                     //ignore for now
-                    Log.e("Notify","notify");
+                    Log.e("Notify", "notify");
                 }
             }
         });
@@ -140,7 +142,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
     @Override
     public void onBindViewHolder(@NonNull final CurrentTracklistAdapter.MyViewHolder holder, int position) {
 
-        if(dataItems.get(position) == null) return;
+        if (dataItems.get(position) == null) return;
         holder.title.setText(dataItems.get(position).title);
         holder.secondary.setText(dataItems.get(position).artist_name);
 
@@ -155,18 +157,18 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 return false;
             }
         });
-        if(playerService!=null && position==playerService.getCurrentTrackPosition()) {
+        if (playerService != null && position == playerService.getCurrentTrackPosition()) {
             holder.cv.setBackgroundColor(ColorHelper.getColor(R.color.gray3));
             holder.playAnimation.setVisibility(View.VISIBLE);
-            if (playerService.getStatus()==PlayerService.PLAYING){
+            if (playerService.getStatus() == PlayerService.PLAYING) {
                 //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_black_24dp));
                 holder.playAnimation.smoothToShow();
-            }else {
+            } else {
                 holder.playAnimation.smoothToHide();
                 //holder.iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_play_arrow_black_24dp));
             }
             //holder.iv.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.cv.setBackgroundColor(context.getResources().getColor(R.color.colorTransparent));
             //holder.iv.setVisibility(View.GONE);
             holder.playAnimation.setVisibility(View.GONE);
@@ -184,20 +186,20 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
         //listOfHeader is reference for that list itself
         //it will automatically reflect in current tracklist in player service class
         Log.d("CurrentTracklistAdapter", "onItemMove: from to " + fromPosition + " : " + toPosition);
-        playerService.swapPosition(fromPosition,toPosition);
-        Collections.swap(dataItems,fromPosition,toPosition);
-        notifyItemMoved(fromPosition,toPosition);
+        playerService.swapPosition(fromPosition, toPosition);
+        Collections.swap(dataItems, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
         return true;
     }
 
     @Override
     public void onItemDismiss(int position) {
-        if(playerService.getCurrentTrackPosition()!=position) {
+        if (playerService.getCurrentTrackPosition() != position) {
             //listOfHeader.remove(position);
             playerService.removeTrack(position);
             dataItems.remove(position);
             notifyItemRemoved(position);
-        }else {
+        } else {
             notifyItemChanged(position);
             //notifyDataSetChanged();
         }
@@ -205,7 +207,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_play:
                 int oldPos = this.position;
                 this.position = this.tempPosition;
@@ -218,8 +220,8 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 break;
 
             case R.id.action_add_to_playlist:
-                int[] ids = new int[]{dataItems.get(position).id};
-                UtilityFun.AddToPlaylist(context,ids);
+                long[] ids = new long[]{dataItems.get(position).id};
+                UtilityFun.AddToPlaylist(context, ids);
                 break;
 
             case R.id.action_share:
@@ -229,10 +231,10 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                     Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", file);
                     uris.add(fileUri);
                     UtilityFun.Share(context, uris, dataItems.get(position).title);
-                }catch (IllegalArgumentException e){
-                    try{
+                } catch (IllegalArgumentException e) {
+                    try {
                         UtilityFun.ShareFromPath(context, dataItems.get(position).file_path);
-                    }catch (Exception ex) {
+                    } catch (Exception ex) {
                         Toast.makeText(context, context.getString(R.string.error_unable_to_share), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -248,44 +250,44 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
             case R.id.action_edit_track_info:
                 context.startActivity(new Intent(context, ActivityTagEditor.class)
-                        .putExtra("from",Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING)
-                        .putExtra("file_path",dataItems.get(position).file_path)
-                        .putExtra("track_title",dataItems.get(position).title)
-                        .putExtra("position",position)
-                        .putExtra("id",dataItems.get(position).id));
-                ((Activity)context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        .putExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING)
+                        .putExtra("file_path", dataItems.get(position).file_path)
+                        .putExtra("track_title", dataItems.get(position).title)
+                        .putExtra("position", position)
+                        .putExtra("id", dataItems.get(position).id));
+                ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
             case R.id.action_search_youtube:
-                UtilityFun.LaunchYoutube(context,dataItems.get(position).artist_name + " - "
-                        +dataItems.get(position).title);
+                UtilityFun.LaunchYoutube(context, dataItems.get(position).artist_name + " - "
+                        + dataItems.get(position).title);
                 break;
         }
         return true;
     }
 
-    public ArrayList<Integer> getSongList(){
-        ArrayList<Integer>temp = new ArrayList<>();
-        for(dataItem d:dataItems){
-            if(d.id != 0) {
+    public ArrayList<Long> getSongList() {
+        ArrayList<Long> temp = new ArrayList<>();
+        for (dataItem d : dataItems) {
+            if (d.id != 0) {
                 temp.add(d.id);
             }
         }
         return temp;
     }
 
-    public void updateItem(int position, String... param){
+    public void updateItem(int position, String... param) {
         try {
             dataItems.get(position).title = param[0];
             dataItems.get(position).artist_name = param[1];
             dataItems.get(position).albumName = param[2];
             notifyItemChanged(position);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.v(Constants.TAG, e.toString());
         }
     }
 
-    private void setTrackInfoDialog(){
+    private void setTrackInfoDialog() {
         //final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         //alert.setTitle(context.getString(R.string.track_info_title));
         LinearLayout linear = new LinearLayout(context);
@@ -294,7 +296,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
         text.setTypeface(TypeFaceHelper.getTypeFace(context));
         text.setText(UtilityFun.trackInfoBuild(dataItems.get(position).id).toString());
 
-        text.setPadding(20, 20,20,10);
+        text.setPadding(20, 20, 20, 10);
         text.setTextSize(15);
         //text.setGravity(Gravity.CENTER);
         text.setTypeface(TypeFaceHelper.getTypeFace(context));
@@ -309,7 +311,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 .show();
     }
 
-    private void Delete(){
+    private void Delete() {
 
         new MyDialogBuilder(context)
                 .title(context.getString(R.string.are_u_sure))
@@ -318,17 +320,17 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        ArrayList<Integer> ids = new ArrayList<>();
+                        ArrayList<Long> ids = new ArrayList<>();
                         ArrayList<File> files = new ArrayList<>();
 
                         files.add(new File(dataItems.get(position).file_path));
                         ids.add(dataItems.get(position).id);
-                        if(UtilityFun.Delete(context, files, ids)){  //last parameter not needed
+                        if (UtilityFun.Delete(context, files, ids)) {  //last parameter not needed
                             Toast.makeText(context, context.getString(R.string.deleted) + dataItems.get(position).title, Toast.LENGTH_SHORT).show();
-                            if(playerService.getCurrentTrack().getTitle().equals(dataItems.get(position).title)){
+                            if (playerService.getCurrentTrack().getTitle().equals(dataItems.get(position).title)) {
                                 playerService.nextTrack();
                                 //playerService.notifyUI();
-                                notifyItemChanged(position+1);
+                                notifyItemChanged(position + 1);
                             }
                             playerService.removeTrack(position);
                             dataItems.remove(position);
@@ -344,7 +346,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
     public void onClick(View view, int position) {
         this.tempPosition = position;
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.more:
                 PopupMenu popup = new PopupMenu(context, view);
                 MenuInflater inflater = popup.getMenuInflater();
@@ -360,29 +362,29 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
 
             case R.id.trackItemDraggable:
                 int oldPos = this.position;
-                this.position=position;
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 100){
+                this.position = position;
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
                     return;
                 }
                 mLastClickTime = SystemClock.elapsedRealtime();
                 notifyItemChanged(oldPos);
                 notifyItemChanged(position);
-                if(position==playerService.getCurrentTrackPosition()){
+                if (position == playerService.getCurrentTrackPosition()) {
                     playerService.play();
                     Intent intent = new Intent().setAction(Constants.ACTION.COMPLETE_UI_UPDATE);
                     intent.putExtra("skip_adapter_update", true);
                     LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                     //playerService.notifyUI();
-                }else {
+                } else {
                     playerService.playAtPositionFromNowPlaying(position);
-                    Log.v(Constants.TAG,position+"  position");
+                    Log.v(Constants.TAG, position + "  position");
                 }
                 break;
         }
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView title,secondary;
+        TextView title, secondary;
         ImageView handle;
         View cv;
         //ImageView iv;
@@ -404,8 +406,8 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
         }
 
         @Override
-        public void onClick(View v){
-            CurrentTracklistAdapter.this.onClick(v,this.getLayoutPosition());
+        public void onClick(View v) {
+            CurrentTracklistAdapter.this.onClick(v, this.getLayoutPosition());
         }
     }
 }

@@ -17,19 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 //this thread is started from Music library once all artists are loaded
@@ -45,11 +45,11 @@ public class BulkArtInfoGrabber extends Thread {
     //if thread runs more than HALF HOUR, kill it
     private static long THREAD_TIMEOUT = 30 * 60 * 1000;
 
-    public BulkArtInfoGrabber(){
+    public BulkArtInfoGrabber() {
         super(new Runnable() {
             @Override
             public void run() {
-                if(!UtilityFun.isConnectedToInternet() || artInfoGrabberThreadRunning){
+                if (!UtilityFun.isConnectedToInternet() || artInfoGrabberThreadRunning) {
                     return;
                 }
 
@@ -108,10 +108,10 @@ public class BulkArtInfoGrabber extends Thread {
                     MyApp.getPref().edit().putLong(MyApp.getContext().getString(R.string.pref_artinfo_libload), System.currentTimeMillis()).apply();
 
                     artInfoGrabberThreadRunning = false;
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     Bundle bundle = new Bundle();
-                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Error_art_info_grab" );
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Error_art_info_grab");
                     UtilityFun.logEvent(bundle);
                 }
             }

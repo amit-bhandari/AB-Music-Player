@@ -12,25 +12,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.core.view.GestureDetectorCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.Html;
 import android.util.Log;
 import android.view.ActionMode;
@@ -52,8 +37,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GestureDetectorCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
@@ -88,8 +84,8 @@ import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.blurry.Blurry;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+import jp.wasabeef.blurry.Blurry;
 
 /**
  * Copyright 2017 Amit Bhandari AB
@@ -98,7 +94,7 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <a href="http://www.apache.org/licenses/LICENSE-2.0">...</a>
  * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -171,17 +167,9 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
         switch (themeSelector) {
-            case Constants.PRIMARY_COLOR.DARK:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.GLOSSY:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.LIGHT:
-                setTheme(R.style.AppThemeLight);
-                break;
+            case Constants.PRIMARY_COLOR.DARK, Constants.PRIMARY_COLOR.GLOSSY ->
+                    setTheme(R.style.AppThemeDark);
+            case Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight);
         }
         setContentView(R.layout.activity_instant_lyrics);
         ButterKnife.bind(this);
@@ -194,16 +182,12 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        }
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         handler = new Handler(Looper.getMainLooper());
         initializeListeners();
@@ -222,11 +206,6 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         if (!MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
             showDisclaimerDialog();
         }
-
-        /*final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        if (pm != null) {
-            this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        }*/
 
         try {
             Bundle bundle = new Bundle();
@@ -279,6 +258,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
         });
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);
@@ -288,14 +268,14 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putParcelable("lyrics", mLyrics);
         savedInstanceState.putParcelable("artInfo", artistInfo);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mLyrics = savedInstanceState.getParcelable("lyrics");
         artistInfo = savedInstanceState.getParcelable("artInfo");
@@ -364,18 +344,6 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     }
 
     private void acquireWindowPowerLock(boolean acquire) {
-        /*if(acquire) {
-            if (mWakeLock != null && !mWakeLock.isHeld()) {
-                this.mWakeLock.acquire(10*60*1000L); // /*10 minutes
-            }
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }else {
-            if(mWakeLock!=null && mWakeLock.isHeld()) {
-                this.mWakeLock.release();
-            }
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }*/
-
         if (acquire) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
@@ -557,12 +525,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
             recyclerView.setVisibility(View.GONE);
         }
 
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                updateSaveDeleteFabDrawable();
-            }
-        });
+        Executors.newSingleThreadExecutor().execute(this::updateSaveDeleteFabDrawable);
 
 
     }
@@ -685,8 +648,6 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
 
     private void myToggleSelection(int idx) {
         adapter.toggleSelection(idx);
-        //String title = adapter.getSelectedItemCount();
-        //actionMode.setTitle(title);
         if (adapter.getSelectedItemCount() == 0) {
             actionMode.finish();
             actionMode = null;
@@ -713,19 +674,18 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.menu_share:
+            case R.id.menu_share -> {
                 shareTextIntent(getSelectedLyricString().toString());
                 actionMode.finish();
                 actionModeActive = false;
-                break;
-
-            case R.id.menu_lyric_card:
+            }
+            case R.id.menu_lyric_card -> {
                 Intent intent = new Intent(this, ActivityLyricCard.class);
                 intent.putExtra("lyric", getSelectedLyricString().toString())
                         .putExtra("artist", mLyrics.getArtist())
                         .putExtra("track", mLyrics.getTrack());
                 startActivity(intent);
-                break;
+            }
         }
         return false;
     }
@@ -755,27 +715,23 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.fab_save_lyrics:
-                Executors.newSingleThreadExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        saveOrDeleteLyrics();
-                    }
-                });
-                break;
-
-            case R.id.view_artist_info:
+            case R.id.fab_save_lyrics ->
+                    Executors.newSingleThreadExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            saveOrDeleteLyrics();
+                        }
+                    });
+            case R.id.view_artist_info -> {
                 //clear offline stored lyrics if any and reload
                 if (artistInfo == null) {
                     Snackbar.make(rootView, getString(R.string.art_info_not_available)
                             , Snackbar.LENGTH_SHORT).show();
                     return;
                 }
-
                 toggleLyricsArtInfoView();
-                break;
-
-            case R.id.lyrics_line:
+            }
+            case R.id.lyrics_line -> {
                 if (recyclerView != null) {
                     int idx = recyclerView.getChildLayoutPosition(view);
                     if (actionModeActive) {
@@ -783,16 +739,12 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                         return;
                     }
                 }
-                break;
-
-            case R.id.text_view_lyric_status:
+            }
+            case R.id.text_view_lyric_status -> {
                 mLyrics = null;
                 updateLyrics(true);
-                break;
-
-            case R.id.fab_video:
-                UtilityFun.LaunchYoutube(this, track + " - " + artist);
-                break;
+            }
+            case R.id.fab_video -> UtilityFun.LaunchYoutube(this, track + " - " + artist);
         }
     }
 
@@ -876,29 +828,16 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
+            case android.R.id.home -> {
                 startActivity(new Intent(this, ActivityMain.class));
                 overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                //finish();
-                break;
-
-            case R.id.action_share:
-                shareLyrics();
-                break;
-
-            case R.id.action_sync_problem:
-                syncProblemDialog();
-                break;
-
-            case R.id.action_search:
-                searchLyricDialog();
-                break;
-
-            case R.id.action_wrong_lyrics:
-                wrongLyrics();
-                break;
-
-            case R.id.action_reload:
+            }
+            //finish();
+            case R.id.action_share -> shareLyrics();
+            case R.id.action_sync_problem -> syncProblemDialog();
+            case R.id.action_search -> searchLyricDialog();
+            case R.id.action_wrong_lyrics -> wrongLyrics();
+            case R.id.action_reload -> {
                 if ((System.currentTimeMillis() - lastClicked) < 2000) {
                     return super.onOptionsItemSelected(item);
                 }
@@ -910,7 +849,7 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 mLyrics = null;
                 updateLyrics(true);
                 lastClicked = System.currentTimeMillis();
-                break;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1096,8 +1035,6 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                         fos.write(buffer, 0, bufferLength);
                     }
                     fos.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -1126,24 +1063,21 @@ public class ActivityInstantLyric extends AppCompatActivity implements RecyclerV
                 fIsThreadRunning = true;
                 //Log.v(Constants.L_TAG,"Lyric thread running");
 
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
+                handler.post(() -> {
 
-                        if (!currentMusicInfo.getBoolean("playing", false)) {
-                            return;
-                        }
+                    if (!currentMusicInfo.getBoolean("playing", false)) {
+                        return;
+                    }
 
-                        long startTime = currentMusicInfo.getLong("startTime", System.currentTimeMillis());
-                        long distance = System.currentTimeMillis() - startTime;
-                        int index = adapter.changeCurrent(distance);
+                    long startTime = currentMusicInfo.getLong("startTime", System.currentTimeMillis());
+                    long distance = System.currentTimeMillis() - startTime;
+                    int index = adapter.changeCurrent(distance);
 
-                        int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
-                        int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                    int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                    int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                        if (index != -1 && index > firstVisibleItem && index < lastVisibleItem) {
-                            recyclerView.smoothScrollToPosition(index);
-                        }
+                    if (index != -1 && index > firstVisibleItem && index < lastVisibleItem) {
+                        recyclerView.smoothScrollToPosition(index);
                     }
                 });
 

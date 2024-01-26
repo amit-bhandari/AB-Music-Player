@@ -9,9 +9,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -48,47 +50,50 @@ import butterknife.ButterKnife;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-public class ActivityTagEditor extends AppCompatActivity implements  View.OnClickListener {
+public class ActivityTagEditor extends AppCompatActivity implements View.OnClickListener {
 
-    @BindView(R.id.title_te)  EditText title;
-    @BindView(R.id.artist_te)  EditText artist;
-    @BindView(R.id.album_te)  EditText album;
-    @BindView(R.id.album_art_te)  ImageView album_art;
+    @BindView(R.id.title_te)
+    EditText title;
+    @BindView(R.id.artist_te)
+    EditText artist;
+    @BindView(R.id.album_te)
+    EditText album;
+    @BindView(R.id.album_art_te)
+    ImageView album_art;
 
-    private int song_id;
+    private long song_id;
     private String original_title, original_artist, original_album;
     private String edited_title = "";
-    private String edited_artist="";
-    private String edited_album="";
+    private String edited_artist = "";
+    private String edited_album = "";
     private String track_title;
-    private final int SAVE=10;
-    boolean fChanged=false;
+    private final int SAVE = 10;
+    boolean fChanged = false;
     private TrackItem item;
-    private String ALBUM_ART_PATH="";
+    private String ALBUM_ART_PATH = "";
     //file path where changed image file is stored
     private String new_artwork_path = "";
 
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState)
-    {
+    protected void onCreate(final Bundle savedInstanceState) {
         //if player service not running, kill the app
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             Intent intent = new Intent(this, ActivityPermissionSeek.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
@@ -98,7 +103,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
 
         super.onCreate(savedInstanceState);
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-        switch (themeSelector){
+        switch (themeSelector) {
             case Constants.PRIMARY_COLOR.DARK:
                 setTheme(R.style.AppThemeDark);
                 break;
@@ -117,7 +122,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         //show info dialog
         showInfoDialog();
 
-        ALBUM_ART_PATH = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+getString(R.string.album_art_dir_name);
+        ALBUM_ART_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.album_art_dir_name);
 
         //findViewById(R.id.root_view_tag_editor).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
 
@@ -125,12 +130,12 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
 
         //get file path
         String file_path = getIntent().getStringExtra("file_path");
-        if(file_path ==null){
+        if (file_path == null) {
             finish();
         }
 
         track_title = getIntent().getStringExtra("track_title");
-        song_id = getIntent().getIntExtra("id",0);
+        song_id = getIntent().getIntExtra("id", 0);
 
         item = MusicLibrary.getInstance().getTrackItemFromId(song_id);
 
@@ -138,17 +143,11 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }*/
         setTitle(getString(R.string.title_tag_editor));
 
         album_art.setOnClickListener(this);
@@ -163,8 +162,8 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 
-    private void setTagsFromContent(){
-        if(item==null){
+    private void setTagsFromContent() {
+        if (item == null) {
             return;
         }
         title.setText(item.getTitle());
@@ -179,7 +178,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         original_artist = item.getArtist();
 
         int defaultAlbumArtSetting = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
-        switch (defaultAlbumArtSetting){
+        switch (defaultAlbumArtSetting) {
             case 0:
                 Glide.with(this)
                         .load(MusicLibrary.getInstance().getAlbumArtUri(item.getAlbumId()))
@@ -215,7 +214,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.add(0, SAVE , 0, getString(R.string.action_save))
+        menu.add(0, SAVE, 0, getString(R.string.action_save))
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -225,36 +224,36 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         switch (item.getItemId()) {
             case android.R.id.home:
                 readValues();
-                if(fChanged){
+                if (fChanged) {
                     unsavedDataAlert();
-                }else {
-                    overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                } else {
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     finish();
                 }
                 break;
 
             case SAVE:
                 readValues();
-                if(fChanged){
+                if (fChanged) {
                     try {
                         save();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(this,getString(R.string.te_error_saving_tags),Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.te_error_saving_tags), Toast.LENGTH_LONG).show();
                     }
-                    Log.v(Constants.TAG,edited_title);
-                    Log.v(Constants.TAG,edited_artist);
-                    Log.v(Constants.TAG,edited_album);
+                    Log.v(Constants.TAG, edited_title);
+                    Log.v(Constants.TAG, edited_artist);
+                    Log.v(Constants.TAG, edited_album);
                     String edited_genre = "";
                     Log.v(Constants.TAG, edited_genre);
-                }else {
+                } else {
                     Intent intent;
-                    int launchedFrom = getIntent().getIntExtra("from",Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB);
-                    if(launchedFrom==Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB) {
+                    int launchedFrom = getIntent().getIntExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB);
+                    if (launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB) {
                         intent = new Intent(this, ActivityMain.class);
-                    }else if(launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING){
+                    } else if (launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING) {
                         intent = new Intent(this, ActivityNowPlaying.class);
-                    }else {
+                    } else {
                         intent = new Intent(this, ActivitySecondaryLibrary.class);
                     }
                     startActivity(intent);
@@ -265,16 +264,16 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         return super.onOptionsItemSelected(item);
     }
 
-    private void readValues(){
+    private void readValues() {
         edited_title = title.getText().toString();
         edited_artist = artist.getText().toString();
         edited_album = album.getText().toString();
         //edited_genre = genre.getText().toString();
-        if(!edited_title.equals(original_title) ||
+        if (!edited_title.equals(original_title) ||
                 !edited_artist.equals(original_artist) ||
                 !edited_album.equals(original_album) ||
                 //!edited_genre.equals(original_genre) ||
-                !new_artwork_path.equals("")){
+                !new_artwork_path.equals("")) {
             fChanged = true;
         }
     }
@@ -292,7 +291,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
                             save();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(ActivityTagEditor.this,"Error while saving tags!",Toast.LENGTH_LONG).show();
+                            Toast.makeText(ActivityTagEditor.this, "Error while saving tags!", Toast.LENGTH_LONG).show();
                         }
                         finish();
                     }
@@ -308,8 +307,8 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
 
     private void save() {
 
-        if(edited_title.isEmpty() || edited_album.isEmpty() || edited_artist.isEmpty()){
-            Toast.makeText(getApplicationContext(),getString(R.string.te_error_empty_field), Toast.LENGTH_SHORT).show();
+        if (edited_title.isEmpty() || edited_album.isEmpty() || edited_artist.isEmpty()) {
+            Toast.makeText(getApplicationContext(), getString(R.string.te_error_empty_field), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -320,11 +319,11 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         values.put(MediaStore.Audio.Media.TITLE, edited_title);
         values.put(MediaStore.Audio.Media.ARTIST, edited_artist);
         values.put(MediaStore.Audio.Media.ALBUM, edited_album);
-        getContentResolver().update(uri, values, MediaStore.Audio.Media.TITLE +"=?", new String[] {track_title});
-        if(!new_artwork_path.equals("")){
+        getContentResolver().update(uri, values, MediaStore.Audio.Media.TITLE + "=?", new String[]{track_title});
+        if (!new_artwork_path.equals("")) {
             Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
             int deleted = getContentResolver().delete(ContentUris.withAppendedId(sArtworkUri, item.getAlbumId()), null, null);
-            Log.v(Constants.TAG,"delete "+deleted);
+            Log.v(Constants.TAG, "delete " + deleted);
             values = new ContentValues();
             values.put("album_id", item.getAlbumId());
             values.put("_data", new_artwork_path);
@@ -333,31 +332,31 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
 
         dataItem d = MusicLibrary.getInstance().updateTrackNew(song_id, edited_title, edited_artist, edited_album);
         PlaylistManager.getInstance(MyApp.getContext()).addEntryToMusicTable(d);
-     //   PlaylistManager.getInstance(MyApp.getContext()).PopulateUserMusicTable();
+        //   PlaylistManager.getInstance(MyApp.getContext()).PopulateUserMusicTable();
 
         Intent intent;
-        int launchedFrom = getIntent().getIntExtra("from",Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB);
-        if(launchedFrom==Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB) {
+        int launchedFrom = getIntent().getIntExtra("from", Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB);
+        if (launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.MAIN_LIB) {
             intent = new Intent(this, ActivityMain.class);
-        }else if(launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING){
+        } else if (launchedFrom == Constants.TAG_EDITOR_LAUNCHED_FROM.NOW_PLAYING) {
             intent = new Intent(this, ActivityNowPlaying.class);
-        }else {
+        } else {
             intent = new Intent(this, ActivitySecondaryLibrary.class);
         }
-            intent.putExtra("refresh", true);
-            intent.putExtra("position", getIntent().getIntExtra("position", -1));
-            intent.putExtra("originalTitle",original_title);
-            intent.putExtra("title", edited_title);
-            intent.putExtra("artist", edited_artist);
-            intent.putExtra("album", edited_album);
+        intent.putExtra("refresh", true);
+        intent.putExtra("position", getIntent().getIntExtra("position", -1));
+        intent.putExtra("originalTitle", original_title);
+        intent.putExtra("title", edited_title);
+        intent.putExtra("artist", edited_artist);
+        intent.putExtra("album", edited_album);
         startActivity(intent);
-        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         finish();
     }
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.album_art_te){
+        if (v.getId() == R.id.album_art_te) {
             pickImage();
         }
     }
@@ -369,40 +368,6 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         startActivityForResult(intent, 1);
     }
 
-    /*private void deletePhoto(){
-        if(album_art!=null){
-            album_art.setImageDrawable(getResources().getDrawable(R.drawable.ic_batman_1));
-        }
-        Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
-        getContentResolver().delete(ContentUris.withAppendedId(sArtworkUri, item.getAlbumId()), null, null);
-        String customAlbumArt = Environment.getExternalStorageDirectory().getAbsolutePath()
-                +"/"+getString(R.string.album_art_dir_name)+"/"
-                +item.getAlbumId();
-        File f = new File(customAlbumArt);
-        if(f.exists()){
-            try {
-                f.delete();
-            }catch (Exception ignored){
-
-            }
-        }
-    }*/
-
-    public static void dumpIntent(Intent i){
-
-        Bundle bundle = i.getExtras();
-        if (bundle != null) {
-            Set<String> keys = bundle.keySet();
-            Iterator<String> it = keys.iterator();
-            Log.e(Constants.TAG,"Dumping Intent start");
-            while (it.hasNext()) {
-                String key = it.next();
-                Log.e(Constants.TAG,"[" + key + "=" + bundle.get(key)+"]");
-            }
-            Log.e(Constants.TAG,"Dumping Intent end");
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -410,7 +375,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
             return;
         }
 
-        if(data==null){
+        if (data == null) {
             return;
         }
 
@@ -418,10 +383,10 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
             //dumpIntent(data);
             checkAndCreateAlbumArtDirectory();
             Uri uri = data.getData();
-            if(uri!=null && album_art!=null) {
+            if (uri != null && album_art != null) {
                 Log.v(Constants.TAG, data.toString());
                 String file_path_artwork = getRealPathFromURI(uri);
-                if(file_path_artwork==null){
+                if (file_path_artwork == null) {
                     Toast.makeText(this, getString(R.string.te_error_image_load), Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -433,24 +398,24 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
         }
     }
 
-    private void checkAndCreateAlbumArtDirectory(){
+    private void checkAndCreateAlbumArtDirectory() {
         File f = new File(ALBUM_ART_PATH);
-        if(f.exists()){
+        if (f.exists()) {
             return;
         }
         try {
             f.mkdir();
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
     }
 
     public String getRealPathFromURI(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         @SuppressWarnings("deprecation")
         Cursor cursor = managedQuery(uri, projection, null, null, null);
 
-        if(cursor==null || cursor.getCount()==0){
+        if (cursor == null || cursor.getCount() == 0) {
             return null;
         }
 
@@ -493,16 +458,16 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
     @Override
     public void onBackPressed() {
         readValues();
-        if(fChanged){
+        if (fChanged) {
             unsavedDataAlert();
-        }else {
+        } else {
             finish();
-            overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
     }
 
-    private void showInfoDialog(){
-        if(!MyApp.getPref().getBoolean(getString(R.string.pref_show_edit_track_info_dialog),true)){
+    private void showInfoDialog() {
+        if (!MyApp.getPref().getBoolean(getString(R.string.pref_show_edit_track_info_dialog), true)) {
             return;
         }
 
@@ -514,7 +479,7 @@ public class ActivityTagEditor extends AppCompatActivity implements  View.OnClic
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_show_edit_track_info_dialog),false).apply();
+                        MyApp.getPref().edit().putBoolean(getString(R.string.pref_show_edit_track_info_dialog), false).apply();
                     }
                 })
                 .show();

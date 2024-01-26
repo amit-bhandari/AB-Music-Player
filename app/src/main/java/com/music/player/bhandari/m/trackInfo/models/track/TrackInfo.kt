@@ -7,17 +7,17 @@ data class TrackWrap(
 )
 
 data class Track(
-        val album: Album,
-        val artist: Artist,
-        val duration: String,
-        val listeners: String,
-        val mbid: String,
-        val name: String,
-        val playcount: String,
-        val streamable: Streamable,
-        val toptags: Toptags,
-        val url: String,
-        val wiki: Wiki
+    val album: Album,
+    val artist: Artist,
+    val duration: String,
+    val listeners: String,
+    val mbid: String,
+    val name: String,
+    val playcount: String,
+    val streamable: Streamable,
+    val toptags: Toptags,
+    val url: String,
+    val wiki: Wiki
 )
 
 data class Artist(
@@ -42,12 +42,12 @@ data class Tag(
 )
 
 data class Album(
-        @SerializedName("@attr") val attr : Attr,
-        val artist: String,
-        val image: List<Image>,
-        val mbid: String,
-        val title: String,
-        val url: String
+    @SerializedName("@attr") val attr: Attr,
+    val artist: String,
+    val image: List<Image>,
+    val mbid: String,
+    val title: String,
+    val url: String
 )
 
 data class Attr(

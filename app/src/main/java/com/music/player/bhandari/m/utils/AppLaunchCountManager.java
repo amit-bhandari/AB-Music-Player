@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -13,19 +14,19 @@ import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.UIElementHelper.MyDialogBuilder;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class AppLaunchCountManager {
@@ -103,7 +104,7 @@ public class AppLaunchCountManager {
 
     }
 
-    public static void nowPlayingLaunched(){
+    public static void nowPlayingLaunched() {
         SharedPreferences prefs = MyApp.getContext().getSharedPreferences("apprater", 0);
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -114,15 +115,15 @@ public class AppLaunchCountManager {
         editor.apply();
     }
 
-    public static long getNowPlayingLaunchCount(){
+    public static long getNowPlayingLaunchCount() {
         SharedPreferences prefs = MyApp.getContext().getSharedPreferences("apprater", 0);
-        if(prefs==null){
+        if (prefs == null) {
             return -1;
         }
         return prefs.getLong("launch_count_now_playing", -1);
     }
 
-    public static void instantLyricsLaunched(){
+    public static void instantLyricsLaunched() {
         SharedPreferences prefs = MyApp.getContext().getSharedPreferences("apprater", 0);
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -133,9 +134,9 @@ public class AppLaunchCountManager {
         editor.apply();
     }
 
-    public static long getInstantLyricsCount(){
+    public static long getInstantLyricsCount() {
         SharedPreferences prefs = MyApp.getContext().getSharedPreferences("apprater", 0);
-        if(prefs==null){
+        if (prefs == null) {
             return -1;
         }
         return prefs.getLong("launch_count_instantLyrics", -1);
@@ -147,13 +148,13 @@ public class AppLaunchCountManager {
         return date_firstLaunch != 0 && System.currentTimeMillis() >= date_firstLaunch + (HOURS_UNTIL_INTER_AD * 60 * 60 * 1000);
     }
 
-    public static boolean isEligibleForRatingAsk(){
+    public static boolean isEligibleForRatingAsk() {
         SharedPreferences prefs = MyApp.getContext().getSharedPreferences("apprater", 0);
         Long date_firstLaunch = prefs.getLong("date_firstlaunch", 0);
         return date_firstLaunch != 0 && System.currentTimeMillis() >= date_firstLaunch + (DAYS_UNTIL_RATE_ASK * 24 * 60 * 60 * 1000);
     }
 
-    public static boolean isEligibleForBannerAds(){
+    public static boolean isEligibleForBannerAds() {
         SharedPreferences prefs = MyApp.getContext().getSharedPreferences("apprater", 0);
         Long date_firstLaunch = prefs.getLong("date_firstlaunch", 0);
         return date_firstLaunch != 0 && System.currentTimeMillis() >= date_firstLaunch + (HOURS_UNTIL_BANNER_ADS * 60 * 60 * 1000);

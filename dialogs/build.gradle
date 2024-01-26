@@ -8,23 +8,22 @@ ext {
 }
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
-
     defaultConfig {
+        compileSdk 34
         minSdkVersion versions.minSdk
         targetSdkVersion versions.compileSdk
         consumerProguardFiles 'progress-proguard.txt'
-    }
-    lintOptions {
-        abortOnError false
-        checkReleaseBuilds false
     }
     sourceSets {
         main.res.srcDirs = [
             'src/main/res',
             'src/main/res-public'
         ]
+    }
+    namespace 'com.afollestad.materialdialogs'
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 

@@ -3,7 +3,7 @@ package com.music.player.bhandari.m.trackInfo.models.album
 import com.google.gson.annotations.SerializedName
 
 data class AlbumWrap(
-        val album: Album
+    val album: Album
 )
 
 data class Album(
@@ -35,7 +35,7 @@ data class Tag(
 )
 
 data class Image(
-        @SerializedName("#text") val text: String,
+    @SerializedName("#text") val text: String,
     val size: String
 )
 
@@ -44,12 +44,12 @@ data class Tracks(
 )
 
 data class Track(
-        @SerializedName("@attr") val attr : Attr,
-        val artist: Artist,
-        val duration: String,
-        val name: String,
-        val streamable: Streamable,
-        val url: String
+    @SerializedName("@attr") val attr: Attr,
+    val artist: Artist,
+    val duration: String,
+    val name: String,
+    val streamable: Streamable,
+    val url: String
 )
 
 data class Artist(
@@ -63,6 +63,6 @@ data class Attr(
 )
 
 data class Streamable(
-        @SerializedName("#text") val text: String,
-        val fulltrack: String
+    @SerializedName("#text") val text: String,
+    val fulltrack: String
 )

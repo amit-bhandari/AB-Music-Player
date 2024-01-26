@@ -26,10 +26,10 @@ import android.widget.ImageView;
 
 /**
  * Represents a draggable start or end marker.
- *
+ * <p>
  * Most events are passed back to the client class using a
  * listener interface.
- *
+ * <p>
  * This class directly keeps track of its own velocity, though,
  * accelerating as the user holds down the left or right arrows
  * while this control is focused.
@@ -38,15 +38,25 @@ public class MarkerView extends ImageView {
 
     public interface MarkerListener {
         public void markerTouchStart(MarkerView marker, float pos);
+
         public void markerTouchMove(MarkerView marker, float pos);
+
         public void markerTouchEnd(MarkerView marker);
+
         public void markerFocus(MarkerView marker);
+
         public void markerLeft(MarkerView marker, int velocity);
+
         public void markerRight(MarkerView marker, int velocity);
+
         public void markerEnter(MarkerView marker);
+
         public void markerKeyUp();
+
         public void markerDraw();
-    };
+    }
+
+    ;
 
     private int mVelocity;
     private MarkerListener mListener;
@@ -67,21 +77,21 @@ public class MarkerView extends ImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch(event.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            requestFocus();
-            // We use raw x because this window itself is going to
-            // move, which will screw up the "local" coordinates
-            mListener.markerTouchStart(this, event.getRawX());
-            break;
-        case MotionEvent.ACTION_MOVE:
-            // We use raw x because this window itself is going to
-            // move, which will screw up the "local" coordinates
-            mListener.markerTouchMove(this, event.getRawX());
-            break;
-        case MotionEvent.ACTION_UP:
-            mListener.markerTouchEnd(this);
-            break;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                requestFocus();
+                // We use raw x because this window itself is going to
+                // move, which will screw up the "local" coordinates
+                mListener.markerTouchStart(this, event.getRawX());
+                break;
+            case MotionEvent.ACTION_MOVE:
+                // We use raw x because this window itself is going to
+                // move, which will screw up the "local" coordinates
+                mListener.markerTouchMove(this, event.getRawX());
+                break;
+            case MotionEvent.ACTION_UP:
+                mListener.markerTouchEnd(this);
+                break;
         }
         return true;
     }

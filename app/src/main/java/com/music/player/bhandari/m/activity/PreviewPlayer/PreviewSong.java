@@ -1,6 +1,6 @@
 package com.music.player.bhandari.m.activity.PreviewPlayer;
 
-/**
+/*
  Copyright 2017 Amit Bhandari AB
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,6 @@ import android.net.Uri;
  * </pre>
  */
 /* package */ class PreviewSong {
-
     Uri URI = null;
     String TITLE = null;
     String ARTIST = null;

@@ -55,17 +55,17 @@ public class FileSaveDialog extends Dialog {
      * be translated.
      */
     public static String KindToName(int kind) {
-        switch(kind) {
-        default:
-            return "Unknown";
-        case FILE_KIND_MUSIC:
-            return "Music";
-        case FILE_KIND_ALARM:
-            return "Alarm";
-        case FILE_KIND_NOTIFICATION:
-            return "Notification";
-        case FILE_KIND_RINGTONE:
-            return "Ringtone";
+        switch (kind) {
+            default:
+                return "Unknown";
+            case FILE_KIND_MUSIC:
+                return "Music";
+            case FILE_KIND_ALARM:
+                return "Alarm";
+            case FILE_KIND_NOTIFICATION:
+                return "Notification";
+            case FILE_KIND_RINGTONE:
+                return "Ringtone";
         }
     }
 
@@ -86,13 +86,13 @@ public class FileSaveDialog extends Dialog {
         mTypeArray.add(resources.getString(R.string.type_notification));
         mTypeArray.add(resources.getString(R.string.type_ringtone));
 
-        mFilename = (EditText)findViewById(R.id.filename);
+        mFilename = (EditText) findViewById(R.id.filename);
         mOriginalName = originalName;
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-            context, android.R.layout.simple_spinner_item, mTypeArray);
+                context, android.R.layout.simple_spinner_item, mTypeArray);
         adapter.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item);
+                android.R.layout.simple_spinner_dropdown_item);
         mTypeSpinner = (Spinner) findViewById(R.id.ringtone_type);
         mTypeSpinner.setAdapter(adapter);
         mTypeSpinner.setSelection(FILE_KIND_RINGTONE);
@@ -101,23 +101,24 @@ public class FileSaveDialog extends Dialog {
         setFilenameEditBoxFromName(false);
 
         mTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> parent,
-                                           View v,
-                                           int position,
-                                           long id) {
-                    setFilenameEditBoxFromName(true);
-                }
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
+            public void onItemSelected(AdapterView<?> parent,
+                                       View v,
+                                       int position,
+                                       long id) {
+                setFilenameEditBoxFromName(true);
+            }
 
-        Button save = (Button)findViewById(R.id.save);
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        Button save = (Button) findViewById(R.id.save);
         save.setOnClickListener(saveListener);
-        Button cancel = (Button)findViewById(R.id.cancel);
+        Button cancel = (Button) findViewById(R.id.cancel);
         cancel.setOnClickListener(cancelListener);
         mResponse = response;
 
-        if(getWindow()!=null){
+        if (getWindow() != null) {
             getWindow().setBackgroundDrawable(ColorHelper.getGradientDrawableDark());
             getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
         }
@@ -127,7 +128,7 @@ public class FileSaveDialog extends Dialog {
         if (onlyIfNotEdited) {
             CharSequence currentText = mFilename.getText();
             String expectedText = mOriginalName + " " +
-                mTypeArray.get(mPreviousSelection);
+                    mTypeArray.get(mPreviousSelection);
 
             if (!expectedText.contentEquals(currentText)) {
                 return;
@@ -141,17 +142,17 @@ public class FileSaveDialog extends Dialog {
     }
 
     private View.OnClickListener saveListener = new View.OnClickListener() {
-            public void onClick(View view) {
-                mResponse.obj = mFilename.getText();
-                mResponse.arg1 = mTypeSpinner.getSelectedItemPosition();
-                mResponse.sendToTarget();
-                dismiss();
-            }
-        };
+        public void onClick(View view) {
+            mResponse.obj = mFilename.getText();
+            mResponse.arg1 = mTypeSpinner.getSelectedItemPosition();
+            mResponse.sendToTarget();
+            dismiss();
+        }
+    };
 
     private View.OnClickListener cancelListener = new View.OnClickListener() {
-            public void onClick(View view) {
-                dismiss();
-            }
-        };
+        public void onClick(View view) {
+            dismiss();
+        }
+    };
 }

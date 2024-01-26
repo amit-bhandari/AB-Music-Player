@@ -1,5 +1,6 @@
 package com.music.player.bhandari.m.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -7,14 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -26,8 +19,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
@@ -48,39 +49,47 @@ import butterknife.OnClick;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * <a href="http://www.apache.org/licenses/LICENSE-2.0">...</a>
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class ActivityExploreLyrics extends AppCompatActivity implements OnPopularTracksReady
-        , View.OnClickListener,  SwipeRefreshLayout.OnRefreshListener {
+        , View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    @BindView(R.id.root_view_lyrics_explore) View rootView;
-    @BindView(R.id.recyclerView) RecyclerView recyclerView;
-    @BindView(R.id.recycler_view_wrapper) View rvWrapper;
-    @BindView(R.id.progressBar) ProgressBar progressBar;
-    @BindView(R.id.statusTextView) TextView statusText;
-    @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.fab_right_side) FloatingActionButton fab;
-    @BindView(R.id.trending_now_text) TextView trendingNow;
+    @BindView(R.id.root_view_lyrics_explore)
+    View rootView;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    @BindView(R.id.recycler_view_wrapper)
+    View rvWrapper;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.statusTextView)
+    TextView statusText;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.fab_right_side)
+    FloatingActionButton fab;
+    @BindView(R.id.trending_now_text)
+    TextView trendingNow;
     private Handler handler;
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(this, ActivityMain.class));
-        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         finish();
     }
 
@@ -91,18 +100,10 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
         ColorHelper.setStatusBarGradiant(this);
 
         int themeSelector = MyApp.getPref().getInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.LIGHT);
-        switch (themeSelector){
-            case Constants.PRIMARY_COLOR.DARK:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.GLOSSY:
-                setTheme(R.style.AppThemeDark);
-                break;
-
-            case Constants.PRIMARY_COLOR.LIGHT:
-                setTheme(R.style.AppThemeLight);
-                break;
+        switch (themeSelector) {
+            case Constants.PRIMARY_COLOR.DARK, Constants.PRIMARY_COLOR.GLOSSY ->
+                    setTheme(R.style.AppThemeDark);
+            case Constants.PRIMARY_COLOR.LIGHT -> setTheme(R.style.AppThemeLight);
         }
 
         setContentView(R.layout.activity_lyrics_explore);
@@ -116,20 +117,13 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
 
         // add back ar
         // row to toolbar
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        //rootView.setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
         swipeRefreshLayout.setOnRefreshListener(this);
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ColorHelper.GetStatusBarColor());
-        }*/
 
         fab.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.getWidgetColor()));
         fab.setOnClickListener(this);
@@ -138,13 +132,13 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
             Bundle bundle = new Bundle();
             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "explore_lyrics_launched");
             UtilityFun.logEvent(bundle);
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
         }
     }
 
     private void growShrinkAnimate() {
         final ScaleAnimation growAnim = new ScaleAnimation(1.0f, 1.15f, 1.0f, 1.15f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        final ScaleAnimation shrinkAnim = new ScaleAnimation(1.15f, 1.0f, 1.15f, 1.0f,Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        final ScaleAnimation shrinkAnim = new ScaleAnimation(1.15f, 1.0f, 1.15f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
         growAnim.setDuration(500);
         shrinkAnim.setDuration(500);
@@ -152,32 +146,32 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
         fab.setAnimation(growAnim);
         growAnim.start();
 
-        growAnim.setAnimationListener(new Animation.AnimationListener()
-        {
+        growAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation){}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animation animation){}
+            public void onAnimationRepeat(Animation animation) {
+            }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
                 fab.setAnimation(shrinkAnim);
                 shrinkAnim.start();
             }
         });
-        shrinkAnim.setAnimationListener(new Animation.AnimationListener()
-        {
+        shrinkAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation){}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animation animation){}
+            public void onAnimationRepeat(Animation animation) {
+            }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
                 fab.setAnimation(growAnim);
                 growAnim.start();
             }
@@ -185,47 +179,39 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
     }
 
     private void loadPopularTracks(Boolean lookInCache) {
-        String country = MyApp.getPref().getString(getString(R.string.pref_user_country),"");
-        new PopularTrackRepo().fetchPopularTracks(country, this, lookInCache );
+        String country = MyApp.getPref().getString(getString(R.string.pref_user_country), "");
+        new PopularTrackRepo().fetchPopularTracks(country, this, lookInCache);
     }
 
     @OnClick(R.id.statusTextView)
-    void retryLoading(){
+    void retryLoading() {
         progressBar.setVisibility(View.VISIBLE);
         statusText.setVisibility(View.GONE);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadPopularTracks(false);
-            }
-        }, 1000);
+        handler.postDelayed(() -> loadPopularTracks(false), 1000);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        Log.d("ActivityExploreLyrics", "onNewIntent: " );
+        Log.d("ActivityExploreLyrics", "onNewIntent: ");
     }
 
     @Override
     public void popularTracksReady(final List<Track> tracks, @NonNull final String region) {
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-                progressBar.setVisibility(View.GONE);
-                if(tracks.size()==0){
-                    statusText.setText(R.string.error_fetching_popular_tracks);
-                    statusText.setVisibility(View.VISIBLE);
-                }else {
-                    TopTracksAdapter adapter = new TopTracksAdapter(ActivityExploreLyrics.this, tracks);
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new ActivityExploreLyrics.WrapContentLinearLayoutManager(ActivityExploreLyrics.this));
-                    rvWrapper.setVisibility(View.VISIBLE);
-                    trendingNow.setText(getString(R.string.trending_now_in,region));
-                }
+        handler.post(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            progressBar.setVisibility(View.GONE);
+            if (tracks.size() == 0) {
+                statusText.setText(R.string.error_fetching_popular_tracks);
+                statusText.setVisibility(View.VISIBLE);
+            } else {
+                TopTracksAdapter adapter = new TopTracksAdapter(ActivityExploreLyrics.this, tracks);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(ActivityExploreLyrics.this));
+                rvWrapper.setVisibility(View.VISIBLE);
+                trendingNow.setText(getString(R.string.trending_now_in, region));
             }
         });
 
@@ -234,22 +220,17 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
 
     @Override
     public void error() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.GONE);
-                statusText.setText(R.string.error_fetching_popular_tracks);
-                statusText.setVisibility(View.VISIBLE);
-            }
+        handler.post(() -> {
+            progressBar.setVisibility(View.GONE);
+            statusText.setText(R.string.error_fetching_popular_tracks);
+            statusText.setVisibility(View.VISIBLE);
         });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                onBackPressed();
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -263,23 +244,19 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
     protected void onResume() {
         super.onResume();
         MyApp.isAppVisible = true;
-        if(getIntent().getExtras()!=null && getIntent().getExtras().getBoolean("fresh_load", false)){
-            loadPopularTracks(false);
-        }else {
-            loadPopularTracks(true);
-        }
+        loadPopularTracks(getIntent().getExtras() == null || !getIntent().getExtras().getBoolean("fresh_load", false));
 
-        if(getIntent().getExtras()!=null && getIntent().getExtras().getBoolean("search_on_launch", false)){
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("search_on_launch", false)) {
             Log.d("ActivityExploreLyrics", "onCreate: search lyric dialog on startup");
             searchLyricDialog();
         }
 
-        if(getIntent().getExtras()!=null && getIntent().getExtras().getBoolean("from_notif")){
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean("from_notif")) {
             try {
                 Bundle bundle = new Bundle();
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification_clicked");
                 UtilityFun.logEvent(bundle);
-            }catch (Exception ignored){
+            } catch (Exception ignored) {
             }
         }
     }
@@ -292,14 +269,12 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.fab_right_side:
-                searchLyricDialog();
-                break;
+        if (v.getId() == R.id.fab_right_side) {
+            searchLyricDialog();
         }
     }
 
-    private void searchLyricDialog(){
+    private void searchLyricDialog() {
         MaterialDialog.Builder builder = new MyDialogBuilder(this)
                 .title(R.string.title_search_lyrics)
                 .customView(R.layout.lyric_search_dialog, true)
@@ -307,58 +282,46 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
                 .negativeText(R.string.cancel)
                 .autoDismiss(false);
 
-        View layout =  builder.build().getCustomView();
-        if(layout==null){return;}
+        View layout = builder.build().getCustomView();
+        if (layout == null) {
+            return;
+        }
         final EditText trackTitle = layout.findViewById(R.id.track_title_edit);
         final EditText artist = layout.findViewById(R.id.artist_edit);
         final ProgressBar progressBar = layout.findViewById(R.id.progressBar);
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                trackTitle.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN , 0, 0, 0));
-                trackTitle.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP , 0, 0, 0));
-            }
+        handler.postDelayed(() -> {
+            trackTitle.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0));
+            trackTitle.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 0, 0, 0));
         }, 200);
 
-        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull final MaterialDialog dialog, @NonNull DialogAction which) {
-                if(trackTitle.getText().toString().equals("")){
-                    trackTitle.setError(getString(R.string.error_empty_title_lyric_search));
-                    return;
-                }
-                String artistName = artist.getText().toString();
-                if(artistName.equals("")){
-                    artistName = getString(R.string.unknown_artist);
-                }
-                progressBar.setVisibility(View.VISIBLE);
-                final String finalArtistName = artistName;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(ActivityExploreLyrics.this, ActivityLyricView.class);
-                        intent.putExtra("track_title", trackTitle.getText().toString());
-                        intent.putExtra("artist", finalArtistName);
-                        startActivity(intent);
-                        dialog.dismiss();
-                        try {
-                            Bundle bundle = new Bundle();
-                            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "search_lyric_manually");
-                            UtilityFun.logEvent(bundle);
-                        }catch (Exception ignored){
-                        }
-                    }
-                }, 1000);
+        builder.onPositive((dialog, which) -> {
+            if (trackTitle.getText().toString().equals("")) {
+                trackTitle.setError(getString(R.string.error_empty_title_lyric_search));
+                return;
             }
+            String artistName = artist.getText().toString();
+            if (artistName.equals("")) {
+                artistName = getString(R.string.unknown_artist);
+            }
+            progressBar.setVisibility(View.VISIBLE);
+            final String finalArtistName = artistName;
+            handler.postDelayed(() -> {
+                Intent intent = new Intent(ActivityExploreLyrics.this, ActivityLyricView.class);
+                intent.putExtra("track_title", trackTitle.getText().toString());
+                intent.putExtra("artist", finalArtistName);
+                startActivity(intent);
+                dialog.dismiss();
+                try {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "search_lyric_manually");
+                    UtilityFun.logEvent(bundle);
+                } catch (Exception ignored) {
+                }
+            }, 1000);
         });
 
-        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                dialog.dismiss();
-            }
-        });
+        builder.onNegative((dialog, which) -> dialog.dismiss());
 
         MaterialDialog dialog = builder.build();
 
@@ -369,7 +332,7 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
 
     @Override
     public void onRefresh() {
-        if(!UtilityFun.isConnectedToInternet()){
+        if (!UtilityFun.isConnectedToInternet()) {
             Toast.makeText(this, "No Connection!", Toast.LENGTH_SHORT).show();
             swipeRefreshLayout.setRefreshing(false);
             return;
@@ -381,7 +344,7 @@ public class ActivityExploreLyrics extends AppCompatActivity implements OnPopula
     }
 
     //for catching exception generated by recycler view which was causing abend, no other way to handle this
-    class WrapContentLinearLayoutManager extends LinearLayoutManager {
+    static class WrapContentLinearLayoutManager extends LinearLayoutManager {
         WrapContentLinearLayoutManager(Context context) {
             super(context);
         }

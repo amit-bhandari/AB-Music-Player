@@ -136,7 +136,7 @@ public class Genius {
         result.setText(Normalizer.normalize(builder.toString(), Normalizer.Form.NFD));
         result.setURL(url);
         result.setSource("Genius");
-        Log.v(Constants.TAG,"Lyrics downloaded from Genius "+result.getFlag());
+        Log.v(Constants.TAG, "Lyrics downloaded from Genius " + result.getFlag());
         return result;
     }
 

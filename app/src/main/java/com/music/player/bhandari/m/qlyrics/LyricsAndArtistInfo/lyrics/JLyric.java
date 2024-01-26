@@ -54,7 +54,7 @@ public class JLyric {
             return results;
 
 
-        for(Element result: artistBlocks) {
+        for (Element result : artistBlocks) {
             Lyrics l = new Lyrics(Lyrics.SEARCH_ITEM);
             String title = result.select("div.title > a").text();
             String artist = result.select("div.status > a").text();

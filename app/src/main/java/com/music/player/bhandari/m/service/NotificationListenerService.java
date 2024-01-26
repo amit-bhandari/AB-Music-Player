@@ -20,9 +20,11 @@ import android.media.session.PlaybackState;
 import android.os.Build;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.util.Log;
 
 import com.music.player.bhandari.m.R;
@@ -77,7 +79,7 @@ public class NotificationListenerService extends android.service.notification.No
         Intent notificationIntent = new Intent(this, ActivityInstantLyric.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         contentIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, 0);
+                notificationIntent, PendingIntent.FLAG_MUTABLE);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mController = new RemoteController(this, this);
@@ -270,12 +272,6 @@ public class NotificationListenerService extends android.service.notification.No
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    /* Create or update. */
-                    /*NotificationChannel channel = new NotificationChannel("channel_02",
-                            "Instant Lyrics",
-                            NotificationManager.IMPORTANCE_LOW);
-                    channel.setSound(null, null);
-                    mNotificationManager.createNotificationChannel(channel);*/
                     builder.setChannelId("channel_02");
                 }
 

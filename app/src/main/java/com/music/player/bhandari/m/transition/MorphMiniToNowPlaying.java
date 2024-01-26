@@ -21,8 +21,10 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Build;
+
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
+
 import android.transition.ChangeBounds;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;
@@ -34,7 +36,7 @@ import com.music.player.bhandari.m.R;
 
 /**
  * 从Fab到Dialog的变化
- *
+ * <p>
  * A transition that morphs a circle into a rectangle, changing it's background color.
  */
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -67,7 +69,7 @@ public class MorphMiniToNowPlaying extends ChangeBounds {
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
         }
-        transitionValues.values.put(PROPERTY_COLOR,  ContextCompat.getColor(view.getContext(), R.color.fab_background_color));
+        transitionValues.values.put(PROPERTY_COLOR, ContextCompat.getColor(view.getContext(), R.color.fab_background_color));
         transitionValues.values.put(PROPERTY_CORNER_RADIUS, view.getResources().getDimensionPixelSize(R.dimen.dialog_corners));//view.getHeight() / 2
     }
 

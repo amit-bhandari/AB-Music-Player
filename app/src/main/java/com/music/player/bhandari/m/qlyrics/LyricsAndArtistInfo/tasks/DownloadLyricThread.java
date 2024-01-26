@@ -90,7 +90,7 @@ public class DownloadLyricThread extends Thread {
         this.params = params;
     }
 
-    public void setCallback(Lyrics.Callback callback){
+    public void setCallback(Lyrics.Callback callback) {
         this.callback = callback;
     }
 

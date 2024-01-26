@@ -14,10 +14,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -32,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.music.player.bhandari.m.R;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.TrackItem;
@@ -55,32 +58,38 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback {
     private View layout;
     private BroadcastReceiver mArtistUpdateReceiver;
     private ArtistInfo mArtistInfo;
-    @BindView(R.id.text_view_art_bio_frag) TextView artBioText;
-    @BindView(R.id.retry_text_view) TextView retryText;
-    @BindView(R.id.update_track_metadata) TextView updateTagsText;
+    @BindView(R.id.text_view_art_bio_frag)
+    TextView artBioText;
+    @BindView(R.id.retry_text_view)
+    TextView retryText;
+    @BindView(R.id.update_track_metadata)
+    TextView updateTagsText;
 
-    @BindView(R.id.loading_lyrics_animation) AVLoadingIndicatorView lyricLoadAnimation;
-    @BindView(R.id.track_artist_artsi_bio_frag) EditText  artistEdit;
-    @BindView(R.id.button_update_metadata)  Button buttonUpdateMetadata;
+    @BindView(R.id.loading_lyrics_animation)
+    AVLoadingIndicatorView lyricLoadAnimation;
+    @BindView(R.id.track_artist_artsi_bio_frag)
+    EditText artistEdit;
+    @BindView(R.id.button_update_metadata)
+    Button buttonUpdateMetadata;
 
     //@BindView(R.id.ad_view_wrapper) View adViewWrapper;
     //@BindView(R.id.adView)  AdView mAdView;
@@ -90,14 +99,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        Log.v("frag",isVisibleToUser+"");
-        /*if(isVisibleToUser && mAdView!=null){
-            mAdView.resume();
-        }else {
-            if(mAdView!=null){
-                mAdView.pause();
-            }
-        }*/
+        Log.v("frag", isVisibleToUser + "");
         super.setUserVisibleHint(isVisibleToUser);
     }
 
@@ -108,7 +110,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         ButterKnife.bind(this, layout);
         playerService = MyApp.getService();
 
-        if(MyApp.getService()==null){
+        if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             return layout;
         }
@@ -117,20 +119,20 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         buttonUpdateMetadata.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TrackItem item =playerService.getCurrentTrack();
-                if(item==null){
+                TrackItem item = playerService.getCurrentTrack();
+                if (item == null) {
                     return;
                 }
 
                 String edited_artist = artistEdit.getText().toString().trim();
 
-                if(edited_artist.isEmpty()){
-                    Toast.makeText(getContext(),getString(R.string.te_error_empty_field), Toast.LENGTH_SHORT).show();
+                if (edited_artist.isEmpty()) {
+                    Toast.makeText(getContext(), getString(R.string.te_error_empty_field), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
 
-                if(!edited_artist.equals(item.getArtist()) ){
+                if (!edited_artist.equals(item.getArtist())) {
 
                     //changes made, save those
                     Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -138,12 +140,12 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
                     ContentValues values = new ContentValues();
                     values.put(MediaStore.Audio.Media.ARTIST, edited_artist);
                     getContext().getContentResolver()
-                            .update(uri, values, MediaStore.Audio.Media.TITLE +"=?", new String[] {item.getTitle()});
+                            .update(uri, values, MediaStore.Audio.Media.TITLE + "=?", new String[]{item.getTitle()});
 
                     Intent intent = new Intent(getContext(), ActivityNowPlaying.class);
                     intent.putExtra("refresh", true);
-                    intent.putExtra("position",playerService.getCurrentTrackPosition());
-                    intent.putExtra("originalTitle",item.getTitle());
+                    intent.putExtra("position", playerService.getCurrentTrackPosition());
+                    intent.putExtra("originalTitle", item.getTitle());
                     intent.putExtra("title", item.getTitle());
                     intent.putExtra("artist", edited_artist);
                     intent.putExtra("album", item.getAlbum());
@@ -155,7 +157,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
                     buttonUpdateMetadata.setClickable(false);
 
 
-                    if(getActivity()!=null) {
+                    if (getActivity() != null) {
                         View view = getActivity().getCurrentFocus();
                         if (view != null) {
                             InputMethodManager imm = (InputMethodManager) getActivity()
@@ -168,8 +170,8 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
                     downloadArtInfo();
 
-                }else {
-                    Toast.makeText(getContext(),getString(R.string.change_tags_to_update),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.change_tags_to_update), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -178,7 +180,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         layout.findViewById(R.id.ll_art_bio).setOnClickListener(new DoubleClickListener() {
             @Override
             public void onSingleClick(View v) {
-                if(retryText.getVisibility()==View.VISIBLE) {
+                if (retryText.getVisibility() == View.VISIBLE) {
                     retryText.setVisibility(View.GONE);
                     artBioText.setVisibility(View.VISIBLE);
                     artistEdit.setVisibility(View.GONE);
@@ -194,20 +196,20 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             public void onDoubleClick(View v) {
 
                 //if no connection text, do not hide artist content
-                if(retryText.getText().toString().equals(getString(R.string.no_connection))){
+                if (retryText.getText().toString().equals(getString(R.string.no_connection))) {
                     return;
                 }
 
-                if(artBioText.getVisibility()==View.VISIBLE){
+                if (artBioText.getVisibility() == View.VISIBLE) {
                     artBioText.setVisibility(View.GONE);
-                }else {
+                } else {
                     artBioText.setVisibility(View.VISIBLE);
                 }
             }
         });
 
         //downloadArtInfo();
-        mArtistUpdateReceiver =new BroadcastReceiver() {
+        mArtistUpdateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 //already displayed, skip
@@ -218,26 +220,9 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         return layout;
     }
 
-   /* @OnClick(R.id.ad_close)
-    public void close_ad(){
-        if(mAdView!=null){
-            mAdView.destroy();
-        }
-        adViewWrapper.setVisibility(View.GONE);
-    }*/
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        /*if (mAdView != null) {
-            mAdView.destroy();
-        }*/
-    }
-
-    private void downloadArtInfo(){
-        TrackItem item =playerService.getCurrentTrack();
-        if(item==null || item.getArtist()==null){
+    private void downloadArtInfo() {
+        TrackItem item = playerService.getCurrentTrack();
+        if (item == null || item.getArtist() == null) {
             return;
         }
 
@@ -251,7 +236,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         mArtistInfo = OfflineStorageArtistBio.getArtistBioFromTrackItem(item);
         //second check is added to make sure internet call will happen
         //when user manually changes artist tag
-        if(mArtistInfo!=null && item.getArtist().trim().equals(mArtistInfo.getOriginalArtist().trim())){
+        if (mArtistInfo != null && item.getArtist().trim().equals(mArtistInfo.getOriginalArtist().trim())) {
             onArtInfoDownloaded(mArtistInfo);
             return;
         }
@@ -261,7 +246,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             String artist = item.getArtist();
             artist = UtilityFun.filterArtistString(artist);
 
-            new DownloadArtInfoThread(this, artist , item).start();
+            new DownloadArtInfoThread(this, artist, item).start();
         } else {
             artBioText.setVisibility(View.GONE);
             retryText.setText(getString(R.string.no_connection));
@@ -281,18 +266,18 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     @Override
     public void onResume() {
         super.onResume();
-        if(MyApp.getService()!=null) {
+        if (MyApp.getService() != null) {
             updateArtistInfoIfNeeded();
             LocalBroadcastManager.getInstance(getContext()).registerReceiver(mArtistUpdateReceiver
                     , new IntentFilter(Constants.ACTION.UPDATE_LYRIC_AND_INFO));
-        }else {
+        } else {
             UtilityFun.restartApp();
         }
     }
 
     private void updateArtistInfoIfNeeded() {
-        TrackItem item =playerService.getCurrentTrack();
-        if(item==null){
+        TrackItem item = playerService.getCurrentTrack();
+        if (item == null) {
             artBioText.setVisibility(View.GONE);
             retryText.setText(getString(R.string.no_music_found));
             //retryText.setVisibility(View.GONE);
@@ -300,8 +285,8 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             lyricLoadAnimation.hide();
             return;
         }
-        if(mArtistInfo!=null && mArtistInfo.getOriginalArtist()
-                .equals(item.getArtist())){
+        if (mArtistInfo != null && mArtistInfo.getOriginalArtist()
+                .equals(item.getArtist())) {
             return;
         }
 
@@ -315,12 +300,12 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     public void onArtInfoDownloaded(ArtistInfo artistInfo) {
 
         mArtistInfo = artistInfo;
-        if(artistInfo==null || getActivity()==null || !isAdded()){
+        if (artistInfo == null || getActivity() == null || !isAdded()) {
             return;
         }
-        TrackItem item =playerService.getCurrentTrack();
+        TrackItem item = playerService.getCurrentTrack();
         //if song is already changed , return
-        if(item!=null && !item.getArtist().trim().equals(artistInfo.getOriginalArtist().trim())){
+        if (item != null && !item.getArtist().trim().equals(artistInfo.getOriginalArtist().trim())) {
             //artBioText.setText(getString(R.string.artist_info_loading));
             return;
         }
@@ -328,12 +313,12 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
         lyricLoadAnimation.hide();
         lyricLoadAnimation.setVisibility(View.GONE);
 
-        if(artistInfo.getArtistContent()==null){
+        if (artistInfo.getArtistContent() == null) {
             retryText.setText(getString(R.string.artist_info_no_result));
             retryText.setVisibility(View.VISIBLE);
             artBioText.setVisibility(View.GONE);
-            TrackItem tempItem =playerService.getCurrentTrack();
-            if(tempItem!=null) {
+            TrackItem tempItem = playerService.getCurrentTrack();
+            if (tempItem != null) {
                 artistEdit.setVisibility(View.VISIBLE);
                 updateTagsText.setVisibility(View.VISIBLE);
                 buttonUpdateMetadata.setVisibility(View.VISIBLE);
@@ -343,7 +328,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             return;
         }
 
-        if(layout!=null && getActivity()!=null && artistInfo.getArtistContent()!=null){
+        if (layout != null && getActivity() != null && artistInfo.getArtistContent() != null) {
             Log.d("onArtInfoDownloaded", "onArtInfoDownloaded: " + artistInfo.getCorrectedArtist());
             String content = artistInfo.getArtistContent();
             int index = content.indexOf("Read more");
@@ -351,17 +336,18 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(View textView) {
-                    if(mArtistInfo.getArtistUrl()==null){
-                        Toast.makeText(getContext(),getString(R.string.error_invalid_url),Toast.LENGTH_SHORT).show();
-                    }else {
+                    if (mArtistInfo.getArtistUrl() == null) {
+                        Toast.makeText(getContext(), getString(R.string.error_invalid_url), Toast.LENGTH_SHORT).show();
+                    } else {
                         try {
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mArtistInfo.getArtistUrl()));
                             startActivity(browserIntent);
-                        }catch (ActivityNotFoundException e){
+                        } catch (ActivityNotFoundException e) {
                             Toast.makeText(getContext(), "No supporting application found for opening the link.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
+
                 @Override
                 public void updateDrawState(TextPaint ds) {
                     super.updateDrawState(ds);
@@ -369,12 +355,12 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
                     ds.setTypeface(Typeface.create(ds.getTypeface(), Typeface.BOLD));
                 }
             };
-            if(index!=-1) {
-                ss.setSpan(clickableSpan, index, index+9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (index != -1) {
+                ss.setSpan(clickableSpan, index, index + 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
 
-            if(!content.equals("")) {
+            if (!content.equals("")) {
                 artBioText.setVisibility(View.VISIBLE);
                 retryText.setVisibility(View.GONE);
 
@@ -387,12 +373,12 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
                 buttonUpdateMetadata.setClickable(false);
                 artistEdit.setText("");
 
-            }else {
+            } else {
                 artBioText.setVisibility(View.GONE);
                 retryText.setText(getString(R.string.artist_info_no_result));
                 retryText.setVisibility(View.VISIBLE);
-                TrackItem tempItem =playerService.getCurrentTrack();
-                if(tempItem!=null) {
+                TrackItem tempItem = playerService.getCurrentTrack();
+                if (tempItem != null) {
                     artistEdit.setVisibility(View.VISIBLE);
                     updateTagsText.setVisibility(View.VISIBLE);
                     buttonUpdateMetadata.setVisibility(View.VISIBLE);
@@ -404,9 +390,9 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
             //check current now playing background setting
             ///get current setting
             // 0 - System default   1 - artist image  2 - custom
-            int currentNowPlayingBackPref = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back),1);
+            int currentNowPlayingBackPref = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back), 1);
 
-            if(currentNowPlayingBackPref==1 && !artistInfo.getCorrectedArtist().equals("[unknown]")) {
+            if (currentNowPlayingBackPref == 1 && !artistInfo.getCorrectedArtist().equals("[unknown]")) {
                 if (!((ActivityNowPlaying) getActivity()).isArtistLoadedInBack()) {
                     new SetBlurryImagetask().execute(artistInfo);
                 }
@@ -415,22 +401,22 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class SetBlurryImagetask extends AsyncTask<ArtistInfo, String, Bitmap>{
+    private class SetBlurryImagetask extends AsyncTask<ArtistInfo, String, Bitmap> {
 
-        Bitmap b ;
+        Bitmap b;
 
         @Override
         protected Bitmap doInBackground(ArtistInfo... params) {
 
             //store file in cache with artist id as name
             //create folder in cache for artist images
-            String CACHE_ART_THUMBS = MyApp.getContext().getCacheDir()+"/art_thumbs/";
-            String actual_file_path = CACHE_ART_THUMBS+params[0].getOriginalArtist();
+            String CACHE_ART_THUMBS = MyApp.getContext().getCacheDir() + "/art_thumbs/";
+            String actual_file_path = CACHE_ART_THUMBS + params[0].getOriginalArtist();
             File f = new File(CACHE_ART_THUMBS);
-            if(!f.exists()){
+            if (!f.exists()) {
                 f.mkdir();
             }
-            if(!new File(actual_file_path).exists()){
+            if (!new File(actual_file_path).exists()) {
                 //create file
                 FileOutputStream fos = null;
                 try {
@@ -439,8 +425,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
                     InputStream inputStream = url.openConnection().getInputStream();
                     byte[] buffer = new byte[1024];
                     int bufferLength = 0;
-                    while ( (bufferLength = inputStream.read(buffer)) > 0 )
-                    {
+                    while ((bufferLength = inputStream.read(buffer)) > 0) {
                         fos.write(buffer, 0, bufferLength);
                     }
                     fos.close();
@@ -452,7 +437,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
             }
 
-            b= BitmapFactory.decodeFile(actual_file_path);
+            b = BitmapFactory.decodeFile(actual_file_path);
             return b;
         }
 
@@ -460,7 +445,7 @@ public class FragmentArtistInfo extends Fragment implements ArtistInfo.Callback 
 
             //set background image
 
-            if(b!=null && getActivity()!=null) {
+            if (b != null && getActivity() != null) {
                 ((ActivityNowPlaying) getActivity()).setBlurryBackground(b);
             }
         }

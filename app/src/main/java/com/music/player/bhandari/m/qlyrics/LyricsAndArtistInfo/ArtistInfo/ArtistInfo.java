@@ -6,33 +6,33 @@ import android.os.Parcelable;
 import java.io.Serializable;
 
 /**
- Copyright 2017 Amit Bhandari AB
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2017 Amit Bhandari AB
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-public class ArtistInfo implements Serializable, Parcelable{
+public class ArtistInfo implements Serializable, Parcelable {
 
-    private String originalArtist="";
-    private String mArtist="";
-    private String artistContent="";
-    private String imageUrl="";
-    private String artistUrl="";
+    private String originalArtist = "";
+    private String mArtist = "";
+    private String artistContent = "";
+    private String imageUrl = "";
+    private String artistUrl = "";
     private int flag = NEGATIVE;
     public static int POSITIVE = 0;
     public static int NEGATIVE = 1;
 
-    public ArtistInfo(String artist){
+    public ArtistInfo(String artist) {
         originalArtist = artist;
     }
 
@@ -55,7 +55,7 @@ public class ArtistInfo implements Serializable, Parcelable{
         dest.writeInt(flag);
     }
 
-    public static final Creator<ArtistInfo> CREATOR = new Creator<ArtistInfo>()     {
+    public static final Creator<ArtistInfo> CREATOR = new Creator<ArtistInfo>() {
         @Override
         public ArtistInfo createFromParcel(Parcel in) {
             return new ArtistInfo(in);
@@ -101,27 +101,27 @@ public class ArtistInfo implements Serializable, Parcelable{
     }
 
 
-    public void setOriginalArtist(String artist){
-        originalArtist=artist;
+    public void setOriginalArtist(String artist) {
+        originalArtist = artist;
     }
 
-    public String getOriginalArtist(){
+    public String getOriginalArtist() {
         return originalArtist;
     }
 
-    public void setCorrectedArtist(String artist){
-        this.mArtist=artist;
+    public void setCorrectedArtist(String artist) {
+        this.mArtist = artist;
     }
 
-    public String getCorrectedArtist(){
+    public String getCorrectedArtist() {
         return mArtist;
     }
 
-    public void setArtistContent(String artistContent){
+    public void setArtistContent(String artistContent) {
         this.artistContent = artistContent;
     }
 
-    public String getArtistContent(){
+    public String getArtistContent() {
         return artistContent;
     }
 }

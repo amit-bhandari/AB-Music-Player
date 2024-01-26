@@ -62,7 +62,7 @@ public class Bollywood {
                 }
         } catch (IOException | JsonParseException e) {
             e.printStackTrace();
-        }  catch (Exception e){
+        } catch (Exception e) {
 
         }
         return results;
