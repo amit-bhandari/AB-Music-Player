@@ -240,7 +240,7 @@ public class MusicLibrary {
                         dataItemsForTracks.put(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
                                 new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
                                         , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-                                        , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
+                                        , cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
                                         , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
                                         , cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
                                         , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
@@ -287,7 +287,7 @@ public class MusicLibrary {
             }
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    dataItemsForArtists.add(new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists._ID))
+                    dataItemsForArtists.add(new dataItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Artists._ID))
                             , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))
                             , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS))
                             , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS))
@@ -336,7 +336,7 @@ public class MusicLibrary {
                             , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST))
                             , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS))
                             , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.FIRST_YEAR))
-                            , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
+                            , cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
                     ));
                 }
                 cursor.close();

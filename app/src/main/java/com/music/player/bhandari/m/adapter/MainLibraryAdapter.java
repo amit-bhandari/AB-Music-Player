@@ -606,7 +606,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                int artist_id = filteredDataItems.get(position).artist_id;
+                long artist_id = filteredDataItems.get(position).artist_id;
                 playerService.setTrackList(MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC));
                 break;
 
@@ -640,7 +640,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                int artist_id = filteredDataItems.get(position).artist_id;
+                long artist_id = filteredDataItems.get(position).artist_id;
                 temp = MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC);
                 ids = new int[temp.size()];
                 for (int i = 0; i < ids.length; i++) {
@@ -690,7 +690,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                int artist_id = filteredDataItems.get(position).artist_id;
+                long artist_id = filteredDataItems.get(position).artist_id;
                 for (int id : MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)) {
                     File file = new File(MusicLibrary.getInstance().getTrackItemFromId(id).getFilePath());
                     Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", file);
@@ -743,7 +743,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
-                int artist_id = filteredDataItems.get(position).artist_id;
+                long artist_id = filteredDataItems.get(position).artist_id;
                 for (int id : MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }
