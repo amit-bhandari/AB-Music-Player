@@ -108,10 +108,10 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                ArrayList<Integer> temp = playerService.getTrackList();
+                ArrayList<Long> temp = playerService.getTrackList();
                 //HashMap<dataItem> data = MusicLibrary.getInstance().getDataItemsForTracks();
                 try {
-                    for (int id : temp) {
+                    for (long id : temp) {
                         dataItem d = MusicLibrary.getInstance().getDataItemsForTracks().get(id);
                         if (d != null) {
                             dataItems.add(d);
@@ -220,7 +220,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 break;
 
             case R.id.action_add_to_playlist:
-                int[] ids = new int[]{dataItems.get(position).id};
+                long[] ids = new long[]{dataItems.get(position).id};
                 UtilityFun.AddToPlaylist(context, ids);
                 break;
 
@@ -266,8 +266,8 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
         return true;
     }
 
-    public ArrayList<Integer> getSongList() {
-        ArrayList<Integer> temp = new ArrayList<>();
+    public ArrayList<Long> getSongList() {
+        ArrayList<Long> temp = new ArrayList<>();
         for (dataItem d : dataItems) {
             if (d.id != 0) {
                 temp.add(d.id);
@@ -320,7 +320,7 @@ public class CurrentTracklistAdapter extends RecyclerView.Adapter<CurrentTrackli
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        ArrayList<Integer> ids = new ArrayList<>();
+                        ArrayList<Long> ids = new ArrayList<>();
                         ArrayList<File> files = new ArrayList<>();
 
                         files.add(new File(dataItems.get(position).file_path));

@@ -85,7 +85,7 @@ public class dataItem {
         this.numberOfTracks = numberOfTracks;
     }
 
-    public dataItem(int genre_id, String genre_name, int numberOfTracks) {
+    public dataItem(long genre_id, String genre_name, int numberOfTracks) {
         this.id = genre_id;
         if (genre_name != null) {
             this.title = genre_name;
@@ -93,7 +93,7 @@ public class dataItem {
         this.numberOfTracks = numberOfTracks;
     }
 
-    public int id;
+    public long id;
 
     public String title = "";
 

@@ -285,10 +285,10 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                 break;
 
             case R.id.action_add_to_playlist:
-                ArrayList<Integer> temp;
+                ArrayList<Long> temp;
                 long album_id = filteredDataItems.get(position).album_id;
                 temp = MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC);
-                int[] ids = new int[temp.size()];
+                long[] ids = new long[temp.size()];
                 for (int i = 0; i < ids.length; i++) {
                     ids[i] = temp.get(i);
                 }
@@ -297,7 +297,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
 
             case R.id.action_share:
                 ArrayList<Uri> files = new ArrayList<>();  //for sending multiple files
-                for (int id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(
+                for (long id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(
                         filteredDataItems.get(position).album_id, Constants.SORT_ORDER.ASC)) {
                     try {
                         File file = new File(MusicLibrary.getInstance().getTrackItemFromId(id).getFilePath());
@@ -349,7 +349,7 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
         //this is how the function in player service is writte, deal with it
         int sortOrder = (positionToAdd == Constants.ADD_TO_Q.AT_LAST ? Constants.SORT_ORDER.ASC : Constants.SORT_ORDER.DESC);
         long album_id = filteredDataItems.get(position).album_id;
-        for (int id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, sortOrder)) {
+        for (long id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, sortOrder)) {
             playerService.addToQ(id, positionToAdd);
         }
 
@@ -371,10 +371,10 @@ public class AlbumLibraryAdapter extends RecyclerView.Adapter<AlbumLibraryAdapte
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        ArrayList<Integer> ids = new ArrayList<>();
+                        ArrayList<Long> ids = new ArrayList<>();
                         ArrayList<File> files = new ArrayList<>();
-                        ArrayList<Integer> tracklist = MusicLibrary.getInstance().getSongListFromAlbumIdNew(filteredDataItems.get(position).album_id, Constants.SORT_ORDER.ASC);
-                        for (int id : tracklist) {
+                        ArrayList<Long> tracklist = MusicLibrary.getInstance().getSongListFromAlbumIdNew(filteredDataItems.get(position).album_id, Constants.SORT_ORDER.ASC);
+                        for (long id : tracklist) {
                             if (playerService.getCurrentTrack().getId() == id) {
                                 //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
                                 Snackbar.make(viewParent, context.getString(R.string.song_is_playing), Snackbar.LENGTH_SHORT).show();

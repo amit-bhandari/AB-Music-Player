@@ -76,7 +76,7 @@ public class ActivityTagEditor extends AppCompatActivity implements View.OnClick
     @BindView(R.id.album_art_te)
     ImageView album_art;
 
-    private int song_id;
+    private long song_id;
     private String original_title, original_artist, original_album;
     private String edited_title = "";
     private String edited_artist = "";

@@ -158,7 +158,7 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
 
     private void Play() {
         ArrayList<dataItem> temp = PlaylistManager.getInstance(MyApp.getContext()).GetPlaylist(headers.get(position));
-        ArrayList<Integer> trackList = new ArrayList<>();
+        ArrayList<Long> trackList = new ArrayList<>();
         for (dataItem d : temp) {
             trackList.add(d.id);
         }
@@ -179,11 +179,11 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
     private void Share() {
         ArrayList<Uri> files = new ArrayList<>();  //for sending multiple files
         ArrayList<dataItem> temp = PlaylistManager.getInstance(MyApp.getContext()).GetPlaylist(headers.get(position));
-        ArrayList<Integer> trackList = new ArrayList<>();
+        ArrayList<Long> trackList = new ArrayList<>();
         for (dataItem d : temp) {
             trackList.add(d.id);
         }
-        for (int id : trackList) {
+        for (long id : trackList) {
             try {
                 File file = new File(MusicLibrary.getInstance().getTrackItemFromId(id).getFilePath());
                 Uri fileUri =
@@ -218,12 +218,12 @@ public class PlaylistLibraryAdapter extends RecyclerView.Adapter<PlaylistLibrary
         int sortOrder = (positionToAdd == Constants.ADD_TO_Q.AT_LAST ? Constants.SORT_ORDER.ASC : Constants.SORT_ORDER.DESC);
 
         ArrayList<dataItem> temp = PlaylistManager.getInstance(context).GetPlaylist(headers.get(position));
-        ArrayList<Integer> trackList = new ArrayList<>();
+        ArrayList<Long> trackList = new ArrayList<>();
         for (dataItem d : temp) {
             trackList.add(d.id);
         }
         if (!trackList.isEmpty()) {
-            for (int id : trackList) {
+            for (long id : trackList) {
                 playerService.addToQ(id, positionToAdd);
             }
             //to update the to be next field in notification

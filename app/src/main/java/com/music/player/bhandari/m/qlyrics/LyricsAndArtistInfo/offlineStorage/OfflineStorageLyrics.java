@@ -161,7 +161,7 @@ public class OfflineStorageLyrics {
 
     }
 
-    public static boolean isLyricsPresentInDB(int id) {
+    public static boolean isLyricsPresentInDB(long id) {
 
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -296,7 +296,7 @@ public class OfflineStorageLyrics {
      * @param id
      * @return
      */
-    public static boolean isLyricsPresentInDB(String track, int id) {
+    public static boolean isLyricsPresentInDB(String track, long id) {
         Log.d("OfflineStorage", "isLyricsPresentInDB: " + track + " " + id);
 
         SQLiteDatabase db = null;
@@ -358,7 +358,7 @@ public class OfflineStorageLyrics {
 
     //clear lyrics given track title and track id (used from saved lyrics screen)
     //id == -1 in case lyrics is saved from tracks other than AB Music offline tracks
-    public static boolean clearLyricsFromDB(String track, int id) {
+    public static boolean clearLyricsFromDB(String track, long id) {
 
         SQLiteDatabase db = null;
         try {

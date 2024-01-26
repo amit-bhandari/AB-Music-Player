@@ -1054,9 +1054,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     }
 
     private void AddToPlaylist() {
-        int[] ids;
+        long[] ids;
         TrackItem trackItem = playerService.getCurrentTrack();
-        ids = new int[]{trackItem.getId()};
+        ids = new long[]{trackItem.getId()};
         UtilityFun.AddToPlaylist(this, ids);
         invalidateOptionsMenu();
     }
@@ -1089,14 +1089,13 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                                 String playlist_name = input.getText().toString().trim();
                                 if (ValidatePlaylistName(playlist_name)) {
                                     if (PlaylistManager.getInstance(MyApp.getContext()).CreatePlaylist(playlist_name)) {
-                                        int[] ids = new int[mAdapter.getSongList().size()];
+                                        long[] ids = new long[mAdapter.getSongList().size()];
                                         for (int i = 0; i < ids.length; i++) {
                                             ids[i] = mAdapter.getSongList().get(i);
                                         }
 
                                         PlaylistManager.getInstance(MyApp.getContext())
                                                 .AddSongToPlaylist(playlist_name, ids);
-                                        // Toast.makeText(ActivityNowPlaying.this, "Playlist saved!", Toast.LENGTH_SHORT).show();
                                         Snackbar.make(rootView, getString(R.string.playlist_saved), Snackbar.LENGTH_SHORT).show();
                                     } else {
                                         //Toast.makeText(ActivityNowPlaying.this, "Playlist already exists", Toast.LENGTH_SHORT).show();

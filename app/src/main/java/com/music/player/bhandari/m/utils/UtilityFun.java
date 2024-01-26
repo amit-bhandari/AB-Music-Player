@@ -122,7 +122,7 @@ public class UtilityFun {
         return stringBuffer.toString();
     }
 
-    public static void AddToPlaylist(final Context context, final int[] song_titles) {
+    public static void AddToPlaylist(final Context context, final long[] song_titles) {
         MaterialDialog dialog = new MyDialogBuilder(context)
                 .title(context.getString(R.string.select_playlist_title))
                 .items(PlaylistManager.getInstance(MyApp.getContext()).GetPlaylistList(true))
@@ -180,7 +180,7 @@ public class UtilityFun {
         }
     }
 
-    public static boolean Delete(Context context, ArrayList<File> files, ArrayList<Integer> ids) {
+    public static boolean Delete(Context context, ArrayList<File> files, ArrayList<Long> ids) {
         if (DeleteFiles(files)) {
             if (ids != null) {
                 DeleteFromContentProvider(ids, context);
@@ -204,10 +204,10 @@ public class UtilityFun {
         return result;
     }
 
-    private static void DeleteFromContentProvider(ArrayList<Integer> ids, Context context) {
+    private static void DeleteFromContentProvider(ArrayList<Long> ids, Context context) {
         // boolean result =false;
         try {
-            for (int id : ids) { // NOTE: You would normally obtain this from the content provider!
+            for (long id : ids) { // NOTE: You would normally obtain this from the content provider!
                 Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 Uri itemUri = ContentUris.withAppendedId(contentUri, id);
                 int rows = context.getContentResolver().delete(itemUri, null, null);
@@ -226,7 +226,7 @@ public class UtilityFun {
         //return  result;
     }
 
-    public static void SetRingtone(final Context context, final String filePath, final int id) {
+    public static void SetRingtone(final Context context, final String filePath, final long id) {
         if (!checkSystemWritePermission(context)) {
             MaterialDialog dialog = new MyDialogBuilder(context)
                     .title(context.getString(R.string.write_setting_perm_title))
@@ -388,7 +388,7 @@ public class UtilityFun {
                 && activeNetwork.isConnectedOrConnecting();
     }
 
-    public static StringBuilder trackInfoBuild(int id) {
+    public static StringBuilder trackInfoBuild(long id) {
         StringBuilder trackInfo = new StringBuilder();
         TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
         if (item == null) {

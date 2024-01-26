@@ -22,7 +22,7 @@ import java.io.Serializable;
  */
 
 public class TrackItem implements Serializable {
-    private int id;
+    private long id;
     private String filePath = "";
     private String title = "";
     private String artist = "";
@@ -69,11 +69,11 @@ public class TrackItem implements Serializable {
         return String.valueOf(minutes) + ":" + durFormatted;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

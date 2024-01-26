@@ -291,8 +291,7 @@ public class PlaylistManager {
                 , null) != 0;
     }
 
-    public void AddSongToPlaylist(final String playlist_name_arg, final int[] song_ids) {
-
+    public void AddSongToPlaylist(final String playlist_name_arg, final long[] song_ids) {
 
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -325,7 +324,7 @@ public class PlaylistManager {
                 int maxValue = cursor.getInt(0);
                 cursor.close();
 
-                for (int id : song_ids) {
+                for (long id : song_ids) {
                     ContentValues c = new ContentValues();
                     c.put(playlist_name, ++maxValue);
                     db.update(DbHelperUserMusicData.TABLE_NAME, c, DbHelperUserMusicData.KEY_ID + "= ?", new String[]{id + ""});
@@ -357,7 +356,7 @@ public class PlaylistManager {
 
     }
 
-    public void addSongToFav(final int id) {
+    public void addSongToFav(final long id) {
         final String playlist_name = DbHelperUserMusicData.KEY_FAV.replace(" ", "_");
         SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
         dbHelperUserMusicData.onCreate(db);
@@ -378,7 +377,7 @@ public class PlaylistManager {
         }
     }
 
-    public void RemoveSongFromPlaylistNew(String playlist_name, int id) {
+    public void RemoveSongFromPlaylistNew(String playlist_name, long id) {
         playlist_name = playlist_name.replace(" ", "_");
         {
             //user playlist
@@ -432,7 +431,7 @@ public class PlaylistManager {
         return trackList;
     }
 
-    public void AddToRecentlyPlayedAndUpdateCount(final int _id) {
+    public void AddToRecentlyPlayedAndUpdateCount(final long _id) {
 
         //thread for updating play numberOfTracks
         Executors.newSingleThreadExecutor().execute(new Runnable() {
@@ -486,7 +485,7 @@ public class PlaylistManager {
         });
     }
 
-    public boolean isFavNew(int id) {
+    public boolean isFavNew(long id) {
 
         boolean returnValue = false;
 
@@ -509,7 +508,7 @@ public class PlaylistManager {
         return returnValue;
     }
 
-    public void RemoveFromFavNew(final int id) {
+    public void RemoveFromFavNew(final long id) {
         SQLiteDatabase db = dbHelperUserMusicData.getWritableDatabase();
         dbHelperUserMusicData.onCreate(db);
 
@@ -523,7 +522,7 @@ public class PlaylistManager {
         }
     }
 
-    public void StoreLastPlayingQueueNew(final ArrayList<Integer> tracklist) {
+    public void StoreLastPlayingQueueNew(final ArrayList<Long> tracklist) {
 
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -539,7 +538,7 @@ public class PlaylistManager {
                 int count = 0;
 
                 try {
-                    for (int id : tracklist) {
+                    for (long id : tracklist) {
                         c = new ContentValues();
                         c.put(DbHelperUserMusicData.KEY_LAST_PLAYING_QUEUE, 1);
                         db.update(DbHelperUserMusicData.TABLE_NAME, c, DbHelperUserMusicData.KEY_ID + "= ?", new String[]{id + ""});
@@ -557,7 +556,7 @@ public class PlaylistManager {
 
     }
 
-    public ArrayList<Integer> RestoreLastPlayingQueueNew() {
+    public ArrayList<Long> RestoreLastPlayingQueueNew() {
 //        DbHelperUserMusicData dbHelperUserMusicData = new DbHelperUserMusicData(context);
         SQLiteDatabase db = dbHelperUserMusicData.getReadableDatabase();
         dbHelperUserMusicData.onCreate(db);
@@ -566,11 +565,11 @@ public class PlaylistManager {
         Cursor c = db.query(DbHelperUserMusicData.TABLE_NAME, new String[]{DbHelperUserMusicData.KEY_ID}
                 , where, null
                 , null, null, null);
-        ArrayList<Integer> tracklist = new ArrayList<>();
+        ArrayList<Long> tracklist = new ArrayList<>();
         while (c.moveToNext()) {
-            int id;
+            long id;
             try {
-                id = Integer.valueOf(c.getString(0));
+                id = Long.valueOf(c.getString(0));
             } catch (Exception e) {
                 continue;
             }
@@ -677,7 +676,7 @@ public class PlaylistManager {
     }
 
     private ArrayList<dataItem> GetRecentlyAdded() {
-        HashMap<String, Integer> pathToId = new HashMap<>();
+        HashMap<String, Long> pathToId = new HashMap<>();
         ArrayList<File> musicFiles = new ArrayList<>();
         for (dataItem item : MusicLibrary.getInstance().getDataItemsForTracks().values()) {
             File f;
@@ -688,8 +687,7 @@ public class PlaylistManager {
                 continue;
             }
             musicFiles.add(f);
-            pathToId.put(item.file_path
-                    , item.id);
+            pathToId.put(item.file_path, item.id);
         }
 
         Collections.sort(musicFiles, new Comparator() {

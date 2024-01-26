@@ -64,19 +64,19 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
     private final LayoutInflater inflater;
     private int position = 0;
 
-    private int clickedON;
+    private long clickedON;
     private int status;
     private String playlist_name;
 
     private PlayerService playerService;
 
-    public SecondaryLibraryAdapter(Context context, ArrayList<Integer> data) {
+    public SecondaryLibraryAdapter(Context context, ArrayList<Long> data) {
         this.context = context;
         inflater = LayoutInflater.from(context);
 
         System.out.println("AMIT " + data.size());
 
-        for (Integer id : data) {
+        for (long id : data) {
             dataItem d = MusicLibrary.getInstance().getDataItemsForTracks().get(id);
             if (d != null) {
                 dataItems.add(d);
@@ -99,7 +99,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
     public void shuffleAll() {
         //remove empty element from list of headers
 
-        ArrayList<Integer> temp = new ArrayList<>();
+        ArrayList<Long> temp = new ArrayList<>();
         for (dataItem d : dataItems) {
             if (d.id != 0) {
                 temp.add(d.id);
@@ -219,8 +219,8 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                 Play();
             }
             case R.id.action_add_to_playlist -> {
-                int[] ids;
-                ids = new int[]{dataItems.get(position).id};
+                long[] ids;
+                ids = new long[]{dataItems.get(position).id};
                 UtilityFun.AddToPlaylist(context, ids);
             }
             case R.id.action_share -> {
@@ -292,7 +292,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
     }
 
     private void Play() {
-        ArrayList<Integer> temp = new ArrayList<>();
+        ArrayList<Long> temp = new ArrayList<>();
         for (dataItem d : dataItems) {
             if (d.id != 0) {
                 temp.add(d.id);
@@ -337,7 +337,7 @@ public class SecondaryLibraryAdapter extends RecyclerView.Adapter<SecondaryLibra
                     //delete the file first
                     ArrayList<File> files = new ArrayList<>();
                     files.add(file);
-                    ArrayList<Integer> ids = new ArrayList<>();
+                    ArrayList<Long> ids = new ArrayList<>();
                     ids.add(dataItems.get(position).id);
                     if (UtilityFun.Delete(context, files, ids)) {
                         Toast.makeText(context, context.getString(R.string.deleted) + dataItems.get(position).title, Toast.LENGTH_SHORT).show();

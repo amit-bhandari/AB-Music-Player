@@ -88,7 +88,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
     private LayoutInflater inflater;
     private FragmentLibrary fl;
     private PopupMenu popup;
-    private ArrayList<Integer> id_list = new ArrayList<>();
+    private ArrayList<Long> id_list = new ArrayList<>();
     private PlayerService playerService;
     private int position;
     private ArrayList<dataItem> dataItems = new ArrayList<>();
@@ -611,7 +611,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                int genre_id = filteredDataItems.get(position).id;
+                long genre_id = filteredDataItems.get(position).id;
                 playerService.setTrackList(MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC));
                 break;
         }
@@ -621,18 +621,18 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
     }
 
     private void AddToPlaylist() {
-        int[] ids;
-        ArrayList<Integer> temp;
+        long[] ids;
+        ArrayList<Long> temp;
         switch (fl.getStatus()) {
             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
-                ids = new int[]{filteredDataItems.get(position).id};
+                ids = new long[]{filteredDataItems.get(position).id};
                 UtilityFun.AddToPlaylist(context, ids);
                 break;
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
                 long album_id = filteredDataItems.get(position).album_id;
                 temp = MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC);
-                ids = new int[temp.size()];
+                ids = new long[temp.size()];
                 for (int i = 0; i < ids.length; i++) {
                     ids[i] = temp.get(i);
                 }
@@ -642,7 +642,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
                 long artist_id = filteredDataItems.get(position).artist_id;
                 temp = MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC);
-                ids = new int[temp.size()];
+                ids = new long[temp.size()];
                 for (int i = 0; i < ids.length; i++) {
                     ids[i] = temp.get(i);
                 }
@@ -650,9 +650,9 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                int genre_id = filteredDataItems.get(position).id;
+                long genre_id = filteredDataItems.get(position).id;
                 temp = MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC);
-                ids = new int[temp.size()];
+                ids = new long[temp.size()];
                 for (int i = 0; i < ids.length; i++) {
                     ids[i] = temp.get(i);
                 }
@@ -682,7 +682,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
                 long album_id = filteredDataItems.get(position).album_id;
-                for (int id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)) {
+                for (long id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, Constants.SORT_ORDER.ASC)) {
                     File file = new File(MusicLibrary.getInstance().getTrackItemFromId(id).getFilePath());
                     Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", file);
                     files.add(fileUri);
@@ -691,7 +691,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
                 long artist_id = filteredDataItems.get(position).artist_id;
-                for (int id : MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)) {
+                for (long id : MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, Constants.SORT_ORDER.ASC)) {
                     File file = new File(MusicLibrary.getInstance().getTrackItemFromId(id).getFilePath());
                     Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", file);
                     files.add(fileUri);
@@ -699,8 +699,8 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                int genre_id = filteredDataItems.get(position).id;
-                for (int id : MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC)) {
+                long genre_id = filteredDataItems.get(position).id;
+                for (long id : MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, Constants.SORT_ORDER.ASC)) {
                     File file = new File(MusicLibrary.getInstance().getTrackItemFromId(id).getFilePath());
                     Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + "com.bhandari.music.provider", file);
                     files.add(fileUri);
@@ -732,7 +732,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
                 long album_id = filteredDataItems.get(position).album_id;
-                for (int id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, sortOrder)) {
+                for (long id : MusicLibrary.getInstance().getSongListFromAlbumIdNew(album_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }
                 //Toast.makeText(context
@@ -744,7 +744,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
                 long artist_id = filteredDataItems.get(position).artist_id;
-                for (int id : MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, sortOrder)) {
+                for (long id : MusicLibrary.getInstance().getSongListFromArtistIdNew(artist_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }
                 /*Toast.makeText(context
@@ -754,8 +754,8 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                 break;
 
             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
-                int genre_id = filteredDataItems.get(position).id;
-                for (int id : MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, sortOrder)) {
+                long genre_id = filteredDataItems.get(position).id;
+                for (long id : MusicLibrary.getInstance().getSongListFromGenreIdNew(genre_id, sortOrder)) {
                     playerService.addToQ(id, positionToAdd);
                 }
                 /*Toast.makeText(context
@@ -779,8 +779,8 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         ArrayList<File> files = new ArrayList<>();
-                        ArrayList<Integer> ids = new ArrayList<>();
-                        ArrayList<Integer> tracklist;
+                        ArrayList<Long> ids = new ArrayList<>();
+                        ArrayList<Long> tracklist;
                         switch (fl.getStatus()) {
                             case Constants.FRAGMENT_STATUS.TITLE_FRAGMENT:
 
@@ -798,7 +798,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             case Constants.FRAGMENT_STATUS.ALBUM_FRAGMENT:
                                 tracklist = MusicLibrary.getInstance().getSongListFromAlbumIdNew(
                                         filteredDataItems.get(position).album_id, Constants.SORT_ORDER.ASC);
-                                for (int id : tracklist) {
+                                for (long id : tracklist) {
 
                                     TrackItem item = MusicLibrary.getInstance().getTrackItemFromId(id);
                                     if (item != null) {
@@ -818,7 +818,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             case Constants.FRAGMENT_STATUS.ARTIST_FRAGMENT:
                                 tracklist = MusicLibrary.getInstance().getSongListFromArtistIdNew(
                                         filteredDataItems.get(position).artist_id, Constants.SORT_ORDER.ASC);
-                                for (int id : tracklist) {
+                                for (long id : tracklist) {
                                     /*if(playerService.getCurrentTrack().getTitle().equals(track)){
                                         ///Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
                                         Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
@@ -842,7 +842,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
                             case Constants.FRAGMENT_STATUS.GENRE_FRAGMENT:
                                 tracklist = MusicLibrary.getInstance().getSongListFromGenreIdNew(
                                         filteredDataItems.get(position).id, Constants.SORT_ORDER.ASC);
-                                for (int id : tracklist) {
+                                for (long id : tracklist) {
                                     /*if(playerService.getCurrentTrack().getTitle().equals(track)){
                                         //Toast.makeText(context,"One of the song is playing currently",Toast.LENGTH_SHORT).show();
                                         Snackbar.make(viewParent, "One of the song is playing currently", Snackbar.LENGTH_SHORT).show();
@@ -867,7 +867,7 @@ public class MainLibraryAdapter extends RecyclerView.Adapter<MainLibraryAdapter.
 
                     private void deleteSuccess() {
                         Snackbar.make(viewParent, context.getString(R.string.deleted) + filteredDataItems.get(position).title, Snackbar.LENGTH_SHORT).show();
-                        playerService.removeTrack((Integer) filteredDataItems.get(position).id);
+                        playerService.removeTrack(filteredDataItems.get(position).id);
                         dataItems.remove(dataItems.get(position));
                         filteredDataItems.remove(filteredDataItems.get(position));
                         notifyItemRemoved(position);

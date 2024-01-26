@@ -97,7 +97,7 @@ public class PlayerService extends Service implements
     private boolean playAfterPrepare = false;
 
     //playlist (now playing)
-    private ArrayList<Integer> trackList = new ArrayList<>();
+    private ArrayList<Long> trackList = new ArrayList<>();
     private TrackItem currentTrack;
     private int currentVolume = 0;
     private boolean fVolumeIsBeingChanged = false;
@@ -185,7 +185,7 @@ public class PlayerService extends Service implements
                     } else {
                         if (MyApp.getPref().getBoolean(getString(R.string.pref_continuous_playback), false)) {
                             if (trackList.size() < 10) {
-                                List<Integer> dataItems = MusicLibrary.getInstance().getDefaultTracklistNew();
+                                List<Long> dataItems = MusicLibrary.getInstance().getDefaultTracklistNew();
                                 Collections.shuffle(dataItems);
                                 trackList.addAll(dataItems);
                                 playTrack(currentTrackPosition + 1);
@@ -954,7 +954,7 @@ public class PlayerService extends Service implements
     //this will be called when song is played from music library
     private void shuffleTracklist(int position) {
         if (!trackList.isEmpty()) {
-            Integer originalSongPlayed = trackList.get(position);
+            Long originalSongPlayed = trackList.get(position);
             Collections.shuffle(trackList);
             trackList.remove(originalSongPlayed);
             trackList.add(position, originalSongPlayed);
@@ -964,7 +964,7 @@ public class PlayerService extends Service implements
     //this will be called when clicked on shuffle button on now playing
     public void shuffle(boolean shuffleStatus) {
         if (!trackList.isEmpty()) {
-            Integer currentSongPlaying = trackList.get(currentTrackPosition);
+            Long currentSongPlaying = trackList.get(currentTrackPosition);
             if (shuffleStatus) {
                 Collections.shuffle(trackList);
                 trackList.remove(currentSongPlaying);
@@ -972,15 +972,12 @@ public class PlayerService extends Service implements
                 currentTrackPosition = 0;
             } else {
                 long time = System.currentTimeMillis();
-                Collections.sort(trackList, new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer integer, Integer t1) {
-                        try {
-                            return MusicLibrary.getInstance().getTrackMap().get(integer)
-                                    .compareToIgnoreCase(MusicLibrary.getInstance().getTrackMap().get(t1));
-                        } catch (NullPointerException e) {
-                            return 0;
-                        }
+                Collections.sort(trackList, (integer, t1) -> {
+                    try {
+                        return MusicLibrary.getInstance().getTrackMap().get(integer)
+                                .compareToIgnoreCase(MusicLibrary.getInstance().getTrackMap().get(t1));
+                    } catch (NullPointerException e) {
+                        return 0;
                     }
                 });
                 Log.d(TAG, "shuffle: sorted in " + (System.currentTimeMillis() - time));
@@ -1001,13 +998,13 @@ public class PlayerService extends Service implements
 
     public void swapPosition(int from, int to) {
         if (!trackList.isEmpty()) {
-            int currentTrack = trackList.get(currentTrackPosition);
+            long currentTrack = trackList.get(currentTrackPosition);
             Collections.swap(trackList, from, to);
             currentTrackPosition = trackList.indexOf(currentTrack);
         }
     }
 
-    public void removeTrack(int position) {
+    public void removeTrack(long position) {
         if (currentTrackPosition > position) {
             currentTrackPosition--;
         }
@@ -1139,7 +1136,7 @@ public class PlayerService extends Service implements
         return currentTrackPosition;
     }
 
-    public ArrayList<Integer> getTrackList() {
+    public ArrayList<Long> getTrackList() {
         return trackList;
     }
 
@@ -1346,7 +1343,7 @@ public class PlayerService extends Service implements
     }
 
     public void shuffleAll() {
-        ArrayList<Integer> tempList = MusicLibrary.getInstance().getDefaultTracklistNew();
+        ArrayList<Long> tempList = MusicLibrary.getInstance().getDefaultTracklistNew();
         if (tempList != null) {
             Collections.shuffle(tempList);
             setTrackList(tempList);
@@ -1363,7 +1360,7 @@ public class PlayerService extends Service implements
                 status = which fragment  (title,artist,albumName,genre)
                 whereToAdd = position where to add (immediately, atLast)
      */
-    public void addToQ(int clickedOn, int whereToAdd) {
+    public void addToQ(long clickedOn, int whereToAdd) {
         int addPosition = (whereToAdd == Constants.ADD_TO_Q.IMMEDIATE_NEXT ? currentTrackPosition : trackList.size() - 1);
         try {
             trackList.add(addPosition + 1, clickedOn);
@@ -1388,7 +1385,7 @@ public class PlayerService extends Service implements
             } else {
                 if (MyApp.getPref().getBoolean(getString(R.string.pref_continuous_playback), false)) {
                     if (trackList.size() < 10) {
-                        List<Integer> dataItems = MusicLibrary.getInstance().getDefaultTracklistNew();
+                        List<Long> dataItems = MusicLibrary.getInstance().getDefaultTracklistNew();
                         Collections.shuffle(dataItems);
                         trackList.addAll(dataItems);
                         playTrack(currentTrackPosition + 1);
@@ -1426,7 +1423,7 @@ public class PlayerService extends Service implements
     }
 
     //to update trackitem when tags are changed
-    public void updateTrackItem(int position, int _id, String... param) {
+    public void updateTrackItem(int position, long _id, String... param) {
         if (position == getCurrentTrackPosition()) {
             try {
                 currentTrack.setTitle(param[0]);
@@ -1477,7 +1474,7 @@ public class PlayerService extends Service implements
         }
     }
 
-    public void setTrackList(ArrayList<Integer> tracklist1) {
+    public void setTrackList(ArrayList<Long> tracklist1) {
         this.trackList.clear();
         this.trackList.addAll(tracklist1);
     }

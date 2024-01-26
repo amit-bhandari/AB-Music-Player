@@ -424,11 +424,11 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
     private void Play() {
         if (clickedFile.isFile()) {
             File[] fileList = clickedFile.getParentFile().listFiles();
-            ArrayList<Integer> songTitles = new ArrayList<>();
+            ArrayList<Long> songTitles = new ArrayList<>();
             int i = 0, original_file_index = 0;
             for (File f : fileList) {
                 if (isFileExtensionValid(f)) {
-                    int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
+                    long id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
                     songTitles.add(id);
                     if (f.equals(clickedFile)) {
                         original_file_index = i;
@@ -444,11 +444,11 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
             playerService.playAtPosition(original_file_index);
         } else {
             File[] fileList = clickedFile.listFiles();
-            ArrayList<Integer> songTitles = new ArrayList<>();
+            ArrayList<Long> songTitles = new ArrayList<>();
             if (fileList != null) {
                 for (File f : fileList) {
                     if (isFileExtensionValid(f)) {
-                        int id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
+                        long id = MusicLibrary.getInstance().getIdFromFilePath(f.getAbsolutePath());
                         songTitles.add(id);
                     }
                 }
@@ -464,10 +464,10 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
 
     private void AddToPlaylist() {
         ArrayList<Integer> temp = new ArrayList<>();
-        int[] ids;
+        long[] ids;
         if (clickedFile.isFile()) {
             int id = MusicLibrary.getInstance().getIdFromFilePath(clickedFile.getAbsolutePath());
-            ids = new int[temp.size()];
+            ids = new long[temp.size()];
             for (int i = 0; i < ids.length; i++) {
                 ids[i] = temp.get(i);
             }
@@ -485,7 +485,7 @@ public class FolderLibraryAdapter extends RecyclerView.Adapter<FolderLibraryAdap
                 Snackbar.make(viewParent, "Nothing to add!", Snackbar.LENGTH_SHORT).show();
                 return;
             }
-            ids = new int[temp.size()];
+            ids = new long[temp.size()];
             for (int i = 0; i < ids.length; i++) {
                 ids[i] = temp.get(i);
             }

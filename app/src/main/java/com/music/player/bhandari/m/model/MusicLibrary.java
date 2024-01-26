@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -71,7 +70,7 @@ public class MusicLibrary {
     private final ArrayList<String> foldersList = new ArrayList<>();
 
     //data for all fragments
-    private final Map<Integer, dataItem> dataItemsForTracks = Collections.synchronizedMap(new LinkedHashMap<>());
+    private final Map<Long, dataItem> dataItemsForTracks = Collections.synchronizedMap(new LinkedHashMap<>());
     private final ArrayList<dataItem> dataItemsForAlbums = new ArrayList<>();
     private final ArrayList<dataItem> dataItemsForGenres = new ArrayList<>();
     private final ArrayList<dataItem> dataItemsForArtists = new ArrayList<>();
@@ -79,7 +78,7 @@ public class MusicLibrary {
 
     //track id to track name hashmap
     //used for shuffling tracks using track name in now playing
-    private final SparseArray<String> trackMap = new SparseArray<>();
+    private final Map<Long, String> trackMap = new HashMap<>();
 
     private MusicLibrary() {
         this.context = MyApp.getContext();
@@ -167,8 +166,8 @@ public class MusicLibrary {
         return musicLibrary;
     }
 
-    public ArrayList<Integer> getDefaultTracklistNew() {
-        ArrayList<Integer> tracklist = new ArrayList<>();
+    public ArrayList<Long> getDefaultTracklistNew() {
+        ArrayList<Long> tracklist = new ArrayList<>();
         try {
             for (dataItem item : dataItemsForTracks.values()) {
                 tracklist.add(item.id);
@@ -237,7 +236,7 @@ public class MusicLibrary {
                     }
 
                     if (cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) > SHORT_CLIPS_TIME_IN_MS) {
-                        dataItemsForTracks.put(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
+                        dataItemsForTracks.put(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID)),
                                 new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
                                         , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
                                         , cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID))
@@ -250,7 +249,7 @@ public class MusicLibrary {
                                         , cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)))
                         );
 
-                        trackMap.put(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
+                        trackMap.put(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
                                 , cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
                     }
                 }
@@ -367,14 +366,14 @@ public class MusicLibrary {
             }
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    ArrayList<Integer> songList = getSongListFromGenreIdNew(cursor.getInt(INDEX_FOR_GENRE_CURSOR._ID)
+                    ArrayList<Long> songList = getSongListFromGenreIdNew(cursor.getLong(INDEX_FOR_GENRE_CURSOR._ID)
                             , Constants.SORT_ORDER.ASC);
                     if (songList == null || songList.size() == 0)
                         continue;
 
                     String genre_name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Genres.NAME));
                     if (genre_name == null) continue;
-                    dataItemsForGenres.add(new dataItem(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Genres._ID))
+                    dataItemsForGenres.add(new dataItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Genres._ID))
                             , genre_name
                             , 0)
                     );
@@ -386,7 +385,7 @@ public class MusicLibrary {
 
     }
 
-    public dataItem updateTrackNew(int id, String... param) {
+    public dataItem updateTrackNew(long id, String... param) {
         dataItem d = dataItemsForTracks.get(id);
         if (d != null) {
             d.title = param[0];
@@ -405,7 +404,7 @@ public class MusicLibrary {
         return dataItemsForArtists;
     }
 
-    public Map<Integer, dataItem> getDataItemsForTracks() {
+    public Map<Long, dataItem> getDataItemsForTracks() {
         return dataItemsForTracks;
     }
 
@@ -413,12 +412,12 @@ public class MusicLibrary {
         return dataItemsForGenres;
     }
 
-    public SparseArray<String> getTrackMap() {
+    public Map<Long, String> getTrackMap() {
         return trackMap;
     }
 
-    public ArrayList<Integer> getSongListFromArtistIdNew(long artist_id, int sort) {
-        ArrayList<Integer> songList = new ArrayList<>();
+    public ArrayList<Long> getSongListFromArtistIdNew(long artist_id, int sort) {
+        ArrayList<Long> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ARTIST_ID + "=" + artist_id;
         String[] projection = {
@@ -440,7 +439,7 @@ public class MusicLibrary {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 if (cursor.getInt(1) > SHORT_CLIPS_TIME_IN_MS) {
-                    songList.add(cursor.getInt(2));
+                    songList.add(cursor.getLong(2));
                 }
             }
             cursor.close();
@@ -449,9 +448,9 @@ public class MusicLibrary {
         return null;
     }
 
-    public ArrayList<Integer> getSongListFromAlbumIdNew(long album_id, int sort) {
+    public ArrayList<Long> getSongListFromAlbumIdNew(long album_id, int sort) {
         System.out.println("AMIT getSongListFromAlbumIdNew " + album_id + " " + sort);
-        ArrayList<Integer> songList = new ArrayList<>();
+        ArrayList<Long> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.ALBUM_ID + "=" + album_id;
         String[] projection = {
@@ -473,7 +472,7 @@ public class MusicLibrary {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 if (cursor.getInt(1) > SHORT_CLIPS_TIME_IN_MS) {
-                    songList.add(cursor.getInt(2));
+                    songList.add(cursor.getLong(2));
                 }
             }
             cursor.close();
@@ -482,8 +481,8 @@ public class MusicLibrary {
         return null;
     }
 
-    public ArrayList<Integer> getSongListFromGenreIdNew(long genre_id, int sort) {
-        ArrayList<Integer> songList = new ArrayList<>();
+    public ArrayList<Long> getSongListFromGenreIdNew(long genre_id, int sort) {
+        ArrayList<Long> songList = new ArrayList<>();
         Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", genre_id);
         String[] projection = new String[]{MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.DURATION,
@@ -502,17 +501,15 @@ public class MusicLibrary {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 if (cursor.getInt(1) > SHORT_CLIPS_TIME_IN_MS) {
-                    songList.add(cursor.getInt(2));
+                    songList.add(cursor.getLong(2));
                 }
             }
             cursor.close();
-            return songList;
         }
-        return null;
+        return songList;
     }
 
     public TrackItem getTrackItemFromTitle(String title) {
-
         if (title.contains("'")) {
             //title = ((char)34+title+(char)34);
             //fuck you bug
@@ -559,7 +556,7 @@ public class MusicLibrary {
         return null;
     }
 
-    public TrackItem getTrackItemFromId(int _id) {
+    public TrackItem getTrackItemFromId(long _id) {
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
@@ -629,7 +626,7 @@ public class MusicLibrary {
         }
     }
 
-    public Bitmap getAlbumArtFromId(int id) {
+    public Bitmap getAlbumArtFromId(long id) {
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND "
