@@ -28,7 +28,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -136,7 +136,7 @@ public class LyricWiki {
             lyricbox.getElementsByClass("references").remove();
             String lyricsHtml = lyricbox.html();
             final Document.OutputSettings outputSettings = new Document.OutputSettings().prettyPrint(false);
-            text = Jsoup.clean(lyricsHtml, "", new Whitelist().addTags("br"), outputSettings);
+            text = Jsoup.clean(lyricsHtml, "", new Safelist().addTags("br"), outputSettings);
             if (text.contains("&#"))
                 text = Parser.unescapeEntities(text, true);
             text = text.replaceAll("\\[\\d\\]", "").trim();

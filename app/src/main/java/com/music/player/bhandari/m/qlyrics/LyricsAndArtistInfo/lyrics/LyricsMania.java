@@ -26,7 +26,7 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import java.io.IOException;
 import java.text.Normalizer;
@@ -68,7 +68,7 @@ public class LyricsMania {
             Document document = Jsoup.connect(url).userAgent(Net.USER_AGENT).get();
             Element lyricsBody = document.getElementsByClass("lyrics-body").get(0);
             // lyricsBody.select("div").last().remove();
-            text = Jsoup.clean(lyricsBody.html(), "", Whitelist.basic().addTags("div"));
+            text = Jsoup.clean(lyricsBody.html(), "", Safelist.basic().addTags("div"));
             text = text.substring(text.indexOf("</strong>") + 10, text.lastIndexOf("</div>"));
 
             String[] keywords =
