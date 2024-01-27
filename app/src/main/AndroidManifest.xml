@@ -196,13 +196,6 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity
-            android:name=".activity.ActivityInvite"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-        </activity>
-
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/> <!-- optional (needed if default theme has no action bar) -->
 
