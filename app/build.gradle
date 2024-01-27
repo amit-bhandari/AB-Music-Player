@@ -16,41 +16,19 @@ apply plugin: 'com.github.triplet.play'
 
 android {
     def versionPropsFile = file('version.properties')  //maintains version number of apk
-    def value = 0
     Properties versionProps = new Properties()
-    if (!versionPropsFile.exists()) {                  //create if does not exist
-        versionProps['VERSION_PATCH'] = "0"
-        versionProps['VERSION_NUMBER'] = "0"
-        versionProps['VERSION_BUILD'] = "-1"
-        // I set it to minus one so the first build is 0 which isn't super important.
-        versionProps.store(versionPropsFile.newWriter(), null)
-    }
+    versionProps.load(new FileInputStream(versionPropsFile))
 
     def runTasks = gradle.startParameter.taskNames
-    if ('publishApkRelease' in runTasks) {  //check is release build is getting executed
-        value = 1
+    if (':app:bundleRelease' in runTasks) {  //check is release build is getting executed
+        versionProps['VERSION_PATCH'] = (versionProps['VERSION_PATCH'].toInteger() + 1).toString()
+        versionProps['VERSION_NUMBER'] = (versionProps['VERSION_NUMBER'].toInteger() + 1).toString()
+        versionProps['VERSION_BUILD'] = (versionProps['VERSION_BUILD'].toInteger() + 1).toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
     }
 
-    def mVersionName = ""
-    def mFileName = ""
-
     if (versionPropsFile.canRead()) {
-        versionProps.load(new FileInputStream(versionPropsFile))
-
-        //increase build number every time build happens
-        //increase version number and patch number only in case of release build
-
-        versionProps['VERSION_PATCH'] = (versionProps['VERSION_PATCH'].toInteger() + value).toString()
-        versionProps['VERSION_NUMBER'] = (versionProps['VERSION_NUMBER'].toInteger() + value).toString()
-        versionProps['VERSION_BUILD'] = (versionProps['VERSION_BUILD'].toInteger() + 0).toString()
-
-        versionProps.store(versionPropsFile.newWriter(), null)
-
-        // 1: change major and minor version here
-        mVersionName = "v10.0.${versionProps['VERSION_PATCH']}"
-        // 2: change AppName for your app name
-        mFileName = "AB-Music-${mVersionName}.apk"
-
+        def mVersionName = "v10.0.${versionProps['VERSION_PATCH']}"
         defaultConfig {
             applicationId 'com.bhandari.music'
             minSdkVersion 24
@@ -60,20 +38,8 @@ android {
             versionName "${mVersionName} Build: ${versionProps['VERSION_BUILD']}"
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         }
-
     } else {
         throw new FileNotFoundException("Could not read version.properties!")
-    }
-
-    //rename apk files
-    if ('assembleRelease' in runTasks) {
-        applicationVariants.configureEach { variant ->
-            variant.outputs.configureEach { output ->
-                if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
-                    outputFileName = mFileName
-                }
-            }
-        }
     }
 
     signingConfigs {
