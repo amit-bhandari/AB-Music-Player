@@ -15,7 +15,7 @@ import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -108,7 +108,7 @@ public class Genius {
             if (lyricsDiv.isEmpty())
                 throw new StringIndexOutOfBoundsException();
             else
-                text = Jsoup.clean(lyricsDiv.html(), Whitelist.none().addTags("br")).trim();
+                text = Jsoup.clean(lyricsDiv.html(), Safelist.none().addTags("br")).trim();
         } catch (HttpStatusException e) {
             return new Lyrics(Lyrics.NO_RESULT);
         } catch (IOException | StringIndexOutOfBoundsException e) {

@@ -162,21 +162,21 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
     //blur images
-    implementation 'jp.wasabeef:blurry:2.1.0'
+    implementation 'jp.wasabeef:blurry:4.0.1'
 
     //scroll smoothly and fast scroll
     implementation 'com.nshmura:snappysmoothscroller:1.0.0'
-    implementation 'com.simplecityapps:recyclerview-fastscroll:1.0.16'
+    implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.1'
 
     //jsoup and okhttp
-    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'org.jsoup:jsoup:1.17.2'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
 
     //first time info bubbles
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
 
     //shine animation after clicking fav
-    implementation 'com.sackcentury:shinebutton:0.1.7'
+    implementation 'com.sackcentury:shinebutton:1.0.0'
 
     //dialogs
     //implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
