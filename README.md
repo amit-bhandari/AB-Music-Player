@@ -1,17 +1,21 @@
 # AB-Music-Player
+<p>
+  <a href="#"><img alt="Android Language Badge" src="https://badgen.net/badge/OS/Android?icon=https://raw.githubusercontent.com/androiddevnotes/learn-jetpack-compose-android/master/assets/android.svg&color=3ddc84"/></a>
+  <a href="#"><img alt="Java Language Badge" src="https://badgen.net/badge/language/Java?icon=https://raw.githubusercontent.com/edent/SuperTinyIcons/master/images/svg/java.svg&color=f89820"/></a>
+  <a href="https://github.com/amit-bhandari"><img alt="amit-bhandari GitHub badge" src="https://badgen.net/badge/GitHub/amit-bhandari?icon=github&color=24292e"/></a>
+</p>
 Lightweight Offline Music Player for Android (Downloaded over 90k times on store, rated 4.5)
-
-Open sourced code for the offline music player developed by me.
 
 # Build steps
 
 - Clone the project in your system.
 - Create keystore.properties file in project root directory with content as following
-
-storeFile=/path/to/signing/key.jks <br/>
-storePassword=<insert keystore password> <br/>
-keyAlias= <insert key alias> <br/>
-keyPassword=<insert key password> <br/>
+  ```
+  storeFile=/path/to/signing/key.jks <br/>
+  storePassword=<insert keystore password> <br/>
+  keyAlias= <insert key alias> <br/>
+  keyPassword=<insert key password> <br/>
+  ```
 
 - [Important] Some features of AB Music need firebase connection (Lyric cards). If you don't want to connect to firebase, just comment this line in application level build.gradle file --> "apply plugin: 'com.google.gms.google-services'" <br/>
 OR <br/>
@@ -27,8 +31,6 @@ Check it on your device by downlaoding from store
   <img alt="Get it on Google Play"
        src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
 </a>
-
-Some screenshots
 
 ![alt text](https://user-images.githubusercontent.com/16557921/39107795-2d027a34-46e2-11e8-943c-baa7e44292e8.jpg)
 
