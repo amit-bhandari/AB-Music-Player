@@ -137,7 +137,6 @@ dependencies {
 
     //scroll smoothly and fast scroll
     implementation files('libs/snappy.aar')
-    //implementation 'com.nshmura:snappyimageviewer:1.1.0'
 
     implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.1'
 
