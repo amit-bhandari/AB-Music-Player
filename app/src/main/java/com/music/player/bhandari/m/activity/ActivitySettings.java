@@ -55,8 +55,8 @@ import com.music.player.bhandari.m.service.BatchDownloaderService;
 import com.music.player.bhandari.m.service.NotificationListenerService;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.utils.UtilityFun;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+//import com.theartofdev.edmodo.cropper.CropImage;
+//import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -235,7 +235,7 @@ public class ActivitySettings extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+        /*if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
@@ -295,7 +295,7 @@ public class ActivitySettings extends AppCompatActivity {
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Toast.makeText(this, "Failed to select image, try again!", Toast.LENGTH_SHORT).show();
             }
-        }
+        }*/
     }
 
     @SuppressLint("validFragment")
@@ -745,13 +745,13 @@ public class ActivitySettings extends AppCompatActivity {
                             //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
                             case 1:
                                 backgroundSelectionStatus = NAVIGATION_DRAWER;
-                                CropImage.activity()
+                                /*CropImage.activity()
                                         .setGuidelines(CropImageView.Guidelines.ON)
                                         .setAspectRatio(11, 16)
                                         .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                                         .setOutputCompressQuality(80)
                                         .start(getActivity());
-                                dialog1.dismiss();
+                                dialog1.dismiss();*/
                                 break;
 
                         }
@@ -781,12 +781,12 @@ public class ActivitySettings extends AppCompatActivity {
                             //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
                             case 1:
                                 backgroundSelectionStatus = DEFAULT_ALBUM_ART;
-                                CropImage.activity()
+                                /*CropImage.activity()
                                         .setGuidelines(CropImageView.Guidelines.ON)
                                         .setAspectRatio(1, 1)
                                         .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                                         .setOutputCompressQuality(80)
-                                        .start(getActivity());
+                                        .start(getActivity());*/
                                 dialog1.dismiss();
                                 break;
 
@@ -817,12 +817,12 @@ public class ActivitySettings extends AppCompatActivity {
                             //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
                             case 1:
                                 backgroundSelectionStatus = MAIN_LIB;
-                                CropImage.activity()
+                                /*CropImage.activity()
                                         .setGuidelines(CropImageView.Guidelines.ON)
                                         .setAspectRatio(11, 16)
                                         .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                                         .setOutputCompressQuality(50)
-                                        .start(getActivity());
+                                        .start(getActivity());*/
                                 dialog1.dismiss();
                                 break;
 
@@ -856,12 +856,12 @@ public class ActivitySettings extends AppCompatActivity {
                             //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
                             case 3:
                                 backgroundSelectionStatus = NOW_PLAYING;
-                                CropImage.activity()
+                                /*CropImage.activity()
                                         .setGuidelines(CropImageView.Guidelines.ON)
                                         .setAspectRatio(9, 16)
                                         .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                                         .setOutputCompressQuality(50)
-                                        .start(getActivity());
+                                        .start(getActivity());*/
                                 dialog1.dismiss();
                                 break;
                         }

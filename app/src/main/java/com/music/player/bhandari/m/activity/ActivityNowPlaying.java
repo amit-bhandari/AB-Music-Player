@@ -80,7 +80,6 @@ import com.music.player.bhandari.m.transition.MorphMiniToNowPlaying;
 import com.music.player.bhandari.m.transition.MorphNowPlayingToMini;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
-import com.sackcentury.shinebuttonlib.ShineButton;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -140,8 +139,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     SlidingUpPanelLayout slidingUpPanelLayout;
     @BindView(R.id.view_pager_now_playing)
     CustomViewPager viewPager;
-    @BindView(R.id.shineButton)
-    ShineButton shineButton;
     @BindView(R.id.toolbar_)
     Toolbar toolbar;
     @BindView(R.id.controls_wrapper)
@@ -309,8 +306,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         });
 
         slidingUpPanelLayout.setDragView(R.id.play_queue_title);
-
-        shineButton.init(this);
 
         View saveQueueButton = findViewById(R.id.save_queue_button);
         saveQueueButton.setOnClickListener(this);
@@ -772,9 +767,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 } else {
                     PlaylistManager.getInstance(getApplicationContext())
                             .addSongToFav(playerService.getCurrentTrack().getId());
-                    shineButton.setVisibility(View.VISIBLE);
-                    shineButton.showAnim();
-                    shineButton.clearAnimation();
                 }
                 invalidateOptionsMenu();
                 break;
