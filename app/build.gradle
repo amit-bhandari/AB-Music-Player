@@ -117,6 +117,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.13.0'
     //noinspection GradleCompatible
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     testImplementation 'junit:junit:4.13.2'
 
     //small animations for lyric loading
@@ -158,6 +159,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:22.0.1'
     implementation 'com.google.firebase:firebase-config:23.0.1'
 
+
     //gson
     implementation 'com.google.code.gson:gson:2.13.2'
 
@@ -165,9 +167,7 @@ dependencies {
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     //crop images
-    //implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
-    // implementation 'com.vanniktech:android-image-cropper:4.7.0'
-    // implementation files('libs/cropper-2.0.0.aar')
+    implementation 'com.vanniktech:android-image-cropper:4.7.0'
 
     //view binding
     //noinspection AnnotationProcessorOnCompilePath
