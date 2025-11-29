@@ -784,6 +784,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         @Override
                         public void onAnimationEnd(@NonNull Animator animator) {
                             shineButton.setVisibility(View.GONE);
+                            shineButton.removeAllAnimatorListeners();
                         }
 
                         @Override
