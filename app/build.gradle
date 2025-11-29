@@ -37,7 +37,7 @@ android {
             applicationId 'com.bhandari.music'
             minSdkVersion 24
             compileSdk = 34
-            targetSdkVersion 36
+            targetSdkVersion 34
             versionCode versionProps['VERSION_NUMBER'].toInteger()
             versionName "${mVersionName} Build: ${versionProps['VERSION_BUILD']}"
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
