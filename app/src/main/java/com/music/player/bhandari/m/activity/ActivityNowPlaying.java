@@ -2,6 +2,7 @@ package com.music.player.bhandari.m.activity;
 
 import static com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics.POSITIVE_RESULT;
 
+import android.animation.Animator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -58,6 +59,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
@@ -141,6 +143,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     CustomViewPager viewPager;
     @BindView(R.id.toolbar_)
     Toolbar toolbar;
+    @BindView(R.id.shineButton)
+    LottieAnimationView shineButton;
     @BindView(R.id.controls_wrapper)
     View controlsWrapper;
     //@BindView(R.id.nowPlayingBackgroundImageOverlay) View backgroundOverlay;
@@ -494,6 +498,12 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         //this removes any memory leak caused by handler
         mHandler.removeCallbacksAndMessages(null);
 
+        if(shineButton != null) {
+            shineButton.cancelAnimation();
+            shineButton.removeAllAnimatorListeners();
+            shineButton = null;
+        }
+
         super.onDestroy();
     }
 
@@ -765,6 +775,23 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 if (PlaylistManager.getInstance(getApplicationContext()).isFavNew(playerService.getCurrentTrack().getId())) {
                     PlaylistManager.getInstance(getApplicationContext()).RemoveFromFavNew(playerService.getCurrentTrack().getId());
                 } else {
+                    shineButton.setVisibility(View.VISIBLE);
+                    shineButton.playAnimation();
+                    shineButton.addAnimatorListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(@NonNull Animator animator) {}
+
+                        @Override
+                        public void onAnimationEnd(@NonNull Animator animator) {
+                            shineButton.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(@NonNull Animator animator) {}
+
+                        @Override
+                        public void onAnimationRepeat(@NonNull Animator animator) {}
+                    });
                     PlaylistManager.getInstance(getApplicationContext())
                             .addSongToFav(playerService.getCurrentTrack().getId());
                 }

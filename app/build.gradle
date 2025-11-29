@@ -120,6 +120,8 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     testImplementation 'junit:junit:4.13.2'
 
+    implementation 'com.airbnb.android:lottie:6.7.1'
+
     //small animations for lyric loading
     implementation 'io.github.maitrungduc1410:AVLoadingIndicatorView:2.3.0'
 

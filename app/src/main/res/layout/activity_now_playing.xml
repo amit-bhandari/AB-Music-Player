@@ -71,6 +71,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/shineButton"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:layout_margin="32dp"
+                        app:lottie_rawRes="@raw/likee"
+                        app:lottie_autoPlay="false"
+                        app:lottie_loop="false"/>
+
                 </FrameLayout>
 
             </LinearLayout>
