@@ -135,7 +135,7 @@ public class ActivityTagEditor extends AppCompatActivity implements View.OnClick
         }
 
         track_title = getIntent().getStringExtra("track_title");
-        song_id = getIntent().getIntExtra("id", 0);
+        song_id = getIntent().getLongExtra("id", 0);
 
         item = MusicLibrary.getInstance().getTrackItemFromId(song_id);
 

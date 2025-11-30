@@ -631,7 +631,7 @@ public class ActivitySettings extends AppCompatActivity {
             });
 
             // batch download preference
-            Preference batchDownload = findPreference(getString(R.string.pref_batch_download));
+            /*Preference batchDownload = findPreference(getString(R.string.pref_batch_download));
             batchDownload.setOnPreferenceClickListener(preference -> {
                 if (MyApp.isBatchServiceRunning) {
                     Toast.makeText(getActivity(), getString(R.string.error_batch_download_running), Toast.LENGTH_LONG)
@@ -642,7 +642,7 @@ public class ActivitySettings extends AppCompatActivity {
                 getActivity().startService(new Intent(getActivity(), BatchDownloaderService.class));
                 Toast.makeText(getActivity(), getString(R.string.batch_download_started), Toast.LENGTH_LONG).show();
                 return true;
-            });
+            });*/
 
             // reset preference
             final Preference resetPref = findPreference(getString(R.string.pref_reset_pref));
