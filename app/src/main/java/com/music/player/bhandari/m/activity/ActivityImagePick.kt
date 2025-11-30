@@ -1,6 +1,7 @@
 package com.music.player.bhandari.m.activity
 
 
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
@@ -74,6 +75,7 @@ class ActivityImagePick : AppCompatActivity() {
         val cropOptions = CropImageOptions()
         cropOptions.guidelines = CropImageView.Guidelines.ON
         cropOptions.fixAspectRatio = true
+        cropOptions.activityBackgroundColor = Color.BLACK;
         
         when (backgroundSelectionStatus) {
             MAIN_LIB -> {
