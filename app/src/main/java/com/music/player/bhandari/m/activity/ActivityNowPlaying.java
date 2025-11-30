@@ -277,7 +277,16 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 }
                 ; // height is ready
 
-                slidingUpPanelLayout.setPanelHeight(playQueueHandle.getHeight());
+                // Get bottom navigation bar height from window insets
+                int bottomInset = 0;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    bottomInset = rootView.getRootWindowInsets() != null
+                            ? rootView.getRootWindowInsets().getSystemWindowInsetBottom()
+                            : 0;
+                }
+
+                // Set panel height = handle height + bottom navigation bar height
+                slidingUpPanelLayout.setPanelHeight(playQueueHandle.getHeight() + bottomInset);
                 slidingUpPanelLayout.setScrollableView(mRecyclerView);
             }
         });
