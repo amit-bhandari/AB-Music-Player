@@ -523,7 +523,7 @@
     <string name="title_remove_watermark">Remove Watermark</string>
 
 
-    <string name="whats_new"><![CDATA[ * All kinds of ads are removed from AB Music now! ]]></string>
+    <string name="whats_new"><![CDATA[ Bug fixes \n\n * Go to Artist button from Now Playing screen works! \n * Correct album art shows up on edit track info screen! \n * Some third party library upgrades. ]]></string>
 
     <!-- Request notification access-->
     <string name="instant_lyrics">Instant Lyrics</string>
