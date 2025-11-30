@@ -16,13 +16,11 @@
         android:layout_alignParentLeft="true"
         android:theme="@style/AppTheme.AppBarOverlay"
         ads:layout_behavior="com.music.player.bhandari.m.customViews.MoveUpwardBehavior"
-        android:background="@color/blackOverlay"
-        android:fitsSystemWindows="false">
+        android:background="@color/blackOverlay">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="false">
+            android:layout_height="match_parent">
             <!-- full screen image view -->
 
             <ImageView
@@ -40,7 +38,6 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.Toolbar
-                android:fitsSystemWindows="true"
                 android:minHeight="@dimen/action_bar_size"
                 app:contentInsetStartWithNavigation="0dp"
                 app:titleTextColor="@color/primary_text_color"

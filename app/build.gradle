@@ -31,6 +31,10 @@ android {
         versionProps.store(versionPropsFile.newWriter(), null)
     }
 
+    println "VERSION_PATCH  = ${versionProps['VERSION_PATCH']}"
+    println "VERSION_NUMBER = ${versionProps['VERSION_NUMBER']}"
+    println "VERSION_BUILD  = ${versionProps['VERSION_BUILD']}"
+
     if (versionPropsFile.canRead()) {
         def mVersionName = "v10.0.${versionProps['VERSION_PATCH']}"
         defaultConfig {
