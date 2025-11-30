@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -55,8 +57,6 @@ import com.music.player.bhandari.m.service.BatchDownloaderService;
 import com.music.player.bhandari.m.service.NotificationListenerService;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.utils.UtilityFun;
-//import com.theartofdev.edmodo.cropper.CropImage;
-//import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -100,7 +100,7 @@ public class ActivitySettings extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
 
-        //if player service not running, kill the app
+        // if player service not running, kill the app
         if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             finish();
@@ -108,7 +108,6 @@ public class ActivitySettings extends AppCompatActivity {
         }
 
         playerService = MyApp.getService();
-
 
         ColorHelper.setStatusBarGradiant(this);
 
@@ -132,21 +131,20 @@ public class ActivitySettings extends AppCompatActivity {
         launchedFrom = getIntent().getIntExtra("launchedFrom", 0);
         setContentView(R.layout.acitivty_settings);
 
-        //findViewById(R.id.root_view_settings).setBackgroundDrawable(ColorHelper.GetGradientDrawableDark());
-
         Toolbar toolbar = findViewById(R.id.toolbar_);
         setSupportActionBar(toolbar);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null) {
-            //getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
+            // getSupportActionBar().setBackgroundDrawable(ColorHelper.GetGradientDrawableToolbar());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
         setTitle("Settings");
 
-        getFragmentManager().beginTransaction().replace(R.id.linear_layout_fragment, new MyPreferenceFragment()).commit();
+        getFragmentManager().beginTransaction().replace(R.id.linear_layout_fragment, new MyPreferenceFragment())
+                .commit();
     }
 
     @Override
@@ -283,45 +281,45 @@ public class ActivitySettings extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
-            //Theme color
+            // Theme color
             Preference primaryColorPref = findPreference(getString(R.string.pref_theme_color));
 
             primaryColorPref.setOnPreferenceClickListener(preference -> {
-                //open browser or intent here
-                //PrimarySelectionDialog();
+                // open browser or intent here
+                // PrimarySelectionDialog();
                 themeSelectionDialog();
                 return true;
             });
 
-            //now playing back
+            // now playing back
             final Preference nowPlayingBackPref = findPreference(getString(R.string.pref_now_playing_back));
             nowPlayingBackPref.setOnPreferenceClickListener(preference -> {
                 nowPlayingBackDialog();
                 return true;
             });
 
-            //Main library back
+            // Main library back
             final Preference mainLibBackPref = findPreference(getString(R.string.pref_main_library_back));
             mainLibBackPref.setOnPreferenceClickListener(preference -> {
                 mainLibBackDialog();
                 return true;
             });
 
-            //Main library back
+            // Main library back
             final Preference navLibBackPref = findPreference(getString(R.string.pref_nav_library_back));
             navLibBackPref.setOnPreferenceClickListener(preference -> {
                 navBackDialog();
                 return true;
             });
 
-            //Main library back
+            // Main library back
             final Preference defAlbumArtPref = findPreference(getString(R.string.pref_default_album_art));
             defAlbumArtPref.setOnPreferenceClickListener(preference -> {
                 defAlbumArtDialog();
                 return true;
             });
 
-            //text font
+            // text font
             Preference fontPref = findPreference(getString(R.string.pref_text_font));
             int textFontPref = MyApp.getPref().getInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE);
             switch (textFontPref) {
@@ -351,18 +349,20 @@ public class ActivitySettings extends AppCompatActivity {
                     break;
             }
             fontPref.setOnPreferenceClickListener(preference -> {
-                //open browser or intent here
+                // open browser or intent here
                 fontPrefSelectionDialog();
                 return true;
             });
 
-            //lockscreen albumName art
-            CheckBoxPreference lockScreenArt = (CheckBoxPreference) findPreference(getString(R.string.pref_lock_screen_album_Art));
+            // lockscreen albumName art
+            CheckBoxPreference lockScreenArt = (CheckBoxPreference) findPreference(
+                    getString(R.string.pref_lock_screen_album_Art));
 
             lockScreenArt.setOnPreferenceChangeListener((preference, newValue) -> {
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    Toast.makeText(getActivity(), "Feature is only available on lollipop and above!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Feature is only available on lollipop and above!", Toast.LENGTH_LONG)
+                            .show();
                     return false;
                 }
 
@@ -376,7 +376,7 @@ public class ActivitySettings extends AppCompatActivity {
                 return true;
             });
 
-            //prefer system equalizer
+            // prefer system equalizer
             Preference albumLibView = findPreference(getString(R.string.pref_album_lib_view));
             if (MyApp.getPref().getBoolean(getString(R.string.pref_album_lib_view), true)) {
                 albumLibView.setSummary(GRID);
@@ -389,8 +389,9 @@ public class ActivitySettings extends AppCompatActivity {
                 return true;
             });
 
-            //prefer system equalizer
-            CheckBoxPreference prefPrefSystemEqu = (CheckBoxPreference) findPreference(getString(R.string.pref_prefer_system_equ));
+            // prefer system equalizer
+            CheckBoxPreference prefPrefSystemEqu = (CheckBoxPreference) findPreference(
+                    getString(R.string.pref_prefer_system_equ));
 
             prefPrefSystemEqu.setOnPreferenceChangeListener((preference, newValue) -> {
                 if (((boolean) newValue)) {
@@ -401,8 +402,9 @@ public class ActivitySettings extends AppCompatActivity {
                 return true;
             });
 
-            //notifcations
-            final CheckBoxPreference notifications = (CheckBoxPreference) findPreference(getString(R.string.pref_notifications));
+            // notifcations
+            final CheckBoxPreference notifications = (CheckBoxPreference) findPreference(
+                    getString(R.string.pref_notifications));
 
             notifications.setOnPreferenceChangeListener((preference, newValue) -> {
                 String pos_text;
@@ -417,9 +419,11 @@ public class ActivitySettings extends AppCompatActivity {
                         .positiveText(pos_text)
                         .negativeText(getString(R.string.cancel))
                         .onPositive((dialog, which) -> {
-                            String country = MyApp.getPref().getString(MyApp.getContext().getString(R.string.pref_user_country), "");
+                            String country = MyApp.getPref()
+                                    .getString(MyApp.getContext().getString(R.string.pref_user_country), "");
                             if (MyApp.getPref().getBoolean(getString(R.string.pref_notifications), true)) {
-                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_notifications), false).apply();
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_notifications), false)
+                                        .apply();
                                 try {
                                     FirebaseMessaging.getInstance().unsubscribeFromTopic(country);
                                     FirebaseMessaging.getInstance().unsubscribeFromTopic("ab_music");
@@ -440,7 +444,7 @@ public class ActivitySettings extends AppCompatActivity {
                 return false;
             });
 
-            //shake
+            // shake
             CheckBoxPreference shakeStatus = (CheckBoxPreference) findPreference(getString(R.string.pref_shake));
             shakeStatus.setOnPreferenceChangeListener((preference, newValue) -> {
 
@@ -454,7 +458,8 @@ public class ActivitySettings extends AppCompatActivity {
                 return true;
             });
 
-            final CheckBoxPreference continuousPlaybackPref = (CheckBoxPreference) findPreference(getString(R.string.pref_continuous_playback));
+            final CheckBoxPreference continuousPlaybackPref = (CheckBoxPreference) findPreference(
+                    getString(R.string.pref_continuous_playback));
             continuousPlaybackPref.setOnPreferenceChangeListener((preference, newValue) -> {
                 String pos_text;
                 if (((boolean) newValue)) {
@@ -470,10 +475,12 @@ public class ActivitySettings extends AppCompatActivity {
                         .negativeText(getString(R.string.cancel))
                         .onPositive((dialog12, which) -> {
                             if (((boolean) newValue)) {
-                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_continuous_playback), true).apply();
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_continuous_playback), true)
+                                        .apply();
                                 continuousPlaybackPref.setChecked(true);
                             } else {
-                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_continuous_playback), false).apply();
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_continuous_playback), false)
+                                        .apply();
                                 continuousPlaybackPref.setChecked(false);
                             }
                         })
@@ -484,7 +491,8 @@ public class ActivitySettings extends AppCompatActivity {
                 return false;
             });
 
-            final CheckBoxPreference dataSaverPref = (CheckBoxPreference) findPreference(getString(R.string.pref_data_saver));
+            final CheckBoxPreference dataSaverPref = (CheckBoxPreference) findPreference(
+                    getString(R.string.pref_data_saver));
             dataSaverPref.setOnPreferenceChangeListener((preference, newValue) -> {
                 String pos_text;
                 if (((boolean) newValue)) {
@@ -516,7 +524,7 @@ public class ActivitySettings extends AppCompatActivity {
 
             instantLyricStatus = (CheckBoxPreference) findPreference(getString(R.string.pref_instant_lyric));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                //instant lyric
+                // instant lyric
                 instantLyricStatus.setOnPreferenceChangeListener((preference, newValue) -> {
 
                     String pos_text;
@@ -533,13 +541,17 @@ public class ActivitySettings extends AppCompatActivity {
                             .negativeText(getString(R.string.cancel))
                             .onPositive((dialog1, which) -> {
                                 if (((boolean) newValue)) {
-                                    Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                                    Intent intent = new Intent(
+                                            "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
                                     startActivity(intent);
-                                    Toast.makeText(MyApp.getContext(), "Click on AB Music to enable!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MyApp.getContext(), "Click on AB Music to enable!",
+                                            Toast.LENGTH_LONG).show();
                                 } else {
-                                    Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                                    Intent intent = new Intent(
+                                            "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
                                     startActivity(intent);
-                                    Toast.makeText(MyApp.getContext(), "Click on AB Music to disable!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MyApp.getContext(), "Click on AB Music to disable!",
+                                            Toast.LENGTH_LONG).show();
                                 }
                             })
                             .build();
@@ -550,14 +562,16 @@ public class ActivitySettings extends AppCompatActivity {
                 });
             } else {
                 instantLyricStatus.setOnPreferenceChangeListener((preference, newValue) -> {
-                    Toast.makeText(getActivity(), "Feature is only available on Jelly Bean MR2 and above!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Feature is only available on Jelly Bean MR2 and above!",
+                            Toast.LENGTH_LONG).show();
                     return false;
                 });
             }
 
-            //shake
+            // shake
             Preference shakeAction = findPreference(getString(R.string.pref_shake_action));
-            int shakeActionRead = MyApp.getPref().getInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT);
+            int shakeActionRead = MyApp.getPref().getInt(getString(R.string.pref_shake_action),
+                    Constants.SHAKE_ACTIONS.NEXT);
             if (shakeActionRead == Constants.SHAKE_ACTIONS.NEXT) {
                 shakeAction.setSummary(NEXT);
             } else if (shakeActionRead == Constants.SHAKE_ACTIONS.PLAY_PAUSE) {
@@ -566,26 +580,25 @@ public class ActivitySettings extends AppCompatActivity {
                 shakeAction.setSummary(PREVIOUS);
             }
             shakeAction.setOnPreferenceClickListener(preference -> {
-                //open browser or intent here
+                // open browser or intent here
                 ShakeActionDialog();
                 return true;
             });
 
-
-            //hide short clips preference
+            // hide short clips preference
             Preference hideShortClipsPref = findPreference(getString(R.string.pref_hide_short_clips));
             String summary = MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips), 10) + " seconds";
             hideShortClipsPref.setSummary(summary);
             hideShortClipsPref.setOnPreferenceClickListener(preference -> {
-                //open browser or intent here
+                // open browser or intent here
                 shortClipDialog();
                 return true;
             });
 
-            //excluded folders preference
+            // excluded folders preference
             Preference excludedFoldersPref = findPreference(getString(R.string.pref_excluded_folders));
             excludedFoldersPref.setOnPreferenceClickListener(preference -> {
-                //open browser or intent here
+                // open browser or intent here
                 displayExcludedFolders();
                 return true;
             });
@@ -596,34 +609,33 @@ public class ActivitySettings extends AppCompatActivity {
             String text3 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_3), "");
             hideByStartPref.setSummary(text1 + ", " + text2 + ", " + text3);
             hideByStartPref.setOnPreferenceClickListener(preference -> {
-                //open browser or intent here
+                // open browser or intent here
                 hideByStartDialog();
                 return true;
             });
 
-
-            //opening tab preference
+            // opening tab preference
             Preference openingTabPref = findPreference(getString(R.string.pref_opening_tab));
             openingTabPref.setOnPreferenceClickListener(preference -> {
-                //open browser or intent here
+                // open browser or intent here
                 tabSeqDialog();
                 return true;
             });
 
-
-            //about us  preference
+            // about us preference
             Preference aboutUs = findPreference(getString(R.string.pref_about_us));
             aboutUs.setOnPreferenceClickListener(preference -> {
-                //open browser or intent here
+                // open browser or intent here
                 getActivity().startActivity(new Intent(getActivity(), ActivityAboutUs.class));
                 return true;
             });
 
-            //batch download  preference
+            // batch download preference
             Preference batchDownload = findPreference(getString(R.string.pref_batch_download));
             batchDownload.setOnPreferenceClickListener(preference -> {
                 if (MyApp.isBatchServiceRunning) {
-                    Toast.makeText(getActivity(), getString(R.string.error_batch_download_running), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.error_batch_download_running), Toast.LENGTH_LONG)
+                            .show();
                     return false;
                 }
 
@@ -632,7 +644,7 @@ public class ActivitySettings extends AppCompatActivity {
                 return true;
             });
 
-            //reset  preference
+            // reset preference
             final Preference resetPref = findPreference(getString(R.string.pref_reset_pref));
             resetPref.setOnPreferenceClickListener(preference -> {
                 resetPrefDialog();
@@ -643,16 +655,18 @@ public class ActivitySettings extends AppCompatActivity {
         private void albumViewDialog() {
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_album_lib_view))
-                    .items((CharSequence[]) new String[]{LIST, GRID})
+                    .items((CharSequence[]) new String[] { LIST, GRID })
                     .itemsCallback((MaterialDialog.ListCallback) (dialog1, view, which, text) -> {
                         switch (text.toString()) {
                             case LIST:
-                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), false).apply();
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), false)
+                                        .apply();
                                 findPreference(getString(R.string.pref_album_lib_view)).setSummary(LIST);
                                 break;
 
                             case GRID:
-                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), true).apply();
+                                MyApp.getPref().edit().putBoolean(getString(R.string.pref_album_lib_view), true)
+                                        .apply();
                                 findPreference(getString(R.string.pref_album_lib_view)).setSummary(GRID);
                                 break;
                         }
@@ -663,8 +677,8 @@ public class ActivitySettings extends AppCompatActivity {
         }
 
         private void navBackDialog() {
-            ///get current setting
-            // 0 - System default   2 - custom
+            /// get current setting
+            // 0 - System default 2 - custom
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_nav_library_back), 0);
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
@@ -672,21 +686,19 @@ public class ActivitySettings extends AppCompatActivity {
                     .items(R.array.nav_back_pref_array)
                     .itemsCallbackSingleChoice(currentSelection, (dialog1, view, which, text) -> {
                         switch (which) {
-                            //for 0, change the pref and move on, no need to confirm anything
+                            // for 0, change the pref and move on, no need to confirm anything
                             case 0:
                                 MyApp.getPref().edit().putInt(getString(R.string.pref_nav_library_back), which).apply();
                                 break;
 
-                            //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                            // for 3: custom image: ask user to pick image and change pref only upon
+                            // successful picking up image
                             case 1:
                                 backgroundSelectionStatus = NAVIGATION_DRAWER;
-                                /*CropImage.activity()
-                                        .setGuidelines(CropImageView.Guidelines.ON)
-                                        .setAspectRatio(11, 16)
-                                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                                        .setOutputCompressQuality(80)
-                                        .start(getActivity());
-                                dialog1.dismiss();*/
+                                Intent intent = new Intent(getActivity(), ActivityImagePick.class);
+                                intent.putExtra("status", backgroundSelectionStatus);
+                                getActivity().startActivity(intent);
+                                dialog1.dismiss();
                                 break;
 
                         }
@@ -699,8 +711,8 @@ public class ActivitySettings extends AppCompatActivity {
         }
 
         private void defAlbumArtDialog() {
-            ///get current setting
-            // 0 - System default   2 - custom
+            /// get current setting
+            // 0 - System default 2 - custom
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_default_album_art), 0);
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
@@ -708,20 +720,20 @@ public class ActivitySettings extends AppCompatActivity {
                     .items(R.array.def_album_art_pref_array)
                     .itemsCallbackSingleChoice(currentSelection, (dialog1, view, which, text) -> {
                         switch (which) {
-                            //for 0, change the pref and move on, no need to confirm anything
+                            // for 0, change the pref and move on, no need to confirm anything
                             case 0:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_default_album_art), which).apply();
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_default_album_art), which)
+                                        .apply();
                                 break;
 
-                            //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                            // for 3: custom image: ask user to pick image and change pref only upon
+                            // successful picking up image
                             case 1:
                                 backgroundSelectionStatus = DEFAULT_ALBUM_ART;
-                                /*CropImage.activity()
-                                        .setGuidelines(CropImageView.Guidelines.ON)
-                                        .setAspectRatio(1, 1)
-                                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                                        .setOutputCompressQuality(80)
-                                        .start(getActivity());*/
+                                Intent intent = new Intent(getActivity(), ActivityImagePick.class);
+                                intent.putExtra("status", backgroundSelectionStatus);
+                                getActivity().startActivity(intent);
+                                dialog1.dismiss();
                                 dialog1.dismiss();
                                 break;
 
@@ -735,8 +747,8 @@ public class ActivitySettings extends AppCompatActivity {
         }
 
         private void mainLibBackDialog() {
-            ///get current setting
-            // 0 - System default   2 - custom
+            /// get current setting
+            // 0 - System default 2 - custom
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_main_library_back), 0);
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
@@ -744,20 +756,20 @@ public class ActivitySettings extends AppCompatActivity {
                     .items(R.array.main_lib_back_pref_array)
                     .itemsCallbackSingleChoice(currentSelection, (dialog1, view, which, text) -> {
                         switch (which) {
-                            //for 0, change the pref and move on, no need to confirm anything
+                            // for 0, change the pref and move on, no need to confirm anything
                             case 0:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_main_library_back), which).apply();
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_main_library_back), which)
+                                        .apply();
                                 break;
 
-                            //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                            // for 3: custom image: ask user to pick image and change pref only upon
+                            // successful picking up image
                             case 1:
                                 backgroundSelectionStatus = MAIN_LIB;
-                                /*CropImage.activity()
-                                        .setGuidelines(CropImageView.Guidelines.ON)
-                                        .setAspectRatio(11, 16)
-                                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                                        .setOutputCompressQuality(50)
-                                        .start(getActivity());*/
+                                Intent intent = new Intent(getActivity(), ActivityImagePick.class);
+                                intent.putExtra("status", backgroundSelectionStatus);
+                                getActivity().startActivity(intent);
+                                dialog1.dismiss();
                                 dialog1.dismiss();
                                 break;
 
@@ -772,8 +784,9 @@ public class ActivitySettings extends AppCompatActivity {
 
         private void nowPlayingBackDialog() {
 
-            ///get current setting
-            // 0 - System default   1 - artist image  2 - album art 3 - custom  4- custom (if Artist image unavailable)
+            /// get current setting
+            // 0 - System default 1 - artist image 2 - album art 3 - custom 4- custom (if
+            /// Artist image unavailable)
             int currentSelection = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back), 1);
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
@@ -781,22 +794,21 @@ public class ActivitySettings extends AppCompatActivity {
                     .items(R.array.now_playing_back_pref_array)
                     .itemsCallbackSingleChoice(currentSelection, (dialog1, view, which, text) -> {
                         switch (which) {
-                            //for 0 and 1 and 2, change the pref and move on, no need to confirm anything
+                            // for 0 and 1 and 2, change the pref and move on, no need to confirm anything
                             case 0:
                             case 1:
                             case 2:
                                 MyApp.getPref().edit().putInt(getString(R.string.pref_now_playing_back), which).apply();
                                 break;
 
-                            //for 3: custom image: ask user to pick image and change pref only upon successful picking up image
+                            // for 3: custom image: ask user to pick image and change pref only upon
+                            // successful picking up image
                             case 3:
                                 backgroundSelectionStatus = NOW_PLAYING;
-                                /*CropImage.activity()
-                                        .setGuidelines(CropImageView.Guidelines.ON)
-                                        .setAspectRatio(9, 16)
-                                        .setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
-                                        .setOutputCompressQuality(50)
-                                        .start(getActivity());*/
+                                Intent intent = new Intent(getActivity(), ActivityImagePick.class);
+                                intent.putExtra("status", backgroundSelectionStatus);
+                                getActivity().startActivity(intent);
+                                dialog1.dismiss();
                                 dialog1.dismiss();
                                 break;
                         }
@@ -828,7 +840,8 @@ public class ActivitySettings extends AppCompatActivity {
                     .onNegative((dialog1, which) -> {
                         MyApp.getPref().edit().putString(getString(R.string.pref_excluded_folders), "").apply();
                         MusicLibrary.getInstance().RefreshLibrary();
-                        Toast.makeText(getActivity(), "Excluded folders reset, refreshing Music Library..", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Excluded folders reset, refreshing Music Library..",
+                                Toast.LENGTH_SHORT).show();
                     })
                     .build();
 
@@ -876,13 +889,13 @@ public class ActivitySettings extends AppCompatActivity {
             layoutManager.setFlexDirection(FlexDirection.ROW);
             layoutManager.setJustifyContent(JustifyContent.SPACE_EVENLY);
             rv.setLayoutManager(layoutManager);
-            //rv.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+            // rv.setLayoutManager(new GridLayoutManager(getActivity(), 4));
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title("Select theme")
                     .customView(dialogView, false)
                     .dismissListener(dialog12 -> {
-                        //@todo do something yo
+                        // @todo do something yo
                     })
                     .positiveText("Apply")
                     .onPositive((dialog1, which) -> restartSettingsActivity())
@@ -903,7 +916,9 @@ public class ActivitySettings extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 dialog.dismiss();
-                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), getString(R.string.main_act_lib_refreshed), Toast.LENGTH_SHORT).show());
+                getActivity().runOnUiThread(() -> Toast
+                        .makeText(getActivity(), getString(R.string.main_act_lib_refreshed), Toast.LENGTH_SHORT)
+                        .show());
             });
         }
 
@@ -912,7 +927,8 @@ public class ActivitySettings extends AppCompatActivity {
 
             linear.setOrientation(LinearLayout.VERTICAL);
             final TextView text = new TextView(getActivity());
-            String summary = String.valueOf(MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips), 10)) + " seconds";
+            String summary = String.valueOf(MyApp.getPref().getInt(getString(R.string.pref_hide_short_clips), 10))
+                    + " seconds";
             text.setText(summary);
             text.setTypeface(TypeFaceHelper.getTypeFace(MyApp.getContext()));
             text.setPadding(0, 10, 0, 0);
@@ -961,22 +977,25 @@ public class ActivitySettings extends AppCompatActivity {
             String text1 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_1), "");
             String text2 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_2), "");
             String text3 = MyApp.getPref().getString(getString(R.string.pref_hide_tracks_starting_with_3), "");
-            findPreference(getString(R.string.pref_hide_tracks_starting_with)).setSummary(text1 + ", " + text2 + ", " + text3);
+            findPreference(getString(R.string.pref_hide_tracks_starting_with))
+                    .setSummary(text1 + ", " + text2 + ", " + text3);
             LinearLayout linear = new LinearLayout(getActivity());
             linear.setPadding(10, 10, 10, 0);
 
             final EditText myEditText1 = new EditText(getActivity()); // Pass it an Activity or Context
-            myEditText1.setLayoutParams(new LinearLayout.LayoutParams
-                    (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+            myEditText1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT)); // Pass two args; must be LayoutParams.MATCH_PARENT,
+                                                              // LayoutParams.WRAP_CONTENT, or an integer pixel value.
             myEditText1.setText(text1);
-            //myEditText1.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            // myEditText1.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             myEditText1.setInputType(InputType.TYPE_CLASS_TEXT);
             myEditText1.setMaxLines(1);
             linear.addView(myEditText1);
 
             final EditText myEditText2 = new EditText(getActivity()); // Pass it an Activity or Context
-            myEditText2.setLayoutParams(new LinearLayout.LayoutParams
-                    (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+            myEditText2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT)); // Pass two args; must be LayoutParams.MATCH_PARENT,
+                                                              // LayoutParams.WRAP_CONTENT, or an integer pixel value.
             myEditText2.setText(text2);
             // myEditText2.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             myEditText2.setMaxLines(1);
@@ -984,10 +1003,11 @@ public class ActivitySettings extends AppCompatActivity {
             linear.addView(myEditText2);
 
             final EditText myEditText3 = new EditText(getActivity()); // Pass it an Activity or Context
-            myEditText3.setLayoutParams(new LinearLayout.LayoutParams
-                    (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)); // Pass two args; must be LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, or an integer pixel value.
+            myEditText3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT)); // Pass two args; must be LayoutParams.MATCH_PARENT,
+                                                              // LayoutParams.WRAP_CONTENT, or an integer pixel value.
             myEditText3.setText(text3);
-            //myEditText3.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            // myEditText3.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             myEditText3.setInputType(InputType.TYPE_CLASS_TEXT);
             myEditText3.setMaxLines(1);
             linear.addView(myEditText3);
@@ -1000,22 +1020,25 @@ public class ActivitySettings extends AppCompatActivity {
 
             linear.setOrientation(LinearLayout.VERTICAL);
 
-
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_hide_tracks_starting_with))
                     .positiveText(getString(R.string.okay))
                     .negativeText(getString(R.string.cancel))
                     .onPositive((dialog1, which) -> {
                         String text11 = myEditText1.getText().toString().trim();
-                        MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_1), text11).apply();
+                        MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_1), text11)
+                                .apply();
 
                         String text21 = myEditText2.getText().toString().trim();
-                        MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_2), text21).apply();
+                        MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_2), text21)
+                                .apply();
 
                         String text31 = myEditText3.getText().toString().trim();
-                        MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_3), text31).apply();
+                        MyApp.getPref().edit().putString(getString(R.string.pref_hide_tracks_starting_with_3), text31)
+                                .apply();
 
-                        findPreference(getString(R.string.pref_hide_tracks_starting_with)).setSummary(text11 + ", " + text21 + ", " + text31);
+                        findPreference(getString(R.string.pref_hide_tracks_starting_with))
+                                .setSummary(text11 + ", " + text21 + ", " + text31);
 
                         RescanLibrary();
                     })
@@ -1029,25 +1052,27 @@ public class ActivitySettings extends AppCompatActivity {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_shake_action))
-                    .items((CharSequence[]) new String[]{NEXT, PLAY_PAUSE, PREVIOUS})
+                    .items((CharSequence[]) new String[] { NEXT, PLAY_PAUSE, PREVIOUS })
                     .itemsCallback((MaterialDialog.ListCallback) (dialog1, view, which, text) -> {
                         switch (text.toString()) {
 
                             case NEXT:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action)
-                                        , Constants.SHAKE_ACTIONS.NEXT).apply();
+                                MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.NEXT)
+                                        .apply();
                                 findPreference(getString(R.string.pref_shake_action)).setSummary(NEXT);
                                 break;
 
                             case PLAY_PAUSE:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action)
-                                        , Constants.SHAKE_ACTIONS.PLAY_PAUSE).apply();
+                                MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action),
+                                        Constants.SHAKE_ACTIONS.PLAY_PAUSE).apply();
                                 findPreference(getString(R.string.pref_shake_action)).setSummary(PLAY_PAUSE);
                                 break;
 
                             case PREVIOUS:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_shake_action)
-                                        , Constants.SHAKE_ACTIONS.PREVIOUS).apply();
+                                MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_shake_action), Constants.SHAKE_ACTIONS.PREVIOUS)
+                                        .apply();
                                 findPreference(getString(R.string.pref_shake_action)).setSummary(PREVIOUS);
                                 break;
                         }
@@ -1068,11 +1093,9 @@ public class ActivitySettings extends AppCompatActivity {
 
                         SharedPreferences.Editor editor = MyApp.getPref().edit();
 
-                        editor.putInt(getString(R.string.pref_theme)
-                                , Constants.PRIMARY_COLOR.GLOSSY);
+                        editor.putInt(getString(R.string.pref_theme), Constants.PRIMARY_COLOR.GLOSSY);
 
-                        editor.putInt(getString(R.string.pref_text_font)
-                                , Constants.TYPEFACE.SOFIA);
+                        editor.putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOFIA);
 
                         editor.remove(getString(R.string.pref_tab_seq));
 
@@ -1104,7 +1127,6 @@ public class ActivitySettings extends AppCompatActivity {
 
                         editor.apply();
 
-
                         restartSettingsActivity();
                     })
                     .build();
@@ -1116,36 +1138,44 @@ public class ActivitySettings extends AppCompatActivity {
 
             MaterialDialog dialog = new MyDialogBuilder(getActivity())
                     .title(getString(R.string.title_text_font))
-                    .items(new String[]{MANROPE, ROBOTO, ASAP, SOFIA, MONOSPACE, SYSTEM_DEFAULT})
+                    .items(new String[] { MANROPE, ROBOTO, ASAP, SOFIA, MONOSPACE, SYSTEM_DEFAULT })
                     .itemsCallback((dialog1, view, which, text) -> {
                         switch (text.toString()) {
                             case MANROPE:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply();
+                                MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MANROPE).apply();
                                 findPreference(getString(R.string.pref_text_font)).setSummary(MANROPE);
                                 break;
 
                             case ROBOTO:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO).apply();
+                                MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ROBOTO).apply();
                                 findPreference(getString(R.string.pref_text_font)).setSummary(ROBOTO);
                                 break;
 
                             case MONOSPACE:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONOSPACE).apply();
+                                MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.MONOSPACE)
+                                        .apply();
                                 findPreference(getString(R.string.pref_text_font)).setSummary(MONOSPACE);
                                 break;
 
                             case ASAP:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP).apply();
+                                MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.ASAP).apply();
                                 findPreference(getString(R.string.pref_text_font)).setSummary(ASAP);
                                 break;
 
                             case SOFIA:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOFIA).apply();
+                                MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SOFIA).apply();
                                 findPreference(getString(R.string.pref_text_font)).setSummary(SOFIA);
                                 break;
 
                             case SYSTEM_DEFAULT:
-                                MyApp.getPref().edit().putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SYSTEM_DEFAULT).apply();
+                                MyApp.getPref().edit()
+                                        .putInt(getString(R.string.pref_text_font), Constants.TYPEFACE.SYSTEM_DEFAULT)
+                                        .apply();
                                 findPreference(getString(R.string.pref_text_font)).setSummary(SYSTEM_DEFAULT);
                                 break;
                         }
@@ -1192,7 +1222,8 @@ public class ActivitySettings extends AppCompatActivity {
 
         TabSequenceAdapter(OnStartDragListener dragStartListener) {
             mDragStartListener = dragStartListener;
-            String savedTabSeq = MyApp.getPref().getString(MyApp.getContext().getString(R.string.pref_tab_seq), Constants.TABS.DEFAULT_SEQ);
+            String savedTabSeq = MyApp.getPref().getString(MyApp.getContext().getString(R.string.pref_tab_seq),
+                    Constants.TABS.DEFAULT_SEQ);
             StringTokenizer st = new StringTokenizer(savedTabSeq, ",");
             for (int i = 0; i < Constants.TABS.NUMBER_OF_TABS; i++) {
                 data[i] = Integer.parseInt(st.nextToken());
@@ -1210,7 +1241,7 @@ public class ActivitySettings extends AppCompatActivity {
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public void onBindViewHolder(@NotNull final TabSequenceAdapter.MyViewHolder holder, int position) {
-            //holder.title.setText(data.get(0));
+            // holder.title.setText(data.get(0));
             switch (data[position]) {
                 case Constants.TABS.ALBUMS:
                     holder.title.setText(MyApp.getContext().getString(R.string.tab_album));
@@ -1238,8 +1269,7 @@ public class ActivitySettings extends AppCompatActivity {
             }
 
             holder.handle.setOnTouchListener((view, motionEvent) -> {
-                if (MotionEventCompat.getActionMasked(motionEvent) ==
-                        MotionEvent.ACTION_DOWN) {
+                if (MotionEventCompat.getActionMasked(motionEvent) == MotionEvent.ACTION_DOWN) {
                     mDragStartListener.onStartDrag(holder);
                 }
                 return false;
@@ -1277,7 +1307,7 @@ public class ActivitySettings extends AppCompatActivity {
                 super(itemView);
                 title = itemView.findViewById(R.id.tab_name);
                 title.setTypeface(TypeFaceHelper.getTypeFace(MyApp.getContext()));
-                //title.setTypeface(TypeFaceHelper.getTypeFace());
+                // title.setTypeface(TypeFaceHelper.getTypeFace());
 
                 handle = itemView.findViewById(R.id.handle_for_drag);
             }
@@ -1337,7 +1367,7 @@ public class ActivitySettings extends AppCompatActivity {
             super(context);
         }
 
-        //... constructor
+        // ... constructor
         @Override
         public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
             try {
