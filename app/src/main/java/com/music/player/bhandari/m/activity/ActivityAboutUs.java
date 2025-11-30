@@ -186,7 +186,6 @@ public class ActivityAboutUs extends AppCompatActivity {
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello AndroidDevs, \n");
                 startActivity(Intent.createChooser(emailIntent, "Send Feedback"));
             }
-            case R.id.action_licenses -> startActivity(new Intent(this, ActivityLicenses.class));
             case R.id.action_tou -> showDisclaimerDialog();
             case R.id.nav_website -> {
                 try {

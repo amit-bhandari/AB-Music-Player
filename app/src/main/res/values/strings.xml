@@ -566,8 +566,6 @@
     <string name="snack_cleared">Cleared</string>
     <string name="snack_unable_to_Clear">Cannot clear</string>
 
-
-    <string name="nav_developers_message">Developers Message</string>
     <string name="nav_explore_lyrics">Search Lyrics</string>
     <string name="nav_saved_lyrics">Saved Lyrics</string>
     <string name="lyrics_explore">Search Lyrics</string>

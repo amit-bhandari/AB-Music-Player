@@ -290,7 +290,6 @@
     <string name="reset_all">Сбросить все</string>
     <string name="snack_cleared">Чисто</string>
     <string name="snack_unable_to_Clear">Не могу очистить</string>
-    <string name="nav_developers_message">Сообщение разработчику</string>
     <string name="nav_explore_lyrics">поиск текст песни</string>
     <string name="nav_saved_lyrics">Сохраненные тексты песен</string>
     <string name="no_internet_explore_lyrics">Невозможно подключиться к Интернету. нажмите для повторной попытки</string>
