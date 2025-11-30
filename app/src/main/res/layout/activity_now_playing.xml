@@ -252,7 +252,7 @@
                     android:layout_height="wrap_content"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_drag_handle_black_24dp"
-                    android:background="@color/colorBlack"
+                    android:background="@color/colorTransparent"
                     card_view:ignore="ContentDescription" />
 
                 <TextView

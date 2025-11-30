@@ -44,10 +44,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.music.player.bhandari.m.MyApp;
@@ -253,34 +249,6 @@ public class ActivityLyricCard extends AppCompatActivity implements View.OnTouch
         if (System.currentTimeMillis() >= MyApp.getPref().getLong(getString(R.string.pref_card_image_saved_at), 0) + DAYS_UNTIL_CACHE
                 && urls != null) {
             imagesAdapter.setUrls(urls);
-        } else {
-            FirebaseDatabase.getInstance().getReference().child("cardlinksNew").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d("ActivityLyricCard", "onDataChange: ");
-                    Map<String, String> urls = new LinkedHashMap<>();
-
-                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        try {
-                            Map<String, String> map = (Map) snap.getValue();
-                            urls.put(map.get("thumb"), map.get("image"));
-                        } catch (Exception ignored) {
-                        }
-                    }
-
-                    imagesAdapter.setUrls(urls);
-
-                    //cache links in shared pref
-                    MyApp.getPref().edit().putString(getString(R.string.pref_card_image_links), new Gson().toJson(urls)).apply();
-                    MyApp.getPref().edit().putLong(getString(R.string.pref_card_image_saved_at), System.currentTimeMillis()).apply();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d("ActivityLyricCard", "onCancelled: " + databaseError.getMessage());
-                    Toast.makeText(ActivityLyricCard.this, "Error retrieving images from server", Toast.LENGTH_SHORT).show();
-                }
-            });
         }
 
         initiateDragView();

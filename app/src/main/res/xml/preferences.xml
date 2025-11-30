@@ -125,10 +125,10 @@
             android:key="@string/pref_data_saver">
         </CheckBoxPreference>
 
-        <Preference
+        <!--<Preference
             android:title="@string/title_batch_download"
             android:key="@string/pref_batch_download">
-        </Preference>
+        </Preference>-->
 
         <!--<Preference
             android:title="@string/title_cache_artist_data"
