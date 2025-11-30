@@ -38,7 +38,7 @@ public class TrackItem implements Serializable {
     }
 
     public TrackItem(String filePath, String title, String artist, String album, String genre, String duration
-            , long album_id, int artist_id, int id) {
+            , long album_id, long artist_id, long id) {
         this.filePath = filePath;
         this.title = title;
         this.artist = artist;

@@ -548,7 +548,7 @@ public class MusicLibrary {
                     "",
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.DURATION),
                     cursor.getLong(INDEX_FOR_TRACK_CURSOR.ALBUM_ID),
-                    cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)),
+                    cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)),
                     cursor.getInt(INDEX_FOR_TRACK_CURSOR._ID));
             cursor.close();
             return item;
@@ -590,7 +590,7 @@ public class MusicLibrary {
                     "",
                     cursor.getString(INDEX_FOR_TRACK_CURSOR.DURATION),
                     cursor.getLong(INDEX_FOR_TRACK_CURSOR.ALBUM_ID),
-                    cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)),
+                    cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)),
                     cursor.getInt(INDEX_FOR_TRACK_CURSOR._ID));
             cursor.close();
             return item;

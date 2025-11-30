@@ -63,13 +63,10 @@ public class EqualizerHelper {
             presetReverb = new PresetReverb(0, audioSessionId);
             presetReverb.setEnabled(equalizerEnabled);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
-                loudnessEnhancer.setEnabled(equalizerEnabled);
-            }
-
-
+            loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
+            loudnessEnhancer.setEnabled(equalizerEnabled);
         } catch (Exception e) {
+            e.printStackTrace();
             isEqualizerSupported = false;
         }
     }
