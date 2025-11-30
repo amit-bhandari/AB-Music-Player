@@ -2,6 +2,7 @@ package com.music.player.bhandari.m.activity;
 
 import static com.music.player.bhandari.m.qlyrics.LyricsAndArtistInfo.lyrics.Lyrics.POSITIVE_RESULT;
 
+import android.animation.Animator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -58,6 +59,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.music.player.bhandari.m.MyApp;
 import com.music.player.bhandari.m.R;
@@ -80,7 +82,6 @@ import com.music.player.bhandari.m.transition.MorphMiniToNowPlaying;
 import com.music.player.bhandari.m.transition.MorphNowPlayingToMini;
 import com.music.player.bhandari.m.utils.AppLaunchCountManager;
 import com.music.player.bhandari.m.utils.UtilityFun;
-import com.sackcentury.shinebuttonlib.ShineButton;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
@@ -140,38 +141,38 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     SlidingUpPanelLayout slidingUpPanelLayout;
     @BindView(R.id.view_pager_now_playing)
     CustomViewPager viewPager;
-    @BindView(R.id.shineButton)
-    ShineButton shineButton;
     @BindView(R.id.toolbar_)
     Toolbar toolbar;
+    @BindView(R.id.shineButton)
+    LottieAnimationView shineButton;
     @BindView(R.id.controls_wrapper)
     View controlsWrapper;
-    //@BindView(R.id.nowPlayingBackgroundImageOverlay) View backgroundOverlay;
+    // @BindView(R.id.nowPlayingBackgroundImageOverlay) View backgroundOverlay;
 
     private SharedPreferences pref;
 
-    //is artist thumb loaded in blurry background
+    // is artist thumb loaded in blurry background
     private boolean isArtistLoadedInBackground = false;
     private ActivityNowPlaying.ViewPagerAdapter viewPagerAdapter;
     private AudioManager audioManager;
     private boolean isInvokedFromFileExplorer = false;
 
-    //bind player service
+    // bind player service
     private PlayerService playerService;
     private BroadcastReceiver mUIUpdateReceiver;
     private RecyclerView mRecyclerView;
     private CurrentTracklistAdapter mAdapter;
-    private ActivityNowPlaying.WrapContentLinearLayoutManager mLayoutManager =
-            new ActivityNowPlaying.WrapContentLinearLayoutManager(this);
+    private ActivityNowPlaying.WrapContentLinearLayoutManager mLayoutManager = new ActivityNowPlaying.WrapContentLinearLayoutManager(
+            this);
     private ItemTouchHelper mItemTouchHelper;
     private Handler mHandler = new Handler();
 
-    //now playing background bitmap
+    // now playing background bitmap
     Bitmap nowPlayingCustomBackBitmap;
 
     private int selectedPageIndex;
 
-    //location of controls wrapper
+    // location of controls wrapper
     float yControl;
     float toolbarHeight;
 
@@ -179,7 +180,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //if player service not running, kill the app
+        // if player service not running, kill the app
         if (MyApp.getService() == null) {
             UtilityFun.restartApp();
             finish();
@@ -207,7 +208,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         setContentView(R.layout.activity_now_playing);
         ButterKnife.bind(this);
 
-        //backgroundOverlay.setBackgroundDrawable(ColorHelper.GetGradientDrawable());
+        // backgroundOverlay.setBackgroundDrawable(ColorHelper.GetGradientDrawable());
 
         slidingUpPanelLayout.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -225,7 +226,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         Log.d("ActivityNowPlaying", "onGlobalLayout: toolbarHeight " + toolbarHeight);
 
                         Log.d("ActivityNowPlaying", controlsWrapper.getMeasuredHeight() + "");
-
 
                     }
                 });
@@ -258,8 +258,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
 
-        audioManager =
-                (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null) {
@@ -276,9 +275,18 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 } else {
                     playQueueHandle.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
-                ; //height is ready
+                ; // height is ready
 
-                slidingUpPanelLayout.setPanelHeight(playQueueHandle.getHeight());
+                // Get bottom navigation bar height from window insets
+                int bottomInset = 0;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    bottomInset = rootView.getRootWindowInsets() != null
+                            ? rootView.getRootWindowInsets().getSystemWindowInsetBottom()
+                            : 0;
+                }
+
+                // Set panel height = handle height + bottom navigation bar height
+                slidingUpPanelLayout.setPanelHeight(playQueueHandle.getHeight() + bottomInset);
                 slidingUpPanelLayout.setScrollableView(mRecyclerView);
             }
         });
@@ -294,23 +302,23 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             }
 
             @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState,
+                    SlidingUpPanelLayout.PanelState newState) {
 
-                if (previousState == SlidingUpPanelLayout.PanelState.COLLAPSED && newState == SlidingUpPanelLayout.PanelState.DRAGGING) {
+                if (previousState == SlidingUpPanelLayout.PanelState.COLLAPSED
+                        && newState == SlidingUpPanelLayout.PanelState.DRAGGING) {
                     try {
                         int position = playerService.getCurrentTrackPosition();
                         mRecyclerView.scrollToPosition(position);
                     } catch (Exception ignored) {
                     }
-                    //Log.v(Constants.TAG,"DRAGGING");
+                    // Log.v(Constants.TAG,"DRAGGING");
                 }
             }
 
         });
 
         slidingUpPanelLayout.setDragView(R.id.play_queue_title);
-
-        shineButton.init(this);
 
         View saveQueueButton = findViewById(R.id.save_queue_button);
         saveQueueButton.setOnClickListener(this);
@@ -335,12 +343,12 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 Log.v(Constants.L_TAG + "wow", "selected " + position);
 
                 selectedPageIndex = position;
-                //display disclaimer if not accepted already
+                // display disclaimer if not accepted already
                 if (position == 2 && !MyApp.getPref().getBoolean(getString(R.string.pref_disclaimer_accepted), false)) {
                     showDisclaimerDialog();
                 }
 
-                //2 lyrics fragment
+                // 2 lyrics fragment
                 if (position == 2 && playerService.getStatus() == PlayerService.PLAYING) {
                     acquireWindowPowerLock(true);
                 } else {
@@ -355,10 +363,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         });
         viewPager.setOffscreenPageLimit(2);
         setupViewPager(viewPager);
-        //set current item to disc
+        // set current item to disc
         viewPager.setCurrentItem(Constants.EXIT_NOW_PLAYING_AT.DISC_FRAG, true);
 
-        //display current play queue header
+        // display current play queue header
         if (playerService != null && playerService.getTrackList() != null) {
             if (!playerService.getTrackList().isEmpty()) {
                 String title = "Save Playlist";
@@ -384,7 +392,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         arcMotion.setMinimumHorizontalAngle(50f);
         arcMotion.setMinimumVerticalAngle(50f);
 
-        android.view.animation.Interpolator easeInOut = AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in);
+        android.view.animation.Interpolator easeInOut = AnimationUtils.loadInterpolator(this,
+                android.R.interpolator.fast_out_slow_in);
 
         MorphMiniToNowPlaying sharedEnter = new MorphMiniToNowPlaying();
         sharedEnter.setPathMotion(arcMotion);
@@ -428,7 +437,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 })
                 .build();
 
-        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        // dialog.getWindow().getAttributes().windowAnimations =
+        // R.style.MyAnimation_Window;
 
         dialog.show();
     }
@@ -447,7 +457,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 })
                 .build();
 
-        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        // dialog.getWindow().getAttributes().windowAnimations =
+        // R.style.MyAnimation_Window;
 
         dialog.show();
     }
@@ -496,13 +507,20 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         Log.v(Constants.TAG, "DESTORY NOW PLAYING");
-        //this removes any memory leak caused by handler
+        // this removes any memory leak caused by handler
         mHandler.removeCallbacksAndMessages(null);
+
+        if (shineButton != null) {
+            shineButton.cancelAnimation();
+            shineButton.removeAllAnimatorListeners();
+            shineButton = null;
+        }
 
         super.onDestroy();
     }
 
-    private void UpdateUI(Intent receivedIntent) {  //intent carries information if only particular item needs to be updated in adapter
+    private void UpdateUI(Intent receivedIntent) { // intent carries information if only particular item needs to be
+                                                   // updated in adapter
 
         Log.d("ActivityNowPlaying", "UpdateUI: " + Log.getStackTraceString(new Exception()));
 
@@ -529,23 +547,23 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
                 totalTime.setText(UtilityFun.msToString(playerService.getCurrentTrackDuration()));
 
-                //update disc
+                // update disc
                 updateDisc();
 
-                //check current now playing background setting
-                ///get current setting
-                // 0 - System default   1 - artist image 2 - album art 3 - custom
+                // check current now playing background setting
+                /// get current setting
+                // 0 - System default 1 - artist image 2 - album art 3 - custom
                 int currentNowPlayingBackPref = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back), 1);
 
                 Bitmap b = null;// = playerService.getAlbumArt();
                 try {
                     switch (currentNowPlayingBackPref) {
                         case 0:
-                            //by default, default image will be used
+                            // by default, default image will be used
                             break;
 
                         case 1:
-                            //look in cache for artist image
+                            // look in cache for artist image
                             String CACHE_ART_THUMBS = this.getCacheDir() + "/art_thumbs/";
                             String actual_file_path = CACHE_ART_THUMBS + playerService.getCurrentTrack().getArtist();
                             b = BitmapFactory.decodeFile(actual_file_path);
@@ -561,7 +579,6 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                             b = getNowPlayingBackBitmap();
                             break;
                     }
-
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -591,10 +608,12 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
                     b = Bitmap.createScaledBitmap(b, width, height, false);
                     setBlurryBackground(b);
-                }/*else {
-                    b = BitmapFactory.decodeResource(getResources(),R.drawable.now_playing_back);
-                    setBlurryBackground(b);
-                }*/
+                } /*
+                   * else {
+                   * b = BitmapFactory.decodeResource(getResources(),R.drawable.now_playing_back);
+                   * setBlurryBackground(b);
+                   * }
+                   */
 
                 toolbar.setTitle(playerService.getCurrentTrack().getTitle());
                 toolbar.setSubtitle(playerService.getCurrentTrack().getArtist());
@@ -612,10 +631,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
         String picPath = MyApp.getContext().getFilesDir() + getString(R.string.now_playing_back_custom_image);
         Log.d(Constants.TAG, "UpdateUI: setBlurryBackgroundCustomImage: " + picPath);
-        /*BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        nowPlayingCustomBackBitmap = BitmapFactory.decodeFile(picPath, options);
-*/
+        /*
+         * BitmapFactory.Options options = new BitmapFactory.Options();
+         * options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+         * nowPlayingCustomBackBitmap = BitmapFactory.decodeFile(picPath, options);
+         */
         try {
             nowPlayingCustomBackBitmap = UtilityFun.decodeUri(this, Uri.fromFile(new File(picPath)), 500);
         } catch (FileNotFoundException e) {
@@ -633,21 +653,27 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         findViewById(R.id.full_screen_iv).startAnimation(fadeIn);
 
         try {
-            /*int currentNowPlayingBackPref = MyApp.getPref().getInt(getString(R.string.pref_now_playing_back),1);
-            if(currentNowPlayingBackPref==2){
-                //do not blur if user has selected album art as now playing option
-                //very ugly fix, but we gotta do what we gotta do.
-                //fix on user request
-                Glide.with(this).load(b).asBitmap().into(((ImageView) findViewById(R.id.full_screen_iv)));
-                *//*Blurry.with(this).radius(0).from(b)
-                        .into(((ImageView) findViewById(R.id.full_screen_iv)));*//*
-            }else {*/
-            Blurry.with(this).radius(1).color(Color.argb(100
-                            , 50, 0, 0)).from(b)
+            /*
+             * int currentNowPlayingBackPref =
+             * MyApp.getPref().getInt(getString(R.string.pref_now_playing_back),1);
+             * if(currentNowPlayingBackPref==2){
+             * //do not blur if user has selected album art as now playing option
+             * //very ugly fix, but we gotta do what we gotta do.
+             * //fix on user request
+             * Glide.with(this).load(b).asBitmap().into(((ImageView)
+             * findViewById(R.id.full_screen_iv)));
+             *//*
+                * Blurry.with(this).radius(0).from(b)
+                * .into(((ImageView) findViewById(R.id.full_screen_iv)));
+                *//*
+                   * }else {
+                   */
+            Blurry.with(this).radius(1).color(Color.argb(100, 50, 0, 0)).from(b)
                     .into(((ImageView) findViewById(R.id.full_screen_iv)));
-            /*}*/
+            /* } */
         } catch (OutOfMemoryError e) {
-            Toast.makeText(playerService, "Error setting blurry background due to insufficient memory", Toast.LENGTH_SHORT).show();
+            Toast.makeText(playerService, "Error setting blurry background due to insufficient memory",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -675,10 +701,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
         UpdateUI(null);
 
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mUIUpdateReceiver
-                , new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mUIUpdateReceiver,
+                new IntentFilter(Constants.ACTION.COMPLETE_UI_UPDATE));
         AppLaunchCountManager.nowPlayingLaunched();
-        //UpdateCurrentTracklistAdapter();
+        // UpdateCurrentTracklistAdapter();
 
         setSeekbarAndTime();
         startUpdateTask();
@@ -690,20 +716,22 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.menu_now_plying, menu);
         for (int i = 0; i < menu.size(); i++) {
             if (menu.getItem(i).getItemId() == R.id.action_fav) {
-                //Drawable drawable = menu.getItem(i).getIcon();
-                //if (drawable != null) {
+                // Drawable drawable = menu.getItem(i).getIcon();
+                // if (drawable != null) {
                 TrackItem item = playerService.getCurrentTrack();
 
                 if (item != null && PlaylistManager.getInstance(getApplicationContext()).isFavNew(item.getId())) {
-                    //rawable.mutate();
-                    //drawable.setColorFilter(ColorHelper.GetWidgetColor(), PorterDuff.Mode.SRC_ATOP);
+                    // rawable.mutate();
+                    // drawable.setColorFilter(ColorHelper.GetWidgetColor(),
+                    // PorterDuff.Mode.SRC_ATOP);
                     menu.getItem(i).setIcon(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
                 } else {
-                    //drawable.mutate();
-                    //drawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite), PorterDuff.Mode.SRC_ATOP);
+                    // drawable.mutate();
+                    // drawable.setColorFilter(ColorHelper.getColor(R.color.colorwhite),
+                    // PorterDuff.Mode.SRC_ATOP);
                     menu.getItem(i).setIcon(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
                 }
-                //}
+                // }
             }
         }
         return true;
@@ -725,8 +753,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         if (isTaskRoot()) {
             startActivity(new Intent(this, ActivityMain.class));
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-            //finish();
-            //return;
+            // finish();
+            // return;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -750,11 +778,10 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 playerService.updateTrackItem(position, playerService.getCurrentTrack().getId(), title, artist, album);
                 playerService.PostNotification();
 
-                //update currenttracklistadapteritem
+                // update currenttracklistadapteritem
                 mAdapter.updateItem(position, title, artist, album);
             }
         }
-
 
     }
 
@@ -767,31 +794,50 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     Snackbar.make(rootView, getString(R.string.error_nothing_to_fav), Snackbar.LENGTH_SHORT).show();
                     return true;
                 }
-                if (PlaylistManager.getInstance(getApplicationContext()).isFavNew(playerService.getCurrentTrack().getId())) {
-                    PlaylistManager.getInstance(getApplicationContext()).RemoveFromFavNew(playerService.getCurrentTrack().getId());
+                if (PlaylistManager.getInstance(getApplicationContext())
+                        .isFavNew(playerService.getCurrentTrack().getId())) {
+                    PlaylistManager.getInstance(getApplicationContext())
+                            .RemoveFromFavNew(playerService.getCurrentTrack().getId());
                 } else {
+                    shineButton.setVisibility(View.VISIBLE);
+                    shineButton.playAnimation();
+                    shineButton.addAnimatorListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(@NonNull Animator animator) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(@NonNull Animator animator) {
+                            shineButton.setVisibility(View.GONE);
+                            shineButton.removeAllAnimatorListeners();
+                        }
+
+                        @Override
+                        public void onAnimationCancel(@NonNull Animator animator) {
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(@NonNull Animator animator) {
+                        }
+                    });
                     PlaylistManager.getInstance(getApplicationContext())
                             .addSongToFav(playerService.getCurrentTrack().getId());
-                    shineButton.setVisibility(View.VISIBLE);
-                    shineButton.showAnim();
-                    shineButton.clearAnimation();
                 }
                 invalidateOptionsMenu();
                 break;
 
             case R.id.action_equ:
-                Intent intent = new Intent(AudioEffect
-                        .ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                Intent intent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
 
                 if (MyApp.getPref().getBoolean(getString(R.string.pref_prefer_system_equ), true)
                         && (intent.resolveActivity(getPackageManager()) != null)) {
                     try {
-                        //show system equalizer
+                        // show system equalizer
                         startActivityForResult(intent, 0);
                     } catch (Exception ignored) {
                     }
                 } else {
-                    //show app equalizer
+                    // show app equalizer
                     if (playerService.getEqualizerHelper().isEqualizerSupported()) {
                         startActivity(new Intent(this, ActivityEqualizer.class));
                     } else {
@@ -811,7 +857,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 if (isTaskRoot()) {
                     startActivity(new Intent(this, ActivityMain.class));
                     overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-                    //finish();
+                    // finish();
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -822,7 +868,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 break;
 
             case R.id.action_settings:
-                //finish();
+                // finish();
                 startActivity(new Intent(this, ActivitySettings.class)
                         .putExtra("launchedFrom", Constants.PREF_LAUNCHED_FROM.NOW_PLAYING)
                         .putExtra("ad", true));
@@ -858,7 +904,9 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     if (trackItem != null) {
                         File fileToBeShared = new File(trackItem.getFilePath());
                         ArrayList<Uri> fileUris = new ArrayList<>();
-                        fileUris.add(FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + "com.bhandari.music.provider", fileToBeShared));
+                        fileUris.add(FileProvider.getUriForFile(this,
+                                getApplicationContext().getPackageName() + "com.bhandari.music.provider",
+                                fileToBeShared));
                         UtilityFun.Share(this, fileUris, trackItem.getTitle());
                     } else {
                         Snackbar.make(rootView, R.string.error_nothing_to_share, Snackbar.LENGTH_SHORT).show();
@@ -873,7 +921,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 break;
 
             case R.id.action_add_to_playlist:
-                //Toast.makeText(context,"Playlists coming soon" ,Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context,"Playlists coming soon" ,Toast.LENGTH_SHORT).show();
                 if (trackItem != null) {
                     AddToPlaylist();
                 } else {
@@ -899,13 +947,12 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
-
             case R.id.action_clear_lyrics_offline:
                 if (trackItem != null) {
                     if (OfflineStorageLyrics.clearLyricsFromDB(trackItem)) {
                         ((FragmentLyrics) viewPagerAdapter.getItem(2)).clearLyrics();
                     } else {
-                        //Toast.makeText(this, "Unable to delete lyrics!", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(this, "Unable to delete lyrics!", Toast.LENGTH_SHORT).show();
                         Snackbar.make(rootView, getString(R.string.error_no_lyrics), Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
@@ -921,8 +968,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 }
                 break;
 
-            //when clicked on this, lyrics are searched again from viewlyrics
-            //but this time option is given to select lyrics
+            // when clicked on this, lyrics are searched again from viewlyrics
+            // but this time option is given to select lyrics
             case R.id.action_wrong_lyrics:
                 if (trackItem != null) {
                     ((FragmentLyrics) viewPagerAdapter.getItem(2)).wrongLyrics();
@@ -946,14 +993,12 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             case R.id.action_set_as_ringtone:
                 if (trackItem != null) {
                     String abPath = trackItem.getFilePath();
-                    UtilityFun.SetRingtone(this, abPath
-                            , MusicLibrary.getInstance().getIdFromFilePath(abPath));
+                    UtilityFun.SetRingtone(this, abPath, MusicLibrary.getInstance().getIdFromFilePath(abPath));
                 } else {
                     Snackbar.make(rootView, getString(R.string.main_act_empty_lib), Snackbar.LENGTH_SHORT).show();
                 }
 
                 break;
-
 
         }
 
@@ -1013,7 +1058,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     private void AddToPlaylist() {
         long[] ids;
         TrackItem trackItem = playerService.getCurrentTrack();
-        ids = new long[]{trackItem.getId()};
+        ids = new long[] { trackItem.getId() };
         UtilityFun.AddToPlaylist(this, ids);
         invalidateOptionsMenu();
     }
@@ -1053,10 +1098,13 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
                                         PlaylistManager.getInstance(MyApp.getContext())
                                                 .AddSongToPlaylist(playlist_name, ids);
-                                        Snackbar.make(rootView, getString(R.string.playlist_saved), Snackbar.LENGTH_SHORT).show();
+                                        Snackbar.make(rootView, getString(R.string.playlist_saved),
+                                                Snackbar.LENGTH_SHORT).show();
                                     } else {
-                                        //Toast.makeText(ActivityNowPlaying.this, "Playlist already exists", Toast.LENGTH_SHORT).show();
-                                        Snackbar.make(rootView, getString(R.string.play_list_already_exists), Snackbar.LENGTH_SHORT).show();
+                                        // Toast.makeText(ActivityNowPlaying.this, "Playlist already exists",
+                                        // Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(rootView, getString(R.string.play_list_already_exists),
+                                                Snackbar.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -1064,15 +1112,18 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                         .customView(input, true)
                         .build();
 
-                //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+                // dialog.getWindow().getAttributes().windowAnimations =
+                // R.style.MyAnimation_Window;
 
                 dialog.show();
                 break;
 
-            /*case R.id.login_to_remove_ads:
-                //signInDialog();
-                signIn();
-                break;*/
+            /*
+             * case R.id.login_to_remove_ads:
+             * //signInDialog();
+             * signIn();
+             * break;
+             */
         }
     }
 
@@ -1084,14 +1135,14 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //super.onKeyDown(keyCode,event);
+        // super.onKeyDown(keyCode,event);
         switch (keyCode) {
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PAUSE:
             case KeyEvent.KEYCODE_MEDIA_PLAY:
                 playerService.play();
                 updateDisc();
-                //togglePlayPauseButton();
+                // togglePlayPauseButton();
                 break;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT:
@@ -1162,7 +1213,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                             MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), 0).apply();
                             playerService.setSleepTimer(0, false);
                             // Toast.makeText(context, "Sleep timer discarded", Toast.LENGTH_LONG).show();
-                            Snackbar.make(rootView, getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(rootView, getString(R.string.sleep_timer_discarded), Snackbar.LENGTH_SHORT)
+                                    .show();
                         }
                     });
         }
@@ -1203,7 +1255,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if (seek.getProgress() != 0) {
-                            MyApp.getPref().edit().putInt(context.getString(R.string.pref_sleep_timer), seek.getProgress()).apply();
+                            MyApp.getPref().edit()
+                                    .putInt(context.getString(R.string.pref_sleep_timer), seek.getProgress()).apply();
                             playerService.setSleepTimer(seek.getProgress(), true);
                             playerService.setSleepTimer(seek.getProgress(), true);
                             String temp = getString(R.string.sleep_timer_successfully_set)
@@ -1216,7 +1269,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 .customView(linear, true)
                 .build();
 
-        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+        // dialog.getWindow().getAttributes().windowAnimations =
+        // R.style.MyAnimation_Window;
 
         dialog.show();
     }
@@ -1226,31 +1280,33 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         String pattern = "^[a-zA-Z0-9 ]*$";
         if (playlist_name.matches(pattern)) {
             if (playlist_name.length() > 2) {
-                //if playlist starts with digit, not allowed
+                // if playlist starts with digit, not allowed
                 if (Character.isDigit(playlist_name.charAt(0))) {
                     Snackbar.make(rootView, getString(R.string.playlist_error_1), Snackbar.LENGTH_SHORT).show();
                     return false;
                 }
                 return true;
             } else {
-                //Toast.makeText(this,"Enter at least 3 characters",Toast.LENGTH_SHORT).show();
+                // Toast.makeText(this,"Enter at least 3 characters",Toast.LENGTH_SHORT).show();
                 Snackbar.make(rootView, getString(R.string.playlist_error_2), Snackbar.LENGTH_SHORT).show();
                 return false;
             }
         } else {
-            //Toast.makeText(this,"Only alphanumeric characters allowed",Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this,"Only alphanumeric characters
+            // allowed",Toast.LENGTH_SHORT).show();
             Snackbar.make(rootView, getString(R.string.playlist_error_3), Snackbar.LENGTH_SHORT).show();
             return false;
         }
     }
 
-    //for catching exception generated by recycler view which was causing abend, no other way to handle this
+    // for catching exception generated by recycler view which was causing abend, no
+    // other way to handle this
     private class WrapContentLinearLayoutManager extends LinearLayoutManager {
         WrapContentLinearLayoutManager(Context context) {
             super(context);
         }
 
-        //... constructor
+        // ... constructor
         @Override
         public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
             try {
@@ -1276,7 +1332,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             i.putExtra(Intent.EXTRA_TEXT, sAux);
             startActivity(Intent.createChooser(i, getString(R.string.main_act_share_app_choose)));
         } catch (Exception e) {
-            //e.toString();
+            // e.toString();
         }
     }
 
@@ -1284,7 +1340,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         String myDeviceModel = Build.MODEL;
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto", getString(R.string.au_email_id), null));
-        String[] address = new String[]{getString(R.string.au_email_id)};
+        String[] address = new String[] { getString(R.string.au_email_id) };
         emailIntent.putExtra(Intent.EXTRA_EMAIL, address);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for " + myDeviceModel);
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello AndroidDevs, \n\n");
@@ -1318,7 +1374,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
             mPlayButton.setImageDrawable(getResources().getDrawable(R.drawable.pw_play));
         }
 
-        //mPlayButton.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
+        // mPlayButton.setBackgroundTintList(ColorStateList.valueOf(ColorHelper.GetWidgetColor()));
 
         seekBar.setMax(100);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -1327,9 +1383,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
                 if (b) {
                     runningTime.setText(UtilityFun.msToString(
-                            UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration())));
+                            UtilityFun.progressToTimer(seekBar.getProgress(),
+                                    playerService.getCurrentTrackDuration())));
                     if (selectedPageIndex == 2) {
-                        ((FragmentLyrics) viewPagerAdapter.getItem(2)).smoothScrollAfterSeekbarTouched(seekBar.getProgress());
+                        ((FragmentLyrics) viewPagerAdapter.getItem(2))
+                                .smoothScrollAfterSeekbarTouched(seekBar.getProgress());
                     }
                 }
             }
@@ -1341,7 +1399,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                playerService.seekTrack(UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration()));
+                playerService.seekTrack(
+                        UtilityFun.progressToTimer(seekBar.getProgress(), playerService.getCurrentTrackDuration()));
                 startUpdateTask();
             }
         });
@@ -1356,12 +1415,12 @@ public class ActivityNowPlaying extends AppCompatActivity implements
         }
         // mLastClickTime = SystemClock.elapsedRealtime();
         if (pref.getBoolean(Constants.PREFERENCES.SHUFFLE, false)) {
-            //shuffle is on, turn it off
+            // shuffle is on, turn it off
             pref.edit().putBoolean(Constants.PREFERENCES.SHUFFLE, false).apply();
             playerService.shuffle(false);
             shuffle.setColorFilter(ColorHelper.getColor(R.color.dark_gray3));
         } else {
-            //shuffle is off, turn it on
+            // shuffle is off, turn it on
             pref.edit().putBoolean(Constants.PREFERENCES.SHUFFLE, true).apply();
             playerService.shuffle(true);
             shuffle.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
@@ -1373,7 +1432,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     void repeat() {
         if (pref.getInt(Constants.PREFERENCES.REPEAT, 0) == Constants.PREFERENCE_VALUES.NO_REPEAT) {
             pref.edit().putInt(Constants.PREFERENCES.REPEAT, Constants.PREFERENCE_VALUES.REPEAT_ALL).apply();
-            //repeat.setColorFilter(UtilityFun.GetDominatColor(playerService.getAlbumArt()));
+            // repeat.setColorFilter(UtilityFun.GetDominatColor(playerService.getAlbumArt()));
             textInsideRepeat.setTextColor(ColorHelper.getColor(R.color.colorwhite));
             repeat.setColorFilter(ColorHelper.getColor(R.color.colorwhite));
             textInsideRepeat.setText("A");
@@ -1422,7 +1481,7 @@ public class ActivityNowPlaying extends AppCompatActivity implements
 
     @OnClick(R.id.pw_playButton)
     void play() {
-        //avoid debouncing of key if multiple play clicks are given by user
+        // avoid debouncing of key if multiple play clicks are given by user
         if (SystemClock.elapsedRealtime() - mLastClickTime < 100) {
             return;
         }
@@ -1449,8 +1508,8 @@ public class ActivityNowPlaying extends AppCompatActivity implements
     }
 
     private void setSeekbarAndTime() {
-        seekBar.setProgress(UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress()
-                , playerService.getCurrentTrackDuration()));
+        seekBar.setProgress(UtilityFun.getProgressPercentage(playerService.getCurrentTrackProgress(),
+                playerService.getCurrentTrackDuration()));
         runningTime.setText(UtilityFun.msToString(playerService.getCurrentTrackProgress()));
     }
 
@@ -1493,12 +1552,11 @@ public class ActivityNowPlaying extends AppCompatActivity implements
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                //Log.d("FragmentAlbumArt", "run: running");
+                // Log.d("FragmentAlbumArt", "run: running");
             }
             updateTimeTaskRunning = false;
         }
     };
-
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

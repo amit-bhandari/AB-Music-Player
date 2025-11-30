@@ -1222,8 +1222,6 @@ public class ActivityMain extends AppCompatActivity
         } else if (id == R.id.nav_explore_lyrics) {
             startActivity(new Intent(this, ActivityExploreLyrics.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (id == R.id.nav_dev_message) {
-            devMessageDialog();
         } else if (id == R.id.nav_lyric_card) {
             lyricCardDialog();
         } else if (id == 192) {
@@ -1359,53 +1357,6 @@ public class ActivityMain extends AppCompatActivity
         } catch (Exception e) {
             //e.toString();
         }
-    }
-
-    private void devMessageDialog() {
-
-        if (MyApp.getPref().getBoolean("new_dev_message", false)) {
-            MyApp.getPref().edit().putBoolean("new_dev_message", false).apply();
-            updateNewDevMessageDot(false);
-        }
-
-        String message = FirebaseRemoteConfig.getInstance().getString("developer_message");
-        message = message.replace("$$", "\n\n");
-
-        final String link = FirebaseRemoteConfig.getInstance().getString("link");
-
-        MaterialDialog dialog = new MyDialogBuilder(this)
-                .title(getString(R.string.nav_developers_message))
-                .content(message)
-                //.neutralText(R.string.write_me)
-                .negativeText(getString(R.string.main_act_rate_dialog_pos))
-                .positiveText(getString(R.string.title_click_me))
-                /*.onNeutral(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        feedbackEmail();
-                    }
-                })*/
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                        try {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                        } catch (ActivityNotFoundException anfe) {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                        }
-                    }
-                })
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        openUrl(Uri.parse(link));
-                    }
-                }).build();
-
-        //dialog.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
-
-        dialog.show();
     }
 
     private void setRateDialog() {
@@ -1941,28 +1892,6 @@ public class ActivityMain extends AppCompatActivity
             navigationView.inflateMenu(R.menu.drawer_menu_logged_in);
         } else {
             navigationView.inflateMenu(R.menu.drawer_menu_logged_out);
-        }
-
-        //set red dot if new developer message arrives
-        if (MyApp.getPref().getBoolean("new_dev_message", false)) {
-            updateNewDevMessageDot(true);
-        }
-
-        //navigationView.getMenu().findItem(R.id.nav_lyric_card).setActionView(R.layout.nav_item_lyric_card);  //showing new icon with color red
-
-        //add upload image button
-        /*if(BuildConfig.DEBUG){
-            navigationView.getMenu().add(R.id.grp2, 192, 10,"Upload");
-        }*/
-
-        //updateNavigationMenuItems();
-    }
-
-    private void updateNewDevMessageDot(boolean set) {
-        if (set) {
-            navigationView.getMenu().findItem(R.id.nav_dev_message).setActionView(R.layout.nav_item_dev_message);
-        } else {
-            navigationView.getMenu().findItem(R.id.nav_dev_message).setActionView(null);
         }
     }
 

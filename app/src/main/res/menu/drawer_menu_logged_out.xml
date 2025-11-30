@@ -31,11 +31,6 @@
             android:title="@string/nav_share" />
 
         <item
-            android:id="@+id/nav_dev_message"
-            android:icon="@drawable/ic_person_black_24dp"
-            android:title="@string/nav_developers_message" />
-
-        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/nav_settings" />

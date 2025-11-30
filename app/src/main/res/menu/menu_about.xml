@@ -3,19 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_licenses"
-        android:orderInCategory="100"
-        android:icon="@drawable/ic_favorite_border_black_24dp"
-        app:showAsAction="never"
-        android:title="@string/action_licenses" />
-
-    <item
         android:id="@+id/action_tou"
         android:orderInCategory="100"
         android:icon="@drawable/ic_assessment_black_24dp"
         app:showAsAction="never"
         android:title="@string/action_terms_of_use" />
-
 
     <item
         android:id="@+id/action_feedback"

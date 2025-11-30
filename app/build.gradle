@@ -5,10 +5,14 @@ apply plugin: 'kotlin-kapt'
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        flatDir {
+            dirs("app/libs")
+        }
     }
 
     dependencies {
-        classpath 'com.github.triplet.gradle:play-publisher:1.2.2'
+        classpath 'com.github.triplet.gradle:play-publisher:3.12.2'
     }
 }
 
@@ -27,13 +31,17 @@ android {
         versionProps.store(versionPropsFile.newWriter(), null)
     }
 
+    println "VERSION_PATCH  = ${versionProps['VERSION_PATCH']}"
+    println "VERSION_NUMBER = ${versionProps['VERSION_NUMBER']}"
+    println "VERSION_BUILD  = ${versionProps['VERSION_BUILD']}"
+
     if (versionPropsFile.canRead()) {
         def mVersionName = "v10.0.${versionProps['VERSION_PATCH']}"
         defaultConfig {
             applicationId 'com.bhandari.music'
             minSdkVersion 24
-            compileSdk 34
-            targetSdkVersion 34
+            compileSdk = 34
+            targetSdkVersion 35
             versionCode versionProps['VERSION_NUMBER'].toInteger()
             versionName "${mVersionName} Build: ${versionProps['VERSION_BUILD']}"
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -63,6 +71,7 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
+            //noinspection ProguardAndroidTxtUsage
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             multiDexEnabled false
         }
@@ -105,17 +114,19 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //noinspection GradleCompatible
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     //noinspection GradleCompatible
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     //noinspection GradleCompatible
-    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.google.android.material:material:1.13.0'
     //noinspection GradleCompatible
     implementation 'androidx.cardview:cardview:1.0.0'
     testImplementation 'junit:junit:4.13.2'
 
+    implementation 'com.airbnb.android:lottie:6.7.1'
+
     //small animations for lyric loading
-    implementation 'com.wang.avi:library:2.1.3'
+    implementation 'io.github.maitrungduc1410:AVLoadingIndicatorView:2.3.0'
 
     //slide up panel for now playing view
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
@@ -124,44 +135,44 @@ dependencies {
     implementation 'com.squareup:seismic:1.0.3'
 
     //glide
-    //noinspection GradleDependency
+    //noinspection NewerVersionAvailable,GradleDependency
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
     //blur images
     implementation 'jp.wasabeef:blurry:4.0.1'
 
     //scroll smoothly and fast scroll
-    implementation 'com.nshmura:snappysmoothscroller:1.0.0'
+    implementation files('libs/snappy.aar')
+
     implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.1'
 
     //jsoup and okhttp
-    implementation 'org.jsoup:jsoup:1.17.2'
+    implementation 'org.jsoup:jsoup:1.21.2'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
 
     //first time info bubbles
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
-
-    //shine animation after clicking fav
-    implementation 'com.sackcentury:shinebutton:1.0.0'
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.15.0'
 
     //dialogs
     //implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation project(':dialogs')
 
     //firebase
+    //firebase
     implementation 'com.google.firebase:firebase-core:21.1.1'
-    implementation 'com.google.firebase:firebase-messaging:23.4.0'
-    implementation 'com.google.firebase:firebase-database:20.3.0'
-    implementation 'com.google.firebase:firebase-config:21.6.0'
+    implementation 'com.google.firebase:firebase-messaging:25.0.1'
+    implementation 'com.google.firebase:firebase-database:22.0.1'
+    implementation 'com.google.firebase:firebase-config:23.0.1'
+
 
     //gson
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.google.code.gson:gson:2.13.2'
 
     //leak detection
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     //crop images
-    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.vanniktech:android-image-cropper:4.7.0'
 
     //view binding
     //noinspection AnnotationProcessorOnCompilePath
@@ -169,19 +180,21 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:10.2.3'
 
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
+    //noinspection NewerVersionAvailable
     implementation 'io.github.inflationx:viewpump:2.0.3'
 
     //flow layout
-    implementation 'com.google.android:flexbox:1.0.0'
+    //implementation 'com.google.android:flexbox:1.0.0'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
     //kotlin
     //noinspection GradleDependency,DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
+    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.3.2'
 }
 
 repositories {

@@ -170,13 +170,6 @@
         </activity>
 
         <activity
-            android:name="com.music.player.bhandari.m.activity.ActivityLicenses"
-            android:theme="@style/Theme.AppCompat.Light"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
             android:name="com.music.player.bhandari.m.activity.ActivityInstantLyric"
             android:theme="@style/Theme.AppCompat.Light"
             android:launchMode="singleTask"
@@ -195,9 +188,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
-
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"/> <!-- optional (needed if default theme has no action bar) -->
 
         <activity
             android:name=".activity.ActivityExploreLyrics"
@@ -275,6 +265,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+
+        <activity
+            android:name=".activity.ActivityImagePick"
+            android:theme="@style/AppTheme"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
 
     </application>
 
