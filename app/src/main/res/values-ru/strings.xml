@@ -28,7 +28,6 @@
     <string name="nav_rate">Оценить в маркете</string>
     <string name="nav_website">Посетить сайт</string>
     <string name="nav_settings">Настройки</string>
-    <string name="nav_logout">Выйти</string>
     <string name="menu_search">Поиск</string>
     <string name="menu_sort_by">Сортировка</string>
     <string name="action_play">Воспроизвести</string>
@@ -253,7 +252,6 @@
     <string name="title_search_lyrics">Посик текстов</string>
     <string name="error_empty_title_lyric_search">Ввести название</string>
     <string name="unknown_artist">неизвестн.</string>
-    <string name="try_my_new_app">Еще мои приложения</string>
     <string name="invite_text">Отправьте приглашение своему другу для установки плеера</string>
     <string name="invite_friends_title">Приглашенные друзья</string>
     <string name="invitation_sent">Приглашение отправлено</string>
