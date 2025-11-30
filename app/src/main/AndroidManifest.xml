@@ -189,9 +189,6 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name="com.canhub.cropper.CropImageActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
-
         <activity
             android:name=".activity.ActivityExploreLyrics"
             android:theme="@style/AppTheme"
