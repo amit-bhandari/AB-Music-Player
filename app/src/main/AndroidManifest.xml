@@ -7,14 +7,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
 
@@ -36,12 +36,13 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3876828674787345~2055282513"/>
+            android:value="ca-app-pub-3876828674787345~2055282513" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_batman_kitkat" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+        <!-- Set color used with incoming notification messages. This is used when no color is set
+        for the incoming
              notification mehuassage. See README(https://goo.gl/6BKBk7) for more. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
@@ -49,7 +50,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/notification_channel"/>
+            android:value="@string/notification_channel" />
         <!--<meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />-->
@@ -88,14 +89,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+            <!-- FIXED: Removed https:// from host and added autoVerify -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="https://ddhk8.app.goo.gl"
-                    android:scheme="https"
-                    tools:ignore="AppLinkUrlError" />
+                    android:host="ddhk8.app.goo.gl"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
@@ -173,7 +174,7 @@
             android:name="com.music.player.bhandari.m.activity.ActivityInstantLyric"
             android:theme="@style/Theme.AppCompat.Light"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.music.player.bhandari.m.activity.ActivityRequestNotificationAccess"
@@ -225,7 +226,7 @@
             android:exported="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService"/>
+                <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
 
@@ -233,11 +234,12 @@
             android:name=".fcm.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <service android:name=".fcm.MyFirebaseMessagingService$generatePictureStyleNotification$NotificationActionService" />
+        <service
+            android:name=".fcm.MyFirebaseMessagingService$generatePictureStyleNotification$NotificationActionService" />
 
         <receiver android:name="com.music.player.bhandari.m.widget.WidgetReceiver"
             android:exported="true">
@@ -263,7 +265,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
 
         <activity
