@@ -30,9 +30,6 @@ jobs:
           echo "Writing keystore.properties..."
           echo "$ANDROID_SIGNING_KEY_PROPERTIES" > keystore.properties
           
-          # Fix the storeFile path automatically so it resolves correctly in app/build.gradle
-          sed -i 's|storeFile=.*|storeFile=music_player.jks|' keystore.properties
-          
           echo "Decoding Keystore..."
           KEYSTORE_PATH="app/music_player.jks" 
           echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > $KEYSTORE_PATH
