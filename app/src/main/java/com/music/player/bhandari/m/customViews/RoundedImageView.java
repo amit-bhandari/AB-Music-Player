@@ -46,6 +46,32 @@ public class RoundedImageView extends AppCompatImageView {
         super(context, attrs, defStyle);
     }
 
+    private Bitmap getBitmapFromDrawable(Drawable drawable) {
+        if (drawable == null) {
+            return null;
+        }
+
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        try {
+            Bitmap bitmap;
+            if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+                bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            } else {
+                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            }
+
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
 
@@ -58,8 +84,16 @@ public class RoundedImageView extends AppCompatImageView {
         if (getWidth() == 0 || getHeight() == 0) {
             return;
         }
-        Bitmap b = ((BitmapDrawable) drawable.getCurrent()).getBitmap();
+
+        Bitmap b = getBitmapFromDrawable(drawable.getCurrent());
+        if (b == null) {
+            return;
+        }
+
         Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+        if (bitmap == null) {
+            return;
+        }
 
         int w = getWidth();
         @SuppressWarnings("unused")
