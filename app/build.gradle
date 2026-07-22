@@ -40,8 +40,8 @@ android {
         defaultConfig {
             applicationId 'com.bhandari.music'
             minSdkVersion 24
-            compileSdk = 34
-            targetSdkVersion 35
+            compileSdk = 36
+            targetSdkVersion 36
             versionCode versionProps['VERSION_NUMBER'].toInteger()
             versionName "${mVersionName} Build: ${versionProps['VERSION_BUILD']}"
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

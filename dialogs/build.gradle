@@ -9,9 +9,9 @@ ext {
 
 android {
     defaultConfig {
-        compileSdk 34
+        compileSdk 36
         minSdkVersion versions.minSdk
-        targetSdkVersion versions.compileSdk
+        targetSdkVersion 36
         consumerProguardFiles 'progress-proguard.txt'
     }
     sourceSets {

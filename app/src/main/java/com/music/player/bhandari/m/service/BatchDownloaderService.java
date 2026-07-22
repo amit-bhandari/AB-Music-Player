@@ -135,7 +135,11 @@ public class BatchDownloaderService extends Service implements Lyrics.Callback {
             mBuilder.setChannelId("channel_01");
         }
 
-        startForeground(Constants.NOTIFICATION_ID.BATCH_DOWNLOADER, mBuilder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(Constants.NOTIFICATION_ID.BATCH_DOWNLOADER, mBuilder.build(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+        } else {
+            startForeground(Constants.NOTIFICATION_ID.BATCH_DOWNLOADER, mBuilder.build());
+        }
 
         cancelBatchService = false;
         //start running thread
