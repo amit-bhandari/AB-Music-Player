@@ -53,7 +53,7 @@ import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.OnStartDra
 import com.music.player.bhandari.m.UIElementHelper.recyclerviewHelper.SimpleItemTouchHelperCallback;
 import com.music.player.bhandari.m.model.Constants;
 import com.music.player.bhandari.m.model.MusicLibrary;
-import com.music.player.bhandari.m.service.BatchDownloaderService;
+
 import com.music.player.bhandari.m.service.NotificationListenerService;
 import com.music.player.bhandari.m.service.PlayerService;
 import com.music.player.bhandari.m.utils.UtilityFun;
@@ -630,19 +630,6 @@ public class ActivitySettings extends AppCompatActivity {
                 return true;
             });
 
-            // batch download preference
-            /*Preference batchDownload = findPreference(getString(R.string.pref_batch_download));
-            batchDownload.setOnPreferenceClickListener(preference -> {
-                if (MyApp.isBatchServiceRunning) {
-                    Toast.makeText(getActivity(), getString(R.string.error_batch_download_running), Toast.LENGTH_LONG)
-                            .show();
-                    return false;
-                }
-
-                getActivity().startService(new Intent(getActivity(), BatchDownloaderService.class));
-                Toast.makeText(getActivity(), getString(R.string.batch_download_started), Toast.LENGTH_LONG).show();
-                return true;
-            });*/
 
             // reset preference
             final Preference resetPref = findPreference(getString(R.string.pref_reset_pref));

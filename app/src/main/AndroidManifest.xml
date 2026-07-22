@@ -20,7 +20,6 @@
 
     <!-- Needed for android 9 (p)-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:name="com.music.player.bhandari.m.MyApp"
@@ -210,11 +209,6 @@
 
         <service android:name="com.music.player.bhandari.m.service.PlayerService"
             android:foregroundServiceType="mediaPlayback">
-        </service>
-
-        <service android:name="com.music.player.bhandari.m.service.BatchDownloaderService"
-            android:foregroundServiceType="dataSync"
-            android:exported="false">
         </service>
 
         <service

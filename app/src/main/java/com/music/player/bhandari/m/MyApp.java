@@ -43,9 +43,6 @@ public class MyApp extends Application {
     //this is for button actions on bluetooth headset
     public static boolean isAppVisible;
 
-    //batch lyrics download service status flag
-    public static boolean isBatchServiceRunning = false;
-
     //user signed in or not status flag
     public static boolean hasUserSignedIn = false;
 
